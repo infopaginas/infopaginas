@@ -3,6 +3,7 @@ $( document ).ready( function() {
     var page   = button.data( 'page' );
     var spinner = $( '#spinner' );
     var catalogBlock = $( '#emergency-catalog' );
+    var serviceFilters = $( '.service-filter-block input[type="checkbox"]' );
     var requestSend = false;
     var geoLocationAvailable = false;
     var latitude;
@@ -39,6 +40,12 @@ $( document ).ready( function() {
             $( '.filter-letters span.letter.checked' ).removeClass( 'checked' );
             $( this ).addClass( 'checked' );
 
+            getPageContent( false );
+        }
+    });
+
+    $( document ).on( 'change', '.service-filter-block input[type="checkbox"]', function( e ) {
+        if ( !requestSend ) {
             getPageContent( false );
         }
     });
@@ -81,7 +88,8 @@ $( document ).ready( function() {
             var data = {
                 page:  page,
                 order: getSorting(),
-                charFilter: characterFilter
+                charFilter: characterFilter,
+                serviceFilter: getServiceFilter()
             };
 
             if ( geoLocationAvailable ) {
@@ -91,6 +99,7 @@ $( document ).ready( function() {
 
             disableButton( button );
             disableSorting();
+            disableServiceFilters();
             showSpinner();
 
             $.ajax({
@@ -109,6 +118,7 @@ $( document ).ready( function() {
                     requestSend = false;
 
                     enableSorting();
+                    enableServiceFilters();
                     hideSpinner();
                 }
             });
@@ -117,6 +127,19 @@ $( document ).ready( function() {
 
     function getSorting() {
         return $( 'input[type=radio][name=order]:checked' ).val();
+    }
+
+    function getServiceFilter() {
+        var filters = $( '.service-filter-item input[type=checkbox]:checked');
+        var serviceIds = [];
+
+        $.each( filters, function() {
+            var serviceId = $( this ).data( 'service-id' );
+
+            serviceIds.push( serviceId );
+        });
+
+        return serviceIds;
     }
 
     function showSpinner() {
@@ -145,5 +168,13 @@ $( document ).ready( function() {
     function enableButton( button ) {
         $( button ).removeAttr( 'disabled' );
         $( button ).addClass( 'button--action' );
+    }
+
+    function enableServiceFilters() {
+        serviceFilters.removeAttr( 'disabled' );
+    }
+
+    function disableServiceFilters() {
+        serviceFilters.attr( 'disabled', 'disabled' );
     }
 });

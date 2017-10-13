@@ -116,6 +116,9 @@ body {
   max-width: 60%;
   display: inline-flex;
 }
+.search-controls .service-filter-block .service-filter-item {
+  margin: 5px;
+}
 .article.emergency-catalog-block {
   padding-top: 0;
 }

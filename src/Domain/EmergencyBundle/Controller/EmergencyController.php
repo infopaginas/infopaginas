@@ -99,6 +99,8 @@ class EmergencyController extends Controller
 
             $letters = $emergencyManger->getCatalogItemCharacterFilters($area, $category);
 
+            $serviceFilters = $emergencyManger->getCatalogItemServiceFilters();
+
             return $this->render(
                 ':redesign:emergency-catalog.html.twig',
                 [
@@ -109,6 +111,7 @@ class EmergencyController extends Controller
                     'pageNumber' => $pageNumber,
                     'businesses' => $businesses,
                     'letters'    => $letters,
+                    'serviceFilters' => $serviceFilters,
                 ]
             );
         }
