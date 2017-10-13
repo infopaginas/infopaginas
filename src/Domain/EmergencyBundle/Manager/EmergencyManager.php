@@ -44,7 +44,9 @@ class EmergencyManager
     public function getCatalogItemsWithContent()
     {
         $data = [];
-        $catalogItems = $this->getCatalogWithContent();
+
+        $orderCategoryByAlphabet = $this->getEmergencyCatalogOrderByAlphabet();
+        $catalogItems = $this->getCatalogWithContent($orderCategoryByAlphabet);
 
         foreach ($catalogItems as $catalogItem) {
             $area     = $catalogItem->getArea();
@@ -59,11 +61,14 @@ class EmergencyManager
     }
 
     /**
+     * @param bool $orderCategoryByAlphabet
+     *
      * @return EmergencyCatalogItem[]
      */
-    public function getCatalogWithContent()
+    public function getCatalogWithContent($orderCategoryByAlphabet)
     {
-        return $this->em->getRepository(EmergencyCatalogItem::class)->getCatalogItemWithContent();
+        return $this->em->getRepository(EmergencyCatalogItem::class)
+            ->getCatalogItemWithContent($orderCategoryByAlphabet);
     }
 
     /**
@@ -120,6 +125,14 @@ class EmergencyManager
     public function getSystemItemPerPage()
     {
         return (int)$this->config->getSetting(ConfigInterface::DEFAULT_RESULTS_PAGE_SIZE)->getValue();
+    }
+
+    /**
+     * @return bool
+     */
+    public function getEmergencyCatalogOrderByAlphabet()
+    {
+        return (bool)$this->config->getSetting(ConfigInterface::EMERGENCY_CATALOG_ORDER_BY_ALPHABET)->getValue();
     }
 
     /**
