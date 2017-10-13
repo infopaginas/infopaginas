@@ -31,10 +31,13 @@ class EmergencyController extends Controller
 
         $catalogItems = $emergencyManger->getCatalogItemsWithContent();
 
+        $pageLinks = $page->getLinksGroupedByTypes();
+
         return $this->render(
             ':redesign:emergency-main.html.twig',
             [
                 'page'       => $page,
+                'pageLinks'  => $pageLinks,
                 'seoData'    => $pageManager->getPageSeoData($page),
                 'catalogItems' => $catalogItems,
             ]

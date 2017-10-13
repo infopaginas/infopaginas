@@ -13,6 +13,9 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class PageLink
 {
+    const PAGE_LINK_TYPE_LINK  = 'link';
+    const PAGE_LINK_TYPE_OFFER = 'offer';
+
     /**
      * @var int
      *
@@ -42,6 +45,15 @@ class PageLink
     protected $name;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="type", type="string", length=10, options={"default": PageLink::PAGE_LINK_TYPE_LINK})
+     * @Assert\Choice(callback = "getTypesAssert", multiple = false)
+     * @Assert\NotBlank()
+     */
+    protected $type;
+
+    /**
      * @var Page
      * @ORM\ManyToOne(targetEntity="Domain\PageBundle\Entity\Page",
      *     cascade={"persist"},
@@ -50,6 +62,11 @@ class PageLink
      * @ORM\JoinColumn(name="page_id", referencedColumnName="id", onDelete="CASCADE")
      */
     protected $page;
+
+    public function __construct()
+    {
+        $this->type = self::PAGE_LINK_TYPE_LINK;
+    }
 
     /**
      * @return string
@@ -131,5 +148,44 @@ class PageLink
     public function getName()
     {
         return $this->name;
+    }
+
+    /**
+     * @return string
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
+     * @param string $type
+     *
+     * @return PageLink
+     */
+    public function setType($type)
+    {
+        $this->type = $type;
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public static function getTypesAssert()
+    {
+        return array_keys(self::getTypes());
+    }
+
+    /**
+     * @return array
+     */
+    public static function getTypes()
+    {
+        return [
+            self::PAGE_LINK_TYPE_LINK   => 'page_link.type.link',
+            self::PAGE_LINK_TYPE_OFFER  => 'page_link.type.offer',
+        ];
     }
 }

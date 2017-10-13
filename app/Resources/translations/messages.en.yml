@@ -608,7 +608,8 @@ business_profile.phone.tooltip:
   secondary: Additional
 
 emergency.back_button: Back
-emergency.page_link.title: Helpful links
+emergency.page_link.link_title: Helpful links
+emergency.page_link.offer_title: Offers
 emergency.add_item.title: Add your business
 emergency.updated.title: Updated
 emergency.load_more.button: Load more
