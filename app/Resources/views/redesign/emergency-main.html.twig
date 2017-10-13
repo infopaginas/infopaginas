@@ -16,13 +16,17 @@
         </div>
     {% endif %}
 
-    {% if page.actionLink %}
-        <div class="add-item">
-            <a href="{{ page.actionLink }}">
-                <button class="button">{{ 'emergency.add_item.title'|trans }}</button>
-            </a>
-        </div>
-    {% endif %}
+    <div class="add-item">
+        {% if page.useActionLink and page.actionLink %}
+            {% set actionLink = page.actionLink %}
+        {% else %}
+            {% set actionLink = absolute_url(path('emergency_business_draft_create')) %}
+        {% endif %}
+
+        <a href="{{ actionLink }}">
+            <button class="button">{{ 'emergency.add_item.title'|trans }}</button>
+        </a>
+    </div>
 
     <div class="emergency-catalog">
         <ul class="area-block">
@@ -30,11 +34,9 @@
                 <li>
                     <h3>{{ catalogItem.area.name }}</h3>
                     <ul class="category-block">
-                        {% for category in catalogItem.categories %}
+                        {% for item in catalogItem.categories %}
                             <li>
-                                <a href="{{ absolute_url(path('emergency_catalog', {areaSlug: catalogItem.area.slug, categorySlug: category.slug})) }}">
-                                    {{ category.name }}
-                                </a>
+                                <a href="{{ absolute_url(path('emergency_catalog', {areaSlug: catalogItem.area.slug, categorySlug: item.category.slug})) }}">{{ item.category.name }}</a>
                             </li>
                         {% endfor %}
                     </ul>
@@ -47,12 +49,16 @@
         <h2>{{ 'emergency.page_link.title'|trans }}</h2>
 
         {% if not page.links.empty %}
-            <ul>
-                {% for link in page.links %}
-                    <li>
-                        <a href="{{ link.link }}" target="_blank">{{ link.name }}</a>
-                    </li>
-                {% endfor %}
+            <ul class="container-block">
+                <li>
+                    <ul>
+                        {% for link in page.links %}
+                            <li>
+                                <a href="{{ link.link }}" target="_blank">{{ link.name }}</a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </li>
             </ul>
         {% endif %}
     </div>

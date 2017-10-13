@@ -1,0 +1,21 @@
+emergency_main:
+    path:     /
+    defaults: { _controller: DomainEmergencyBundle:Emergency:emergency }
+
+emergency_business_draft_create:
+    path:     /business/create
+    defaults: { _controller: DomainEmergencyBundle:Draft:create }
+    options:
+        expose: true
+
+emergency_business_draft_save:
+    path:     /business/save
+    defaults: { _controller: DomainEmergencyBundle:Draft:save }
+    options:
+        expose: true
+
+emergency_catalog:
+    path:     /area/{areaSlug}/category/{categorySlug}
+    defaults: { _controller: DomainEmergencyBundle:Emergency:catalog }
+    options:
+        expose: true

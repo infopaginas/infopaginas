@@ -14,9 +14,12 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Filesystem\LockHandler;
 
 class EmergencyCatalogItemContentCommand extends ContainerAwareCommand
 {
+    const EMERGENCY_CATALOG_LOCK = 'EMERGENCY_CATALOG.lock';
+
     /* @var EntityManager $em */
     protected $em;
 
@@ -37,6 +40,12 @@ class EmergencyCatalogItemContentCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $lockHandler = new LockHandler(self::EMERGENCY_CATALOG_LOCK);
+
+        if (!$lockHandler->lock()) {
+            return $output->writeln('Command is locked by another process');
+        }
+
         $this->em = $this->getContainer()->get('doctrine.orm.entity_manager');
         $this->config = $this->getContainer()->get('oxa_config');
 
@@ -75,6 +84,26 @@ class EmergencyCatalogItemContentCommand extends ContainerAwareCommand
 
                     $catalogItem->setHasContent((bool)$countCategoryContent);
 
+                    if ($countCategoryContent) {
+                        $lastUpdated = $this->getCatalogItemContentLastUpdated($catalogArea, $category);
+
+                        if ($lastUpdated > $catalogItem->getContentUpdatedAt()) {
+                            $catalogItem->setContentUpdatedAt($lastUpdated);
+                        }
+
+                        $charactersData = $this->getCatalogItemFilterCharacters($catalogArea, $category);
+
+                        if ($charactersData) {
+                            $characters = [];
+
+                            foreach ($charactersData as $row) {
+                                $characters[] = current($row);
+                            }
+
+                            $catalogItem->setFilters(json_encode($characters));
+                        }
+                    }
+
                     $countAreaContent += $countCategoryContent;
                 }
 
@@ -106,6 +135,28 @@ class EmergencyCatalogItemContentCommand extends ContainerAwareCommand
     protected function getCountCatalogItemContent($area, $category)
     {
         return $this->em->getRepository(EmergencyBusiness::class)->countCatalogItemContent($area, $category);
+    }
+
+    /**
+     * @param EmergencyArea $area
+     * @param EmergencyCategory $category
+     *
+     * @return \Datetime|null
+     */
+    protected function getCatalogItemContentLastUpdated($area, $category)
+    {
+        return $this->em->getRepository(EmergencyBusiness::class)->getCatalogItemContentLastUpdated($area, $category);
+    }
+
+    /**
+     * @param EmergencyArea $area
+     * @param EmergencyCategory $category
+     *
+     * @return array
+     */
+    protected function getCatalogItemFilterCharacters($area, $category)
+    {
+        return $this->em->getRepository(EmergencyBusiness::class)->getCatalogItemFilterCharacters($area, $category);
     }
 
     /**

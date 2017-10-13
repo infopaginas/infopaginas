@@ -4,6 +4,8 @@ namespace Domain\SiteBundle\Utils\Helpers;
 
 use Doctrine\ORM\Query;
 use Domain\BusinessBundle\Entity\BusinessProfile;
+use Domain\SearchBundle\Util\SearchDataUtil;
+use Oxa\Sonata\AdminBundle\Util\Helpers\AdminHelper;
 
 class SiteHelper
 {
@@ -80,5 +82,53 @@ class SiteHelper
         );
 
         return $query;
+    }
+
+    /**
+     * @param array $data
+     * @param int $id
+     *
+     * @return array|null
+     */
+    public static function searchEntityByIdsInArray($data, $id)
+    {
+        foreach ($data as $item) {
+            if ($item->getId() == $id) {
+                return $item;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @param string
+     *
+     * @return string
+     */
+    public static function getFirstStringCharacter($string)
+    {
+        return mb_substr($string, 0, 1);
+    }
+
+    /**
+     * @param string $string
+     *
+     * @return string
+     */
+    public static function getFirstSymbolFilter($string)
+    {
+        $string = trim(AdminHelper::convertAccentedString($string));
+        $firstSymbol = self::getFirstStringCharacter($string);
+
+        if (preg_match('/[a-z]/', $firstSymbol)) {
+            $data = $firstSymbol;
+        } elseif (preg_match('/\d/', $firstSymbol)) {
+            $data = SearchDataUtil::EMERGENCY_FILTER_NUMBER;
+        } else {
+            $data = SearchDataUtil::EMERGENCY_FILTER_OTHER;
+        }
+
+        return $data;
     }
 }

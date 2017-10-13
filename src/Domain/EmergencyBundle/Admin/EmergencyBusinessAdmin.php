@@ -5,6 +5,7 @@ namespace Domain\EmergencyBundle\Admin;
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Validator\Constraints\BusinessProfileWorkingHourTypeValidator;
 use Domain\EmergencyBundle\Entity\EmergencyBusiness;
+use Oxa\ConfigBundle\Model\ConfigInterface;
 use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
@@ -13,6 +14,7 @@ use Sonata\AdminBundle\Route\RouteCollection;
 use Sonata\AdminBundle\Show\ShowMapper;
 use Sonata\CoreBundle\Form\Type\BooleanType;
 use Sonata\CoreBundle\Form\Type\EqualType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -68,6 +70,13 @@ class EmergencyBusinessAdmin extends OxaAdmin
             $instance->setPhone($phone->getPhone());
         }
 
+        if ($parent->getLatitude() and $parent->getLongitude()) {
+            $instance->setUseMapAddress(true);
+            $instance->setLatitude($parent->getLatitude());
+            $instance->setLongitude($parent->getLongitude());
+            $instance->setGoogleAddress($parent->getGoogleAddress());
+        }
+
         return $instance;
     }
 
@@ -88,6 +97,17 @@ class EmergencyBusinessAdmin extends OxaAdmin
             ->add('paymentMethods')
             ->add('services')
         ;
+    }
+
+    /**
+     * @return array
+     */
+    public function getFilterParameters()
+    {
+        $this->datagridValues['_sort_by']    = 'updatedAt';
+        $this->datagridValues['_sort_order'] = 'DESC';
+
+        return parent::getFilterParameters();
     }
 
     /**
@@ -133,6 +153,8 @@ class EmergencyBusinessAdmin extends OxaAdmin
      */
     protected function configureFormFields(FormMapper $formMapper)
     {
+        $business = $this->getSubject();
+
         $formMapper
             ->with('Main')
                 ->add('name')
@@ -143,7 +165,7 @@ class EmergencyBusinessAdmin extends OxaAdmin
                     'sonata_type_collection',
                     [
                         'by_reference'  => false,
-                        'required'      => true,
+                        'required'      => false,
                     ],
                     [
                         'edit'          => 'inline',
@@ -191,6 +213,32 @@ class EmergencyBusinessAdmin extends OxaAdmin
                 ])
             ->end()
         ;
+
+        // Map Block
+        $oxaConfig = $this->getConfigurationPool()->getContainer()->get('oxa_config');
+
+        if ($business->getLatitude() and $business->getLongitude()) {
+            $latitude   = $business->getLatitude();
+            $longitude  = $business->getLongitude();
+        } else {
+            $latitude   = $oxaConfig->getValue(ConfigInterface::DEFAULT_MAP_COORDINATE_LATITUDE);
+            $longitude  = $oxaConfig->getValue(ConfigInterface::DEFAULT_MAP_COORDINATE_LONGITUDE);
+        }
+
+        $formMapper
+            ->with('Map')
+                ->add('useMapAddress', CheckboxType::class, [
+                    'required' => false,
+                    'help'     => 'emergency.business_map.help',
+                ])
+                ->add('latitude')
+                ->add('longitude')
+                ->add('googleAddress', 'google_map', [
+                    'latitude'  => $latitude,
+                    'longitude' => $longitude,
+                ])
+            ->end()
+        ;
     }
 
     /**
@@ -228,6 +276,12 @@ class EmergencyBusinessAdmin extends OxaAdmin
                 ->add('category', null, [
                     'template' => 'OxaSonataAdminBundle:ShowFields:show_orm_many_to_one.html.twig',
                 ])
+            ->end()
+            ->with('Map')
+                ->add('useMapAddress')
+                ->add('latitude')
+                ->add('longitude')
+                ->add('googleAddress')
             ->end()
         ;
     }

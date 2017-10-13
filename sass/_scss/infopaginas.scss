@@ -3298,6 +3298,7 @@ a.tag {
 .container__no-scroll {
   overflow-y: hidden;
   position: fixed;
+  width: 100%;
 }
 
 .modal__outside {
@@ -3390,6 +3391,11 @@ a.tag {
 
   @media only screen and (min-width: 805px) {
     padding: 20px;
+  }
+
+  &.flash-success-message {
+    background: #acc02f;
+    color: #fff;
   }
 }
 

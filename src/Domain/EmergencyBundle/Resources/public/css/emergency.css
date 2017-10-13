@@ -21,6 +21,7 @@ footer p.disclaimer {
   line-height: 1.25;
   width: 100%;
   text-align: center;
+  cursor: pointer;
 }
 .show-more img.spinner {
   display: block;
@@ -39,7 +40,7 @@ footer p.disclaimer {
   border-bottom: grey 1px solid;
   padding: 10px;
 }
-.emergency-catalog .area-block {
+.emergency-catalog .area-block, .container-block {
   list-style-type: none;
 }
 .emergency-catalog .category-block li {
@@ -100,4 +101,31 @@ body {
 }
 .working-hours.data .working-hours-list .hide-children > div.day:not([data-day]) {
   display: none;
+}
+span.catalog-item-updated {
+  font-family: Roboto, sans-serif;
+  font-style: italic;
+  font-size: 14px;
+}
+.search-controls .sorting-block {
+  max-width: 40%;
+  display: inline-flex;
+}
+.search-controls span.letter.checked {
+  font-weight: 700;
+  color: #000;
+}
+.search-controls span.letter {
+  display: inline-flex;
+  margin: 5px;
+  cursor: pointer;
+  color: -webkit-link;
+  text-decoration: underline;
+}
+.search-controls span.letter.character {
+  text-transform: uppercase;
+}
+.search-controls .filter-block {
+  max-width: 60%;
+  display: inline-flex;
 }

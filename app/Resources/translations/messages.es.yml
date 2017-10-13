@@ -618,7 +618,33 @@ emergency.label.working_hours: Working Hours
 emergency.label.phone: Telefono
 emergency.label.payment: Pagar con
 emergency.label.services: Servicios addicionales
+emergency.label.distance: Distancia
+emergency.label.miles_away: miles
 emergency.pop_up.title: Lista de negocios abiertos
 emergency.pop_up.description: Encuentra los negocios que están ofreciendo servicios luego del huracán
 emergency.pop_up.button: Click aquí
 emergency.footer.disclaimer: Estos horarios están sujetos a cambios
+emergency.business_draft.form_title:  Somete la información de tu negocio
+emergency.business_draft.name: Nombre del negocio
+emergency.business_draft.category.title: Tipo de negocio
+emergency.business_draft.custom_category.title: Categoría personalizada
+emergency.business_draft.service.placeholder: Empieza a escribir
+emergency.business_draft.service.title: Servicios
+emergency.business_draft.phone.title: Número de teléfono
+emergency.business_draft.area.title: Área
+emergency.business_draft.address: Dirección completa
+emergency.business_draft.working_hours: Horario
+emergency.business_draft.payment.placeholder: Comienza a escribir
+emergency.business_draft.payment.placeholder: Comienza a escribir
+emergency.business_draft.payment.title: Métodos de pago
+emergency.business_draft.category.title.others: Otros
+emergency.business_draft.message.created: ¡Gracias! Nuestro equipo revisará la información y la subiremos a nuestra lista lo antes posible
+emergency.business_draft.created: Éxito
+emergency.business_draft.invalid: Validación fallida
+
+emergency.catalog_sorting.distance: Más cercanos
+emergency.catalog_sorting.alphabet: Alfabeto
+emergency.catalog_filter.number: 0-9
+emergency.catalog_filter.other: Otros
+emergency.catalog_filter.all: Todos
+emergency.catalog_search.empty: No hay negocios aquí todavía

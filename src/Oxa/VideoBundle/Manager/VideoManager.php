@@ -100,7 +100,7 @@ class VideoManager
     {
         $fileData = [
             'name'      => $file->getClientOriginalName(),
-            'type'      => $file->getClientMimeType(),
+            'type'      => $file->getMimeType(),
             'ext'       => $file->getClientOriginalExtension(),
             'path'      => $file->getPathname(),
         ];

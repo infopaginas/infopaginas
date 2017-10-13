@@ -15,7 +15,11 @@ define(
 
             this.spinner = new Spin();
 
-            this.userProfilePageURL = Routing.generate( 'domain_site_user_profile' );
+            if ( options.redirectUrl ) {
+                this.userProfilePageURL = options.redirectUrl;
+            } else {
+                this.userProfilePageURL = Routing.generate( 'domain_site_user_profile' );
+            }
 
             new select();
             new ImagesUploader();

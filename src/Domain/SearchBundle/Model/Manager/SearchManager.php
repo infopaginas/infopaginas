@@ -4,6 +4,10 @@ namespace Domain\SearchBundle\Model\Manager;
 
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\Category;
+use Domain\EmergencyBundle\Entity\EmergencyArea;
+use Domain\EmergencyBundle\Entity\EmergencyBusiness;
+use Domain\EmergencyBundle\Entity\EmergencyCategory;
+use Domain\SearchBundle\Model\DataType\EmergencySearchDTO;
 use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
 use Oxa\ElasticSearchBundle\Manager\ElasticSearchManager;
 use Oxa\ManagerArchitectureBundle\Model\Manager\Manager;
@@ -163,6 +167,55 @@ class SearchManager extends Manager
         }
 
         return $response;
+    }
+
+    /**
+     * @param EmergencySearchDTO $searchParams
+     *
+     * @return EmergencyBusiness[]
+     */
+    public function searchEmergencyBusinessByAreaAndCategory($searchParams)
+    {
+        $search = $this->businessProfileManager->searchEmergencyBusinesses($searchParams);
+
+        return $search['data'];
+    }
+
+    /**
+     * @param Request $request
+     * @param int     $areaId
+     * @param int     $categoryId
+     *
+     * @return EmergencySearchDTO
+     */
+    public function getEmergencySearchDTO(Request $request, $areaId, $categoryId)
+    {
+        $page    = SearchDataUtil::getPageFromRequest($request);
+        $limit   = (int) $this->configService->getSetting(ConfigInterface::DEFAULT_RESULTS_PAGE_SIZE)->getValue();
+
+        $latitude  = SearchDataUtil::getEmergencyCatalogLatitudeFromRequest($request);
+        $longitude = SearchDataUtil::getEmergencyCatalogLongitudeFromRequest($request);
+
+        $characterFilter = SearchDataUtil::getEmergencyCatalogCharFilterFromRequest($request);
+
+        if (!$latitude and !$longitude) {
+            $orderBy = SearchDataUtil::EMERGENCY_ORDER_BY_ALPHABET;
+        } else {
+            $orderBy = SearchDataUtil::getEmergencyCatalogOrderByFromRequest($request);
+        }
+
+        $searchDTO  = SearchDataUtil::buildEmergencyRequestDTO($page, $limit, $areaId, $categoryId, $orderBy);
+
+        if ($orderBy == SearchDataUtil::EMERGENCY_ORDER_BY_DISTANCE) {
+            $searchDTO->lat = $latitude;
+            $searchDTO->lng = $longitude;
+        }
+
+        if ($characterFilter) {
+            $searchDTO->characterFilter = $characterFilter;
+        }
+
+        return $searchDTO;
     }
 
     /**
