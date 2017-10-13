@@ -5,6 +5,7 @@ namespace Domain\EmergencyBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Oxa\Sonata\AdminBundle\Util\Helpers\AdminHelper;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -12,6 +13,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * @ORM\Table(name="emergency_category")
  * @ORM\Entity(repositoryClass="Domain\EmergencyBundle\Repository\EmergencyCategoryRepository")
+ * @ORM\HasLifecycleCallbacks()
  */
 class EmergencyCategory
 {
@@ -32,6 +34,13 @@ class EmergencyCategory
      * @Assert\Length(max="255")
      */
     protected $name;
+
+    /**
+     * @var string - Category search name
+     *
+     * @ORM\Column(name="search_name", type="string", length=255, options={"default": ""})
+     */
+    protected $searchName;
 
     /**
      * @var ArrayCollection
@@ -131,6 +140,26 @@ class EmergencyCategory
     public function getName()
     {
         return $this->name;
+    }
+
+    /**
+     * @param string $searchName
+     *
+     * @return EmergencyCategory
+     */
+    public function setSearchName($searchName)
+    {
+        $this->searchName = $searchName;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSearchName()
+    {
+        return $this->searchName;
     }
 
     /**
@@ -281,5 +310,14 @@ class EmergencyCategory
         $this->catalogItems->removeElement($catalogItem);
 
         return $this;
+    }
+
+    /**
+     * @ORM\PrePersist()
+     * @ORM\PreUpdate()
+     */
+    public function updateSearchName()
+    {
+        $this->searchName = AdminHelper::convertAccentedString($this->name);
     }
 }
