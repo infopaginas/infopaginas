@@ -8,6 +8,7 @@ use Domain\EmergencyBundle\Entity\EmergencyBusiness;
 use Domain\EmergencyBundle\Entity\EmergencyCatalogItem;
 use Domain\EmergencyBundle\Entity\EmergencyCategory;
 use Domain\EmergencyBundle\Entity\EmergencyDraftBusiness;
+use Domain\EmergencyBundle\Entity\EmergencyService;
 use Domain\SearchBundle\Model\DataType\EmergencySearchDTO;
 use Domain\SearchBundle\Util\SearchDataUtil;
 use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
@@ -153,6 +154,16 @@ class EmergencyManager
     }
 
     /**
+     * @return EmergencyService[]
+     */
+    public function getCatalogItemServiceFilters()
+    {
+        $filters = $this->em->getRepository(EmergencyService::class)->getServiceFilters();
+
+        return $filters;
+    }
+
+    /**
      * @return mixed
      */
     public function setUpdatedAllEmergencyBusinesses()
@@ -171,12 +182,19 @@ class EmergencyManager
     {
         $name = trim(AdminHelper::convertAccentedString($business->getName()));
 
+        $serviceIds = [];
+
+        foreach ($business->getServices() as $service) {
+            $serviceIds[] = $service->getId();
+        }
+
         $data = [
             'id'           => $business->getId(),
             'title'        => SearchDataUtil::sanitizeElasticSearchQueryString($name),
             'area_id'      => $business->getArea()->getId(),
             'category_id'  => $business->getCategory()->getId(),
             'first_symbol' => $business->getFirstSymbol(),
+            'service_ids'  => $serviceIds,
         ];
 
         if ($business->getUseMapAddress()) {

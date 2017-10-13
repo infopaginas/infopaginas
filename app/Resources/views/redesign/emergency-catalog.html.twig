@@ -74,6 +74,16 @@
                                     </div>
                                 </div>
                             </div>
+                            {% if serviceFilters %}
+                                <div class="service-filter-block">
+                                    {% for serviceFilter in serviceFilters %}
+                                        <div class="service-filter-item">
+                                            <input type="checkbox" id="service{{ loop.index }}" name="service{{ loop.index }}" data-service-id="{{ serviceFilter.id }}">
+                                            <label for="service{{ loop.index }}">{{ serviceFilter.name }}</label>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
                         </div>
                     </section>
                     <section class="page-section" id="emergency-catalog">

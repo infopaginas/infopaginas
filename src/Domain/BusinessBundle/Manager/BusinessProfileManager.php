@@ -2821,6 +2821,16 @@ class BusinessProfileManager extends Manager
             ];
         }
 
+        if ($params->serviceIds) {
+            foreach ($params->serviceIds as $serviceId) {
+                $filters[] = [
+                    'match' => [
+                        'service_ids' => (int) $serviceId,
+                    ],
+                ];
+            }
+        }
+
         return $filters;
     }
 

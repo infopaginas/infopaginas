@@ -215,6 +215,12 @@ class SearchManager extends Manager
             $searchDTO->characterFilter = $characterFilter;
         }
 
+        $serviceFilters = SearchDataUtil::getEmergencyServiceFiltersFromRequest($request);
+
+        if ($serviceFilters) {
+            $searchDTO->serviceIds = $serviceFilters;
+        }
+
         return $searchDTO;
     }
 

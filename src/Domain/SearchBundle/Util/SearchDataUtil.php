@@ -180,6 +180,18 @@ class SearchDataUtil
     }
 
     /**
+     * @param Request $request
+     *
+     * @return array
+     */
+    public static function getEmergencyServiceFiltersFromRequest(Request $request)
+    {
+        $filter = $request->get('serviceFilter', []);
+
+        return $filter;
+    }
+
+    /**
      * @return array
      */
     public static function getAllowedCharFilters()

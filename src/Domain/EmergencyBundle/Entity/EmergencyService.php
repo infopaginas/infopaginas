@@ -58,6 +58,13 @@ class EmergencyService
     protected $position;
 
     /**
+     * @var bool
+     *
+     * @ORM\Column(name="use_as_filter", type="boolean", options={"default" : 0})
+     */
+    protected $useAsFilter;
+
+    /**
      * Get id
      *
      * @return int
@@ -73,6 +80,8 @@ class EmergencyService
     {
         $this->businesses      = new ArrayCollection();
         $this->draftBusinesses = new ArrayCollection();
+
+        $this->useAsFilter = false;
     }
 
     /**
@@ -201,5 +210,25 @@ class EmergencyService
     public function getPosition()
     {
         return $this->position;
+    }
+
+    /**
+     * @param boolean $useAsFilter
+     *
+     * @return EmergencyService
+     */
+    public function setUseAsFilter($useAsFilter)
+    {
+        $this->useAsFilter = $useAsFilter;
+
+        return $this;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getUseAsFilter()
+    {
+        return $this->useAsFilter;
     }
 }

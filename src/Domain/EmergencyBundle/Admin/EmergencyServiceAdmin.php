@@ -22,6 +22,7 @@ class EmergencyServiceAdmin extends OxaAdmin
             ->add('name', null, [
                 'show_filter' => true,
             ])
+            ->add('useAsFilter')
         ;
     }
 
@@ -33,6 +34,7 @@ class EmergencyServiceAdmin extends OxaAdmin
         $listMapper
             ->add('id')
             ->add('name')
+            ->add('useAsFilter')
         ;
 
         $this->addGridActions($listMapper);
@@ -44,7 +46,10 @@ class EmergencyServiceAdmin extends OxaAdmin
     protected function configureFormFields(FormMapper $formMapper)
     {
         $formMapper
-            ->add('name')
+            ->add('name', null, [
+                'disabled' => true,
+            ])
+            ->add('useAsFilter')
         ;
     }
 
@@ -56,6 +61,7 @@ class EmergencyServiceAdmin extends OxaAdmin
         $showMapper
             ->add('id')
             ->add('name')
+            ->add('useAsFilter')
         ;
     }
 
@@ -66,7 +72,7 @@ class EmergencyServiceAdmin extends OxaAdmin
      */
     public function isGranted($action, $area = null)
     {
-        $deniedActions = $this->getAllowViewOnlyAction();
+        $deniedActions = $this->getDeniedAllButViewAndEditActions();
 
         if (in_array($action, $deniedActions)) {
             return false;
