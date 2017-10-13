@@ -294,7 +294,7 @@ class EmergencyBusinessAdmin extends OxaAdmin
     protected function configureRoutes(RouteCollection $collection)
     {
         $collection
-            ->add('restore')
+            ->add('export')
         ;
     }
 
