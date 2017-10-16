@@ -12,7 +12,7 @@
                         <h2>{{ errorSearchText|trans }}</h2>
 
                         {% block searchErrorInput %}
-                            {% include ':redesign/blocks:search.html.twig' %}
+                            {% include ':redesign/blocks:search.html.twig' with {isHomePage: true} %}
                         {% endblock %}
                     </section>
 
