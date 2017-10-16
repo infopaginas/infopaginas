@@ -508,6 +508,10 @@ $side-padding-mb: 16px;
   -webkit-flex-wrap: wrap;
   @media only screen and (min-width: 805px) {
     flex: 1 1 auto;
+
+    &.field-phone-value {
+      flex: 1 1 30%;
+    }
   }
 }
 
