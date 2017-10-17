@@ -154,3 +154,6 @@ article.emergency-catalog-block section.catalog-bordered-block {
   border-bottom: #192f4d 1px solid;
   border-top: #192f4d 1px solid;
 }
+button.disabled {
+  background: #ddd;
+}
