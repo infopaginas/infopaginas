@@ -163,10 +163,12 @@ $( document ).ready( function() {
     function disableButton( button ) {
         $( button ).attr( 'disabled', 'disabled' );
         $( button ).removeClass( 'button--action' );
+        $( button ).addClass( 'disabled' );
     }
 
     function enableButton( button ) {
         $( button ).removeAttr( 'disabled' );
+        $( button ).removeClass( 'disabled' );
         $( button ).addClass( 'button--action' );
     }
 
