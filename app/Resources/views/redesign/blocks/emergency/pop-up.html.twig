@@ -1,4 +1,4 @@
-{% if config(CONFIG.EMERGENCY_SITUATION_ON) %}
+{% if config(CONFIG.EMERGENCY_SITUATION_ON) and get_emergency_pop_up_allowed() %}
     <div id="emergency-pop-up" class="modal modal--login" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal__outside"></div>
         <div class="modal__content">

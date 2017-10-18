@@ -79,6 +79,11 @@
             <li>
                 <a href="{{ absolute_url(path('domain_page_view_terms')) }}" target="_blank">{% trans %}Terms of Use{% endtrans %}</a>
             </li>
+            {% if config(CONFIG.EMERGENCY_SITUATION_ON) %}
+                <li>
+                    <a href="{{ absolute_url(path('emergency_main')) }}" title="{{ 'emergency.menu.link'|trans }}">{{ 'emergency.menu.link'|trans }}</a>
+                </li>
+            {% endif %}
         </ul>
         <div class="google-badge">
             <div class="google-badge-block">
