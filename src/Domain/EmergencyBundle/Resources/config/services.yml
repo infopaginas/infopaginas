@@ -34,3 +34,11 @@ services:
             - '@request'
             - '@domain_emergency.manager.emergency'
             - '@translator'
+
+    domain_emergency.twig_extension.emergency:
+        class: Domain\EmergencyBundle\Twig\Extension\EmergencyExtension
+        public: false
+        tags:
+            -  { name: twig.extension }
+        calls:
+            - [ setSession, [ '@session' ] ]
