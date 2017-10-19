@@ -232,8 +232,9 @@ class EmergencyBusiness extends EmergencyAbstractBusiness implements ReportInter
 
         $workingHours = $this->getCollectionWorkingHours();
 
-        $item = [];
         foreach ($workingHours as $workingHour) {
+            $item = [];
+
             $item[] = 'Days: ' . implode(', ', $workingHour->getDays());
             $item[] = 'TimeStart: ' . $workingHour->getTimeStart()->format(self::EXPORT_TIME_FORMAT);
             $item[] = 'TimeEnd: ' . $workingHour->getTimeEnd()->format(self::EXPORT_TIME_FORMAT);
