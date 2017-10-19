@@ -2,6 +2,9 @@ section.footer p.disclaimer {
   font-style: italic;
   font-size: small;
 }
+section.emergency-draft-form {
+  padding-top: 37px;
+}
 .page-section .show-more {
   text-align: center;
   margin: 20px;
@@ -149,6 +152,8 @@ article a.button:visited:hover {
 }
 article.emergency-catalog-block .highlights ul li {
   line-height: 23px;
+  list-style-type: initial;
+  margin-left: 17px;
 }
 article.emergency-catalog-block section.catalog-bordered-block {
   border-bottom: #192f4d 1px solid;
