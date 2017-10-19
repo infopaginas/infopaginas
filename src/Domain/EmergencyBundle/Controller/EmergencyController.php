@@ -31,10 +31,13 @@ class EmergencyController extends Controller
 
         $catalogItems = $emergencyManger->getCatalogItemsWithContent();
 
+        $pageLinks = $page->getLinksGroupedByTypes();
+
         return $this->render(
             ':redesign:emergency-main.html.twig',
             [
                 'page'       => $page,
+                'pageLinks'  => $pageLinks,
                 'seoData'    => $pageManager->getPageSeoData($page),
                 'catalogItems' => $catalogItems,
             ]
@@ -99,6 +102,8 @@ class EmergencyController extends Controller
 
             $letters = $emergencyManger->getCatalogItemCharacterFilters($area, $category);
 
+            $serviceFilters = $emergencyManger->getCatalogItemServiceFilters();
+
             return $this->render(
                 ':redesign:emergency-catalog.html.twig',
                 [
@@ -109,6 +114,7 @@ class EmergencyController extends Controller
                     'pageNumber' => $pageNumber,
                     'businesses' => $businesses,
                     'letters'    => $letters,
+                    'serviceFilters' => $serviceFilters,
                 ]
             );
         }

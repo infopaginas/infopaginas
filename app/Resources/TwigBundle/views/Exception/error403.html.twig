@@ -1,1 +1,26 @@
-{% include ":redesign/errors:error-template.html.twig" with {'errorTitle': 'error.403.title', 'errorMessage': 'error.403.message', 'errorSearchText': 'error.403.search.text', 'errorSearchCatalog': 'error.403.search.catalog'} %}
+{% set hideHeaderSearch = true %}
+{% extends "redesign/layout/base.html.twig" %}
+
+{% block bodyClass %}generic-page error-page{% endblock %}
+
+{% block breadcrumbs %}{% endblock %}
+
+{% block searchBlock %}{% endblock %}
+
+{% block body %}
+    <div class="main__container main__container--centered">
+        <div class="container clearfix">
+            <div class="main">
+                <div class="article error_container">
+                    <h1>Error</h1>
+                    <p class="catalog__intro">
+                        403 - Forbidden. I are not allowed to access this page, please visit our <a href="/"> main page</a>
+                    </p>
+                    <p class="catalog__intro">
+                        403 - Prohibido. No se me permite acceder a esta página, visite nuestro <a href="/"> pagina principal</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -2,10 +2,12 @@
 
 namespace Domain\PageBundle\Admin;
 
+use Domain\PageBundle\Entity\PageLink;
 use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Sonata\AdminBundle\Route\RouteCollection;
 use Sonata\AdminBundle\Show\ShowMapper;
 
@@ -44,6 +46,13 @@ class PageLinkAdmin extends OxaAdmin
         $formMapper
             ->add('name')
             ->add('link')
+            ->add('type', ChoiceType::class, [
+                'choices'  => PageLink::getTypes(),
+                'multiple' => false,
+                'expanded' => true,
+                'required' => true,
+                'translation_domain' => 'AdminDomainPageBundle',
+            ])
         ;
     }
 

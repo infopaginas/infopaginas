@@ -1,61 +1,112 @@
-{% extends ":redesign/layout:emergency.html.twig" %}
+{% extends "redesign/layout/base.html.twig" %}
 
-{% block bodyClass %}emergency-catalog{% endblock %}
+{% block videoJs %}{% endblock %}
+
+{% block doubleClickHeader %}{% endblock %}
+
+{% block bannerSettings %}{% endblock %}
+
+{% block trackingParams %}{% endblock %}
+
+{% block modals %}{% endblock %}
+
+{% block emergencyPopUp %}{% endblock %}
+
+{% block searchHeader %}
+    {% include ':redesign/blocks/emergency:search-header.html.twig' %}
+{% endblock %}
+
+{% block breadcrumbs %}
+    <div class="toolbar">
+        <div class="toolbar__nav">
+            <a href="{{ absolute_url(path('emergency_main')) }}" title="{{ 'emergency.back_button'|trans }}">
+                <button id="breadcrumb_location" type="button" class="button button--action button--location">
+                    <i class="fa fa-list"></i>
+                    <span>{{ 'emergency.back_button'|trans }}</span>
+                </button>
+            </a>
+        </div>
+    </div>
+{% endblock %}
+
+{% block styles %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ absolute_url(asset('assetic/app_emergency_css.css')) }}" />
+{% endblock %}
+
+{% block bodyClass %}generic-page has-sidebar{% endblock %}
 
 {% block body %}
-    <div class="emergency-title">
-        <h1>{{ area.name }}</h1>
-        <h2>{{ category.name }}</h2>
-    </div>
+    <div class="main__container main__container--centered">
+        <div class="container clearfix">
+            <div class="main main-column">
+                <article class="article">
+                    <section class="emergency-catalog-header page-section">
+                        <h1><strong>{{ area.name }}</strong></h1>
+                        <h2>{{ category.name }}</h2>
+                    </section>
+                    <section class="article-body">
+                        <div class="search-controls">
+                            <div class="filter-block">
+                                <div class="filter-letters">
+                                    <span class="letter all checked">{{ 'emergency.catalog_filter.all'|trans }}</span>
+                                    {% for letter in letters %}
+                                        {% if letter == EMERGENCY_FILTER.NUMBER %}
+                                            <span class="letter number" data-filter="{{ letter }}">{{ 'emergency.catalog_filter.number'|trans }}</span>
+                                        {% elseif letter == EMERGENCY_FILTER.OTHER %}
+                                            <span class="letter other" data-filter="{{ letter }}">{{ 'emergency.catalog_filter.other'|trans }}</span>
+                                        {% else %}
+                                            <span class="letter character" data-filter="{{ letter }}">{{ letter }}</span>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <div class="sorting-block">
+                                <div>
+                                    <div class="sorting-block-distance">
+                                        <input type="radio" id="sortDistance" name="order" value="distance" disabled>
+                                        <label for="sortDistance">&nbsp;{{ 'emergency.catalog_sorting.distance'|trans }}</label>
+                                    </div>
 
-    <div class="emergency-back-button">
-        <a href="{{ absolute_url(path('emergency_main')) }}">{{ 'emergency.back_button'|trans }}</a>
-    </div>
-
-    <div class="search-controls">
-        <div class="filter-block">
-            <div class="filter-letters">
-                <span class="letter all checked">{{ 'emergency.catalog_filter.all'|trans }}</span>
-                {% for letter in letters %}
-                    {% if letter == EMERGENCY_FILTER.NUMBER %}
-                        <span class="letter number" data-filter="{{ letter }}">{{ 'emergency.catalog_filter.number'|trans }}</span>
-                    {% elseif letter == EMERGENCY_FILTER.OTHER %}
-                        <span class="letter other" data-filter="{{ letter }}">{{ 'emergency.catalog_filter.other'|trans }}</span>
-                    {% else %}
-                        <span class="letter character" data-filter="{{ letter }}">{{ letter }}</span>
-                    {% endif %}
-                {% endfor %}
+                                    <div class="sorting-block-alp">
+                                        <input type="radio" id="sortAlphabetically" name="order" value="alphabet" disabled checked>
+                                        <label for="sortAlphabetically">&nbsp;{{ 'emergency.catalog_sorting.alphabet'|trans }}</label>
+                                    </div>
+                                </div>
+                            </div>
+                            {% if serviceFilters %}
+                                <div class="service-filter-block">
+                                    {% for serviceFilter in serviceFilters %}
+                                        <div class="service-filter-item">
+                                            <input type="checkbox" id="service{{ loop.index }}" name="service{{ loop.index }}" data-service-id="{{ serviceFilter.id }}">
+                                            <label for="service{{ loop.index }}">{{ serviceFilter.name }}</label>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </section>
+                    <section class="page-section" id="emergency-catalog">
+                        {% include ':redesign/blocks/emergency:emergency-businesses.html.twig' %}
+                    </section>
+                    <section class="page-section">
+                        <div class="show-more">
+                            <img id="spinner" class="spinner hidden" src="{{ asset('assets/images/spinner-empty-background.gif') }}">
+                            <button id="show-more-button" class="button button--action" data-page="{{ pageNumber }}" data-area="{{ area.slug }}" data-category="{{ category.slug }}">
+                                {{ 'emergency.load_more.button'|trans }}
+                            </button>
+                        </div>
+                    </section>
+                    <section class="footer">
+                        <p class="disclaimer">* {{ 'emergency.footer.disclaimer'|trans }}</p>
+                    </section>
+                </article>
             </div>
         </div>
-        <div class="sorting-block">
-            <div>
-                <div class="sorting-block-distance">
-                    <input type="radio" id="sortDistance" name="order" value="distance" disabled>
-                    <label for="sortDistance">{{ 'emergency.catalog_sorting.distance'|trans }}</label>
-                </div>
-
-                <div class="sorting-block-alp">
-                    <input type="radio" id="sortAlphabetically" name="order" value="alphabet" disabled checked>
-                    <label for="sortAlphabetically">{{ 'emergency.catalog_sorting.alphabet'|trans }}</label>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="emergency-catalog" id="emergency-catalog">
-        {% include ':redesign/blocks/emergency:emergency-businesses.html.twig' %}
-    </div>
-
-    <div class="show-more">
-        <img id="spinner" class="spinner hidden" src="{{ asset('assets/images/spinner-empty-background.gif') }}">
-        <button id="show-more-button" class="button" data-page="{{ pageNumber }}" data-area="{{ area.slug }}" data-category="{{ category.slug }}">
-            {{ 'emergency.load_more.button'|trans }}
-        </button>
     </div>
 {% endblock %}
 
 {% block scripts %}
-    {{ parent() }}
     <script src="{{ absolute_url(asset('assetic/app_emergency_js.js')) }}"></script>
 
     {% if app.debug %}

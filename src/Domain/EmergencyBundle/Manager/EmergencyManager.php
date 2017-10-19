@@ -8,6 +8,7 @@ use Domain\EmergencyBundle\Entity\EmergencyBusiness;
 use Domain\EmergencyBundle\Entity\EmergencyCatalogItem;
 use Domain\EmergencyBundle\Entity\EmergencyCategory;
 use Domain\EmergencyBundle\Entity\EmergencyDraftBusiness;
+use Domain\EmergencyBundle\Entity\EmergencyService;
 use Domain\SearchBundle\Model\DataType\EmergencySearchDTO;
 use Domain\SearchBundle\Util\SearchDataUtil;
 use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
@@ -44,7 +45,9 @@ class EmergencyManager
     public function getCatalogItemsWithContent()
     {
         $data = [];
-        $catalogItems = $this->getCatalogWithContent();
+
+        $orderCategoryByAlphabet = $this->getEmergencyCatalogOrderByAlphabet();
+        $catalogItems = $this->getCatalogWithContent($orderCategoryByAlphabet);
 
         foreach ($catalogItems as $catalogItem) {
             $area     = $catalogItem->getArea();
@@ -59,11 +62,14 @@ class EmergencyManager
     }
 
     /**
+     * @param bool $orderCategoryByAlphabet
+     *
      * @return EmergencyCatalogItem[]
      */
-    public function getCatalogWithContent()
+    public function getCatalogWithContent($orderCategoryByAlphabet)
     {
-        return $this->em->getRepository(EmergencyCatalogItem::class)->getCatalogItemWithContent();
+        return $this->em->getRepository(EmergencyCatalogItem::class)
+            ->getCatalogItemWithContent($orderCategoryByAlphabet);
     }
 
     /**
@@ -123,6 +129,14 @@ class EmergencyManager
     }
 
     /**
+     * @return bool
+     */
+    public function getEmergencyCatalogOrderByAlphabet()
+    {
+        return (bool)$this->config->getSetting(ConfigInterface::EMERGENCY_CATALOG_ORDER_BY_ALPHABET)->getValue();
+    }
+
+    /**
      * @return IterableResult
      */
     public function getUpdatedLocalitiesIterator()
@@ -153,6 +167,16 @@ class EmergencyManager
     }
 
     /**
+     * @return EmergencyService[]
+     */
+    public function getCatalogItemServiceFilters()
+    {
+        $filters = $this->em->getRepository(EmergencyService::class)->getServiceFilters();
+
+        return $filters;
+    }
+
+    /**
      * @return mixed
      */
     public function setUpdatedAllEmergencyBusinesses()
@@ -171,12 +195,19 @@ class EmergencyManager
     {
         $name = trim(AdminHelper::convertAccentedString($business->getName()));
 
+        $serviceIds = [];
+
+        foreach ($business->getServices() as $service) {
+            $serviceIds[] = $service->getId();
+        }
+
         $data = [
             'id'           => $business->getId(),
             'title'        => SearchDataUtil::sanitizeElasticSearchQueryString($name),
             'area_id'      => $business->getArea()->getId(),
             'category_id'  => $business->getCategory()->getId(),
             'first_symbol' => $business->getFirstSymbol(),
+            'service_ids'  => $serviceIds,
         ];
 
         if ($business->getUseMapAddress()) {

@@ -47,6 +47,11 @@ class EmergencySearchDTO extends AbstractDTO
     public $lng = null;
 
     /**
+     * @var array
+     */
+    public $serviceIds = [];
+
+    /**
      * @param int $page
      * @param int $limit
      * @param int $areaId

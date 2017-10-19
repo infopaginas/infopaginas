@@ -8,9 +8,11 @@ use Doctrine\ORM\Internal\Hydration\IterableResult;
 class EmergencyCatalogItemRepository extends EntityRepository
 {
     /**
+     * @param bool $orderCategoryByAlphabet
+     *
      * @return array
      */
-    public function getCatalogItemWithContent()
+    public function getCatalogItemWithContent($orderCategoryByAlphabet)
     {
         $qb = $this->createQueryBuilder('ci')
             ->join('ci.area', 'a')
@@ -19,9 +21,15 @@ class EmergencyCatalogItemRepository extends EntityRepository
             ->andWhere('ci.category IS NOT NULL')
             ->orderBy('a.position')
             ->addOrderBy('a.id')
-            ->addOrderBy('ca.position')
-            ->addOrderBy('ca.id')
         ;
+
+        if ($orderCategoryByAlphabet) {
+            $qb->addOrderBy('ca.searchName');
+        } else {
+            $qb->addOrderBy('ca.position');
+        }
+
+        $qb->addOrderBy('ca.id');
 
         return $qb->getQuery()->getResult();
     }

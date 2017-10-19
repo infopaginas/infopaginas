@@ -285,4 +285,43 @@ class EmergencyBusinessAdmin extends OxaAdmin
             ->end()
         ;
     }
+
+    /**
+     * Add additional routes
+     *
+     * @param RouteCollection $collection
+     */
+    protected function configureRoutes(RouteCollection $collection)
+    {
+        $collection
+            ->add('export')
+        ;
+    }
+
+    /**
+     * @return array
+     */
+    public function getExportFormats()
+    {
+        return EmergencyBusiness::getExportFormats();
+    }
+
+    /**
+     * @return array
+     */
+    public function getExportFields()
+    {
+        $exportFields['ID']         = 'id';
+        $exportFields['Name']       = 'name';
+        $exportFields['Area']       = 'area.name';
+        $exportFields['Category']   = 'category.name';
+        $exportFields['Address']    = 'address';
+        $exportFields['Phone']      = 'phone';
+        $exportFields['UpdatedAt']  = 'updatedAt';
+        $exportFields['WorkingHours'] = 'exportWorkingHours';
+        $exportFields['PaymentsMethods'] = 'exportPaymentsMethods';
+        $exportFields['Services'] = 'exportServices';
+
+        return $exportFields;
+    }
 }

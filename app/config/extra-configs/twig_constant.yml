@@ -144,3 +144,7 @@ twig:
             LETTER: 'letter'
             NUMBER: 'number'
             OTHER:  'other_char'
+        PAGE_LINK:
+            TYPE:
+                LINK:  'link'
+                OFFER: 'offer'
