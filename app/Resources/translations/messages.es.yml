@@ -621,9 +621,9 @@ emergency.label.payment: Pagar con
 emergency.label.services: Servicios addicionales
 emergency.label.distance: Distancia
 emergency.label.miles_away: miles
-emergency.pop_up.title: Lista de negocios abiertos
-emergency.pop_up.description: Encuentra los negocios que están ofreciendo servicios luego del huracán
-emergency.pop_up.button: Click aquí
+emergency.pop_up.title: ¡Abierto!
+emergency.pop_up.description: Cada día hay más negocios abriendo sus puertas.
+emergency.pop_up.button: ¡Encuéntralos aquí!
 emergency.footer.disclaimer: Estos horarios están sujetos a cambios
 emergency.business_draft.form_title:  Somete la información de tu negocio
 emergency.business_draft.name: Nombre del negocio

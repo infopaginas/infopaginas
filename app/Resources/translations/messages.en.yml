@@ -621,9 +621,9 @@ emergency.label.payment: Payment
 emergency.label.services: Services
 emergency.label.distance: Distance
 emergency.label.miles_away: miles
-emergency.pop_up.title: List of working businesses
-emergency.pop_up.description: Find businesses that offer services after the hurricane.
-emergency.pop_up.button: Click here
+emergency.pop_up.title: Open!
+emergency.pop_up.description: Each day more businesses open their doors.
+emergency.pop_up.button: Find them here!
 emergency.footer.disclaimer: These times are subject to change
 emergency.business_draft.form_title: Submit information about your business
 emergency.business_draft.name: Name
