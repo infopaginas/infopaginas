@@ -103,6 +103,10 @@
             {% endif %}
 
             <script type="text/javascript">
+                requirejs.config({
+                    urlArgs: 'r={{ app_version }}'
+                });
+
                 requirejs(['{{ absolute_url(asset("assetic/require_common_js.js")) }}'], function(common) {
                     requirejs(['{{ absolute_url(asset("assetic/require_homepage_js.js")) }}'], function(Homepage) {
                         var siteHomepage = new Homepage();
