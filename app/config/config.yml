@@ -102,7 +102,7 @@ framework:
     http_method_override: true
     assets:
         version: '%app_version%'
-        version_format: '%%s?version=%%s'
+        version_format: '%%s?v=%%s'
 
 # Twig Configuration
 twig:
