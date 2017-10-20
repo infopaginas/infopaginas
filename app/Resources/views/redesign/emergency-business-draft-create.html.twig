@@ -1,12 +1,21 @@
 {% set hideHeaderSearch = true %}
 {% extends "redesign/layout/base.html.twig" %}
 
+{% block styles %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ absolute_url(asset('assetic/app_emergency_css.css')) }}" />
+{% endblock %}
+
 {% block googleTagManagerScript %}{% endblock %}
 {% block googleTagManagerNoScript %}{% endblock %}
 
 {% import '::widgets/custom_form_label_redesign.html.twig' as custom_form_label %}
 
 {% block bodyClass %}generic-page user-profile{% endblock %}
+
+{% block breadcrumbs %}
+    {% include ':redesign/blocks/emergency:breadcrumbs.html.twig' %}
+{% endblock %}
 
 {% block body %}
     {% set flashMessages = app.session.flashBag.get(MESSAGE_BUSINESS_PROFILE_FLASH_GROUP) %}
@@ -26,7 +35,7 @@
     <div class="main__container main__container--centered">
         <div class="main">
             <div class="container clearfix">
-                <section class="page-section" id="profile-user">
+                <section class="page-section emergency-draft-form" id="profile-user">
                     <form class="form user-profile-form" id="businessRequestForm" novalidate="novalidate" name="{{ businessForm.vars.name }}">
                         <div id="new-profile-loading-spinner-container-id"></div>
 
