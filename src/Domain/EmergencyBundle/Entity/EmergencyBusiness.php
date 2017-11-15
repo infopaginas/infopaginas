@@ -21,7 +21,6 @@ class EmergencyBusiness extends EmergencyAbstractBusiness implements ReportInter
 {
     const ELASTIC_DOCUMENT_TYPE = 'EmergencyBusiness';
     const DISTANCE_TO_BUSINESS_PRECISION = 1;
-    const EXPORT_TIME_FORMAT = 'g:i a';
 
     /**
      * @var boolean
@@ -179,70 +178,5 @@ class EmergencyBusiness extends EmergencyAbstractBusiness implements ReportInter
     public function getDistanceUX()
     {
         return number_format($this->getDistance(), self::DISTANCE_TO_BUSINESS_PRECISION, '.', '');
-    }
-
-    /**
-     * @return array
-     */
-    public static function getExportFormats()
-    {
-        return [
-            self::FORMAT_CSV => self::FORMAT_CSV,
-        ];
-    }
-
-    /**
-     * @return string
-     */
-    public function getExportPaymentsMethods()
-    {
-        $paymentList = [];
-
-        $payments = $this->getPaymentMethods();
-
-        foreach ($payments as $payment) {
-            $paymentList[] = $payment->getName();
-        }
-
-        return implode(', ', $paymentList);
-    }
-
-    /**
-     * @return string
-     */
-    public function getExportServices()
-    {
-        $serviceList = [];
-
-        $services = $this->getServices();
-
-        foreach ($services as $service) {
-            $serviceList[] = $service->getName();
-        }
-
-        return implode(', ', $serviceList);
-    }
-
-    /**
-     * @return string
-     */
-    public function getExportWorkingHours()
-    {
-        $workingHourList = [];
-
-        $workingHours = $this->getCollectionWorkingHours();
-
-        foreach ($workingHours as $workingHour) {
-            $item = [];
-
-            $item[] = 'Days: ' . implode(', ', $workingHour->getDays());
-            $item[] = 'TimeStart: ' . $workingHour->getTimeStart()->format(self::EXPORT_TIME_FORMAT);
-            $item[] = 'TimeEnd: ' . $workingHour->getTimeEnd()->format(self::EXPORT_TIME_FORMAT);
-            $item[] = 'OpenAllTime: ' . $workingHour->getOpenAllTime();
-
-            $workingHourList[] = implode(', ', $item);
-        }
-
-        return implode('; ', $workingHourList);
     }
 }
