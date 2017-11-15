@@ -12,6 +12,7 @@ use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Show\ShowMapper;
+use Sonata\AdminBundle\Route\RouteCollection;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -357,5 +358,47 @@ class EmergencyDraftBusinessAdmin extends OxaAdmin
         }
 
         return parent::isGranted($name, $draft);
+    }
+
+    /**
+     * Add additional routes
+     *
+     * @param RouteCollection $collection
+     */
+    protected function configureRoutes(RouteCollection $collection)
+    {
+        $collection
+            ->add('export')
+        ;
+    }
+
+    /**
+     * @return array
+     */
+    public function getExportFormats()
+    {
+        return EmergencyDraftBusiness::getExportFormats();
+    }
+
+    /**
+     * @return array
+     */
+    public function getExportFields()
+    {
+        $exportFields['ID']         = 'id';
+        $exportFields['Name']       = 'name';
+        $exportFields['Area']       = 'area.name';
+        $exportFields['Category']   = 'category.name';
+        $exportFields['Address']    = 'address';
+        $exportFields['Phone']      = 'phone';
+        $exportFields['UpdatedAt']  = 'updatedAt';
+        $exportFields['WorkingHours'] = 'exportWorkingHours';
+        $exportFields['PaymentsMethods'] = 'exportPaymentsMethods';
+        $exportFields['Services'] = 'exportServices';
+        $exportFields['Status']   = 'status';
+        $exportFields['CustomCategory'] = 'customCategory';
+        $exportFields['CustomWorkingHours'] = 'customWorkingHours';
+
+        return $exportFields;
     }
 }
