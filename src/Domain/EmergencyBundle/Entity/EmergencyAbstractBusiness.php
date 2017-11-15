@@ -457,15 +457,7 @@ class EmergencyAbstractBusiness  implements GeolocationInterface
      */
     public function getExportPaymentsMethods()
     {
-        $paymentList = [];
-
-        $payments = $this->getPaymentMethods();
-
-        foreach ($payments as $payment) {
-            $paymentList[] = $payment->getName();
-        }
-
-        return implode(', ', $paymentList);
+        return $this->getItemNames($this->getPaymentMethods());
     }
 
     /**
@@ -473,15 +465,23 @@ class EmergencyAbstractBusiness  implements GeolocationInterface
      */
     public function getExportServices()
     {
-        $serviceList = [];
+        return $this->getItemNames($this->getServices());
+    }
 
-        $services = $this->getServices();
+    /**
+     * @param ArrayCollection $entities
+     *
+     * @return string
+     */
+    protected function getItemNames($entities)
+    {
+        $names = [];
 
-        foreach ($services as $service) {
-            $serviceList[] = $service->getName();
+        foreach ($entities as $entity) {
+            $names[] = $entity->getName();
         }
 
-        return implode(', ', $serviceList);
+        return implode(', ', $names);
     }
 
     /**
@@ -494,12 +494,12 @@ class EmergencyAbstractBusiness  implements GeolocationInterface
         $workingHours = $this->getCollectionWorkingHours();
 
         foreach ($workingHours as $workingHour) {
-            $item = [];
-
-            $item[] = 'Days: ' . implode(', ', $workingHour->getDays());
-            $item[] = 'TimeStart: ' . $workingHour->getTimeStart()->format(static::EXPORT_TIME_FORMAT);
-            $item[] = 'TimeEnd: ' . $workingHour->getTimeEnd()->format(static::EXPORT_TIME_FORMAT);
-            $item[] = 'OpenAllTime: ' . $workingHour->getOpenAllTime();
+            $item = [
+                'Days: ' . implode(', ', $workingHour->getDays()),
+                'TimeStart: ' . $workingHour->getTimeStart()->format(static::EXPORT_TIME_FORMAT),
+                'TimeEnd: ' . $workingHour->getTimeEnd()->format(static::EXPORT_TIME_FORMAT),
+                'OpenAllTime: ' . $workingHour->getOpenAllTime(),
+            ];
 
             $workingHourList[] = implode(', ', $item);
         }
