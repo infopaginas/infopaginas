@@ -63,14 +63,5 @@ class EmergencyDraftBusinessFormHandler extends BaseFormHandler
     private function onSuccess(EmergencyDraftBusiness $draft)
     {
         $this->emergencyManager->createBusinessDraft($draft);
-
-        $session = $this->request->getSession();
-
-        if ($session) {
-            $session->getFlashBag()->add(
-                BusinessFormHandlerInterface::MESSAGE_BUSINESS_PROFILE_FLASH_GROUP,
-                $this->translator->trans(BusinessFormHandlerInterface::MESSAGE_EMERGENCY_BUSINESS_CREATED)
-            );
-        }
     }
 }
