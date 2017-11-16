@@ -227,6 +227,12 @@ assetic:
             output: 'assetic/js/modules/tools/form.min.js'
             filters:
                 - jsqueeze
+        tools_business_emergency_draft_form_js:
+            inputs:
+                - '@DomainEmergencyBundle/Resources/public/scripts/modules/businessEmergencyDraftForm.js'
+            output: 'assetic/js/modules/tools/businessEmergencyForm.min.js'
+            filters:
+                - jsqueeze
         tools_business_phone_js:
             inputs:
                 - '@DomainBusinessBundle/Resources/public/scripts/modules/tools/phones.js'

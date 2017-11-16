@@ -115,6 +115,7 @@ requirejs.config({
         'tools/redirect': '/assetic/js/modules/tools/redirect.min',
         'business/tools/interactions': '/assetic/js/modules/tools/interactions.min',
         'business/tools/form': '/assetic/js/modules/tools/form.min',
+        'businessEmergencyDraft/tools/form': '/assetic/js/modules/tools/businessEmergencyForm.min',
         'business/tools/phones': '/assetic/js/modules/tools/phones.min',
         'business/tools/workingHours': '/assetic/js/modules/tools/workingHours.min',
         'business/tools/formErrorsHandler': '/assetic/js/modules/tools/formErrorsHandler.min',

@@ -1,4 +1,4 @@
-define(['jquery', 'bootstrap', 'business/tools/form', 'tools/spin', 'maskedInput', 'select2'], function( $, bootstrap, FormHandler, Spin ) {
+define(['jquery', 'bootstrap', 'businessEmergencyDraft/tools/form', 'tools/spin', 'maskedInput', 'select2'], function( $, bootstrap, FormHandler, Spin ) {
     'use strict';
 
     var businessDraft = function() {
@@ -23,7 +23,7 @@ define(['jquery', 'bootstrap', 'business/tools/form', 'tools/spin', 'maskedInput
         this.businessRequestFormHandler = new FormHandler({
             formId: this.html.forms.businessRequestFormId,
             spinnerId: this.html.newProfileRequestSpinnerContainerId,
-            redirectUrl: this.urls.redirectUrl
+            onSuccessCallback: this.onSuccessCallback
         });
 
         this.spinner = new Spin();
@@ -66,6 +66,18 @@ define(['jquery', 'bootstrap', 'business/tools/form', 'tools/spin', 'maskedInput
         phone.bind( 'paste', function () {
             $( this ).val( '' );
         });
+    };
+
+    businessDraft.prototype.onSuccessCallback = function() {
+        var modal = $( '#emergency-draft-created-pop-up' );
+
+        $( '#domain_emergency_bundle_emergency_draft_business_type_paymentMethods' ).selectize()[0].selectize.clear();
+        $( '#domain_emergency_bundle_emergency_draft_business_type_services' ).selectize()[0].selectize.clear();
+        $( '#domain_emergency_bundle_emergency_draft_business_type_category' ).select2( 'val', '' );
+
+        if ( modal.length ) {
+            modal.modalFunc();
+        }
     };
 
     businessDraft.prototype.bindEvents = function() {
