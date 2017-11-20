@@ -1,0 +1,20 @@
+<div id="emergency-draft-created-pop-up" class="modal modal--login" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal__outside"></div>
+    <div class="modal__content emergency">
+        <div class="modal-header">
+            <h2>{{ 'emergency.pop_up.draft_created.title'|trans }}</h2>
+        </div>
+        <div class="modal-body">
+            <div class="modal__section">
+                <p>{{ 'emergency.pop_up.draft_created.description'|trans }}</p>
+            </div>
+            <div class="modal__section">
+                <a href="{{ absolute_url(path('emergency_main')) }}" title="{{ 'emergency.pop_up.button'|trans }}" class="button button--login button--emergency">
+                    <span>{{ 'emergency.pop_up.draft_created.button'|trans }}</span>
+                    <i class="fa fa-arrow-right"></i>
+                </a>
+            </div>
+            <button type="button" class="button--remove hide-modal"><i class="fa fa-remove"></i></button>
+        </div>
+    </div>
+</div>

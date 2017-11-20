@@ -15,6 +15,8 @@ class EmergencyAbstractBusiness  implements GeolocationInterface
     use TimestampableEntity;
     use LocationTrait;
 
+    const EXPORT_TIME_FORMAT = 'g:i a';
+
     /**
      * @var int
      *
@@ -438,5 +440,70 @@ class EmergencyAbstractBusiness  implements GeolocationInterface
     public function getUseMapAddress()
     {
         return $this->useMapAddress;
+    }
+
+    /**
+     * @return array
+     */
+    public static function getExportFormats()
+    {
+        return [
+            static::FORMAT_CSV => static::FORMAT_CSV,
+        ];
+    }
+
+    /**
+     * @return string
+     */
+    public function getExportPaymentsMethods()
+    {
+        return $this->getItemNames($this->getPaymentMethods());
+    }
+
+    /**
+     * @return string
+     */
+    public function getExportServices()
+    {
+        return $this->getItemNames($this->getServices());
+    }
+
+    /**
+     * @param ArrayCollection $entities
+     *
+     * @return string
+     */
+    protected function getItemNames($entities)
+    {
+        $names = [];
+
+        foreach ($entities as $entity) {
+            $names[] = $entity->getName();
+        }
+
+        return implode(', ', $names);
+    }
+
+    /**
+     * @return string
+     */
+    public function getExportWorkingHours()
+    {
+        $workingHourList = [];
+
+        $workingHours = $this->getCollectionWorkingHours();
+
+        foreach ($workingHours as $workingHour) {
+            $item = [
+                'Days: ' . implode(', ', $workingHour->getDays()),
+                'TimeStart: ' . $workingHour->getTimeStart()->format(static::EXPORT_TIME_FORMAT),
+                'TimeEnd: ' . $workingHour->getTimeEnd()->format(static::EXPORT_TIME_FORMAT),
+                'OpenAllTime: ' . $workingHour->getOpenAllTime(),
+            ];
+
+            $workingHourList[] = implode(', ', $item);
+        }
+
+        return implode('; ', $workingHourList);
     }
 }

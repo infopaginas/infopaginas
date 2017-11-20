@@ -18,20 +18,6 @@
 {% endblock %}
 
 {% block body %}
-    {% set flashMessages = app.session.flashBag.get(MESSAGE_BUSINESS_PROFILE_FLASH_GROUP) %}
-
-    <div class="container clearfix" id="success-block" {% if flashMessages is empty %}style="display: none;"{% endif %}>
-        <section class="page-section">
-            <div class="form__section flash-success-message">
-                <strong>
-                    {% for flashMessage in flashMessages %}
-                        {{ flashMessage }}
-                    {% endfor %}
-                </strong>
-            </div>
-        </section>
-    </div>
-
     <div class="main__container main__container--centered">
         <div class="main">
             <div class="container clearfix">
@@ -58,6 +44,8 @@
             </div>
         </div>
     </div>
+
+    {% include ':redesign/blocks/emergency:draft-created-pop-up.html.twig' %}
 {% endblock %}
 
 {% block emergencyPopUp %}{% endblock %}

@@ -624,6 +624,9 @@ emergency.label.miles_away: miles
 emergency.pop_up.title: ¡Abierto!
 emergency.pop_up.description: Cada día hay más negocios abriendo sus puertas.
 emergency.pop_up.button: ¡Encuéntralos aquí!
+emergency.pop_up.draft_created.title: ¡Gracias!
+emergency.pop_up.draft_created.description: Un consultor se comunicará con usted en breve.
+emergency.pop_up.draft_created.button: Volver a la lista
 emergency.footer.disclaimer: Estos horarios están sujetos a cambios
 emergency.business_draft.form_title:  Somete la información de tu negocio
 emergency.business_draft.name: Nombre del negocio
