@@ -91,28 +91,23 @@ class DatesUtil
                 $end = new \DateTime('last day of this month');
                 break;
             case self::RANGE_LAST_30_DAYS:
-                $end = new \DateTime();
-                $start = clone $end;
+                list($start, $end) = self::getCurrentDatetimePeriod();
                 $start->modify('-30 days');
                 break;
             case self::RANGE_LAST_MONTH:
-                $end = new \DateTime();
-                $start = clone $end;
+                list($start, $end) = self::getCurrentDatetimePeriod();
                 $start->modify('-1 month');
                 break;
             case self::RANGE_LAST_3_MONTH:
-                $end = new \DateTime();
-                $start = clone $end;
+                list($start, $end) = self::getCurrentDatetimePeriod();
                 $start->modify('-3 month');
                 break;
             case self::RANGE_LAST_6_MONTH:
-                $end = new \DateTime();
-                $start = clone $end;
+                list($start, $end) = self::getCurrentDatetimePeriod();
                 $start->modify('-6 month');
                 break;
             case self::RANGE_LAST_12_MONTH:
-                $end = new \DateTime();
-                $start = clone $end;
+                list($start, $end) = self::getCurrentDatetimePeriod();
                 $start->modify('-12 month');
                 break;
             case self::RANGE_THIS_YEAR:
@@ -415,5 +410,19 @@ class DatesUtil
         );
 
         return $formattedDate;
+    }
+
+    /**
+     * @return array
+     */
+    public static function getCurrentDatetimePeriod()
+    {
+        $start = new \DateTime();
+        $end   = clone $start;
+
+        return [
+            $start,
+            $end
+        ];
     }
 }
