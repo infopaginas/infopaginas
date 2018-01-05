@@ -17,7 +17,19 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select', 'busi
                 adUsageChartContainerId: '#adUsageChartContainer',
                 keywordChartContainerId: '#keywordChartContainer',
                 keywordStatsContainerId: '#keywordStatisticsContainer',
-                keywordsLimitContainerId: '#keywordsLimitContainer'
+                keywordsLimitContainerId: '#keywordsLimitContainer',
+                interactionTypeContainerId: '#interactionTypeContainer',
+                interactionHintContainerId: '#interactionHintContainer',
+                interactionPeriodContainerId: '#interactionGroupPeriodContainer',
+                customDatesContainer: '#customDatesContainer'
+            },
+            inputs: {
+                dateRange:  '#domain_business_bundle_business_report_filter_type_dateRange',
+                dateStart:  '#domain_business_bundle_business_report_filter_type_start',
+                dateEnd:    '#domain_business_bundle_business_report_filter_type_end',
+                limit:      '#domain_business_bundle_business_report_filter_type_limit',
+                actionType: '#domain_business_bundle_business_report_filter_type_actionType',
+                period:     '#domain_business_bundle_business_report_filter_type_groupPeriod'
             }
         };
 
@@ -29,11 +41,11 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select', 'busi
 
     reports.prototype.handleDatesChange = function()
     {
-        var $dateRangeControl = $('#domain_business_bundle_business_report_filter_type_dateRange');
-        var $customDatesWidgetContainer = $('#customDatesContainer');
+        var $dateRangeControl = $( this.html.inputs.dateRange );
+        var $customDatesWidgetContainer = $( this.html.containers.customDatesContainer );
 
         $dateRangeControl.on('change', function() {
-            if ($(this).val() == 'custom') {
+            if ( $( this ).val() == 'custom' ) {
                 $customDatesWidgetContainer.show();
             } else {
                 $customDatesWidgetContainer.hide();
@@ -51,13 +63,15 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select', 'busi
             dataType: 'JSON',
             type: 'POST',
             beforeSend: function() {
-                $(self.html.containers.businessOverviewChartContainerId).html('');
-                $(self.html.containers.businessOverviewStatsContainerId).html('');
-                self.showLoader(self.html.containers.businessOverviewChartContainerId);
+                $( self.html.containers.businessOverviewChartContainerId ).html( '' );
+                $( self.html.containers.businessOverviewStatsContainerId ).html( '' );
+                $( self.html.containers.interactionHintContainerId ).html( '' );
+                self.showLoader( self.html.containers.businessOverviewChartContainerId );
             },
-            success: function(response) {
-                $(self.html.containers.businessOverviewStatsContainerId).html(response.stats);
-                self.loadBusinessOverviewChart(response.dates, response.views, response.impressions);
+            success: function( response ) {
+                $( self.html.containers.businessOverviewStatsContainerId ).html( response.stats );
+                $( self.html.containers.interactionHintContainerId ).html( response.chartHint );
+                self.loadBusinessOverviewChart( response.dates, response.chart, response.chartTitle );
             }
         });
     };
@@ -75,7 +89,7 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select', 'busi
                 $( self.html.containers.adUsageStatsContainerId ).html( '' );
                 self.showLoader( self.html.containers.adUsageStatsContainerId );
             },
-            success: function(response) {
+            success: function( response ) {
                 $( self.html.containers.adUsageStatsContainerId ).html( response.stats );
                 self.loadAdUsageChart( response.dates, response.clicks, response.impressions );
             }
@@ -92,22 +106,22 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select', 'busi
             dataType: 'JSON',
             type: 'POST',
             beforeSend: function() {
-                $(self.html.containers.keywordChartContainerId).html('');
-                $(self.html.containers.keywordStatsContainerId).html('');
-                self.showLoader(self.html.containers.keywordChartContainerId);
+                $( self.html.containers.keywordChartContainerId ).html( '' );
+                $( self.html.containers.keywordStatsContainerId ).html( '' );
+                self.showLoader( self.html.containers.keywordChartContainerId );
             },
-            success: function(response) {
-                $(self.html.containers.keywordStatsContainerId).html(response.stats);
-                self.loadKeywordsChart(response.keywords, response.searches);
+            success: function( response ) {
+                $( self.html.containers.keywordStatsContainerId ).html( response.stats );
+                self.loadKeywordsChart( response.keywords, response.searches );
             }
         });
     };
 
-    reports.prototype.loadBusinessOverviewChart = function(dates, views, impressions)
+    reports.prototype.loadBusinessOverviewChart = function( dates, chart, title )
     {
-        $(this.html.containers.businessOverviewChartContainerId).highcharts({
+        $( this.html.containers.businessOverviewChartContainerId ).highcharts({
             title: {
-                text: $(this.html.containers.businessOverviewChartContainerId).data( "title" ),
+                text: $( this.html.containers.businessOverviewChartContainerId ).data( 'title' ),
                 x: -20 //center
             },
             xAxis: {
@@ -115,7 +129,7 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select', 'busi
             },
             yAxis: {
                 title: {
-                    text: $(this.html.containers.businessOverviewChartContainerId).data( "y-axis" )
+                    text: $( this.html.containers.businessOverviewChartContainerId ).data( 'y-axis' )
                 },
                 plotLines: [{
                     value: 0,
@@ -131,12 +145,8 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select', 'busi
             },
             series: [
                 {
-                    name: $(this.html.containers.businessOverviewChartContainerId).data( "series-name-views" ),
-                    data: views
-                },
-                {
-                    name: $(this.html.containers.businessOverviewChartContainerId).data( "series-name-imp" ),
-                    data: impressions
+                    name: title,
+                    data: chart
                 }
             ]
         });
@@ -146,7 +156,7 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select', 'busi
     {
         $( this.html.containers.adUsageChartContainerId ).highcharts({
             title: {
-                text: $( this.html.containers.adUsageChartContainerId ).data( "title" ),
+                text: $( this.html.containers.adUsageChartContainerId ).data( 'title' ),
                 x: -20 //center
             },
             xAxis: {
@@ -154,7 +164,7 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select', 'busi
             },
             yAxis: {
                 title: {
-                    text: $( this.html.containers.adUsageChartContainerId ).data( "y-axis" )
+                    text: $( this.html.containers.adUsageChartContainerId ).data( 'y-axis' )
                 },
                 plotLines: [{
                     value: 0,
@@ -170,11 +180,11 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select', 'busi
             },
             series: [
                 {
-                    name: $( this.html.containers.adUsageChartContainerId ).data( "series-name-clicks" ),
+                    name: $( this.html.containers.adUsageChartContainerId ).data( 'series-name-clicks' ),
                     data: clicks
                 },
                 {
-                    name: $( this.html.containers.adUsageChartContainerId ).data( "series-name-imp" ),
+                    name: $( this.html.containers.adUsageChartContainerId ).data( 'series-name-imp' ),
                     data: impressions
                 }
             ]
@@ -188,7 +198,7 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select', 'busi
                 type: 'column'
             },
             title: {
-                text: $( this.html.containers.keywordChartContainerId ).data( "title" )
+                text: $( this.html.containers.keywordChartContainerId ).data( 'title' )
             },
             xAxis: {
                 categories: keywords
@@ -197,7 +207,7 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select', 'busi
                 allowDecimals: false,
                 min: 0,
                 title: {
-                    text: $( this.html.containers.keywordChartContainerId ).data( "y-axis" )
+                    text: $( this.html.containers.keywordChartContainerId ).data( 'y-axis' )
                 }
             },
             tooltip: {
@@ -211,7 +221,7 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select', 'busi
                 }
             },
             series: [{
-                name: $(this.html.containers.keywordChartContainerId).data( "series-name-search" ),
+                name: $(this.html.containers.keywordChartContainerId).data( 'series-name-search' ),
                 data: searches
             }]
         });
@@ -219,18 +229,22 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select', 'busi
 
     reports.prototype.getFilterValues = function()
     {
-        var businessProfileId = $('#businessProfileId').val();
-        var datesRange = $('#domain_business_bundle_business_report_filter_type_dateRange :selected').val();
-        var dateStart = $('#domain_business_bundle_business_report_filter_type_start').val();
-        var dateEnd = $('#domain_business_bundle_business_report_filter_type_end').val();
-        var limit = $('#domain_business_bundle_business_report_filter_type_limit').val();
+        var businessProfileId = $( '#businessProfileId' ).val();
+        var datesRange = $( this.html.inputs.dateRange ).val();
+        var dateStart  = $( this.html.inputs.dateStart ).val();
+        var dateEnd    = $( this.html.inputs.dateEnd).val();
+        var limit      = $( this.html.inputs.limit ).val();
+        var actionType = $( this.html.inputs.actionType ).val();
+        var period     = $( this.html.inputs.period ).val();
 
         return {
             'businessProfileId': businessProfileId,
             'datesRange': datesRange,
             'start': dateStart,
             'end': dateEnd,
-            'limit': limit
+            'limit': limit,
+            'chartType': actionType,
+            'periodOption': period
         };
     };
 
@@ -238,41 +252,52 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select', 'busi
     {
         var self = this;
 
-        $(document).on('click', '.tabs-block li', function() {
-            $(self.html.containers.keywordsLimitContainerId).hide();
+        $( document ).on( 'click', '.tabs-block li', function() {
+            $( self.html.containers.keywordsLimitContainerId ).hide();
+            $( self.html.containers.interactionTypeContainerId ).hide();
+            $( self.html.containers.interactionPeriodContainerId ).hide();
 
-            if ( $('.tabs-block li.active').find('a').attr('aria-controls') == 'keywords' ) {
-                $(self.html.containers.keywordsLimitContainerId).show();
+            if ( $( '.tabs-block li.active' ).find( 'a' ).attr( 'aria-controls' ) == 'overview' ) {
+                $( self.html.containers.keywordsLimitContainerId ).show();
+                $( self.html.containers.interactionTypeContainerId ).show();
+                $( self.html.containers.interactionPeriodContainerId ).show();
             }
 
             self.refreshActiveReport();
         });
 
-        $(document).on('change', '#domain_business_bundle_business_report_filter_type_dateRange', function() {
-            if ($(this).val() !== 'custom') {
+        $( document ).on('change', this.html.inputs.dateRange, function() {
+            if ( $( this ).val() !== 'custom' ) {
                 self.refreshActiveReport();
             }
         });
 
-        $(document).on('change', '#domain_business_bundle_business_report_filter_type_limit', function() {
+        $( document ).on('change', this.html.inputs.limit, function() {
+            self.refreshActiveReport();
+        });
+
+        $( document ).on('change', this.html.inputs.actionType, function() {
+            self.refreshActiveReport();
+        });
+
+        $( document ).on('change', this.html.inputs.period, function() {
             self.refreshActiveReport();
         });
     };
 
     reports.prototype.refreshActiveReport = function()
     {
-        var activeTab = $('.tabs-block li.active').find('a').attr('aria-controls');
+        var activeTab = $( '.tabs-block li.active' ).find( 'a' ).attr( 'aria-controls' );
 
-        switch (activeTab) {
+        switch ( activeTab ) {
             case 'overview':
+                $( this.html.containers.keywordsLimitContainerId ).show();
+                $( this.html.containers.interactionTypeContainerId ).show();
                 this.loadBusinessOverviewReport();
+                this.loadKeywordsReport();
                 break;
             case 'ad_usage':
                 this.loadAdUsageReport();
-                break;
-            case 'keywords':
-                $('#keywordsLimitContainer').show();
-                this.loadKeywordsReport();
                 break;
         }
     };
@@ -283,8 +308,8 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select', 'busi
 
         $( '.js-datepicker' ).datepicker({
             dateFormat: 'yy-mm-dd',
-            onSelect: function(dateText, inst) {
-                $(this).val(dateText);
+            onSelect: function( dateText, inst ) {
+                $( this ).val( dateText );
                 self.refreshActiveReport();
             }
         });
@@ -292,7 +317,7 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select', 'busi
 
     reports.prototype.showLoader = function( container )
     {
-        this.spinner.show( container.replace('#', '') );
+        this.spinner.show( container.replace( '#', '' ) );
     };
 
     reports.prototype.handleExport = function()
@@ -343,7 +368,8 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select', 'busi
         new select();
 
         //global variables from index.html.twig scope
-        this.loadBusinessOverviewChart(overviewDataDates, overviewDataViews, overviewDataImpressions);
+        this.loadBusinessOverviewChart( overviewDataDates, overviewDataChart, overviewChartTitle );
+        this.loadKeywordsChart( keywordDataChartWord, keywordDataChartSearch );
     };
 
     return reports;

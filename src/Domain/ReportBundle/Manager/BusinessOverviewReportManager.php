@@ -53,10 +53,17 @@ class BusinessOverviewReportManager extends BaseReportManager
 
         $businessProfileName = $businessProfile->getName();
 
+        if (!empty($params['chartType']) and in_array($params['chartType'], BusinessOverviewModel::getTypes())) {
+            $chartType = $params['chartType'];
+        } else {
+            $chartType = '';
+        }
+
         $result = [
             'dates' => [],
-            BusinessOverviewModel::TYPE_CODE_IMPRESSION => [],
-            BusinessOverviewModel::TYPE_CODE_VIEW => [],
+            'chart' => [],
+            'chartTitle' => '',
+            'chartHint'  => '',
             'results' => [],
             'datePeriod' => [
                 'start' => $params['date']['start'],
@@ -68,13 +75,9 @@ class BusinessOverviewReportManager extends BaseReportManager
 
         $dates = DatesUtil::getDateRangeVOFromDateString($params['date']['start'], $params['date']['end']);
 
-        if (isset($params['periodOption']) && $params['periodOption'] == AdminHelper::PERIOD_OPTION_CODE_PER_MONTH) {
-            $dateFormat = AdminHelper::DATE_MONTH_FORMAT;
-            $step       = DatesUtil::STEP_MONTH;
-        } else {
-            $dateFormat = AdminHelper::DATE_FORMAT;
-            $step       = DatesUtil::STEP_DAY;
-        }
+        $periodOption = !empty($params['periodOption']) ? $params['periodOption'] : '';
+
+        list($dateFormat, $step) = $this->handlePeriodOption($periodOption);
 
         $result['dates'] = DatesUtil::dateRange($dates, $step, $dateFormat);
 
@@ -85,18 +88,19 @@ class BusinessOverviewReportManager extends BaseReportManager
         $businessProfileResult = $this->prepareBusinessOverviewReportStats(
             $result['dates'],
             $overviewResult,
-            $dateFormat
+            $dateFormat,
+            $chartType
         );
 
-        $result['results']     = $businessProfileResult['results'];
-        $result['total']        = $businessProfileResult['total'];
-        $result['overall']      = $businessProfileResult['overall'];
+        $result['results'] = $businessProfileResult['results'];
+        $result['total']   = $businessProfileResult['total'];
+        $result['overall'] = $businessProfileResult['overall'];
 
-        $viewKey       = BusinessOverviewModel::TYPE_CODE_VIEW;
-        $impressionKey = BusinessOverviewModel::TYPE_CODE_IMPRESSION;
-
-        $result[$viewKey]       = $businessProfileResult[$viewKey];
-        $result[$impressionKey] = $businessProfileResult[$impressionKey];
+        if ($chartType) {
+            $result['chart']      = $businessProfileResult[$chartType];
+            $result['chartTitle'] = BusinessOverviewModel::EVENT_TYPES[$chartType];
+            $result['chartHint']  = BusinessOverviewModel::getChartHintByType($chartType);
+        }
 
         return $result;
     }
@@ -105,10 +109,11 @@ class BusinessOverviewReportManager extends BaseReportManager
      * @param array     $dates
      * @param mixed     $rawResult
      * @param string    $dateFormat
+     * @param string    $chartType
      *
      * @return array
      */
-    protected function prepareBusinessOverviewReportStats($dates, $rawResult, $dateFormat) : array
+    protected function prepareBusinessOverviewReportStats($dates, $rawResult, $dateFormat, $chartType = '') : array
     {
         $stats = [];
         $dates = array_flip($dates);
@@ -122,8 +127,9 @@ class BusinessOverviewReportManager extends BaseReportManager
             }
 
             // for chart only
-            $stats[BusinessOverviewModel::TYPE_CODE_VIEW][$key]       = 0;
-            $stats[BusinessOverviewModel::TYPE_CODE_IMPRESSION][$key] = 0;
+            if ($chartType) {
+                $stats[$chartType][$key] = 0;
+            }
         }
 
         foreach (BusinessOverviewModel::getTypes() as $type) {
@@ -139,15 +145,17 @@ class BusinessOverviewReportManager extends BaseReportManager
                 $count  = $item[self::MONGO_DB_FIELD_COUNT];
                 $datetime = DatesUtil::convertMongoDbTimeToDatetime($item[self::MONGO_DB_FIELD_DATE_TIME]);
 
-                $viewDate = $datetime->format($dateFormat);
+                if ($dateFormat == AdminHelper::DATE_WEEK_FORMAT) {
+                    $viewDate = DatesUtil::getWeeklyFormatterDate($datetime);
+                } else {
+                    $viewDate = $datetime->format($dateFormat);
+                }
 
                 // for table and api
                 $stats['results'][$viewDate][$action] += $count;
 
                 // for chart only
-                if ($action == BusinessOverviewModel::TYPE_CODE_VIEW or
-                    $action == BusinessOverviewModel::TYPE_CODE_IMPRESSION
-                ) {
+                if ($chartType and $action == $chartType) {
                     $stats[$action][$dates[$viewDate]] += $count;
                 }
 

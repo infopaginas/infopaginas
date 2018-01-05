@@ -53,15 +53,9 @@ class ViewsAndVisitorsReportManager extends BaseReportManager
             $params['date']['value']['end']
         );
 
-        if (!empty($params['periodOption']['value']) &&
-            $params['periodOption']['value'] == AdminHelper::PERIOD_OPTION_CODE_PER_MONTH
-        ) {
-            $dateFormat = AdminHelper::DATE_MONTH_FORMAT;
-            $step       = DatesUtil::STEP_MONTH;
-        } else {
-            $dateFormat = AdminHelper::DATE_FORMAT;
-            $step       = DatesUtil::STEP_DAY;
-        }
+        $periodOption = !empty($params['periodOption']['value']) ? $params['periodOption']['value'] : '';
+
+        list($dateFormat, $step) = $this->handlePeriodOption($periodOption);
 
         $result['dates'] = DatesUtil::dateRange($dates, $step, $dateFormat);
 
@@ -131,7 +125,11 @@ class ViewsAndVisitorsReportManager extends BaseReportManager
                     $item[BusinessOverviewReportManager::MONGO_DB_FIELD_DATE_TIME]
                 );
 
-                $viewDate = $datetime->format($dateFormat);
+                if ($dateFormat == AdminHelper::DATE_WEEK_FORMAT) {
+                    $viewDate = DatesUtil::getWeeklyFormatterDate($datetime);
+                } else {
+                    $viewDate = $datetime->format($dateFormat);
+                }
 
                 // for chart only
                 if ($action == BusinessOverviewModel::TYPE_CODE_VIEW or

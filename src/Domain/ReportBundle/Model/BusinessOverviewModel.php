@@ -59,6 +59,12 @@ class BusinessOverviewModel implements ReportInterface
         self::TYPE_CODE_EMAIL_CLICK           => 'interaction_report.email.click',
     ];
 
+    const EVENT_PRIORITY_MAIN   = 'main';
+    const EVENT_PRIORITY_COMMON = 'common';
+    const EVENT_PRIORITY_HIDDEN = 'hidden';
+
+    const DEFAULT_CHART_TYPE = self::TYPE_CODE_IMPRESSION;
+
     /**
      * @return array
      */
@@ -110,5 +116,100 @@ class BusinessOverviewModel implements ReportInterface
             self::TYPE_CODE_REVIEW_CLICK,
             self::TYPE_CODE_EMAIL_CLICK,
         ];
+    }
+
+    /**
+     * @return array
+     */
+    public static function getEventTypesByPriority()
+    {
+        return [
+            self::EVENT_PRIORITY_MAIN => [
+                self::TYPE_CODE_IMPRESSION,
+                self::TYPE_CODE_VIEW,
+            ],
+            self::EVENT_PRIORITY_COMMON => [
+                self::TYPE_CODE_CALL_MOB_BUTTON,
+                self::TYPE_CODE_CALL_DESK_BUTTON,
+                self::TYPE_CODE_DIRECTION_BUTTON,
+                self::TYPE_CODE_VIDEO_WATCHED,
+            ],
+            self::EVENT_PRIORITY_HIDDEN => [
+                self::TYPE_CODE_MAP_SHOW_BUTTON,
+                self::TYPE_CODE_MAP_MARKER_BUTTON,
+                self::TYPE_CODE_WEB_BUTTON,
+                self::TYPE_CODE_WEB_ACTION_BUTTON,
+                self::TYPE_CODE_ADD_COMPARE_BUTTON,
+                self::TYPE_CODE_REMOVE_COMPARE_BUTTON,
+                self::TYPE_CODE_FACEBOOK_SHARE,
+                self::TYPE_CODE_TWITTER_SHARE,
+                self::TYPE_CODE_FACEBOOK_VISIT,
+                self::TYPE_CODE_TWITTER_VISIT,
+                self::TYPE_CODE_GOOGLE_VISIT,
+                self::TYPE_CODE_YOUTUBE_VISIT,
+                self::TYPE_CODE_INSTAGRAM_VISIT,
+                self::TYPE_CODE_TRIP_ADVISOR_VISIT,
+                self::TYPE_CODE_REVIEW_CLICK,
+                self::TYPE_CODE_EMAIL_CLICK,
+            ],
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public static function getChartEventTypes()
+    {
+        return [
+            self::TYPE_CODE_IMPRESSION,
+            self::TYPE_CODE_VIEW,
+            self::TYPE_CODE_CALL_MOB_BUTTON,
+            self::TYPE_CODE_CALL_DESK_BUTTON,
+            self::TYPE_CODE_DIRECTION_BUTTON,
+            self::TYPE_CODE_VIDEO_WATCHED,
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public static function getChartEventTypesWithTranslation()
+    {
+        $allowedEvents = self::getChartEventTypes();
+
+        $result = array_intersect_key(self::EVENT_TYPES, array_flip($allowedEvents));
+
+        return $result;
+    }
+
+    /**
+     * @return array
+     */
+    public static function getChartHints()
+    {
+        return [
+            self::TYPE_CODE_IMPRESSION       => 'interaction_report.hint.impression',
+            self::TYPE_CODE_VIEW             => 'interaction_report.hint.view',
+            self::TYPE_CODE_CALL_MOB_BUTTON  => 'interaction_report.hint.call_mob',
+            self::TYPE_CODE_CALL_DESK_BUTTON => 'interaction_report.hint.call_desk',
+            self::TYPE_CODE_DIRECTION_BUTTON => 'interaction_report.hint.direction',
+            self::TYPE_CODE_VIDEO_WATCHED    => 'interaction_report.hint.video_watched',
+        ];
+    }
+
+    /**
+     * @param string $type
+     *
+     * @return string
+     */
+    public static function getChartHintByType($type)
+    {
+        if (!empty(self::getChartHints()[$type])) {
+            $hint = self::getChartHints()[$type];
+        } else {
+            $hint = '';
+        }
+
+        return $hint;
     }
 }

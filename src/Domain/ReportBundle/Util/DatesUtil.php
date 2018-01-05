@@ -12,8 +12,8 @@ use Oxa\Sonata\AdminBundle\Util\Helpers\AdminHelper;
  */
 class DatesUtil
 {
-    const STEP_DAY = '+1 day';
-
+    const STEP_DAY   = '+1 day';
+    const STEP_WEEK  = '+7 days';
     const STEP_MONTH = '+1 month';
 
     const DEFAULT_PERIOD = '-30 days';
@@ -23,6 +23,9 @@ class DatesUtil
     const RANGE_LAST_WEEK = 'last_week';
     const RANGE_THIS_MONTH = 'this_month';
     const RANGE_LAST_MONTH = 'last_month';
+    const RANGE_LAST_3_MONTH  = 'last_3_month';
+    const RANGE_LAST_6_MONTH  = 'last_6_month';
+    const RANGE_LAST_12_MONTH = 'last_12_month';
     const RANGE_LAST_30_DAYS = 'last_30_days';
     const RANGE_CUSTOM = 'custom';
 
@@ -42,13 +45,23 @@ class DatesUtil
      */
     public static function getReportDataRanges()
     {
+        $ranges = self::getReportAdminDataRanges();
+
+        $ranges[self::RANGE_CUSTOM] = 'business_profile.interaction_chart.period.custom';
+
+        return $ranges;
+    }
+
+    /**
+     * @return array
+     */
+    public static function getReportAdminDataRanges()
+    {
         return [
-            self::RANGE_TODAY      => 'Today',
-            self::RANGE_THIS_WEEK  => 'This week',
-            self::RANGE_LAST_WEEK  => 'Last week',
-            self::RANGE_THIS_MONTH => 'This month',
-            self::RANGE_LAST_MONTH => 'Last month',
-            self::RANGE_CUSTOM     => 'Custom',
+            self::RANGE_LAST_MONTH    => 'business_profile.interaction_chart.period.last_month',
+            self::RANGE_LAST_3_MONTH  => 'business_profile.interaction_chart.period.last_3_month',
+            self::RANGE_LAST_6_MONTH  => 'business_profile.interaction_chart.period.last_6_month',
+            self::RANGE_LAST_12_MONTH => 'business_profile.interaction_chart.period.last_12_month',
         ];
     }
 
@@ -83,8 +96,24 @@ class DatesUtil
                 $start->modify('-30 days');
                 break;
             case self::RANGE_LAST_MONTH:
-                $start = new \DateTime('first day of last month');
-                $end = new \DateTime('last day of last month');
+                $end = new \DateTime();
+                $start = clone $end;
+                $start->modify('-1 month');
+                break;
+            case self::RANGE_LAST_3_MONTH:
+                $end = new \DateTime();
+                $start = clone $end;
+                $start->modify('-3 month');
+                break;
+            case self::RANGE_LAST_6_MONTH:
+                $end = new \DateTime();
+                $start = clone $end;
+                $start->modify('-6 month');
+                break;
+            case self::RANGE_LAST_12_MONTH:
+                $end = new \DateTime();
+                $start = clone $end;
+                $start->modify('-12 month');
                 break;
             case self::RANGE_THIS_YEAR:
                 $start = new \DateTime('first day of January ' . date('Y'));
@@ -201,6 +230,12 @@ class DatesUtil
         if ($step == self::STEP_DAY) {
             $dateFrom = clone $rangeVO->getStartDate();
             $dateTo   = clone $rangeVO->getEndDate();
+        } elseif ($step == self::STEP_WEEK) {
+            $dateFrom = clone $rangeVO->getStartDate();
+            $dateFrom->modify('this week');
+
+            $dateTo = clone $rangeVO->getEndDate();
+            $dateTo->modify('this week +6 days');
         } else {
             $dateFrom = clone $rangeVO->getStartDate();
             $dateFrom->modify('first day of this month');
@@ -213,7 +248,13 @@ class DatesUtil
         $period   = new \DatePeriod($dateFrom, $interval, $dateTo);
 
         foreach ($period as $date) {
-            $dates[] = $date->format($outputFormat);
+            if ($outputFormat == AdminHelper::DATE_WEEK_FORMAT) {
+                $formattedDate = static::getWeeklyFormatterDate($date);
+            } else {
+                $formattedDate = $date->format($outputFormat);
+            }
+
+            $dates[] = $formattedDate;
         }
 
         return $dates;
@@ -358,5 +399,21 @@ class DatesUtil
         $datetime->setTime(23, 59, 59);
 
         return $datetime;
+    }
+
+    /**
+     * @param \Datetime $date
+     *
+     * @return string
+     */
+    public static function getWeeklyFormatterDate($date)
+    {
+        $formattedDate = sprintf(
+            '%s - %s',
+            $date->modify('this week')->format(AdminHelper::DATE_FORMAT),
+            $date->modify('this week +6 days')->format(AdminHelper::DATE_FORMAT)
+        );
+
+        return $formattedDate;
     }
 }

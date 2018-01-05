@@ -30,6 +30,7 @@ filter.label.last_year: Last year
 filter.label.custom: Custom
 label_export_download: Export
 filter.label.period.daily: Daily
+filter.label.period.weekly: Weekly
 filter.label.period.per_month: Per Month
 relation_not_valid: Some values are not valid.
 collection_row_delete_button: Delete

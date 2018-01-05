@@ -1,14 +1,17 @@
 <section class="page-section">
-    <h3 class="language-title">{% trans %}Chart{% endtrans %}</h3>{#Business profile views vs impressions#}
-    <div class="form__section">
-        <div id="businessOverviewChartContainer" style="min-width: 310px; height: 400px; margin: 0 auto" data-title="{% trans %}Business Profile Views vs Impressions{% endtrans %}" data-y-axis="{% trans %}Count{% endtrans %}" data-series-name-views="{% trans %}Views{% endtrans %}" data-series-name-imp="{% trans %}Impressions{% endtrans %}"></div>
-    </div><!-- form-section -->
-</section><!-- page-section -->
+    <h3 class="language-title">{% trans %}Chart{% endtrans %}</h3>
+    <div class="form__section"></div>
+    <div id="businessOverviewChartContainer" class="overview-chart-container" data-title="{{ 'business_profile.interaction_chart.title'|trans }}" data-y-axis="{% trans %}Count{% endtrans %}"></div>
+
+    <div class="hint-block" id="interactionHintContainer">
+        {{ overviewData.chartHint|trans }}
+    </div>
+</section>
 
 <section class="page-section">
     <h3 class="language-title">{% trans %}Statistics{% endtrans %}</h3>
 
-    <div class="form__section scrollable-table" id="businessOverviewStatisticsContainer">
+    <div class="form__section total-block" id="businessOverviewStatisticsContainer">
         {% include 'DomainBusinessBundle:Reports:blocks/businessOverviewStatistics.html.twig' %}
-    </div><!-- form-section -->
+    </div>
 </section>

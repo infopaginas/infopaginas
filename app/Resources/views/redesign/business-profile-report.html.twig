@@ -13,22 +13,28 @@
                         {% include ':redesign/blocks/businessProfile/subTabs/report:nav_subtab.html.twig' %}
                     {% endblock %}
                 {% endembed %}
-
-                <div class="section-filters">
-                    <form>
+                <form>
+                    <div class="section-filters">
                         <div class="form__row reports-form__row">
                             <label class="title-label">{% trans %}Date period{% endtrans %}</label>
                             <div class="form__field">
                                 {{ form_widget(filtersForm.dateRange) }}
-                            </div><!-- form-field -->
-                        </div><!-- form__row -->
+                            </div>
+                        </div>
 
-                        <div class="form__row" id="keywordsLimitContainer" style="display: none;">
-                            <label class="title-label">{% trans %}Keywords Count{% endtrans %}</label>
+                        <div class="form__row" id="interactionTypeContainer">
+                            {{ form_label(filtersForm.actionType) }}
                             <div class="form__field">
-                                {{ form_widget(filtersForm.limit) }}
-                            </div><!-- form-field -->
-                        </div><!-- form__row -->
+                                {{ form_widget(filtersForm.actionType) }}
+                            </div>
+                        </div>
+
+                        <div class="form__row" id="interactionGroupPeriodContainer">
+                            {{ form_label(filtersForm.groupPeriod) }}
+                            <div class="form__field">
+                                {{ form_widget(filtersForm.groupPeriod) }}
+                            </div>
+                        </div>
 
                         <div class="form__row" id="customDatesContainer" style="display: none;">
 
@@ -45,24 +51,31 @@
                             </div>
                         </div><!-- form__row -->
                         <input type="hidden" id="businessProfileId" value="{{ businessProfileId }}">
-                    </form>
-                </div>
-
-                <div class="tab-content">
-                    <div class="tab-pane active" id="overview" role="tabpanel">
-                        {% include ':redesign/blocks/businessProfile/subTabs/report:overview.html.twig' %}
                     </div>
 
-                    <div class="tab-pane" id="keywords" role="tabpanel">
-                        {% include ':redesign/blocks/businessProfile/subTabs/report:keywords.html.twig' %}
-                    </div>
+                    <div class="tab-content">
+                        <div class="tab-pane active" id="overview" role="tabpanel">
+                            {% include ':redesign/blocks/businessProfile/subTabs/report:overview.html.twig' %}
 
-                    {% if ad_usage_allowed_for_business(businessProfile) %}
-                        <div class="tab-pane" id="ad_usage" role="tabpanel">
-                            {% include ':redesign/blocks/businessProfile/subTabs/report:ad_usage.html.twig' %}
+                            <div class="section-filters">
+                                <div class="form__row" id="keywordsLimitContainer">
+                                    {{ form_label(filtersForm.limit) }}
+                                    <div class="form__field">
+                                        {{ form_widget(filtersForm.limit) }}
+                                    </div>
+                                </div>
+                            </div>
+
+                            {% include ':redesign/blocks/businessProfile/subTabs/report:keywords.html.twig' %}
                         </div>
-                    {% endif %}
-                </div>
+
+                        {% if ad_usage_allowed_for_business(businessProfile) %}
+                            <div class="tab-pane" id="ad_usage" role="tabpanel">
+                                {% include ':redesign/blocks/businessProfile/subTabs/report:ad_usage.html.twig' %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </form>
 
                 <div class="section-filters">
                     <h3 class="language-title">{% trans %}Export{% endtrans %}</h3>
@@ -103,8 +116,11 @@
 
     <script>
         var overviewDataDates       = {{ overviewData['dates']|json_encode|raw }};
-        var overviewDataViews       = {{ overviewData['views']|json_encode|raw }};
-        var overviewDataImpressions = {{ overviewData['impressions']|json_encode|raw }};
+        var overviewDataChart       = {{ overviewData['chart']|json_encode|raw }};
+        var overviewChartTitle      = '{{ overviewData['chartTitle']|trans }}';
+
+        var keywordDataChartWord    = {{ keywordData['keywords']|json_encode|raw }};
+        var keywordDataChartSearch  = {{ keywordData['searches']|json_encode|raw }};
     </script>
 
     <script type="text/javascript">

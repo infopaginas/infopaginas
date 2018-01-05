@@ -1,0 +1,27 @@
+{% extends 'SonataAdminBundle:CRUD:base_show_field.html.twig' %}
+
+{% block field %}
+    {% if object.id is not null %}
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <div class="sonata-ba-field sonata-ba-field-standard-natural">
+                        <select title="Limit" id="{{ admin.uniqid }}_{{ field_description.name }}">
+                            {% for key, value in field_description.options.choices %}
+                                <option value="{{ key }}" {% if key == field_description.options.data %}selected="selected"{% endif %}>{{ value|trans }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <button id="{{ admin.uniqid }}_{{ field_description.name }}Filter" type="button" class="btn btn-primary" data-report-filter>
+                        <i class="fa fa-filter" aria-hidden="true"></i>
+                        Apply
+                    </button>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}
