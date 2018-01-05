@@ -249,7 +249,7 @@ class DatesUtil
 
         foreach ($period as $date) {
             if ($outputFormat == AdminHelper::DATE_WEEK_FORMAT) {
-                $formattedDate = static::getWeeklyFormatterDate($date);
+                $formattedDate = self::getWeeklyFormatterDate($date);
             } else {
                 $formattedDate = $date->format($outputFormat);
             }
