@@ -4,6 +4,7 @@ namespace Domain\BusinessBundle\Twig\Extension;
 
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Manager\BusinessProfileManager;
+use Domain\ReportBundle\Model\BusinessOverviewModel;
 use Domain\ReportBundle\Util\DatesUtil;
 
 /**
@@ -29,8 +30,10 @@ class ReportExtension extends \Twig_Extension
     public function getFunctions()
     {
         return [
-            'ad_usage_allowed_for_business' => new \Twig_Function_Method($this, 'isAdUsageAllowedForBusiness'),
+            'ad_usage_allowed_for_business'  => new \Twig_Function_Method($this, 'isAdUsageAllowedForBusiness'),
             'convert_monthly_formatted_date' => new \Twig_Function_Method($this, 'convertMonthlyFormattedDate'),
+            'get_events_with_priority'       => new \Twig_Function_Method($this, 'getEventsWithPriority'),
+            'get_month_range_by_period'      => new \Twig_Function_Method($this, 'getMothRangeByPeriod'),
         ];
     }
 
@@ -46,6 +49,52 @@ class ReportExtension extends \Twig_Extension
     public function convertMonthlyFormattedDate($date, $format)
     {
         return DatesUtil::convertMonthlyFormattedDate($date, $format);
+    }
+
+    /**
+     * @param string $priority
+     *
+     * @return array
+     */
+    public function getEventsWithPriority($priority)
+    {
+        $eventsByPriority = BusinessOverviewModel::getEventTypesByPriority();
+
+        if (!empty($eventsByPriority[$priority])) {
+            $events = $eventsByPriority[$priority];
+        } else {
+            $events = [];
+        }
+
+        return $events;
+    }
+
+    /**
+     * @param string $period
+     *
+     * @return int
+     */
+    public function getMothRangeByPeriod($period)
+    {
+        switch ($period) {
+            case DatesUtil::RANGE_LAST_MONTH:
+                $month = 1;
+                break;
+            case DatesUtil::RANGE_LAST_3_MONTH:
+                $month = 3;
+                break;
+            case DatesUtil::RANGE_LAST_6_MONTH:
+                $month = 6;
+                break;
+            case DatesUtil::RANGE_LAST_12_MONTH:
+                $month = 12;
+                break;
+            default:
+                $month = 0;
+                break;
+        }
+
+        return $month;
     }
 
     /**

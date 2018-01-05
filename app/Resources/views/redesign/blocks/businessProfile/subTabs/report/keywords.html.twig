@@ -1,14 +1,16 @@
 <section class="page-section">
     <h3 class="language-title">{% trans %}Chart{% endtrans %}</h3>
     <div class="form__section">
-        <div id="keywordChartContainer" style="min-width: 310px; height: 400px; margin: 0 auto" data-title="{% trans %}Keywords Statistics{% endtrans %}" data-y-axis="{% trans %}Number of searches{% endtrans %}" data-series-name-search="{% trans %}Searches{% endtrans %}"></div>
-    </div><!-- form-section -->
-</section><!-- page-section -->
+        <div id="keywordChartContainer" class="keyword-chart-container" data-title="{% trans %}Keywords Statistics{% endtrans %}" data-y-axis="{% trans %}Number of searches{% endtrans %}" data-series-name-search="{% trans %}Searches{% endtrans %}"></div>
+    </div>
+</section>
 
 <section class="page-section">
     <h3 class="language-title">{% trans %}Statistics{% endtrans %}</h3>
 
     <div class="form__section">
-        <div class="col-xs-12 form-col scrollable-table" id="keywordStatisticsContainer"></div>
-    </div><!-- form-section -->
+        <div class="col-xs-12 form-col scrollable-table" id="keywordStatisticsContainer">
+            {{ keywordData.stats|raw }}
+        </div>
+    </div>
 </section>
