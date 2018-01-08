@@ -422,7 +422,7 @@ class DatesUtil
 
         return [
             $start,
-            $end
+            $end,
         ];
     }
 }
