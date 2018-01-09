@@ -34,22 +34,22 @@ class BaseReportManager extends DefaultManager
      */
     public function handlePeriodOption($periodOption = '')
     {
-        $dateFormat = AdminHelper::DATE_FORMAT;
-        $step       = DatesUtil::STEP_DAY;
+        switch ($periodOption) {
+            case AdminHelper::PERIOD_OPTION_CODE_PER_MONTH:
+                $dateFormat = AdminHelper::DATE_MONTH_FORMAT;
+                $step       = DatesUtil::STEP_MONTH;
 
-        if ($periodOption) {
-            switch ($periodOption) {
-                case AdminHelper::PERIOD_OPTION_CODE_PER_MONTH:
-                    $dateFormat = AdminHelper::DATE_MONTH_FORMAT;
-                    $step       = DatesUtil::STEP_MONTH;
+                break;
+            case AdminHelper::PERIOD_OPTION_CODE_WEEKLY:
+                $dateFormat = AdminHelper::DATE_WEEK_FORMAT;
+                $step       = DatesUtil::STEP_WEEK;
 
-                    break;
-                case AdminHelper::PERIOD_OPTION_CODE_WEEKLY:
-                    $dateFormat = AdminHelper::DATE_WEEK_FORMAT;
-                    $step       = DatesUtil::STEP_WEEK;
+                break;
+            default:
+                $dateFormat = AdminHelper::DATE_FORMAT;
+                $step       = DatesUtil::STEP_DAY;
 
-                    break;
-            }
+                break;
         }
 
         return [
