@@ -153,3 +153,6 @@ twig:
             MAIN:   'main'
             COMMON: 'common'
             HIDDEN: 'hidden'
+
+        REPORT_EVENT_TYPE:
+            VIDEO_WATCHED: 'videoWatched'

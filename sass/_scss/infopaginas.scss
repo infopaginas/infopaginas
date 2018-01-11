@@ -5755,7 +5755,8 @@ a.link-pointer {
 }
 
 div.scrollable-table {
-  overflow-x: scroll;
+  overflow-x: auto;
+  padding: 10px;
 
   table.ad-usage-table {
     tbody tr:nth-child(3n) {
