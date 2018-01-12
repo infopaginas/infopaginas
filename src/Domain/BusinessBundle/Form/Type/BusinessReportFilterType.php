@@ -26,13 +26,15 @@ class BusinessReportFilterType extends AbstractType
     {
         $builder
             ->add('dateRange', ChoiceType::class, [
-                'attr' => [
-                    'class' => 'select--medium',
+                'label' => 'Date period',
+                'label_attr' => [
+                    'class' => 'title-label',
                 ],
                 'choices' => DatesUtil::getReportDataRanges(),
                 'data'    => DatesUtil::RANGE_LAST_MONTH,
             ])
             ->add('start', DateType::class, [
+                'label' => 'Date Start',
                 'widget' => 'single_text',
                 'html5'  => false,
                 'attr'   => [
@@ -41,6 +43,7 @@ class BusinessReportFilterType extends AbstractType
                 'data' => new \DateTime('monday this week'),
             ])
             ->add('end', DateType::class, [
+                'label' => 'Date End',
                 'widget' => 'single_text',
                 'html5'  => false,
                 'attr'   => [
@@ -53,9 +56,6 @@ class BusinessReportFilterType extends AbstractType
                 'label_attr' => [
                     'class' => 'title-label',
                 ],
-                'attr' => [
-                    'class' => 'select--medium',
-                ],
                 'choices' => KeywordsReportManager::KEYWORDS_PER_PAGE_COUNT,
                 'data'    => KeywordsReportManager::DEFAULT_KEYWORDS_COUNT,
             ])
@@ -64,9 +64,6 @@ class BusinessReportFilterType extends AbstractType
                 'label_attr' => [
                     'class' => 'title-label',
                 ],
-                'attr' => [
-                    'class' => 'select--medium',
-                ],
                 'choices' => BusinessOverviewModel::getChartEventTypesWithTranslation(),
                 'data'    => BusinessOverviewModel::DEFAULT_CHART_TYPE,
             ])
@@ -74,9 +71,6 @@ class BusinessReportFilterType extends AbstractType
                 'label' => 'business_profile.interaction_chart.group_period',
                 'label_attr' => [
                     'class' => 'title-label',
-                ],
-                'attr' => [
-                    'class' => 'select--medium',
                 ],
                 'choices' => AdminHelper::getPeriodOptionValues(),
                 'data'    => AdminHelper::PERIOD_OPTION_CODE_PER_MONTH,

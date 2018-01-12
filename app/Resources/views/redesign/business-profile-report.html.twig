@@ -13,55 +13,66 @@
                         {% include ':redesign/blocks/businessProfile/subTabs/report:nav_subtab.html.twig' %}
                     {% endblock %}
                 {% endembed %}
-                <form>
-                    <div class="section-filters">
-                        <div class="form__row reports-form__row">
-                            <label class="title-label">{% trans %}Date period{% endtrans %}</label>
-                            <div class="form__field">
-                                {{ form_widget(filtersForm.dateRange) }}
+
+                <form class="form">
+                    <div class="form__section">
+                        <div class="form-column__container clearfix">
+                            <div class="form__column">
+                                <div class="form__row vertical__row">
+                                    {{ form_label(filtersForm.dateRange) }}
+                                    {{ form_widget(filtersForm.dateRange) }}
+                                </div>
+
+                                <div class="form__row vertical__row" id="interactionTypeContainer">
+                                    {{ form_label(filtersForm.actionType) }}
+                                    {{ form_widget(filtersForm.actionType) }}
+                                </div>
+                            </div>
+
+                            <div class="form__column">
+                                <div class="form__row vertical__row" id="interactionGroupPeriodContainer">
+                                    {{ form_label(filtersForm.groupPeriod) }}
+                                    {{ form_widget(filtersForm.groupPeriod) }}
+                                </div>
+
+                                <div class="form__row vertical__row">
+
+                                </div>
                             </div>
                         </div>
 
-                        <div class="form__row" id="interactionTypeContainer">
-                            {{ form_label(filtersForm.actionType) }}
-                            <div class="form__field">
-                                {{ form_widget(filtersForm.actionType) }}
+                        <div class="form-column__container clearfix" id="customDatesContainer" style="display: none;">
+                            <div class="form__column">
+                                <div class="form__row">
+                                    <div class="form__field field--date">
+                                        {{ form_label(filtersForm.start) }}
+                                        {{ form_widget(filtersForm.start) }}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form__column">
+                                <div class="form__row">
+                                    <div class="form__field field--date">
+                                        {{ form_label(filtersForm.end) }}
+                                        {{ form_widget(filtersForm.end) }}
+                                    </div>
+                                </div>
                             </div>
                         </div>
-
-                        <div class="form__row" id="interactionGroupPeriodContainer">
-                            {{ form_label(filtersForm.groupPeriod) }}
-                            <div class="form__field">
-                                {{ form_widget(filtersForm.groupPeriod) }}
-                            </div>
-                        </div>
-
-                        <div class="form__row" id="customDatesContainer" style="display: none;">
-
-                            <div class="form__row reports-form__row">
-                                <label class="title-label">{% trans %}Date Start{% endtrans %}</label>
-                                <div class="form__field">
-                                    {{ form_widget(filtersForm.start) }}
-                                </div><!-- form-field -->
-
-                                <label class="title-label">{% trans %}Date End{% endtrans %}</label>
-                                <div class="form__field">
-                                    {{ form_widget(filtersForm.end) }}
-                                </div><!-- form-field -->
-                            </div>
-                        </div><!-- form__row -->
-                        <input type="hidden" id="businessProfileId" value="{{ businessProfileId }}">
                     </div>
 
                     <div class="tab-content">
                         <div class="tab-pane active" id="overview" role="tabpanel">
                             {% include ':redesign/blocks/businessProfile/subTabs/report:overview.html.twig' %}
 
-                            <div class="section-filters">
-                                <div class="form__row" id="keywordsLimitContainer">
-                                    {{ form_label(filtersForm.limit) }}
-                                    <div class="form__field">
-                                        {{ form_widget(filtersForm.limit) }}
+                            <div class="form__section" id="keywordsLimitContainer">
+                                <div class="form-column__container clearfix">
+                                    <div class="form__column">
+                                        <div class="form__row vertical__row">
+                                            {{ form_label(filtersForm.limit) }}
+                                            {{ form_widget(filtersForm.limit) }}
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -75,6 +86,8 @@
                             </div>
                         {% endif %}
                     </div>
+
+                    <input type="hidden" id="businessProfileId" value="{{ businessProfileId }}">
                 </form>
 
                 <div class="section-filters">
