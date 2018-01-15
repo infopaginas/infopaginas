@@ -1,4 +1,4 @@
-<div class="icons">
+<div class="icons" data-bw-gtm-component="business-profile-info-icons">
     {% if hasSubscription(business, "CODE_PREMIUM_GOLD") and photos | length > 0  %}
         <a href="{{ absolute_url(path('domain_business_profile_view', { 'citySlug' : business.citySlug, 'slug' : business.getSlug() })) }}#photo">
             <i class="photo"></i>
