@@ -1,5 +1,5 @@
-<header class="header">
-    <div class="logo">
+<header class="header" data-bw-gtm-component="header">
+    <div class="logo" data-bw-gtm-component="logo">
         <a href="{{ absolute_url(path('domain_site_home_index')) }}">
             <img class="logo__icon" src="{{ absolute_url(asset('redesign/img/infopaginas.svg')) }}" width="52" alt="{% trans %}infopaginos.image.alt{% endtrans %}">
             <img class="logo__iso" src="{{ absolute_url(asset('redesign/img/infopaginas-iso.svg')) }}" alt="{% trans %}infopaginos.image.alt{% endtrans %}">
@@ -12,11 +12,11 @@
         {% endblock %}
     {% endif %}
 
-    <button id="nav-toggle" type="button" class="nav__toggle button button--text">
+    <button id="nav-toggle" type="button" class="nav__toggle button button--text" data-bw-gtm-component="nav-toggle" data-bw-gtm-event-click data-bw-gtm-label="nav-toggle">
         <i class="fa fa-bars"></i>
     </button>
 
-    <nav id="nav" class="main-nav">
+    <nav id="nav" class="main-nav" data-bw-gtm-component="main-nav">
         {% if (app.user) %}
 
             <div class="user-logged">
@@ -33,7 +33,7 @@
             </div>
         {% endif %}
 
-        <ul class="language-nav">
+        <ul class="language-nav" data-bw-gtm-component="language-nav">
             {% for language in languages %}
                 <li class="{% if language.active %}nav-current{% endif %}">
                     <a href="{{ language.url }}">{{ language.title|purify }}</a>
@@ -54,7 +54,7 @@
             </ul>
         {% endif %}
 
-        <ul class="nav-pages">
+        <ul class="nav-pages" data-bw-gtm-component="nav-pages" data-bw-gtm-event-click>
             <li>
                 <a href="{{ absolute_url(path('domain_site_home_index')) }}"><i class="fa fa-home"></i>Home</a>
             </li>

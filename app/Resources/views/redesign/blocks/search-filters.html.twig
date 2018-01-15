@@ -2,7 +2,7 @@
     {% set disableFilters = false %}
 {% endif %}
 
-<div class="sort-bar">
+<div class="sort-bar" data-bw-gtm-component="search-filters" data-bw-gtm-event-click>
     <button id="sort-toggle" class="button sort-bar__button {% if disableFilters == false %}active{% endif %}" type="button" {% if disableFilters %}disabled{% endif %}>
         <i class="fa fa-sort"></i>
         <span>{% trans %}Sort{% endtrans %}</span>

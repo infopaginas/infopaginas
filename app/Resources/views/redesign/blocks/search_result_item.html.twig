@@ -3,8 +3,8 @@
 {% set itemSubscriptionClass = getItemSubscriptionClass(item) %}
 
 <div class="results__item results__item--{{ itemSubscriptionClass }}" id="{{ item.id }}">
-    <div class="item__content clearfix" data-item-content>
-        <div class="item__img">
+    <div class="item__content clearfix" data-item-content data-bw-gtm-event-click>
+        <div class="item__img" data-bw-gtm-component="search-results-image">
             {% if (hasSubscription(item, "CODE_PREMIUM_PLUS") and item.getLogo()) %}
                 <a href="{{ absolute_url(path('domain_business_profile_view', { 'citySlug' : item.citySlug, 'slug' : item.slug })) }}" title="{% trans %}Go to information page{% endtrans %}">
                     <img width="80" src="{% path item.getLogo(), 'preview' %}" alt="{{ item.name }}">
@@ -20,7 +20,7 @@
             {% endif %}
         </div>
 
-        <div class="item__summary {% if hasSubscription(item, 'CODE_PREMIUM_PLUS') == false or item.getLogo() == null %}item__summary-no-logo{% endif %}">
+        <div class="item__summary {% if hasSubscription(item, 'CODE_PREMIUM_PLUS') == false or item.getLogo() == null %}item__summary-no-logo{% endif %}" data-bw-gtm-component="search-results-item-summary">
             <a href="{{ absolute_url(path('domain_business_profile_view', { 'citySlug' : item.citySlug, 'slug' : item.slug })) }}" title="{% trans %}Go to information page{% endtrans %}" class="phantom-link">
                 <div class="item__header header-align-stars">
                     {% set workingHoursData = get_business_profile_open_status(item) %}
@@ -53,7 +53,7 @@
         </div><!-- item__summary -->
     </div><!-- item__content -->
     <div class="item__actions">
-        <div class="item__primary-actions">
+        <div class="item__primary-actions" data-bw-gtm-component="search-results-primary-action" data-bw-gtm-event-click>
             <a class="get-dir button button--small button--featured link-pointer {% if item.isAd %}svm-getdir{% endif %}" data-id="{{ item.getId() }}" data-latlng="{{ item.getLatLng() }}">
                 <i class="fa fa-location-arrow"></i>
                 {% trans %}Directions{% endtrans %}

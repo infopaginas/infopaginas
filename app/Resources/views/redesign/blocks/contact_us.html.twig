@@ -1,6 +1,6 @@
 {% import '::widgets/custom_form_label_redesign.html.twig' as custom_form_label %}
 
-<section class="page-section">
+<section class="page-section" data-bw-gtm-component="contact-form">
     <form id="feedbackForm" class="form feedback-form" action="{{ absolute_url(path('domain_page_feedback')) }}" method="post">
         <h3 class="language-title">{{ 'contact.form.title'|trans }}</h3>
         <span class="feedback-message"></span>
@@ -53,7 +53,7 @@
             </div>
         </div>
 
-        <div class="form__actions">
+        <div class="form__actions" data-bw-gtm-event-click>
             {{ form_rest(contactForm) }}
             <a href="{{ instantEmail }}" class="button button--text">{{ 'contact.form.instant_email'|trans }}</a>
             <button type="submit" id="feedbackButton" class="button button--action">{{ 'contact.form.submit_button'|trans }}</button>

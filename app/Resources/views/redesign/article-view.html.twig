@@ -13,7 +13,7 @@
                 <article class="article">
                     <section class="article__header page-section">
                         <h1><strong>{{ article.title }}</strong></h1>
-                        <div class="article__category">
+                        <div class="article__category" data-bw-gtm-component="article-category" data-bw-gtm-event-click>
                             <div class="tagcloud">
                                 <a href="{{ absolute_url(path('domain_article_category', {'categorySlug':  article.getCategory().getSlug() })) }}" class="tag">{{ article.getCategory().getName() }}</a>
                             </div>
@@ -26,7 +26,7 @@
                             </ul>
                         </div>
                     </section>
-                    <section class="article-body">
+                    <section class="article-body" data-bw-gtm-component="article-body">
 
                         {% if (articleGallery|length > 0) %}
                             <section class="page-section photos slider section--slider hide-before">

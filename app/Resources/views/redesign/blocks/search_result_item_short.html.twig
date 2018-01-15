@@ -1,4 +1,4 @@
-<div class="results__item results__item--{% if (hasSubscription(item, 'CODE_PREMIUM_PLUS')) %}ad{% else %}normal{% endif %}">
+<div class="results__item results__item--{% if (hasSubscription(item, 'CODE_PREMIUM_PLUS')) %}ad{% else %}normal{% endif %}" data-bw-gtm-component="search-results-item-short">
     <div class="item__content clearfix">
         <div class="item__summary">
             <a href="{{ absolute_url(path('domain_business_profile_view', { 'citySlug' : item.citySlug, 'slug' : item.slug })) }}" title="{% trans %}Go to information page{% endtrans %}" class="phantom-link">
