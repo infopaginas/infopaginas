@@ -148,3 +148,11 @@ twig:
             TYPE:
                 LINK:  'link'
                 OFFER: 'offer'
+
+        REPORT_EVENT_PRIORITY:
+            MAIN:   'main'
+            COMMON: 'common'
+            HIDDEN: 'hidden'
+
+        REPORT_EVENT_TYPE:
+            VIDEO_WATCHED: 'videoWatched'

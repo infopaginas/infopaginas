@@ -18,6 +18,7 @@ class AdminHelper
     const PER_PAGE_ALL = 'all';
 
     const DATE_FORMAT            = 'm/d/Y';
+    const DATE_WEEK_FORMAT       = 'W/Y';
     const DATE_MONTH_FORMAT      = 'm/Y';
     const DATETIME_FORMAT        = 'm/d/Y H:i:s';
     const DATE_FULL_MONTH_FORMAT = 'F, Y';
@@ -29,6 +30,7 @@ class AdminHelper
     const DATE_RANGE_CODE_LAST_YEAR  = 'last_year';
 
     const PERIOD_OPTION_CODE_DAILY      = 'daily';
+    const PERIOD_OPTION_CODE_WEEKLY     = 'weekly';
     const PERIOD_OPTION_CODE_PER_MONTH  = 'per_month';
 
     const FILTER_DATE_RANGE_CLASS   = 'oxa_filter_date_range';
@@ -61,6 +63,7 @@ class AdminHelper
     {
         return [
             self::PERIOD_OPTION_CODE_DAILY      => 'filter.label.period.daily',
+            self::PERIOD_OPTION_CODE_WEEKLY     => 'filter.label.period.weekly',
             self::PERIOD_OPTION_CODE_PER_MONTH  => 'filter.label.period.per_month',
         ];
     }

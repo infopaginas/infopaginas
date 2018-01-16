@@ -254,7 +254,23 @@ Print: Imprimir
 Content: Contenido
 business.profile.edit.note: Tenga en cuenta: los cambios se aplicarán después de la aprobación
 Please enter a search term: Por favor, introduzca un término de búsqueda
-Business Profile Views vs Impressions: Vistas empresariales Perfil vs Impresiones
+business_profile:
+  interaction_chart:
+    title: Interacciones de perfil de negocios
+    action_type: Tipo de evento
+    period:
+      last_month: El mes pasado
+      last_3_month: Últimos 3 meses
+      last_6_month: Últimos 6 meses
+      last_12_month: El año pasado
+      custom: Personalizado
+    group_period: Período
+filter:
+  label:
+    period:
+      daily: Diario
+      weekly: Semanal
+      per_month: Mensual
 Count: Conteo
 Keywords Statistics: Estadísticas Palabras clave
 Number of searches: Número de búsquedas
@@ -471,6 +487,15 @@ interaction_report.video.watched: Video Visto
 interaction_report.review.click: Opiniones
 interaction_report.email.click: Correo
 interaction_report.sum.interaction: Interacciones
+
+interaction_report:
+  hint:
+    impression: '"Impresiones": muestra cuántas veces se mostró el perfil del negocio en una lista en páginas de búsqueda, búsqueda de mapas y catálogo.'
+    view: '"Visitas": cuenta todas las visitas de una página de negocios'
+    call_mob: '"Llamadas" muestra el número de veces que el usuario oprimió el botón de "teléfono" en la página móvil.'
+    call_desk: '"Botón de llamada desde Computadora" cuántas veces un usuario hizo clic en el botón "Teléfono" mientras revisaba Infopaginas.com a través de la computadora.'
+    direction: '"Botón Indicaciones" cuenta cuántas veces los usuarios hicieron clic en el botón " Ir al mapa" para ver dónde se encuentra la empresa.'
+    video_watched: '"Vistas de video" cuentan cuántas veces los usuarios vieron el video.'
 
 date: Fecha
 interaction_report.total: Total

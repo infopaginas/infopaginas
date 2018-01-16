@@ -254,7 +254,23 @@ Print: Print
 Content: Content
 business.profile.edit.note: Please note: changes will be applied after approval
 Please enter a search term: Please enter a search term
-Business Profile Views vs Impressions: Business Profile Views vs Impressions
+business_profile:
+  interaction_chart:
+    title: Business Profile Interactions
+    action_type: Event type
+    period:
+      last_month: Last month
+      last_3_month: Last 3 months
+      last_6_month: Last 6 months
+      last_12_month: Last year
+      custom: Custom
+    group_period: Period
+filter:
+  label:
+    period:
+      daily: Daily
+      weekly: Weekly
+      per_month: Monthly
 Count: Count
 Keywords Statistics: Keywords Statistics
 Number of searches: Number of searches
@@ -471,6 +487,15 @@ interaction_report.video.watched: Video Watched
 interaction_report.review.click: Reviews
 interaction_report.email.click: Emails
 interaction_report.sum.interaction: Interactions
+
+interaction_report:
+  hint:
+    impression: '"Impressions" – shows how many times a business was displayed in a list on pages of search, map search and catalog.'
+    view: '"Views" – counts all the visits of a business page.'
+    call_mob: '"Calls" shows the number of times the "call button" was clicked when a user was viewing the profile on a mobile device.'
+    call_desk: '"Desktop call button" how many times a user clicked the Call button while checking Infopaginas.com via computer.'
+    direction: '"Directions button" counts how many times the users have clicked on the button "Show on Map" to look where the business is located'
+    video_watched: '"Video views" counts how many times the video was viewed by users.'
 
 date: Date
 interaction_report.total: Total
