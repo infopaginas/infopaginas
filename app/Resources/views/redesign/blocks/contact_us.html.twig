@@ -55,8 +55,8 @@
 
         <div class="form__actions" data-bw-gtm-event-click>
             {{ form_rest(contactForm) }}
-            <a href="{{ instantEmail }}" class="button button--text">{{ 'contact.form.instant_email'|trans }}</a>
-            <button type="submit" id="feedbackButton" class="button button--action">{{ 'contact.form.submit_button'|trans }}</button>
+            <a href="{{ instantEmail }}" class="button button--text" data-bw-gtm-label="Instant Email">{{ 'contact.form.instant_email'|trans }}</a>
+            <button type="submit" id="feedbackButton" class="button button--action" data-bw-gtm-label="Send">{{ 'contact.form.submit_button'|trans }}</button>
         </div>
     </form>
 </section>

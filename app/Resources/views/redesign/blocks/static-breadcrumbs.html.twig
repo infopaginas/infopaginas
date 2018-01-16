@@ -1,6 +1,6 @@
-<div class="toolbar">
-    <div class="toolbar__nav" data-bw-gtm-component="static-breadcrumbs">
-        <a href="{{ absolute_url(path('domain_site_home_index')) }}" title="{% trans %}Home{% endtrans %}">
+<div class="toolbar" data-bw-gtm-component="static-breadcrumbs">
+    <div class="toolbar__nav">
+        <a href="{{ absolute_url(path('domain_site_home_index')) }}" title="{% trans %}Home{% endtrans %}" data-bw-gtm-event-click data-bw-gtm-label="Homepage::{{ absolute_url(path('domain_site_home_index')) }}">
             <button id="breadcrumb_location" type="button" class="button button--action button--location">
                 <i class="fa fa-list"></i>
                 <span>{% trans %}Homepage{% endtrans %}</span>

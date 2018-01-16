@@ -70,7 +70,7 @@
                                             {% for phone in businessProfile.phones %}
                                                 <li {% if phone.type == BUSINESS_PROFILE_PHONE.TYPE.MAIN %}class="main-phone"{% endif %} title="{{ ('business_profile.phone.tooltip.' ~ phone.type)|trans }}">
                                                     <i class="fa {{ get_business_profile_phone_icon(phone) }}"></i>
-                                                    <a href="tel:{{ phone.phone }}" class="hide-desktop phone-call" data-id="{{ businessProfile.id }}" data-type="callMobButton">{{ phone.phone }}</a>
+                                                    <a href="tel:{{ phone.phone }}" class="hide-desktop phone-call" data-id="{{ businessProfile.id }}" data-type="callMobButton" data-bw-gtm-event-click data-bw-gtm-label="{{phone.phone}}">{{ phone.phone }}</a>
                                                     <span class="hide-mobile">{{ phone.phone }}</span>
                                                 </li>
                                             {% endfor %}
@@ -83,7 +83,7 @@
                                         <h3>{% trans %}Email{% endtrans %}</h3>
                                         <ul>
                                             <li>
-                                                <i class="fa fa-envelope"></i> <a data-href="mailto:{{ businessProfile.getEmail() }}" class="link-pointer redirect-event" data-id="{{ businessProfile.id }}" data-current-tab="1" data-type="emailClick">{% trans %}Contact Us{% endtrans %}</a>
+                                                <i class="fa fa-envelope"></i> <a data-href="mailto:{{ businessProfile.getEmail() }}" class="link-pointer redirect-event" data-id="{{ businessProfile.id }}" data-current-tab="1" data-type="emailClick" data-bw-gtm-event-click data-bw-gtm-label="Contact Us">{% trans %}Contact Us{% endtrans %}</a>
                                             </li>
                                         </ul>
                                     </div><!-- highlights__item -->
@@ -221,11 +221,11 @@
                         {% include ':redesign/blocks/banners:side-block.html.twig' with { 'bannerType': BANNER_CODE.BUSINESS_PAGE_RIGHT } %}
 
                         {% if businessProfile.categories|length > 0 %}
-                            <div class="sidebar__section section--tags">
+                            <div class="sidebar__section section--tags" data-bw-gtm-component="section-tags">
                                 <h2 class="section__title">{% trans %}Business categories{% endtrans %}</h2>
                                 <div class="tagcloud">
                                     {% for item in businessProfile.categories %}
-                                        <a href="{{ absolute_url(path('domain_search_catalog', {'localitySlug': businessProfile.citySlug, 'categorySlug': item.getSlug() })) }}" class="tag" title="{% trans %}Go to...{% endtrans %}">{{ item.name }}</a>
+                                        <a href="{{ absolute_url(path('domain_search_catalog', {'localitySlug': businessProfile.citySlug, 'categorySlug': item.getSlug() })) }}" class="tag" title="{% trans %}Go to...{% endtrans %}" data-bw-gtm-event-click data-bw-gtm-label="{{item.name}}">{{ item.name }}</a>
                                     {% endfor %}
                                 </div>
                             </div><!-- sidebar__section -->
@@ -235,7 +235,7 @@
                             <div class="sidebar__section section--social">
                                 <ul>
                                     <li>
-                                        <a class="button" data-show-modal-id="claimBusinessModal">
+                                        <a class="button" data-show-modal-id="claimBusinessModal" data-bw-gtm-event-click data-bw-gtm-label="Claim this business">
                                             <i class="fa fa-suitcase"></i>
                                             <span>{% trans %}claim_business.button{% endtrans %}</span>
                                         </a>

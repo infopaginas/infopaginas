@@ -1,18 +1,18 @@
 <div class="icons" data-bw-gtm-component="business-profile-info-icons">
     {% if hasSubscription(business, "CODE_PREMIUM_GOLD") and photos | length > 0  %}
-        <a href="{{ absolute_url(path('domain_business_profile_view', { 'citySlug' : business.citySlug, 'slug' : business.getSlug() })) }}#photo">
+        <a href="{{ absolute_url(path('domain_business_profile_view', { 'citySlug' : business.citySlug, 'slug' : business.getSlug() })) }}#photo" data-bw-gtm-event-click data-bw-gtm-label="Photos::{{ absolute_url(path('domain_business_profile_view', { 'citySlug' : business.citySlug, 'slug' : business.getSlug() })) }}#photo">
             <i class="photo"></i>
         </a>
     {% endif %}
 
     {% if hasSubscription(business, "CODE_PREMIUM_PLATINUM") and business.getVideo() is not null %}
-        <a href="{{ absolute_url(path('domain_business_profile_view', { 'citySlug' : business.citySlug, 'slug' : business.getSlug() })) }}#video">
+        <a href="{{ absolute_url(path('domain_business_profile_view', { 'citySlug' : business.citySlug, 'slug' : business.getSlug() })) }}#video" data-bw-gtm-event-click data-bw-gtm-label="Videos::{{ absolute_url(path('domain_business_profile_view', { 'citySlug' : business.citySlug, 'slug' : business.getSlug() })) }}#video">
             <i class="video"></i>
         </a>
     {% endif %}
 
     {% if hasSubscription(business, "CODE_PRIORITY") and advertisements | length > 0 %}
-        <a href="{{ absolute_url(path('domain_business_profile_view', { 'citySlug' : business.citySlug, 'slug' : business.getSlug() })) }}#ad">
+        <a href="{{ absolute_url(path('domain_business_profile_view', { 'citySlug' : business.citySlug, 'slug' : business.getSlug() })) }}#ad" data-bw-gtm-event-click data-bw-gtm-label="Ads::{{ absolute_url(path('domain_business_profile_view', { 'citySlug' : business.citySlug, 'slug' : business.getSlug() })) }}#ad">
             <i class="ad"></i>
         </a>
     {% endif %}

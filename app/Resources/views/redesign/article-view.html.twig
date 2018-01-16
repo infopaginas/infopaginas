@@ -7,15 +7,15 @@
 {% endblock %}
 
 {% block body %}
-    <div class="main__container main__container--centered">
+    <div class="main__container main__container--centered" data-bw-gtm-component="article-view">
         <div class="container clearfix">
             <div class="main main-column">
                 <article class="article">
                     <section class="article__header page-section">
                         <h1><strong>{{ article.title }}</strong></h1>
-                        <div class="article__category" data-bw-gtm-component="article-category" data-bw-gtm-event-click>
+                        <div class="article__category" data-bw-gtm-event-click>
                             <div class="tagcloud">
-                                <a href="{{ absolute_url(path('domain_article_category', {'categorySlug':  article.getCategory().getSlug() })) }}" class="tag">{{ article.getCategory().getName() }}</a>
+                                <a href="{{ absolute_url(path('domain_article_category', {'categorySlug':  article.getCategory().getSlug() })) }}" class="tag" data-bw-gtm-label="{{ article.getCategory().getName() }}">{{ article.getCategory().getName() }}</a>
                             </div>
                         </div>
 
@@ -26,7 +26,7 @@
                             </ul>
                         </div>
                     </section>
-                    <section class="article-body" data-bw-gtm-component="article-body">
+                    <section class="article-body">
 
                         {% if (articleGallery|length > 0) %}
                             <section class="page-section photos slider section--slider hide-before">

@@ -4,32 +4,32 @@
     <div class="share" data-bw-gtm-component="social-buttons">
         {% if item.facebookURL %}
             <div class="share__item facebook">
-                <a data-href="{{ item.facebookURL }}" class="redirect-event" data-id="{{ item.id }}" data-type="facebookVisit" title="{% trans %}Visit business profile on...{% endtrans %}"><i class="fa fa-facebook"></i></a>
+                <a data-href="{{ item.facebookURL }}" class="redirect-event" data-id="{{ item.id }}" data-type="facebookVisit" title="{% trans %}Visit business profile on...{% endtrans %}" data-bw-gtm-event-click data-bw-gtm-label="facebook::{{ item.facebookURL }}"><i class="fa fa-facebook"></i></a>
             </div><!-- share__item -->
         {% endif %}
         {% if item.twitterURL %}
             <div class="share__item twitter">
-                <a data-href="{{ item.twitterURL }}" class="redirect-event" data-id="{{ item.id }}" data-type="twitterVisit" title="{% trans %}Visit business profile on...{% endtrans %}"><i class="fa fa-twitter"></i></a>
+                <a data-href="{{ item.twitterURL }}" class="redirect-event" data-id="{{ item.id }}" data-type="twitterVisit" title="{% trans %}Visit business profile on...{% endtrans %}" data-bw-gtm-event-click data-bw-gtm-label="twitter::{{ item.twitterURL }}"><i class="fa fa-twitter"></i></a>
             </div><!-- share__item -->
         {% endif %}
         {% if item.googleURL %}
             <div class="share__item google-plus">
-                <a data-href="{{ item.googleURL }}" class="redirect-event" data-id="{{ item.id }}" data-type="googleVisit" title="{% trans %}Visit business profile on...{% endtrans %}"><i class="fa fa-google-plus"></i></a>
+                <a data-href="{{ item.googleURL }}" class="redirect-event" data-id="{{ item.id }}" data-type="googleVisit" title="{% trans %}Visit business profile on...{% endtrans %}" data-bw-gtm-event-click data-bw-gtm-label="google-plus::{{ item.googleURL }}"><i class="fa fa-google-plus"></i></a>
             </div><!-- share__item -->
         {% endif %}
         {% if item.youtubeURL %}
             <div class="share__item youtube">
-                <a data-href="{{ item.youtubeURL }}" class="redirect-event" data-id="{{ item.id }}" data-type="youtubeVisit" title="{% trans %}Visit business profile on...{% endtrans %}"><i class="fa fa-youtube"></i></a>
+                <a data-href="{{ item.youtubeURL }}" class="redirect-event" data-id="{{ item.id }}" data-type="youtubeVisit" title="{% trans %}Visit business profile on...{% endtrans %}" data-bw-gtm-event-click data-bw-gtm-label="youtube::{{ item.youtubeURL }}"><i class="fa fa-youtube"></i></a>
             </div><!-- share__item -->
         {% endif %}
         {% if item.instagramURL %}
             <div class="share__item instagram">
-                <a data-href="{{ item.instagramURL }}" class="redirect-event" data-id="{{ item.id }}" data-type="instagramVisit" title="{% trans %}Visit business profile on...{% endtrans %}"><i class="fa fa-instagram"></i></a>
+                <a data-href="{{ item.instagramURL }}" class="redirect-event" data-id="{{ item.id }}" data-type="instagramVisit" title="{% trans %}Visit business profile on...{% endtrans %}" data-bw-gtm-event-click data-bw-gtm-label="instagram::{{ item.instagramURL }}"><i class="fa fa-instagram"></i></a>
             </div><!-- share__item -->
         {% endif %}
         {% if item.tripAdvisorURL %}
             <div class="share__item tripadvisor">
-                <a data-href="{{ item.tripAdvisorURL }}" class="redirect-event" data-id="{{ item.id }}" data-type="tripAdvisorVisit" title="{% trans %}Visit business profile on...{% endtrans %}"><i class="fa fa-tripadvisor"></i></a>
+                <a data-href="{{ item.tripAdvisorURL }}" class="redirect-event" data-id="{{ item.id }}" data-type="tripAdvisorVisit" title="{% trans %}Visit business profile on...{% endtrans %}" data-bw-gtm-event-click data-bw-gtm-label="tripadvisor::{{ item.tripAdvisorURL }}"><i class="fa fa-tripadvisor"></i></a>
             </div><!-- share__item -->
         {% endif %}
     </div>

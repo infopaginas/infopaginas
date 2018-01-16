@@ -8,7 +8,7 @@
         </a>
 
         {% if catalogLocality %}
-            <a href="{{ absolute_url(path('domain_search_catalog', {'localitySlug':  catalogLocality.slug })) }}" title="{{ catalogLocality.name }}">
+            <a href="{{ absolute_url(path('domain_search_catalog', {'localitySlug':  catalogLocality.slug })) }}" title="{{ catalogLocality.name }}" data-bw-gtm-event-click data-bw-gtm-label="{{ catalogLocality.name|truncate(breadcrumb_max_length) }}::{{ absolute_url(path('domain_search_catalog', {'localitySlug':  catalogLocality.slug })) }}">
                 <button id="breadcrumb_location" type="button" class="button button--action button--location">
                     <i class="fa fa-map-marker"></i>
                     <span>{{ catalogLocality.name|truncate(breadcrumb_max_length) }}</span>
@@ -16,7 +16,7 @@
             </a>
 
             {% if category %}
-                <a href="{{ absolute_url(path('domain_search_catalog', {'localitySlug':  catalogLocality.slug, 'categorySlug': category.slug })) }}" title="{{ category.name }}">
+                <a href="{{ absolute_url(path('domain_search_catalog', {'localitySlug':  catalogLocality.slug, 'categorySlug': category.slug })) }}" title="{{ category.name }}" data-bw-gtm-event-click data-bw-gtm-label="{{ category.name|truncate(breadcrumb_max_length) }}::{{ absolute_url(path('domain_search_catalog', {'localitySlug':  catalogLocality.slug, 'categorySlug': category.slug })) }}">
                     <button id="category-toggle" type="button" class="button button--action category__toggle">
                         {{ category.name|truncate(breadcrumb_max_length) }}
                     </button>

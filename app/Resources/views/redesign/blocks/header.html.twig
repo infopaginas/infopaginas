@@ -1,6 +1,6 @@
 <header class="header" data-bw-gtm-component="header">
-    <div class="logo" data-bw-gtm-component="logo">
-        <a href="{{ absolute_url(path('domain_site_home_index')) }}">
+    <div class="logo">
+        <a href="{{ absolute_url(path('domain_site_home_index')) }}" data-bw-gtm-event-click data-bw-gtm-label="Logo::{{ absolute_url(path('domain_site_home_index')) }}">
             <img class="logo__icon" src="{{ absolute_url(asset('redesign/img/infopaginas.svg')) }}" width="52" alt="{% trans %}infopaginos.image.alt{% endtrans %}">
             <img class="logo__iso" src="{{ absolute_url(asset('redesign/img/infopaginas-iso.svg')) }}" alt="{% trans %}infopaginos.image.alt{% endtrans %}">
         </a>
@@ -12,7 +12,7 @@
         {% endblock %}
     {% endif %}
 
-    <button id="nav-toggle" type="button" class="nav__toggle button button--text" data-bw-gtm-component="nav-toggle" data-bw-gtm-event-click data-bw-gtm-label="nav-toggle">
+    <button id="nav-toggle" type="button" class="nav__toggle button button--text" data-bw-gtm-event-click data-bw-gtm-label="nav-toggle">
         <i class="fa fa-bars"></i>
     </button>
 
@@ -21,22 +21,22 @@
 
             <div class="user-logged">
                 <div class="user__tools">
-                    <a href="{{ absolute_url(path('sonata_user_security_logout')) }}">
+                    <a href="{{ absolute_url(path('sonata_user_security_logout')) }}" data-bw-gtm-event-click data-bw-gtm-label="Logout">
                         <button type="button" class="logout "><i class="fa fa-sign-out"></i> {% trans %}Logout{% endtrans %}</button>
                     </a>
                 </div>
                 <div class="user">
-                    <a href="{{ absolute_url(path('domain_site_user_profile')) }}">
+                    <a href="{{ absolute_url(path('domain_site_user_profile')) }}" data-bw-gtm-event-click data-bw-gtm-label="site-user-profile">
                         <span>{{ app.user.getFirstname() }} {{ app.user.getLastname() }}</span>
                     </a>
                 </div>
             </div>
         {% endif %}
 
-        <ul class="language-nav" data-bw-gtm-component="language-nav">
+        <ul class="language-nav">
             {% for language in languages %}
                 <li class="{% if language.active %}nav-current{% endif %}">
-                    <a href="{{ language.url }}">{{ language.title|purify }}</a>
+                    <a href="{{ language.url }}" data-bw-gtm-event-click data-bw-gtm-label="{{ language.title|purify }}">{{ language.title|purify }}</a>
                 </li>
             {% endfor %}
         </ul>
@@ -44,40 +44,40 @@
         {% if not app.user %}
             <ul class="nav-user">
                 <li>
-                    <button type="button" data-show-modal-id="regModal"><i class="fa fa-user-plus"></i> {% trans %}Create account{% endtrans %}</button>
+                    <button type="button" data-show-modal-id="regModal" data-bw-gtm-event-click data-bw-gtm-label="Create account"><i class="fa fa-user-plus"></i> {% trans %}Create account{% endtrans %}</button>
                 </li>
                 <li class="login-link desc-menu home">
-                    <button type="button" data-show-modal-id="loginModal">
+                    <button type="button" data-show-modal-id="loginModal" data-bw-gtm-event-click data-bw-gtm-label="Login">
                         <i class="fa fa-sign-in"></i>{% trans %}Login{% endtrans %}
                     </button>
                 </li>
             </ul>
         {% endif %}
 
-        <ul class="nav-pages" data-bw-gtm-component="nav-pages" data-bw-gtm-event-click>
+        <ul class="nav-pages" data-bw-gtm-event-click>
             <li>
-                <a href="{{ absolute_url(path('domain_site_home_index')) }}"><i class="fa fa-home"></i>Home</a>
+                <a href="{{ absolute_url(path('domain_site_home_index')) }}" data-bw-gtm-label="Home::{{ absolute_url(path('domain_site_home_index')) }}"><i class="fa fa-home"></i>Home</a>
             </li>
             <li>
-                <a href="{{ absolute_url(path('domain_article_homepage')) }}"><i class="fa fa-file-text-o"></i>{% trans %}Articles{% endtrans %}</a>
+                <a href="{{ absolute_url(path('domain_article_homepage')) }}" data-bw-gtm-label="Articles::{{ absolute_url(path('domain_article_homepage')) }}"><i class="fa fa-file-text-o"></i>{% trans %}Articles{% endtrans %}</a>
             </li>
             <li>
-                <a href="{{ absolute_url(path('domain_business_video_list')) }}"><i class="fa fa-play"></i>{% trans %}Videos{% endtrans %}</a>
+                <a href="{{ absolute_url(path('domain_business_video_list')) }}" data-bw-gtm-label="Videos::{{ absolute_url(path('domain_business_video_list')) }}"><i class="fa fa-play"></i>{% trans %}Videos{% endtrans %}</a>
             </li>
             <li>
-                <a href="{{ absolute_url(path('domain_search_catalog')) }}"><i class="fa fa-sitemap"></i>{% trans %}Catalog{% endtrans %}</a>
+                <a href="{{ absolute_url(path('domain_search_catalog')) }}" data-bw-gtm-label="Catalog::{{ absolute_url(path('domain_search_catalog')) }}"><i class="fa fa-sitemap"></i>{% trans %}Catalog{% endtrans %}</a>
             </li>
             <li>
-                <a href="https://www.infopaginasmedia.com/" target="_blank">{% trans %}About Us{% endtrans %}</a>
+                <a href="https://www.infopaginasmedia.com/" target="_blank" data-bw-gtm-label="About Us::https://www.infopaginasmedia.com/">{% trans %}About Us{% endtrans %}</a>
             </li>
             <li>
-                <a href="{{ absolute_url(path('domain_page_view_contact')) }}" target="_blank">{% trans %}Contact Us{% endtrans %}</a>
+                <a href="{{ absolute_url(path('domain_page_view_contact')) }}" data-bw-gtm-label="Contact Us::{{ absolute_url(path('domain_page_view_contact')) }}"target="_blank">{% trans %}Contact Us{% endtrans %}</a>
             </li>
             <li>
-                <a href="{{ absolute_url(path('domain_page_view_privacy')) }}" target="_blank">{% trans %}Privacy Statement{% endtrans %}</a>
+                <a href="{{ absolute_url(path('domain_page_view_privacy')) }}" target="_blank" data-bw-gtm-label="Privacy Statement::{{ absolute_url(path('domain_page_view_privacy')) }}">{% trans %}Privacy Statement{% endtrans %}</a>
             </li>
             <li>
-                <a href="{{ absolute_url(path('domain_page_view_terms')) }}" target="_blank">{% trans %}Terms of Use{% endtrans %}</a>
+                <a href="{{ absolute_url(path('domain_page_view_terms')) }}" target="_blank" data-bw-gtm-label="Terms of Use::{{ absolute_url(path('domain_page_view_terms')) }}">{% trans %}Terms of Use{% endtrans %}</a>
             </li>
             {% if config(CONFIG.EMERGENCY_SITUATION_ON) %}
                 <li>
@@ -94,7 +94,7 @@
         <div class="about-infopaginas">
             <div class="about__item copyright">
                 <span>
-                  © 2017 <a href="{{ absolute_url(path('domain_site_home_index')) }}" target="_blank" title="Go to Infopaginas site">{% trans %}Infopáginas{% endtrans %}</a>
+                  © 2017 <a href="{{ absolute_url(path('domain_site_home_index')) }}" target="_blank" title="Go to Infopaginas site" data-bw-gtm-event-click data-bw-gtm-label="Infopáginas::{{ absolute_url(path('domain_site_home_index')) }}">{% trans %}Infopáginas{% endtrans %}</a>
                 </span>
             </div>
             <div class="about__item address">
@@ -103,7 +103,7 @@
                 </span>
             </div>
         </div>
-        <button id="nav-close" type="button" class="button--square nav-close">
+        <button id="nav-close" type="button" class="button--square nav-close" data-bw-gtm-event-click data-bw-gtm-label="nav-close">
             <i class="fa fa-remove"></i>
         </button>
     </nav>

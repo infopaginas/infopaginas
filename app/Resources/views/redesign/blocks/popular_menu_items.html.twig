@@ -1,19 +1,19 @@
 {% if shortCutItems %}
-    <section class="{% if type == SHORT_CUT_ITEMS.LANDING %}page-section page-section--no-box{% else %}error-section error__categories{% endif %}">
+    <section class="{% if type == SHORT_CUT_ITEMS.LANDING %}page-section page-section--no-box{% else %}error-section error__categories{% endif %}" data-bw-gtm-component="feature-categories-list">
         <h2 class="section__title">
             {{ title|trans }}
         </h2>
 
         <div class="featured-categories clearfix">
             {% for item in shortCutItems %}
-                <div class="featured-categories__list" data-bw-gtm-component="feature-categories-list" data-bw-gtm-event-click>
+                <div class="featured-categories__list">
                     <h3>
                         {{ item.title }}
                     </h3>
                     <ul>
                         {% for searchItem in item.data %}
                             <li class="cat-list__item">
-                                <a href="{{ absolute_url(path('domain_search_index', searchItem.data)) }}" title="{{ searchItem.title }}">
+                                <a href="{{ absolute_url(path('domain_search_index', searchItem.data)) }}" title="{{ searchItem.title }}" data-bw-gtm-event-click data-bw-gtm-label="{{ searchItem.title }}::{{ absolute_url(path('domain_search_index', searchItem.data)) }}">
                                     <span>{{ searchItem.title }}</span>
                                 </a>
                             </li>

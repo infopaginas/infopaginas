@@ -9,31 +9,31 @@
 
 {% block body %}
     <div class="main__container">
-        <section class="main" id="searchResults" data-bw-gtm-component="search-results" data-bw-gtm-event-click>
+        <section class="main" id="searchResults" data-bw-gtm-component="search-results">
             <div class="results {% if not disableFilters %}active__toggle{% endif %}">
                 <div id="searchContainer">
                     {% include ':redesign/blocks:search_result_item_block.html.twig' %}
                 </div>
 
-                <button id="show-map" type="button" class="button button-round button--show-map button- floating-offset">
+                <button id="show-map" type="button" class="button button-round button--show-map button- floating-offset" data-bw-gtm-event-click data-bw-gtm-label="Map View">
                     <i class="fa fa-map"></i>
                     <span>{% trans %}Map view{% endtrans %}</span>
                 </button>
             </div><!-- results -->
         </section><!-- main -->
 
-        <section class="results-map" data-bw-gtm-component="search-results-map" data-bw-gtm-event-click>
-            <button id="redo-search-in-map" type="button" class="button-like-google button--redo-search-in-map">
+        <section class="results-map" data-bw-gtm-component="search-results-map">
+            <button id="redo-search-in-map" type="button" class="button-like-google button--redo-search-in-map" data-bw-gtm-event-click data-bw-gtm-label="Search in Map">
                 <i class="fa fa-search"></i>
                 <span>{% trans %}search.control.redo{% endtrans %}</span>
             </button>
 
-            <button id="auto-search-in-map" type="button" class="button-like-google button--auto-search-in-map">
+            <button id="auto-search-in-map" type="button" class="button-like-google button--auto-search-in-map" data-bw-gtm-event-click data-bw-gtm-label="Auto Search in Map">
                 <i class="fa fa-square-o"></i>
                 <span>{% trans %}search.control.auto{% endtrans %}</span>
             </button>
 
-            <button id="hide-map" type="button" class="button button-round button--hide-map">
+            <button id="hide-map" type="button" class="button button-round button--hide-map" data-bw-gtm-event-click data-bw-gtm-label="List View">
                 <i class="fa fa-list"></i>
                 <span>{% trans %}List view{% endtrans %}</span>
             </button>

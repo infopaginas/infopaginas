@@ -3,7 +3,7 @@
 
 <div class="reviews" data-bw-gtm-component="business-profile-reviews">
     {% if businessReviewsCount > 0 %}
-        <a href="{{ absolute_url(path('domain_business_profile_view', { 'citySlug' : business.citySlug, 'slug' : business.getSlug() })) }}#reviews">
+        <a href="{{ absolute_url(path('domain_business_profile_view', { 'citySlug' : business.citySlug, 'slug' : business.getSlug() })) }}#reviews" data-bw-gtm-event-click data-bw-gtm-label="Reviews::{{ absolute_url(path('domain_business_profile_view', { 'citySlug' : business.citySlug, 'slug' : business.getSlug() })) }}#reviews">
             {% include ':blocks/business:review_rating_stars.html.twig' with { 'rating': reviewsAvgRating } %}
             <span>{{ businessReviewsCount }} {% trans %}Reviews{% endtrans %}</span>
         </a>

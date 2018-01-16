@@ -1,5 +1,5 @@
 <!--Modal review-->
-<div id="writeReviewModal" class="modal modal--review" tabindex="-1" role="dialog" aria-hidden="true">
+<div id="writeReviewModal" class="modal modal--review" tabindex="-1" role="dialog" aria-hidden="true" data-bw-gtm-component="modal-write-review">
     <div class="modal__outside"></div>
     <div class="modal__content">
         <h2>{% trans %}Write a review{% endtrans %}</h2>
@@ -33,12 +33,13 @@
                 </div>
                 <div class="form__actions">
                     {{ form_rest(reviewForm) }}
-                    <button type="button" class="button button--action" data-business-profile-id="{{ businessProfile.getId() }}" id="createReviewButton">{% trans %}Submit{% endtrans %}</button>
-                    <button type="button" class="button button--action  hide-modal">{% trans %}Cancel{% endtrans %}</button>
+    <div class="modal__content" data-bw-gtm-label="Log In with Facebook" data-bw-gtm-event-click>
+                    <button type="button" class="button button--action" data-business-profile-id="{{ businessProfile.getId() }}" id="createReviewButton" data-bw-gtm-event-click data-bw-gtm-label="Submit">{% trans %}Submit{% endtrans %}</button>
+                    <button type="button" class="button button--action  hide-modal"  data-bw-gtm-label="Cancel" data-bw-gtm-event-click>{% trans %}Cancel{% endtrans %}</button>
                 </div>
             </form>
         </div><!-- modal__section -->
         <div class="modal__section login__footer"></div><!-- modal__section -->
-        <button type="button" class="button--remove hide-modal"><i class="fa fa-remove"></i></button>
+        <button type="button" class="button--remove hide-modal" data-bw-gtm-event-click data-bw-gtm-label="hide-modal"><i class="fa fa-remove"></i></button>
     </div><!-- modal__content -->
 </div>
