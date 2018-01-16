@@ -2,7 +2,9 @@
 
 namespace Domain\ReportBundle\Manager;
 
+use Domain\ReportBundle\Util\DatesUtil;
 use Oxa\Sonata\AdminBundle\Model\Manager\DefaultManager;
+use Oxa\Sonata\AdminBundle\Util\Helpers\AdminHelper;
 
 class BaseReportManager extends DefaultManager
 {
@@ -23,5 +25,36 @@ class BaseReportManager extends DefaultManager
         );
 
         return $filename;
+    }
+
+    /**
+     * @param string $periodOption
+     *
+     * @return array
+     */
+    public function handlePeriodOption($periodOption = '')
+    {
+        switch ($periodOption) {
+            case AdminHelper::PERIOD_OPTION_CODE_PER_MONTH:
+                $dateFormat = AdminHelper::DATE_MONTH_FORMAT;
+                $step       = DatesUtil::STEP_MONTH;
+
+                break;
+            case AdminHelper::PERIOD_OPTION_CODE_WEEKLY:
+                $dateFormat = AdminHelper::DATE_WEEK_FORMAT;
+                $step       = DatesUtil::STEP_WEEK;
+
+                break;
+            default:
+                $dateFormat = AdminHelper::DATE_FORMAT;
+                $step       = DatesUtil::STEP_DAY;
+
+                break;
+        }
+
+        return [
+            $dateFormat,
+            $step
+        ];
     }
 }

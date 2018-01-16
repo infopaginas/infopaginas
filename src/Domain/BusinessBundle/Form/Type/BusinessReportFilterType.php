@@ -3,7 +3,9 @@
 namespace Domain\BusinessBundle\Form\Type;
 
 use Domain\ReportBundle\Manager\KeywordsReportManager;
+use Domain\ReportBundle\Model\BusinessOverviewModel;
 use Domain\ReportBundle\Util\DatesUtil;
+use Oxa\Sonata\AdminBundle\Util\Helpers\AdminHelper;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
@@ -24,13 +26,15 @@ class BusinessReportFilterType extends AbstractType
     {
         $builder
             ->add('dateRange', ChoiceType::class, [
-                'attr' => [
-                    'class' => 'select--medium',
+                'label' => 'Date period',
+                'label_attr' => [
+                    'class' => 'title-label',
                 ],
                 'choices' => DatesUtil::getReportDataRanges(),
-                'data'    => DatesUtil::RANGE_DEFAULT,
+                'data'    => DatesUtil::RANGE_LAST_MONTH,
             ])
             ->add('start', DateType::class, [
+                'label' => 'Date Start',
                 'widget' => 'single_text',
                 'html5'  => false,
                 'attr'   => [
@@ -39,6 +43,7 @@ class BusinessReportFilterType extends AbstractType
                 'data' => new \DateTime('monday this week'),
             ])
             ->add('end', DateType::class, [
+                'label' => 'Date End',
                 'widget' => 'single_text',
                 'html5'  => false,
                 'attr'   => [
@@ -47,11 +52,28 @@ class BusinessReportFilterType extends AbstractType
                 'data' => new \DateTime('sunday this week'),
             ])
             ->add('limit', ChoiceType::class, [
-                'attr' => [
-                    'class' => 'select--medium',
+                'label' => 'Keywords Count',
+                'label_attr' => [
+                    'class' => 'title-label',
                 ],
                 'choices' => KeywordsReportManager::KEYWORDS_PER_PAGE_COUNT,
                 'data'    => KeywordsReportManager::DEFAULT_KEYWORDS_COUNT,
+            ])
+            ->add('actionType', ChoiceType::class, [
+                'label' => 'business_profile.interaction_chart.action_type',
+                'label_attr' => [
+                    'class' => 'title-label',
+                ],
+                'choices' => BusinessOverviewModel::getChartEventTypesWithTranslation(),
+                'data'    => BusinessOverviewModel::DEFAULT_CHART_TYPE,
+            ])
+            ->add('groupPeriod', ChoiceType::class, [
+                'label' => 'business_profile.interaction_chart.group_period',
+                'label_attr' => [
+                    'class' => 'title-label',
+                ],
+                'choices' => AdminHelper::getPeriodOptionValues(),
+                'data'    => AdminHelper::PERIOD_OPTION_CODE_PER_MONTH,
             ])
         ;
     }

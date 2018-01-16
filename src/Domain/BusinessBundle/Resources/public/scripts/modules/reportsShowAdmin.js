@@ -3,42 +3,44 @@ $( document ).ready( function() {
         containers: {
             businessOverviewChartContainerId: '#' + uniqueId + '_interactionReportChartContainer',
             businessOverviewStatsContainerId: '#' + uniqueId + '_interactionReportStatisticsContainer',
+            businessOverviewHintContainerId: '#' + uniqueId + '_interactionReportChartHintContainer',
             keywordChartContainerId: '#' + uniqueId + '_keywordReportChartContainer',
             keywordStatsContainerId: '#' + uniqueId + '_keywordReportStatisticsContainer',
             adUsageChartContainerId: '#' + uniqueId + '_adUsageReportChartContainer',
             adUsageStatsContainerId: '#' + uniqueId + '_adUsageReportStatisticsContainer'
         },
         inputs: {
-            interactionDateStart:   '#' + uniqueId + '_interactionReportFiltersDateStart',
-            interactionDateEnd:     '#' + uniqueId + '_interactionReportFiltersDateEnd',
-            keywordDateStart:       '#' + uniqueId + '_keywordReportFiltersDateStart',
-            keywordDateEnd:         '#' + uniqueId + '_keywordReportFiltersDateEnd',
-            keywordLimit:           '#' + uniqueId + '_keywordReportLimit',
-            adUsageDateStart:       '#' + uniqueId + '_adUsageReportFiltersDateStart',
-            adUsageDateEnd:         '#' + uniqueId + '_adUsageReportFiltersDateEnd'
+            mainDateStart:    '#' + uniqueId + '_mainReportFiltersDateStart',
+            mainDateEnd:      '#' + uniqueId + '_mainReportFiltersDateEnd',
+            actionType:       '#' + uniqueId + '_actionType',
+            periodOption:     '#' + uniqueId + '_periodOption',
+            keywordLimit:     '#' + uniqueId + '_keywordReportLimit',
+            adUsageDateStart: '#' + uniqueId + '_adUsageReportFiltersDateStart',
+            adUsageDateEnd:   '#' + uniqueId + '_adUsageReportFiltersDateEnd',
+            mainPeriods:      'input[name="' + uniqueId + '[period]"]'
         },
         buttons: {
-            keywordFilter:      '#' + uniqueId + '_keywordReportFiltersFilter',
-            interactionFilter:  '#' + uniqueId + '_interactionReportFiltersFilter',
+            mainFilter:         '#' + uniqueId + '_mainReportFiltersFilter',
+            actionTypeFilter:   '#' + uniqueId + '_actionTypeFilter',
+            periodOptionFilter: '#' + uniqueId + '_periodOptionFilter',
+            keywordFilter:      '#' + uniqueId + '_keywordReportLimitFilter',
             adUsageFilter:      '#' + uniqueId + '_adUsageReportFiltersFilter',
             exportExcel:        '[data-export-type = "export-excel"]',
             exportPdf:          '[data-export-type = "export-pdf"]',
             print:              '[data-export-type = "print"]'
         },
         tabs: {
-            'interactionTab':   'a[href="#tab_' + uniqueId + '_6"]',
-            'keywordTab':       'a[href="#tab_' + uniqueId + '_7"]',
-            'adUsageTab':       'a[href="#tab_' + uniqueId + '_8"]',
-            interactionTabId:   '#tab_' + uniqueId + '_6',
-            keywordTabId:       '#tab_' + uniqueId + '_7',
-            adUsageTabId:       '#tab_' + uniqueId + '_8'
+            mainReportTab:      'a[href="#tab_' + uniqueId + '_6"]',
+            adUsageTab:         'a[href="#tab_' + uniqueId + '_7"]',
+            mainReportTabId:    '#tab_' + uniqueId + '_6',
+            adUsageTabId:       '#tab_' + uniqueId + '_7'
         }
     };
 
     var reportUrls = {
         businessOverviewDataAction: Routing.generate( 'domain_business_admin_reports_business_overview_data' ),
         keywordsDataAction:         Routing.generate( 'domain_business_admin_reports_keywords_data' ),
-        adUsageDataAction:          Routing.generate('domain_business_admin_reports_ad_usage_data'),
+        adUsageDataAction:          Routing.generate( 'domain_business_admin_reports_ad_usage_data' ),
         pdfExportURL:               Routing.generate( 'domain_business_admin_reports_pdf_export' ),
         excelExportURL:             Routing.generate( 'domain_business_admin_reports_excel_export' )
     };
@@ -48,16 +50,18 @@ $( document ).ready( function() {
     function loadBusinessOverviewReport() {
         $.ajax({
             url: reportUrls.businessOverviewDataAction,
-            data: getInteractionFilterValues(),
+            data: getMainFilterValues(),
             dataType: 'JSON',
             type: 'POST',
             beforeSend: function() {
                 $( html.containers.businessOverviewChartContainerId ).html( '' );
                 $( html.containers.businessOverviewStatsContainerId ).html( '' );
+                $( html.containers.businessOverviewHintContainerId ).html( '' );
             },
             success: function(response) {
                 $( html.containers.businessOverviewStatsContainerId ).html( response.stats );
-                loadBusinessOverviewChart( response.dates, response.views, response.impressions );
+                $( html.containers.businessOverviewHintContainerId ).html( response.chartHint );
+                loadBusinessOverviewChart( response.dates, response.chart, response.chartTitle );
             }
         });
     }
@@ -65,7 +69,7 @@ $( document ).ready( function() {
     function loadKeywordsReport() {
         $.ajax({
             url: reportUrls.keywordsDataAction,
-            data: getKeywordFilterValues(),
+            data: getMainFilterValues(),
             dataType: 'JSON',
             type: 'POST',
             beforeSend: function() {
@@ -96,7 +100,7 @@ $( document ).ready( function() {
         });
     }
 
-    function loadBusinessOverviewChart(dates, views, impressions) {
+    function loadBusinessOverviewChart(dates, chartData, title) {
         $( html.containers.businessOverviewChartContainerId ).highcharts({
             title: {
                 text: 'Interactions',
@@ -123,12 +127,8 @@ $( document ).ready( function() {
             },
             series: [
                 {
-                    name: 'Views',
-                    data: views
-                },
-                {
-                    name: 'Impressions',
-                    data: impressions
+                    name: title,
+                    data: chartData
                 }
             ]
         });
@@ -207,16 +207,21 @@ $( document ).ready( function() {
         });
     }
 
-    function getInteractionFilterValues() {
-        var interactionDateStart = $( html.inputs.interactionDateStart ).val();
-        var interactionDateEnd   = $( html.inputs.interactionDateEnd ).val();
+    function getMainFilterValues() {
+        var dateStart    = $( html.inputs.mainDateStart ).val();
+        var dateEnd      = $( html.inputs.mainDateEnd ).val();
+        var keywordLimit = $( html.inputs.keywordLimit ).val();
+        var chartType    = $( html.inputs.actionType ).val();
+        var period       = $( html.inputs.periodOption ).val();
 
         return {
             'businessProfileId': businessProfileId,
-            'start': interactionDateStart,
-            'end': interactionDateEnd,
+            'start': dateStart,
+            'end':   dateEnd,
             'datesRange': 'custom',
-            'limit': 10
+            'limit': keywordLimit,
+            'chartType': chartType,
+            'periodOption': period
         };
     }
 
@@ -233,36 +238,28 @@ $( document ).ready( function() {
         };
     }
 
-    function getKeywordFilterValues() {
-        var keywordDateStart = $( html.inputs.keywordDateStart ).val();
-        var keywordDateEnd   = $( html.inputs.keywordDateEnd ).val();
-        var keywordLimit     = $( html.inputs.keywordLimit ).val();
-
-        return {
-            'businessProfileId': businessProfileId,
-            'start': keywordDateStart,
-            'end': keywordDateEnd,
-            'datesRange': 'custom',
-            'limit': keywordLimit
-        };
-    }
-
     handleReportUpdate();
 
     function handleReportUpdate() {
-        $( html.buttons.interactionFilter ).on( 'click', function() {
+        $( html.buttons.mainFilter ).on( 'click', function() {
+            loadBusinessOverviewReport();
+            loadKeywordsReport();
+        });
+
+        $( html.tabs.mainReportTab ).on( 'click', function() {
+            loadBusinessOverviewReport();
+            loadKeywordsReport();
+        });
+
+        $( html.buttons.actionTypeFilter ).on( 'click', function() {
             loadBusinessOverviewReport();
         });
 
-        $( html.tabs.interactionTab ).on( 'click', function() {
+        $( html.buttons.periodOptionFilter ).on( 'click', function() {
             loadBusinessOverviewReport();
         });
 
         $( html.buttons.keywordFilter ).on( 'click', function() {
-            loadKeywordsReport();
-        });
-
-        $( html.tabs.keywordTab ).on( 'click', function() {
             loadKeywordsReport();
         });
 
@@ -302,15 +299,36 @@ $( document ).ready( function() {
     function getFilterParams() {
         var filterParams;
 
-        if ( $( html.tabs.interactionTabId ).hasClass( 'active' ) ) {
-            filterParams = getInteractionFilterValues();
-        } else if ( $( html.tabs.keywordTabId ).hasClass( 'active' ) ) {
-            filterParams = getKeywordFilterValues();
+        if ( $( html.tabs.mainReportTabId ).hasClass( 'active' ) ) {
+            filterParams = getMainFilterValues();
         } else {
             filterParams = getAdUsageFilterValues();
         }
 
         return filterParams;
+    }
+
+    handlePeriodChoicesUpdate();
+
+    function handlePeriodChoicesUpdate()
+    {
+        $( document ).on( 'ifChecked ifUnchecked', html.inputs.mainPeriods, function ( e ) {
+            if ( $( this ).prop( 'checked' ) ) {
+                handlePeriodChoicesCalendar( this );
+            }
+        });
+    }
+
+    function handlePeriodChoicesCalendar()
+    {
+        var period = parseInt( $( html.inputs.mainPeriods + ':checked' ).data( 'month' ) );
+        var endDate   = new Date();
+        var startDate = new Date();
+
+        startDate.setMonth( startDate.getMonth() - period );
+
+        $( html.inputs.mainDateStart ).data( 'DateTimePicker' ).setDate( startDate );
+        $( html.inputs.mainDateEnd ).data( 'DateTimePicker' ).setDate( endDate );
     }
 
     function initDatetimePickers() {

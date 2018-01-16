@@ -111,7 +111,8 @@ h4.filter_legend img {
 }
 
 div.scrollable-table {
-    overflow-x: scroll;
+    overflow-x: auto;
+    padding: 10px;
 }
 
 div.scrollable-table table.ad-usage-table tbody tr:nth-child(3n) {
@@ -280,3 +281,13 @@ div.single-media-preview-block img {
     padding-bottom: 5px;
     margin: 8px;
 }
+
+.total-block div[id *= "_interactionReportStatisticsContainer"] .row {
+     margin-right: 0px;
+     margin-left: 0px;
+}
+
+.total-block div[id *= "_interactionReportStatisticsContainer"] .panel-body {
+    font-size: x-large;
+}
+

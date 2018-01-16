@@ -5294,14 +5294,6 @@ input[type='radio'], input[type='checkbox'] {
   }
 }
 
-#customDatesContainer {
-  & input {
-    padding: 0 22px;
-    height: auto;
-    line-height: normal;
-  }
-}
-
 #domain_business_bundle_business_review_type_content {
   line-height: normal;
 }
@@ -5755,7 +5747,8 @@ a.link-pointer {
 }
 
 div.scrollable-table {
-  overflow-x: scroll;
+  overflow-x: auto;
+  padding: 10px;
 
   table.ad-usage-table {
     tbody tr:nth-child(3n) {
@@ -5972,6 +5965,86 @@ span.no-js-warning-message {
   display: inline-block;
   text-align: center;
   color: green;
+}
+
+#businessOverviewChartContainer.overview-chart-container {
+  min-width: 310px;
+  height: 400px;
+  margin: 0 auto;
+}
+
+#keywordChartContainer.keyword-chart-container {
+  min-width: 310px;
+  height: 400px;
+  margin: 0 auto;
+}
+
+.section-filters #keywordsLimitContainer {
+  margin-top: 25px;
+}
+
+#businessOverviewStatisticsContainer.total-block {
+  .row:after, .row:before {
+    display: table;
+    content: " ";
+  }
+
+  .row:after {
+    clear: both;
+  }
+
+  .col-sm-3 {
+    position: relative;
+    min-height: 1px;
+    padding-right: 15px;
+    padding-left: 15px;
+  }
+
+  @media (min-width: 768px) {
+    .col-sm-3 {
+      width: 25%;
+      float: left;
+    }
+  }
+
+  .panel-default {
+    border-color: $grey--light;
+  }
+
+  .panel {
+    margin-bottom: 20px;
+    background-color: $white;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    -webkit-box-shadow: 0 1px 1px rgba(0,0,0,.05);
+    box-shadow: 0 1px 1px rgba(0,0,0,.05);
+  }
+
+  .panel-default > .panel-heading {
+    color: #333;
+    background-color: #f5f5f5;
+    border-color: $grey--light;
+  }
+
+  .panel-heading {
+    padding: 10px 15px;
+    border-bottom: 1px solid transparent;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+  }
+
+  .panel-body {
+    padding: 15px;
+  }
+
+  .panel-body:after, .panel-body:before {
+    display: table;
+    content: " ";
+  }
+
+  .panel-body:after {
+    clear: both;
+  }
 }
 
 /* emergency pop-up */

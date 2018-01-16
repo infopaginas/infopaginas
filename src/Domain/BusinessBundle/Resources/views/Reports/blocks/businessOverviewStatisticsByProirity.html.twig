@@ -1,0 +1,24 @@
+<div class="row">
+    {% set events = get_events_with_priority(priority) %}
+
+    {% for event in events %}
+        {% if not (event == REPORT_EVENT_TYPE.VIDEO_WATCHED and not overviewData.total[event]) %}
+            <div class="col-sm-3">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        {% if eventList[event] is defined %}
+                            {{ eventList[event]|trans }}:
+                        {% else %}
+                            {{ event|trans }}:
+                        {% endif %}
+                    </div>
+                    <div class="panel-body">
+                        {% if overviewData.total[event] is defined %}
+                            {{ overviewData.total[event] }}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    {% endfor %}
+</div>

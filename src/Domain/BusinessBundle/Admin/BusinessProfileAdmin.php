@@ -16,6 +16,7 @@ use Domain\BusinessBundle\Util\BusinessProfileUtil;
 use Domain\BusinessBundle\Validator\Constraints\BusinessProfilePhoneTypeValidator;
 use Domain\BusinessBundle\Validator\Constraints\BusinessProfileWorkingHourTypeValidator;
 use Domain\ReportBundle\Manager\KeywordsReportManager;
+use Domain\ReportBundle\Model\BusinessOverviewModel;
 use Domain\ReportBundle\Util\DatesUtil;
 use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
 use Oxa\ConfigBundle\Model\ConfigInterface;
@@ -1019,47 +1020,52 @@ class BusinessProfileAdmin extends OxaAdmin
 
         // Report tabs
         if ($this->getSubject()->getId()) {
-            $dateRange = DatesUtil::getDateRangeValueObjectFromRangeType(DatesUtil::RANGE_THIS_WEEK);
+            $dateRange = DatesUtil::getDateRangeValueObjectFromRangeType(DatesUtil::RANGE_LAST_MONTH);
 
             $showMapper
-                ->tab('Interactions Report')
+                ->tab('Reports')
                     ->with('Interactions Report')
-                        ->add('interactionReportFilters', null, [
-                            'label'     => 'Interaction Filters',
-                            'template'  => 'DomainBusinessBundle:Admin:BusinessProfile/report_controls.html.twig',
+                        ->add('mainReportFilters', null, [
+                            'label'     => 'Filters',
+                            'template'  => 'DomainBusinessBundle:Admin:BusinessProfile/main_report_controls.html.twig',
                             'dateStart' => $dateRange->getStartDate()->format(DatesUtil::DATE_DB_FORMAT),
                             'dateEnd'   => $dateRange->getEndDate()->format(DatesUtil::DATE_DB_FORMAT),
                             'format'    => self::DATE_PICKER_REPORT_FORMAT,
+                            'periodChoices' => DatesUtil::getReportAdminDataRanges(),
+                            'periodData' => DatesUtil::RANGE_LAST_MONTH,
+                        ])
+                        ->add('actionType', null, [
+                            'label'     => 'Event Type',
+                            'template'  => 'DomainBusinessBundle:Admin:BusinessProfile/report_choice.html.twig',
+                            'choices'   => BusinessOverviewModel::getChartEventTypesWithTranslation(),
+                            'data'      => BusinessOverviewModel::DEFAULT_CHART_TYPE,
+                        ])
+                        ->add('periodOption', null, [
+                            'label'     => 'Period',
+                            'template'  => 'DomainBusinessBundle:Admin:BusinessProfile/report_choice.html.twig',
+                            'choices'   => AdminHelper::getPeriodOptionValues(),
+                            'data'      => AdminHelper::PERIOD_OPTION_CODE_PER_MONTH,
                         ])
                         ->add('interactionReport', null, [
                             'label'    => 'Interaction Report',
-                            'template' => 'DomainBusinessBundle:Admin:BusinessProfile/report_data.html.twig',
-                        ])
-                        ->add('interactionExport', null, [
-                            'template' => 'DomainBusinessBundle:Admin:BusinessProfile/report_export_buttons.html.twig',
+                            'template' => 'DomainBusinessBundle:Admin:BusinessProfile/action_report_data.html.twig',
                         ])
                     ->end()
-                ->end()
-                ->tab('Keywords Report')
                     ->with('Keywords Report')
                         ->add('keywordReportLimit', null, [
                             'label'     => 'Keyword Limit',
-                            'template'  => 'DomainBusinessBundle:Admin:BusinessProfile/report_limit.html.twig',
+                            'template'  => 'DomainBusinessBundle:Admin:BusinessProfile/report_choice.html.twig',
                             'choices'   => KeywordsReportManager::KEYWORDS_PER_PAGE_COUNT,
                             'data'      => KeywordsReportManager::DEFAULT_KEYWORDS_COUNT,
-                        ])
-                        ->add('keywordReportFilters', null, [
-                            'label'     => 'Keyword Filters',
-                            'template'  => 'DomainBusinessBundle:Admin:BusinessProfile/report_controls.html.twig',
-                            'dateStart' => $dateRange->getStartDate()->format(DatesUtil::DATE_DB_FORMAT),
-                            'dateEnd'   => $dateRange->getEndDate()->format(DatesUtil::DATE_DB_FORMAT),
-                            'format'    => self::DATE_PICKER_REPORT_FORMAT,
                         ])
                         ->add('keywordReport', null, [
                             'label'     => 'Keyword Report',
                             'template' => 'DomainBusinessBundle:Admin:BusinessProfile/report_data.html.twig',
                         ])
-                        ->add('keywordsExport', null, [
+                    ->end()
+                    ->with('Export')
+                        ->add('mainExport', null, [
+                            'label'    => 'Export',
                             'template' => 'DomainBusinessBundle:Admin:BusinessProfile/report_export_buttons.html.twig',
                         ])
                     ->end()

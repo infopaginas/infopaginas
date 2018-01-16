@@ -16,6 +16,7 @@ use Domain\ReportBundle\Manager\KeywordsReportManager;
 use Domain\ReportBundle\Model\UserActionModel;
 use Domain\ReportBundle\Service\Export\BusinessReportExcelExporter;
 use Domain\ReportBundle\Util\DatesUtil;
+use Oxa\Sonata\AdminBundle\Util\Helpers\AdminHelper;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -40,15 +41,19 @@ class ReportsController extends Controller
 
         $this->checkBusinessProfileAccess($businessProfile);
 
-        $dateRange = DatesUtil::getDateRangeValueObjectFromRangeType(DatesUtil::RANGE_DEFAULT);
+        $dateRange = DatesUtil::getDateRangeValueObjectFromRangeType(DatesUtil::RANGE_LAST_MONTH);
 
         $params = [
             'businessProfileId' => $businessProfileId,
             'date'              => DatesUtil::getDateAsArrayFromVO($dateRange),
+            'chartType'         => BusinessOverviewModel::DEFAULT_CHART_TYPE,
+            'limit'             => KeywordsReportManager::DEFAULT_KEYWORDS_COUNT,
+            'periodOption'      => AdminHelper::PERIOD_OPTION_CODE_PER_MONTH,
         ];
 
         $businessOverviewReportManager = $this->getBusinessOverviewReportManager();
         $overviewData = $businessOverviewReportManager->getBusinessOverviewReportData($params);
+        $keywordsData = $this->prepareKeywordsResponse($params);
 
         $filtersForm = $this->createForm(new BusinessReportFilterType());
 
@@ -58,6 +63,7 @@ class ReportsController extends Controller
             ':redesign:business-profile-report.html.twig',
             [
                 'overviewData'             => $overviewData,
+                'keywordData'              => $keywordsData,
                 'eventList'                => BusinessOverviewModel::EVENT_TYPES,
                 'filtersForm'              => $filtersForm->createView(),
                 'businessProfileId'        => $businessProfileId,
@@ -209,7 +215,7 @@ class ReportsController extends Controller
      */
     public function excelExportAction(Request $request)
     {
-        $params = $this->getExportParams($request);
+        $params = $this->getExportParams($request, true);
 
         return $this->getExcelExporterService()->getResponse($params);
     }
@@ -233,7 +239,7 @@ class ReportsController extends Controller
      */
     public function pdfExportAction(Request $request)
     {
-        $params = $this->getExportParams($request);
+        $params = $this->getExportParams($request, true);
 
         return $this->getPdfExporterService()->getResponse($params);
     }
@@ -252,10 +258,11 @@ class ReportsController extends Controller
 
     /**
      * @param Request $request
+     * @param bool    $isExport
      *
      * @return array
      */
-    protected function getExportParams(Request $request)
+    protected function getExportParams(Request $request, $isExport = false)
     {
         if ($request->getMethod() == Request::METHOD_POST) {
             $data = $request->request->all();
@@ -263,7 +270,7 @@ class ReportsController extends Controller
             $data = $request->query->all();
         }
 
-        $params = $this->prepareReportParameters($data);
+        $params = $this->prepareReportParameters($data, $isExport);
 
         $businessProfile = $this->getBusinessProfileManager()->find($params['businessProfileId']);
 
@@ -281,7 +288,7 @@ class ReportsController extends Controller
      */
     protected function getAdminExportParams(Request $request)
     {
-        $params = $this->prepareReportParameters($request->query->all());
+        $params = $this->prepareReportParameters($request->query->all(), true);
 
         $businessProfile = $this->getBusinessProfileManager()->find($params['businessProfileId']);
 
@@ -323,10 +330,11 @@ class ReportsController extends Controller
 
     /**
      * @param array $requestData
+     * @param bool  $isExport
      *
      * @return array
      */
-    protected function prepareReportParameters($requestData)
+    protected function prepareReportParameters($requestData, $isExport = false)
     {
         $params = [
             'businessProfileId' => $requestData['businessProfileId'],
@@ -344,6 +352,20 @@ class ReportsController extends Controller
             $params['print'] = true;
         } else {
             $params['print'] = false;
+        }
+
+        if (!$isExport) {
+            if (!empty($requestData['chartType']) and
+                in_array($requestData['chartType'], BusinessOverviewModel::getChartEventTypes())
+            ) {
+                $params['chartType'] = $requestData['chartType'];
+            }
+
+            if (!empty($requestData['periodOption']) and
+                !empty(AdminHelper::getPeriodOptionValues()[$requestData['periodOption']])
+            ) {
+                $params['periodOption'] = $requestData['periodOption'];
+            }
         }
 
         return $params;
@@ -367,11 +389,14 @@ class ReportsController extends Controller
             ]
         );
 
+        $translator = $this->get('translator');
+
         return [
             'stats'       => $stats,
             'dates'       => $overviewData['dates'],
-            'views'       => $overviewData['views'],
-            'impressions' => $overviewData['impressions'],
+            'chart'       => $overviewData['chart'],
+            'chartTitle'  => $translator->trans($overviewData['chartTitle']),
+            'chartHint'   => $translator->trans($overviewData['chartHint']),
         ];
     }
 
