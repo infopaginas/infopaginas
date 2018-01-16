@@ -12,7 +12,7 @@
 
 {% block body %}
     <div class="main__container main__container--centered">
-        <div class="main">
+        <div class="main" data-bw-gtm-component="business-profile-main">
             {% if businessProfile.getBackground() and hasSubscription(businessProfile, "CODE_PREMIUM_PLUS")  %}
                 <div class="container profile-header__container" style="margin: 0 auto; background-image:url({% path businessProfile.getBackground(), 'normal' %});">
                     <div class="shadow-background" style="margin: 0 auto; background-image:url({% path businessProfile.getBackground(), 'reference' %});"></div>
@@ -42,7 +42,7 @@
                 </header>
             </div><!-- container -->
 
-            <div class="profile-body__container">
+            <div class="profile-body__container" data-bw-gtm-component="business-profile-body">
                 <div class="container columns-container clearfix">
                     <article class="profile__body main-column">
                         <section class="page-section highlights-section">

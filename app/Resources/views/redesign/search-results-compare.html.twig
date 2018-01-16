@@ -6,18 +6,18 @@
 {% block bodyClass %}compare-view{% endblock %}
 
 {% block body %}
-    <div class="toolbar compare-toolbar">
-        <button id="comparison-list-toggle" type="button" class="button button--action category__toggle compare-show-list">
+    <div class="toolbar compare-toolbar" data-bw-gtm-component="search-results-compare" data-bw-gtm-event-click>
+        <button id="comparison-list-toggle" type="button" class="button button--action category__toggle compare-show-list"data-bw-gtm-label="list-show">
             <i class="fa fa-plus-square"></i> {% trans %}Add to compare{% endtrans %}
         </button>
         <a href="{{ absolute_url(path('domain_search_index', app.request.query.all)) }}" class="button button--action">{% trans %}List view{% endtrans %}</a>
     </div>
 
-    <div class="main__container">
+    <div class="main__container" data-bw-gtm-component="search-results-compare" data-bw-gtm-event-click>
         <section class="main">
-            <button id="comparison-list-hide" type="button" class="button button--action category__toggle list-hide">
+            <button id="comparison-list-hide" type="button" class="button button--action category__toggle list-hide"data-bw-gtm-label="list-hide">
                 <i class="fa fa-angle-left"></i>{% trans %}Close list{% endtrans %}
-            </button>
+            </buttondata-bw-gtm-label="list-hide">
 
             <div class="results">
                 {% if results.resultSet is defined and results.resultSet is not empty and results.resultSet is not null %}

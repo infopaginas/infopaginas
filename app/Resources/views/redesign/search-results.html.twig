@@ -9,7 +9,7 @@
 
 {% block body %}
     <div class="main__container">
-        <section class="main" id="searchResults">
+        <section class="main" id="searchResults" data-bw-gtm-component="search-results" data-bw-gtm-event-click>
             <div class="results {% if not disableFilters %}active__toggle{% endif %}">
                 <div id="searchContainer">
                     {% include ':redesign/blocks:search_result_item_block.html.twig' %}
@@ -22,7 +22,7 @@
             </div><!-- results -->
         </section><!-- main -->
 
-        <section class="results-map">
+        <section class="results-map" data-bw-gtm-component="search-results-map" data-bw-gtm-event-click>
             <button id="redo-search-in-map" type="button" class="button-like-google button--redo-search-in-map">
                 <i class="fa fa-search"></i>
                 <span>{% trans %}search.control.redo{% endtrans %}</span>
