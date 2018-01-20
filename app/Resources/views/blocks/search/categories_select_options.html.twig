@@ -1,11 +1,11 @@
-<option data-route="{{ absolute_url(path(pageRouter, searchData|merge({'category': '' }))) }}">
+<option data-route="{{ absolute_url(path(pageRouter, searchData|merge({ 'category': '' }))) }}">
     {% trans %}Category{% endtrans %}
 </option>
 {% if results and results.categories is not empty %}
     {% for category in results.categories %}
         {% if currentCategory is not defined or currentCategory.id != category.id %}
             {% set is_selected = (searchData.category == category.id) %}
-            <option data-route="{{ absolute_url(path(pageRouter, searchData|merge({'category': category.id }))) }}"
+            <option data-route="{{ absolute_url(path(pageRouter, searchData|merge({ 'category': category.id }))) }}"
                     {% if is_selected %}selected{% endif %} value="{{ category.id }}" data-bw-gtm-event-click data-bw-gtm-label="{{ category.getName() }}">
                 {{ category.getName() }}
             </option>

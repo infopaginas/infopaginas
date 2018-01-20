@@ -13,13 +13,13 @@
     </button>
 
     <div class="sort__options sort {% if disableFilters == false %}sort--on{% endif %}">
-        <a id="sort-match-link" href="{{ absolute_url(path(pageRouter, searchData|merge({'order': searchRelevance}))) }}" {% if noFollowRelevance %} rel="nofollow"{% endif %} {% if disableFilters %}class="disabledLink" {% endif %} data-bw-gtm-event-click data-bw-gtm-label="Best Match">
+        <a id="sort-match-link" href="{{ absolute_url(path(pageRouter, searchData|merge({ 'order': searchRelevance }))) }}" {% if noFollowRelevance %} rel="nofollow"{% endif %} {% if disableFilters %}class="disabledLink" {% endif %} data-bw-gtm-event-click data-bw-gtm-label="Best Match">
             <button id="sort-match" type="button" class="button sort-button {% if app.request.get('order') != searchDistance %}sort--active{% endif %}">
                 {% trans %}Best match{% endtrans %}
                 <i class="fa fa-sort-amount-desc"></i>
             </button>
         </a>
-        <a id="sort-distance-link" href="{{ absolute_url(path(pageRouter, searchData|merge({'order': searchDistance}))) }}" {% if noFollowDistance %} rel="nofollow"{% endif %} {% if disableFilters %}class="disabledLink" {% endif %} data-bw-gtm-event-click data-bw-gtm-label="Distance">
+        <a id="sort-distance-link" href="{{ absolute_url(path(pageRouter, searchData|merge({ 'order': searchDistance }))) }}" {% if noFollowDistance %} rel="nofollow"{% endif %} {% if disableFilters %}class="disabledLink" {% endif %} data-bw-gtm-event-click data-bw-gtm-label="Distance">
             <button id="sort-distance" type="button" class="button sort-button {% if app.request.get('order') == searchDistance %}sort--active{% endif %}">
                 {% trans %}Distance{% endtrans %}
                 <i class="fa fa-location-arrow"></i>
