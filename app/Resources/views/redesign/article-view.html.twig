@@ -15,7 +15,7 @@
                         <h1><strong>{{ article.title }}</strong></h1>
                         <div class="article__category" data-bw-gtm-event-click>
                             <div class="tagcloud">
-                                <a href="{{ absolute_url(path('domain_article_category', {'categorySlug':  article.getCategory().getSlug() })) }}" class="tag" data-bw-gtm-label="{{ article.getCategory().getName() }}">{{ article.getCategory().getName() }}</a>
+                                <a href="{{ absolute_url(path('domain_article_category', { 'categorySlug':  article.getCategory().getSlug() })) }}" class="tag" data-bw-gtm-label="{{ article.getCategory().getName() }}">{{ article.getCategory().getName() }}</a>
                             </div>
                         </div>
 

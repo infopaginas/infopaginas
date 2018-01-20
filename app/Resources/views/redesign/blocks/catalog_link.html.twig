@@ -1,9 +1,9 @@
 {% if currentLocality %}
-    <a href="{{ absolute_url(path('domain_search_catalog', {'localitySlug':  currentLocality.slug, 'categorySlug': item.slug })) }}" title="{{ item.name }}" data-bw-gtm-event-click data-bw-gtm-label="{{ item.name }}::{{ absolute_url(path('domain_search_catalog', {'localitySlug':  currentLocality.slug, 'categorySlug': item.slug })) }}" >
+    <a href="{{ absolute_url(path('domain_search_catalog', { 'localitySlug':  currentLocality.slug, 'categorySlug': item.slug })) }}" title="{{ item.name }}" data-bw-gtm-event-click data-bw-gtm-label="{{ item.name }}::{{ absolute_url(path('domain_search_catalog', { 'localitySlug':  currentLocality.slug, 'categorySlug': item.slug })) }}" >
         {{ item.name }}
     </a>
 {% else %}
-    <a href="{{ absolute_url(path('domain_search_catalog', {'localitySlug':  item.getSlug() })) }}" title="{{ item.name }}" data-bw-gtm-event-click data-bw-gtm-label="{{ item.name }}::{{ absolute_url(path('domain_search_catalog', {'localitySlug':  item.getSlug() })) }}">
+    <a href="{{ absolute_url(path('domain_search_catalog', { 'localitySlug':  item.getSlug() })) }}" title="{{ item.name }}" data-bw-gtm-event-click data-bw-gtm-label="{{ item.name }}::{{ absolute_url(path('domain_search_catalog', { 'localitySlug':  item.getSlug() })) }}">
         {{ item.name }}
     </a>
 {% endif %}

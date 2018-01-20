@@ -39,7 +39,7 @@
                     </li>
                 {% else %}
                     <li>
-                        <a href="{{ absolute_url(path(app.request.get('_route'), app.request.query.all|merge(routeParams))) }}" data-bw-gtm-event-click data-bw-gtm-label="{{pageItem}}">{{ pageItem }}</a>
+                        <a href="{{ absolute_url(path(app.request.get('_route'), app.request.query.all|merge(routeParams))) }}" data-bw-gtm-event-click data-bw-gtm-label="{{ pageItem }}">{{ pageItem }}</a>
                     </li>
                 {% endif %}
             {% endif %}

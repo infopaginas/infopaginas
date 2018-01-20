@@ -2,7 +2,7 @@
     <h1 class="section__title">{% trans %}Videos{% endtrans %}</h1>
     <div class="articles__container clearfix">
         {% for item in businessProfiles %}
-            <a href="{{ absolute_url(path('domain_business_profile_view', { 'citySlug' : item.citySlug, 'slug' : item.slug })) }}" title="{% trans %}Go to watch...{% endtrans %}" class="news__item clearfix" data-bw-gtm-event-click data-bw-gtm-label="avatar::{{item.name}}::{{ absolute_url(path('domain_business_profile_view', { 'citySlug' : item.citySlug, 'slug' : item.slug })) }}">
+            <a href="{{ absolute_url(path('domain_business_profile_view', { 'citySlug' : item.citySlug, 'slug' : item.slug })) }}" title="{% trans %}Go to watch...{% endtrans %}" class="news__item clearfix" data-bw-gtm-event-click data-bw-gtm-label="avatar::{{ item.name }}::{{ absolute_url(path('domain_business_profile_view', { 'citySlug' : item.citySlug, 'slug' : item.slug })) }}">
                 {% if item.getLogo() %}
                     <div class="avatar">
                         <img class="news__img" src="{% path item.getLogo(), 'normal' %}" alt="{{ item.name() }}">

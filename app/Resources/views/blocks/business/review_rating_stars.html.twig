@@ -5,11 +5,9 @@
 {% endif %}
 
 <div class="star-rating {% if selectable %}selectable{% endif %}" data-bw-gtm-component="review-rating-stars">
-    <span class="fa fa-star-o fa-star{% if rating >= 1 %}-selected{% endif %}" data-rating="1" data-bw-gtm-event-click data-bw-gtm-label="1"></span>
-    <span class="fa fa-star-o fa-star{% if rating >= 2 %}-selected{% endif %}" data-rating="2" data-bw-gtm-event-click data-bw-gtm-label="2"></span>
-    <span class="fa fa-star-o fa-star{% if rating >= 3 %}-selected{% endif %}" data-rating="3" data-bw-gtm-event-click data-bw-gtm-label="3"></span>
-    <span class="fa fa-star-o fa-star{% if rating >= 4 %}-selected{% endif %}" data-rating="4" data-bw-gtm-event-click data-bw-gtm-label="4"></span>
-    <span class="fa fa-star-o fa-star{% if rating >= 5 %}-selected{% endif %}" data-rating="5" data-bw-gtm-event-click data-bw-gtm-label="5"></span>
+    {% for value in 1..5 %}
+        <span class="fa fa-star-o fa-star{% if rating >= value %}-selected{% endif %}" data-rating="{{ value }}" data-bw-gtm-event-click data-bw-gtm-label="{{ value }}"></span>
+    {% endfor %}
 
     {% if input is defined %}
         {{ form_widget(input) }}
