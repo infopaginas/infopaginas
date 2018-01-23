@@ -134,6 +134,51 @@
                             </section>
                         {% endif %}
 
+                        {% if hasSubscription(businessProfile, SUBSCRIPTION.CODE.FREE) and suggestedResult and suggestedResult.resultSet %}
+                            <section class="page-section photos slider suggested-slider section--slider hide-before">
+                                {% for suggestedBusiness in suggestedResult.resultSet %}
+                                    <div class="slider__item">
+                                        {% if suggestedBusiness.logo %}<img src="{% path suggestedBusiness.logo, 'preview' %}" alt="{{ suggestedBusiness.name }}">{% endif %}
+
+                                        <div>{{ suggestedBusiness.name|truncate(suggested_title_max_length) }}</div>
+                                        <div class="item__primary-actions">
+                                            <a class="get-dir button button--small button--featured link-pointer {% if suggestedBusiness.isAd %}svm-getdir{% endif %}" data-id="{{ suggestedBusiness.id }}" data-latlng="{{ suggestedBusiness.latLng }}">
+                                                <i class="fa fa-location-arrow"></i>
+                                                {% trans %}Directions{% endtrans %}
+                                            </a>
+                                            {% if not suggestedBusiness.phones.empty %}
+                                                {% if suggestedBusiness.mainPhone %}
+                                                    {% set phoneToCall = suggestedBusiness.mainPhone.phone %}
+                                                {% else %}
+                                                    {% set phoneToCall = suggestedBusiness.phones.first.phone %}
+                                                {% endif %}
+                                                <a href="tel:{{ phoneToCall }}" class="button button--small button--featured hide-desktop phone-call {% if suggestedBusiness.isAd %}svm-callmobile{% endif %}" data-id="{{ suggestedBusiness.id }}" data-type="callMobButton">
+                                                    <i class="fa fa-phone"></i>
+                                                    {% trans %}Call{% endtrans %}
+                                                </a>
+                                                <div class="dropdown dropdown-call hide-mobile">
+                                                    <button class="btn btn-default dropdown-toggle dropdown-call-button phone-call link-pointer {% if suggestedBusiness.isAd %}svm-calldesktop{% endif %}" type="button" id="dropdownMenuCall" data-id="{{ suggestedBusiness.id }}" data-type="callDeskButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                                        <i class="fa fa-phone"></i>
+                                                        {% trans %}Call{% endtrans %}
+                                                        <span class="caret"></span>
+                                                    </button>
+                                                    <ul class="dropdown-menu dropdown-call-list" aria-labelledby="dropdownMenuCall">
+                                                        {% for phone in suggestedBusiness.phones %}
+                                                            <li {% if phone.type == BUSINESS_PROFILE_PHONE.TYPE.MAIN %}class="main-phone"{% endif %} title="{{ ('business_profile.phone.tooltip.' ~ phone.type)|trans }}">
+                                                                <i class="fa {{ get_business_profile_phone_icon(phone) }}"></i>
+                                                                {{ phone.phone }}
+                                                            </li>
+                                                            <li role="separator" class="divider"></li>
+                                                        {% endfor %}
+                                                    </ul>
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </section>
+                        {% endif %}
+
                         {% if video_section_allowed_for_business(businessProfile)
                             and businessProfile.getVideo() is not null
                             and businessProfile.getVideo().status == 'active'

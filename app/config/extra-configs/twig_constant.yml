@@ -153,3 +153,12 @@ twig:
             MAIN:   'main'
             COMMON: 'common'
             HIDDEN: 'hidden'
+
+        SUBSCRIPTION:
+            CODE:
+                FREE:             1
+                PRIORITY:         2
+                PREMIUM_PLUS:     3
+                PREMIUM_GOLD:     4
+                PREMIUM_PLATINUM: 5
+                SUPER_VM:         6

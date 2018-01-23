@@ -1,8 +1,8 @@
 define(['jquery', 'slick'], function( $, Slick ) {
     'use strict';
 
-    $(document).ready(function () {
-        $('.slider').slick({
+    $( document ).ready(function () {
+        var sliderParams = {
             autoplay: true,
             autoplaySpeed: 5000,
             arrows: true,
@@ -14,6 +14,13 @@ define(['jquery', 'slick'], function( $, Slick ) {
             slidesToShow: 1,
             prevArrow: '<span class="arrow prev"><i class="fa fa-chevron-circle-left" aria-hidden="true"></i></span>',
             nextArrow: '<span class="arrow next"><i class="fa fa-chevron-circle-right" aria-hidden="true"></i></span>'
-        });
+        };
+
+        $( '.slider:not(.suggested-slider)' ).slick( sliderParams );
+
+        sliderParams.slidesToShow  = 3;
+        sliderParams.autoplaySpeed = 1500;
+
+        $( '.slider.suggested-slider' ).slick( sliderParams );
     });
 });
