@@ -221,7 +221,7 @@ class ReportsController extends Controller
      */
     public function adsExportAction(Request $request, $format)
     {
-        $params   = $this->getExportParams($request);
+        $params   = $this->getExportParams($request, true);
         $exporter = $this->getAdsExporterByFormat($format);
 
         return $exporter->getResponse($params);
@@ -235,7 +235,7 @@ class ReportsController extends Controller
      */
     public function interactionExportAction(Request $request, $format)
     {
-        $params   = $this->getExportParams($request);
+        $params   = $this->getExportParams($request, true);
         $exporter = $this->getInteractionExporterByFormat($format);
 
         return $exporter->getResponse($params);
@@ -301,7 +301,7 @@ class ReportsController extends Controller
      */
     protected function getAdminExportParams(Request $request)
     {
-        $params = $this->prepareReportParameters($request->query->all());
+        $params = $this->prepareReportParameters($request->query->all(), true);
 
         $businessProfile = $this->getBusinessProfileManager()->find($params['businessProfileId']);
 
@@ -367,17 +367,17 @@ class ReportsController extends Controller
             $params['print'] = false;
         }
 
+        if (!empty($requestData['periodOption']) and
+            !empty(AdminHelper::getPeriodOptionValues()[$requestData['periodOption']])
+        ) {
+            $params['periodOption'] = $requestData['periodOption'];
+        }
+
         if (!$isExport) {
             if (!empty($requestData['chartType']) and
                 in_array($requestData['chartType'], BusinessOverviewModel::getChartEventTypes())
             ) {
                 $params['chartType'] = $requestData['chartType'];
-            }
-
-            if (!empty($requestData['periodOption']) and
-                !empty(AdminHelper::getPeriodOptionValues()[$requestData['periodOption']])
-            ) {
-                $params['periodOption'] = $requestData['periodOption'];
             }
         }
 
