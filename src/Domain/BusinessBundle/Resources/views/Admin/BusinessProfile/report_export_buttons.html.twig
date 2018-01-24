@@ -2,15 +2,15 @@
 
 {% block field %}
     {% if object.id is not null %}
-        <button type="button" data-href="{{ path('domain_business_admin_reports_pdf_export') }}" data-export-type="export-pdf" class="btn green-btn">
+        <button type="button" data-route="{{ field_description.options.exportRoute }}" data-format="{{ field_description.options.exportPdf }}" data-export-type="export-pdf" class="btn green-btn">
             <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
             PDF
         </button>
-        <button type="button" data-href="{{ path('domain_business_admin_reports_excel_export') }}" data-export-type="export-excel" class="btn green-btn">
+        <button type="button" data-route="{{ field_description.options.exportRoute }}" data-format="{{ field_description.options.exportExcel }}" data-export-type="export-excel" class="btn green-btn">
             <i class="fa fa-file-excel-o" aria-hidden="true"></i>
             Excel
         </button>
-        <button type="button" data-href="{{ path('domain_business_admin_reports_pdf_export') }}" data-export-type="print" class="btn green-btn">
+        <button type="button" data-route="{{ field_description.options.exportRoute }}" data-format="{{ field_description.options.exportPdf }}" data-export-type="print" class="btn green-btn">
             <i class="fa fa-print" aria-hidden="true"></i>
             Print
         </button>

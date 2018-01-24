@@ -91,21 +91,35 @@ services:
         class: Domain\ReportBundle\Manager\ViewsAndVisitorsReportManager
         arguments: [ '@domain_report.manager.business_overview_report_manager' ]
 
-    domain_report.exporter.excel:
-        class: Domain\ReportBundle\Service\Export\BusinessReportExcelExporter
+    domain_report.ads_exporter.excel:
+        class: Domain\ReportBundle\Service\Export\BusinessAdsReportExcelExporter
+        calls:
+            - [ setPhpExcel, [ '@phpexcel' ]]
+            - [ setBusinessOverviewReportManager, [ '@domain_report.manager.business_overview_report_manager' ]]
+            - [ setAdUsageReportManager, [ '@domain_report.manager.ad_usage' ]]
+            - [ setTranslator, [ '@translator.default' ]]
+
+    domain_report.interaction_exporter.excel:
+        class: Domain\ReportBundle\Service\Export\BusinessInteractionReportExcelExporter
         calls:
             - [ setPhpExcel, [ '@phpexcel' ]]
             - [ setBusinessOverviewReportManager, [ '@domain_report.manager.business_overview_report_manager' ]]
             - [ setKeywordsReportManager, [ '@domain_report.manager.keywords_report_manager' ]]
-            - [ setAdUsageReportManager, [ '@domain_report.manager.ad_usage' ]]
             - [ setTranslator, [ '@translator.default' ]]
 
-    domain_report.exporter.pdf:
-        class: Domain\ReportBundle\Service\Export\BusinessReportPdfExporter
+    domain_report.ads_exporter.pdf:
+        class: Domain\ReportBundle\Service\Export\BusinessAdsReportPdfExporter
+        calls:
+            - [ setBusinessOverviewReportManager, [ '@domain_report.manager.business_overview_report_manager' ]]
+            - [ setAdUsageReportManager, [ '@domain_report.manager.ad_usage' ]]
+            - [ setTemplateEngine, [ '@templating' ]]
+            - [ setPdfGenerator, [ '@spraed.pdf.generator' ]]
+
+    domain_report.interaction_exporter.pdf:
+        class: Domain\ReportBundle\Service\Export\BusinessInteractionReportPdfExporter
         calls:
             - [ setBusinessOverviewReportManager, [ '@domain_report.manager.business_overview_report_manager' ]]
             - [ setKeywordsReportManager, [ '@domain_report.manager.keywords_report_manager' ]]
-            - [ setAdUsageReportManager, [ '@domain_report.manager.ad_usage' ]]
             - [ setTemplateEngine, [ '@templating' ]]
             - [ setPdfGenerator, [ '@spraed.pdf.generator' ]]
 

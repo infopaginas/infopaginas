@@ -17,6 +17,7 @@ use Domain\BusinessBundle\Validator\Constraints\BusinessProfilePhoneTypeValidato
 use Domain\BusinessBundle\Validator\Constraints\BusinessProfileWorkingHourTypeValidator;
 use Domain\ReportBundle\Manager\KeywordsReportManager;
 use Domain\ReportBundle\Model\BusinessOverviewModel;
+use Domain\ReportBundle\Model\ReportInterface;
 use Domain\ReportBundle\Util\DatesUtil;
 use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
 use Oxa\ConfigBundle\Model\ConfigInterface;
@@ -1067,6 +1068,9 @@ class BusinessProfileAdmin extends OxaAdmin
                         ->add('mainExport', null, [
                             'label'    => 'Export',
                             'template' => 'DomainBusinessBundle:Admin:BusinessProfile/report_export_buttons.html.twig',
+                            'exportRoute' => 'domain_business_admin_inretaction_reports_export',
+                            'exportPdf'   => ReportInterface::FORMAT_PDF,
+                            'exportExcel' => ReportInterface::FORMAT_EXCEL,
                         ])
                     ->end()
                 ->end()
@@ -1090,7 +1094,10 @@ class BusinessProfileAdmin extends OxaAdmin
                                 'template' => 'DomainBusinessBundle:Admin:BusinessProfile/report_data.html.twig',
                             ])
                             ->add('adUsageExport', null, [
-                                'template' => $showReportExportButtons,
+                                'template'   => $showReportExportButtons,
+                                'exportRoute' => 'domain_business_admin_ads_reports_export',
+                                'exportPdf'   => ReportInterface::FORMAT_PDF,
+                                'exportExcel' => ReportInterface::FORMAT_EXCEL,
                             ])
                         ->end()
                     ->end()
