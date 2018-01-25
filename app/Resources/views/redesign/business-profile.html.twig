@@ -83,7 +83,7 @@
                                         <h3>{% trans %}Email{% endtrans %}</h3>
                                         <ul>
                                             <li>
-                                                <i class="fa fa-envelope"></i> <a data-href="mailto:{{ businessProfile.getEmail() }}" class="link-pointer redirect-event" data-id="{{ businessProfile.id }}" data-current-tab="1" data-type="emailClick" data-bw-gtm-event-click data-bw-gtm-label="Contact Us">{% trans %}Contact Us{% endtrans %}</a>
+                                                <i class="fa fa-envelope"></i> <a data-href="mailto:{{ businessProfile.getEmail() }}" class="link-pointer redirect-event" data-id="{{ businessProfile.id }}" data-current-tab="1" data-type="emailClick" data-bw-gtm-event-click data-bw-gtm-label="{% trans %}Contact Us{% endtrans %}">{% trans %}Contact Us{% endtrans %}</a>
                                             </li>
                                         </ul>
                                     </div><!-- highlights__item -->
@@ -235,7 +235,7 @@
                             <div class="sidebar__section section--social">
                                 <ul>
                                     <li>
-                                        <a class="button" data-show-modal-id="claimBusinessModal" data-bw-gtm-event-click data-bw-gtm-label="Claim this business">
+                                        <a class="button" data-show-modal-id="claimBusinessModal" data-bw-gtm-event-click data-bw-gtm-label="{% trans %}claim_business.button{% endtrans %}">
                                             <i class="fa fa-suitcase"></i>
                                             <span>{% trans %}claim_business.button{% endtrans %}</span>
                                         </a>

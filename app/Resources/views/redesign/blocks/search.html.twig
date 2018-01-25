@@ -23,7 +23,7 @@
         <input id='searchLocation' value="{{ geoValue }}" type="text" name="geo" class="search-geo" placeholder="{% trans %}Where?{% endtrans %}">
     </div>
     <div class="form__action" data-bw-gtm-event-click>
-        <button id="searchButton" type="submit" class="button button--action button--search" data-bw-gtm-event-click data-bw-gtm-label="Search">
+        <button id="searchButton" type="submit" class="button button--action button--search" data-bw-gtm-event-click data-bw-gtm-label="{% trans %}Search{% endtrans %}">
             {% trans %}Search{% endtrans %}
             <i class="fa fa-angle-right"></i>
         </button>
@@ -38,12 +38,12 @@
 
 {% if showLinkListView is defined and showLinkListView %}
     <div class="views">
-        <a id="searchListView" href="{{ absolute_url(path('domain_search_index', app.request.query.all)) }}" class="button" data-bw-gtm-event-click data-bw-gtm-label="List view">{% trans %}List view{% endtrans %}</a>
+        <a id="searchListView" href="{{ absolute_url(path('domain_search_index', app.request.query.all)) }}" class="button" data-bw-gtm-event-click data-bw-gtm-label="{% trans %}List view{% endtrans %}">{% trans %}List view{% endtrans %}</a>
     </div><!-- views -->
 {% endif %}
 
 {% if showLinkCompareView is defined and showLinkCompareView %}
     <div class="views">
-        <a id="compareListView" href="{{ absolute_url(path('domain_search_compare', app.request.query.all)) }}" class="button" data-bw-gtm-event-click data-bw-gtm-label="Compare view">{% trans %}compare.view{% endtrans %}</a>
+        <a id="compareListView" href="{{ absolute_url(path('domain_search_compare', app.request.query.all)) }}" class="button" data-bw-gtm-event-click data-bw-gtm-label="{% trans %}compare.view{% endtrans %}">{% trans %}compare.view{% endtrans %}</a>
     </div><!-- views -->
 {% endif %}

@@ -11,8 +11,8 @@
                 </div>
                 <div class="form__actions">
                     {{ form_rest(claimBusinessForm) }}
-                    <button type="button" class="button button--action" id="claimBusinessButton" data-business-profile-id="{{ businessProfile.getId() }}" data-bw-gtm-event-click data-bw-gtm-label="Submit">{% trans %}Submit{% endtrans %}</button>
-                    <button type="button" class="button button--action  hide-modal" data-bw-gtm-event-click data-bw-gtm-label="Cancel">{% trans %}Cancel{% endtrans %}</button>
+                    <button type="button" class="button button--action" id="claimBusinessButton" data-business-profile-id="{{ businessProfile.getId() }}" data-bw-gtm-event-click data-bw-gtm-label="{% trans %}Submit{% endtrans %}">{% trans %}Submit{% endtrans %}</button>
+                    <button type="button" class="button button--action  hide-modal" data-bw-gtm-event-click data-bw-gtm-label="{% trans %}Cancel{% endtrans %}">{% trans %}Cancel{% endtrans %}</button>
                 </div>
                 <p id="claimBusinessMessage"></p>
             </form>

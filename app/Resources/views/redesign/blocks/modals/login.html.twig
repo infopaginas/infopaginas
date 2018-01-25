@@ -14,20 +14,20 @@
                 </div>
                 <div class="form__actions">
                     {{ form_rest(loginForm) }}
-                    <a class="button button--small button--text forgot-password-button" href="#" data-change-modal-id="forgottenPasswordModal" data-bw-gtm-event-click data-bw-gtm-label="Forgot password?">{% trans %}Forgot password?{% endtrans %}</a>
-                    <button type="button" class="button button--action" id="loginButton" data-bw-gtm-event-click data-bw-gtm-label="Log In">{% trans %}Log In{% endtrans %}</button>
+                    <a class="button button--small button--text forgot-password-button" href="#" data-change-modal-id="forgottenPasswordModal" data-bw-gtm-event-click data-bw-gtm-label="{% trans %}Forgot password?{% endtrans %}">{% trans %}Forgot password?{% endtrans %}</a>
+                    <button type="button" class="button button--action" id="loginButton" data-bw-gtm-event-click data-bw-gtm-label="{% trans %}Log In{% endtrans %}">{% trans %}Log In{% endtrans %}</button>
                 </div>
             </form>
         </div>
         <div class="modal__section">
             <h2>{% trans %}or{% endtrans %}</h2>
             <div class="social-login">
-                <a href="{{ absolute_url(path('hwi_oauth_service_redirect', { 'service': 'facebook' })) }}" title="{% trans %}Log In with Facebook{% endtrans %}" class="button button--login button--facebook" data-bw-gtm-event-click data-bw-gtm-label="Log In with Facebook">
+                <a href="{{ absolute_url(path('hwi_oauth_service_redirect', { 'service': 'facebook' })) }}" title="{% trans %}Log In with Facebook{% endtrans %}" class="button button--login button--facebook" data-bw-gtm-event-click data-bw-gtm-label="{% trans %}Log In with Facebook{% endtrans %}">
                     <span>{% trans %}Log In with{% endtrans %}</span>
                     <i class="fa fa-facebook"></i>
                 </a>
 
-                <a href="{{ absolute_url(path('hwi_oauth_service_redirect', { 'service': 'google' })) }}" title="{% trans %}Log In with Google{% endtrans %}" class="button button--login button--google" data-bw-gtm-event-click data-bw-gtm-label="Log In with Google">
+                <a href="{{ absolute_url(path('hwi_oauth_service_redirect', { 'service': 'google' })) }}" title="{% trans %}Log In with Google{% endtrans %}" class="button button--login button--google" data-bw-gtm-event-click data-bw-gtm-label="{% trans %}Log In with Google{% endtrans %}">
                     <span>{% trans %}Log In with{% endtrans %}</span>
                     <i class="fa fa-google"></i>
                 </a>
@@ -35,7 +35,7 @@
         </div>
 
         <div class="modal__section login__footer">
-            <p>{% trans %}New to Infopáginas{% endtrans %} <a href="#" data-change-modal-id="regModal" data-bw-gtm-event-click data-bw-gtm-label="Create and account">{% trans %}Create an account{% endtrans %} <i class="fa fa-angle-right"></i></a></p>
+            <p>{% trans %}New to Infopáginas{% endtrans %} <a href="#" data-change-modal-id="regModal" data-bw-gtm-event-click data-bw-gtm-label="{% trans %}Create an account{% endtrans %}">{% trans %}Create an account{% endtrans %} <i class="fa fa-angle-right"></i></a></p>
         </div><!-- modal__section -->
         <button type="button" class="button--remove hide-modal" data-bw-gtm-event-click data-bw-gtm-label="hide-modal"><i class="fa fa-remove"></i></button>
     </div><!-- modal__content -->

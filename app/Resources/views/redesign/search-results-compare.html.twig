@@ -7,15 +7,15 @@
 
 {% block body %}
     <div class="toolbar compare-toolbar" data-bw-gtm-component="search-results-compare">
-        <button id="comparison-list-toggle" type="button" class="button button--action category__toggle compare-show-list" data-bw-gtm-event-click data-bw-gtm-label="Add to compare">
+        <button id="comparison-list-toggle" type="button" class="button button--action category__toggle compare-show-list" data-bw-gtm-event-click data-bw-gtm-label="{% trans %}Add to compare{% endtrans %}">
             <i class="fa fa-plus-square"></i> {% trans %}Add to compare{% endtrans %}
         </button>
-        <a href="{{ absolute_url(path('domain_search_index', app.request.query.all)) }}" class="button button--action" data-bw-gtm-event-click data-bw-gtm-label="List view">{% trans %}List view{% endtrans %}</a>
+        <a href="{{ absolute_url(path('domain_search_index', app.request.query.all)) }}" class="button button--action" data-bw-gtm-event-click data-bw-gtm-label="{% trans %}List view{% endtrans %}">{% trans %}List view{% endtrans %}</a>
     </div>
 
     <div class="main__container" data-bw-gtm-component="search-results-compare">
         <section class="main">
-            <button id="comparison-list-hide" type="button" class="button button--action category__toggle list-hide" data-bw-gtm-event-click data-bw-gtm-label="Close List">
+            <button id="comparison-list-hide" type="button" class="button button--action category__toggle list-hide" data-bw-gtm-event-click data-bw-gtm-label="{% trans %}Close list{% endtrans %}">
                 <i class="fa fa-angle-left"></i>{% trans %}Close list{% endtrans %}
             </button>
 

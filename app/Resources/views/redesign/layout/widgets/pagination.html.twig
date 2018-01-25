@@ -9,7 +9,7 @@
             {% endif %}
 
             <li>
-                <a href="{{ absolute_url(path(app.request.get('_route'), app.request.query.all|merge(routeParams))) }}" title="{% trans %}Previous page{% endtrans %}" data-bw-gtm-event-click data-bw-gtm-label="Pevious page">
+                <a href="{{ absolute_url(path(app.request.get('_route'), app.request.query.all|merge(routeParams))) }}" title="{% trans %}Previous page{% endtrans %}" data-bw-gtm-event-click data-bw-gtm-label="{% trans %}Previous page{% endtrans %}">
                     <i class="fa fa-angle-left"></i>
                 </a>
             </li>
@@ -50,7 +50,7 @@
                 {% set routeParams = routeParams|merge({'page': (page + 1) }) %}
 
                 <li>
-                    <a href="{{ absolute_url(path(app.request.get('_route'), app.request.query.all|merge(routeParams))) }}" title="{% trans %}Next page{% endtrans %}" data-bw-gtm-event-click data-bw-gtm-label="Next page">
+                    <a href="{{ absolute_url(path(app.request.get('_route'), app.request.query.all|merge(routeParams))) }}" title="{% trans %}Next page{% endtrans %}" data-bw-gtm-event-click data-bw-gtm-label="{% trans %}Next page{% endtrans %}">
                         <i class="fa fa-angle-right"></i>
                     </a>
                 </li>

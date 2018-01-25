@@ -21,7 +21,7 @@
 
             <div class="user-logged">
                 <div class="user__tools">
-                    <a href="{{ absolute_url(path('sonata_user_security_logout')) }}" data-bw-gtm-event-click data-bw-gtm-label="Logout">
+                    <a href="{{ absolute_url(path('sonata_user_security_logout')) }}" data-bw-gtm-event-click data-bw-gtm-label="{% trans %}Logout{% endtrans %}">
                         <button type="button" class="logout "><i class="fa fa-sign-out"></i> {% trans %}Logout{% endtrans %}</button>
                     </a>
                 </div>
@@ -44,10 +44,10 @@
         {% if not app.user %}
             <ul class="nav-user">
                 <li>
-                    <button type="button" data-show-modal-id="regModal" data-bw-gtm-event-click data-bw-gtm-label="Create account"><i class="fa fa-user-plus"></i> {% trans %}Create account{% endtrans %}</button>
+                    <button type="button" data-show-modal-id="regModal" data-bw-gtm-event-click data-bw-gtm-label="{% trans %}Create account{% endtrans %}"><i class="fa fa-user-plus"></i> {% trans %}Create account{% endtrans %}</button>
                 </li>
                 <li class="login-link desc-menu home">
-                    <button type="button" data-show-modal-id="loginModal" data-bw-gtm-event-click data-bw-gtm-label="Login">
+                    <button type="button" data-show-modal-id="loginModal" data-bw-gtm-event-click data-bw-gtm-label="{% trans %}Login{% endtrans %}">
                         <i class="fa fa-sign-in"></i>{% trans %}Login{% endtrans %}
                     </button>
                 </li>
