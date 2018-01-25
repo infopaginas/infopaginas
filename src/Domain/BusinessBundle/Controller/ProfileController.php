@@ -215,7 +215,9 @@ class ProfileController extends Controller
             $claimBusinessForm = null;
         }
 
-        if ($businessProfile->getSubscriptionPlanCode() == SubscriptionPlanInterface::CODE_FREE) {
+        if ($businessProfile->getSubscriptionPlanCode() == SubscriptionPlanInterface::CODE_FREE and
+            $businessProfile->getIsAllowedShowSuggestion()
+        ) {
             $searchManager = $this->getSearchManager();
             $searchDTO = $searchManager->getSearchSuggestedBusinessesDTO($request, $businessProfile);
 

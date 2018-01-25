@@ -20,6 +20,7 @@ define(['jquery', 'slick'], function( $, Slick ) {
 
         sliderParams.slidesToShow  = 3;
         sliderParams.autoplaySpeed = 1500;
+        sliderParams.dots = false;
 
         $( '.slider.suggested-slider' ).slick( sliderParams );
     });

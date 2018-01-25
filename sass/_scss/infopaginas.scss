@@ -3374,6 +3374,10 @@ a.tag {
   min-height: 200px;
 }
 
+#businessPhonesModal .modal__content {
+  min-height: unset;
+}
+
 .hide-modal {
   z-index: 999999;
 }
@@ -4242,7 +4246,9 @@ li.active {
 }
 
 .slider:hover > .arrow {
-  display: block !important;
+  @media only screen and (min-width: 805px) {
+    display: block !important;
+  }
 }
 
 .slider {

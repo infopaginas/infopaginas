@@ -3269,4 +3269,20 @@ class BusinessProfile implements
     {
         return $this->keywordText;
     }
+
+    /**
+     * @return bool
+     */
+    public function getIsAllowedShowSuggestion()
+    {
+        $categories = $this->getCategories();
+
+        foreach ($categories as $category) {
+            if ($category->getShowSuggestion()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

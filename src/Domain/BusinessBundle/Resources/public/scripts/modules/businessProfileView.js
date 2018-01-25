@@ -17,7 +17,8 @@ define( ['jquery', 'bootstrap', 'business/tools/interactions', 'tools/select', '
             },
             modals: {
                 createReviewModalId: '#writeReviewModal',
-                claimBusinessModalId: '#claimBusinessModal'
+                claimBusinessModalId: '#claimBusinessModal',
+                suggestedBusinessModalId: '#businessPhonesModal'
             },
             loadingSpinnerContainerId: 'create-review-spinner-container',
             claimBusinessMessage: '#claimBusinessMessage'
@@ -43,6 +44,7 @@ define( ['jquery', 'bootstrap', 'business/tools/interactions', 'tools/select', '
         this.handleReviewCreation();
         this.handleBusinessClaim();
         this.handlePrintableCoupons();
+        this.initPhonesModal();
     };
 
     //build form field id
@@ -207,6 +209,19 @@ define( ['jquery', 'bootstrap', 'business/tools/interactions', 'tools/select', '
 
             event.preventDefault();
         } );
+    };
+
+    businessProfileView.prototype.initPhonesModal = function () {
+        var phonesModal = $( this.html.modals.suggestedBusinessModalId );
+
+        if ( phonesModal.length ) {
+            $( document ).on( 'click', '[data-suggested-phone]', function( e ) {
+                var phoneList = $( this ).parent().find( '[data-phones]' );
+
+                phonesModal.find( '[data-text-area]' ).html( phoneList.html() );
+                phonesModal.modalFunc();
+            });
+        }
     };
 
     return businessProfileView;
