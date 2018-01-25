@@ -1,12 +1,12 @@
-<div id="regModal" class="modal modal--login modal--register" tabindex="-1" role="dialog" aria-hidden="true">
+<div id="regModal" class="modal modal--login modal--register" tabindex="-1" role="dialog" aria-hidden="true" data-bw-gtm-component="registration-modal">
     <div class="modal__outside"></div>
     <div class="modal__content">
         <h2>{% trans %}Create account{% endtrans %}</h2>
         <div class="modal__section disclosure">
             <p>{% trans %}By joining Infopaginas you agree to our{% endtrans %}
-                <a href="{{ absolute_url(path('domain_page_view_terms')) }}">{% trans %}Terms of Service{% endtrans %}</a>
+                <a href="{{ absolute_url(path('domain_page_view_terms')) }}" data-bw-gtm-event-click data-bw-gtm-label="Terms of Service::{{ absolute_url(path('domain_page_view_terms')) }}">{% trans %}Terms of Service{% endtrans %}</a>
                 {% trans %}and{% endtrans %}
-                <a href="{{ absolute_url(path('domain_page_view_privacy')) }}">{% trans %}Privacy Policy{% endtrans %}</a>.
+                <a href="{{ absolute_url(path('domain_page_view_privacy')) }}" data-bw-gtm-event-click data-bw-gtm-label="Privacy Policy::{{ absolute_url(path('domain_page_view_terms')) }}">{% trans %}Privacy Policy{% endtrans %}</a>.
                 {% trans %}We value your privacy, and will not post to your wall without your permission.{% endtrans %}
             </p>
         </div>
@@ -42,19 +42,19 @@
                 </div>
                 <div class="form__actions">
                     {{ form_rest(registrationForm) }}
-                    <button type="button" class="button button--action" id="registrationButton">{% trans %}Create account{% endtrans %}</button>
+                    <button type="button" class="button button--action" id="registrationButton" data-bw-gtm-event-click data-bw-gtm-label="{% trans %}Create account{% endtrans %}">{% trans %}Create account{% endtrans %}</button>
                 </div>
             </form>
         </div>
         <div class="modal__section">
             <h2>{% trans %}or{% endtrans %}</h2>
             <div class="social-login">
-                <a href="{{ absolute_url(path('hwi_oauth_service_redirect', {'service': 'facebook' })) }}" title="{% trans %}Log In with Facebook{% endtrans %}" class="button button--login button--facebook">
+                <a href="{{ absolute_url(path('hwi_oauth_service_redirect', { 'service': 'facebook' })) }}" title="{% trans %}Log In with Facebook{% endtrans %}" class="button button--login button--facebook" data-bw-gtm-event-click data-bw-gtm-label="{% trans %}Log In with Facebook{% endtrans %}">
                     <span>{% trans %}Log In with{% endtrans %}</span>
                     <i class="fa fa-facebook"></i>
                 </a>
 
-                <a href="{{ absolute_url(path('hwi_oauth_service_redirect', {'service': 'google' })) }}" title="{% trans %}Log In with Google{% endtrans %}" class="button button--login button--google">
+                <a href="{{ absolute_url(path('hwi_oauth_service_redirect', { 'service': 'google' })) }}" title="{% trans %}Log In with Google{% endtrans %}" class="button button--login button--google" data-bw-gtm-event-click data-bw-gtm-label="{% trans %}Log In with Google{% endtrans %}">
                     <span>{% trans %}Log In with{% endtrans %}</span>
                     <i class="fa fa-google"></i>
                 </a>
@@ -62,7 +62,7 @@
         </div>
 
         <div class="modal__section login__footer">
-            <p>{% trans %}Already have an account?{% endtrans %} <a href="#" data-change-modal-id="loginModal">{% trans %}Log in{% endtrans %} <i class="fa fa-angle-right"></i></a></p>
+            <p>{% trans %}Already have an account?{% endtrans %} <a href="#" data-change-modal-id="loginModal" data-bw-gtm-event-click data-bw-gtm-label="{% trans %}Log in{% endtrans %}">{% trans %}Log in{% endtrans %} <i class="fa fa-angle-right"></i></a></p>
         </div><!-- modal__section -->
         <button type="button" class="button--remove hide-modal"><i class="fa fa-remove"></i></button>
     </div><!-- modal__content -->
