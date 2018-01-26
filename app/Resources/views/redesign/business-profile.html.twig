@@ -166,23 +166,10 @@
                                                             <i class="fa fa-phone"></i>
                                                             {% trans %}Call{% endtrans %}
                                                         </a>
-                                                        <div class="slide-dropdown dropdown dropdown-call hide-mobile">
-                                                            <button class="btn btn-default dropdown-call-button phone-call link-pointer {% if suggestedBusiness.isAd %}svm-calldesktop{% endif %}" type="button" id="dropdownMenuCall" data-suggested-phone data-id="{{ suggestedBusiness.id }}" data-type="callDeskButton">
-                                                                <i class="fa fa-phone"></i>
-                                                                {% trans %}Call{% endtrans %}
-                                                                <span class="caret"></span>
-                                                            </button>
-                                                            <div class="hidden" data-phones>
-                                                                <ul class="dropdown-menu dropdown-call-list">
-                                                                    {% for phone in suggestedBusiness.phones %}
-                                                                        <li {% if phone.type == BUSINESS_PROFILE_PHONE.TYPE.MAIN %}class="main-phone"{% endif %} title="{{ ('business_profile.phone.tooltip.' ~ phone.type)|trans }}">
-                                                                            <i class="fa {{ get_business_profile_phone_icon(phone) }}"></i>
-                                                                            {{ phone.phone }}
-                                                                        </li>
-                                                                    {% endfor %}
-                                                                </ul>
-                                                            </div>
-                                                        </div>
+                                                        <button class="btn btn-default dropdown-call-button phone-call link-pointer {% if suggestedBusiness.isAd %}svm-calldesktop{% endif %} hide-mobile" type="button" data-id="{{ suggestedBusiness.id }}" data-type="callDeskButton">
+                                                            <i class="fa fa-phone"></i>
+                                                            {{ phoneToCall }}
+                                                        </button>
                                                     </div>
                                                 {% else %}
                                                     {% set hasPhone = false %}
@@ -196,8 +183,6 @@
                                     {% endfor %}
                                 </section>
                             </div>
-
-                            {% include ':redesign/blocks/modals:business_phones.html.twig' %}
                         {% endif %}
 
                         {% if video_section_allowed_for_business(businessProfile)
