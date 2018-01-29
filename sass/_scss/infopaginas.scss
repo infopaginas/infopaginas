@@ -5296,14 +5296,6 @@ input[type='radio'], input[type='checkbox'] {
   }
 }
 
-#customDatesContainer {
-  & input {
-    padding: 0 22px;
-    height: auto;
-    line-height: normal;
-  }
-}
-
 #domain_business_bundle_business_review_type_content {
   line-height: normal;
 }
@@ -5757,7 +5749,8 @@ a.link-pointer {
 }
 
 div.scrollable-table {
-  overflow-x: scroll;
+  overflow-x: auto;
+  padding: 10px;
 
   table.ad-usage-table {
     tbody tr:nth-child(3n) {

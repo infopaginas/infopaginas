@@ -1,6 +1,6 @@
 <!-- Pagination -->
 {% if pageCount > 1 %}
-    <div class="pagination">
+    <div class="pagination" data-bw-gtm-component="pagination">
         {% set routeParams = app.request.attributes %}
 
         {% if page > 1 %}
@@ -9,7 +9,7 @@
             {% endif %}
 
             <li>
-                <a href="{{ absolute_url(path(app.request.get('_route'), app.request.query.all|merge(routeParams))) }}" title="{% trans %}Previous page{% endtrans %}">
+                <a href="{{ absolute_url(path(app.request.get('_route'), app.request.query.all|merge(routeParams))) }}" title="{% trans %}Previous page{% endtrans %}" data-bw-gtm-event-click data-bw-gtm-label="{% trans %}Previous page{% endtrans %}">
                     <i class="fa fa-angle-left"></i>
                 </a>
             </li>
@@ -39,7 +39,7 @@
                     </li>
                 {% else %}
                     <li>
-                        <a href="{{ absolute_url(path(app.request.get('_route'), app.request.query.all|merge(routeParams))) }}">{{ pageItem }}</a>
+                        <a href="{{ absolute_url(path(app.request.get('_route'), app.request.query.all|merge(routeParams))) }}" data-bw-gtm-event-click data-bw-gtm-label="{{ pageItem }}">{{ pageItem }}</a>
                     </li>
                 {% endif %}
             {% endif %}
@@ -50,7 +50,7 @@
                 {% set routeParams = routeParams|merge({'page': (page + 1) }) %}
 
                 <li>
-                    <a href="{{ absolute_url(path(app.request.get('_route'), app.request.query.all|merge(routeParams))) }}" title="{% trans %}Next page{% endtrans %}">
+                    <a href="{{ absolute_url(path(app.request.get('_route'), app.request.query.all|merge(routeParams))) }}" title="{% trans %}Next page{% endtrans %}" data-bw-gtm-event-click data-bw-gtm-label="{% trans %}Next page{% endtrans %}">
                         <i class="fa fa-angle-right"></i>
                     </a>
                 </li>

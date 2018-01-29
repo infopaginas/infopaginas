@@ -12,7 +12,7 @@
 
 {% block body %}
     <div class="main__container main__container--centered">
-        <div class="main">
+        <div class="main" data-bw-gtm-component="business-profile-main">
             {% if businessProfile.getBackground() and hasSubscription(businessProfile, "CODE_PREMIUM_PLUS")  %}
                 <div class="container profile-header__container" style="margin: 0 auto; background-image:url({% path businessProfile.getBackground(), 'normal' %});">
                     <div class="shadow-background" style="margin: 0 auto; background-image:url({% path businessProfile.getBackground(), 'reference' %});"></div>
@@ -42,7 +42,7 @@
                 </header>
             </div><!-- container -->
 
-            <div class="profile-body__container">
+            <div class="profile-body__container" data-bw-gtm-component="business-profile-body">
                 <div class="container columns-container clearfix">
                     <article class="profile__body main-column">
                         <section class="page-section highlights-section">
@@ -70,7 +70,7 @@
                                             {% for phone in businessProfile.phones %}
                                                 <li {% if phone.type == BUSINESS_PROFILE_PHONE.TYPE.MAIN %}class="main-phone"{% endif %} title="{{ ('business_profile.phone.tooltip.' ~ phone.type)|trans }}">
                                                     <i class="fa {{ get_business_profile_phone_icon(phone) }}"></i>
-                                                    <a href="tel:{{ phone.phone }}" class="hide-desktop phone-call" data-id="{{ businessProfile.id }}" data-type="callMobButton">{{ phone.phone }}</a>
+                                                    <a href="tel:{{ phone.phone }}" class="hide-desktop phone-call" data-id="{{ businessProfile.id }}" data-type="callMobButton" data-bw-gtm-event-click data-bw-gtm-label="{{ phone.phone }}">{{ phone.phone }}</a>
                                                     <span class="hide-mobile">{{ phone.phone }}</span>
                                                 </li>
                                             {% endfor %}
@@ -83,7 +83,7 @@
                                         <h3>{% trans %}Email{% endtrans %}</h3>
                                         <ul>
                                             <li>
-                                                <i class="fa fa-envelope"></i> <a data-href="mailto:{{ businessProfile.getEmail() }}" class="link-pointer redirect-event" data-id="{{ businessProfile.id }}" data-current-tab="1" data-type="emailClick">{% trans %}Contact Us{% endtrans %}</a>
+                                                <i class="fa fa-envelope"></i> <a data-href="mailto:{{ businessProfile.getEmail() }}" class="link-pointer redirect-event" data-id="{{ businessProfile.id }}" data-current-tab="1" data-type="emailClick" data-bw-gtm-event-click data-bw-gtm-label="{% trans %}Contact Us{% endtrans %}">{% trans %}Contact Us{% endtrans %}</a>
                                             </li>
                                         </ul>
                                     </div><!-- highlights__item -->
@@ -135,11 +135,11 @@
                         {% endif %}
 
                         {% if hasSubscription(businessProfile, SUBSCRIPTION.CODE.FREE) and suggestedResult and suggestedResult.resultSet %}
-                            <div class="suggested-slider-section">
+                            <div class="suggested-slider-section" data-bw-gtm-component="business-profile-suggested">
                                 <section class="page-section photos slider suggested-slider section--slider hide-before">
                                     {% for suggestedBusiness in suggestedResult.resultSet %}
                                         <div class="slider__item">
-                                            <a href="{{ absolute_url(path('domain_business_profile_view', { 'citySlug' : suggestedBusiness.citySlug, slug: suggestedBusiness.slug })) }}" title="{{ suggestedBusiness.name }}" class="suggested-link" target="_blank">
+                                            <a href="{{ absolute_url(path('domain_business_profile_view', { 'citySlug' : suggestedBusiness.citySlug, slug: suggestedBusiness.slug })) }}" title="{{ suggestedBusiness.name }}" class="suggested-link" target="_blank" data-bw-gtm-event-click data-bw-gtm-label="item-suggested::{{ suggestedBusiness.name }}::{{ absolute_url(path('domain_business_profile_view', { 'citySlug' : suggestedBusiness.citySlug, slug: suggestedBusiness.slug })) }}">
                                                 <div class="slide-title">
                                                     <p>{{ suggestedBusiness.name|truncate(suggested_title_max_length) }}</p>
                                                 </div>
@@ -162,11 +162,11 @@
                                                     {% endif %}
 
                                                     <div class="item__actions">
-                                                        <a href="tel:{{ phoneToCall }}" class="slide-button button button--small button--featured hide-desktop phone-call {% if suggestedBusiness.isAd %}svm-callmobile{% endif %}" data-id="{{ suggestedBusiness.id }}" data-type="callMobButton">
+                                                        <a href="tel:{{ phoneToCall }}" class="slide-button button button--small button--featured hide-desktop phone-call {% if suggestedBusiness.isAd %}svm-callmobile{% endif %}" data-id="{{ suggestedBusiness.id }}" data-type="callMobButton" data-bw-gtm-event-click data-bw-gtm-label="{{ phoneToCall }}">
                                                             <i class="fa fa-phone"></i>
                                                             {% trans %}Call{% endtrans %}
                                                         </a>
-                                                        <button class="btn btn-default dropdown-call-button phone-call link-pointer {% if suggestedBusiness.isAd %}svm-calldesktop{% endif %} hide-mobile" type="button" data-id="{{ suggestedBusiness.id }}" data-type="callDeskButton">
+                                                        <button class="btn btn-default dropdown-call-button phone-call link-pointer {% if suggestedBusiness.isAd %}svm-calldesktop{% endif %} hide-mobile" type="button" data-id="{{ suggestedBusiness.id }}" data-type="callDeskButton" data-bw-gtm-event-click data-bw-gtm-label="{{ phoneToCall }}">
                                                             <i class="fa fa-phone"></i>
                                                             {{ phoneToCall }}
                                                         </button>
@@ -174,7 +174,7 @@
                                                 {% else %}
                                                     {% set hasPhone = false %}
                                                 {% endif %}
-                                                <a class="slide-button get-dir button button--small button--featured link-pointer {% if suggestedBusiness.isAd %}svm-getdir{% endif %} {% if not hasPhone %}empty-phone{% endif %}" data-id="{{ suggestedBusiness.id }}" data-latlng="{{ suggestedBusiness.latLng }}">
+                                                <a class="slide-button get-dir button button--small button--featured link-pointer {% if suggestedBusiness.isAd %}svm-getdir{% endif %} {% if not hasPhone %}empty-phone{% endif %}" data-id="{{ suggestedBusiness.id }}" data-latlng="{{ suggestedBusiness.latLng }}" data-bw-gtm-event-click data-bw-gtm-label="{% trans %}Directions{% endtrans %}">
                                                     <i class="fa fa-location-arrow"></i>
                                                     {% trans %}Directions{% endtrans %}
                                                 </a>
@@ -272,11 +272,11 @@
                         {% include ':redesign/blocks/banners:side-block.html.twig' with { 'bannerType': BANNER_CODE.BUSINESS_PAGE_RIGHT } %}
 
                         {% if businessProfile.categories|length > 0 %}
-                            <div class="sidebar__section section--tags">
+                            <div class="sidebar__section section--tags" data-bw-gtm-component="section-tags">
                                 <h2 class="section__title">{% trans %}Business categories{% endtrans %}</h2>
                                 <div class="tagcloud">
                                     {% for item in businessProfile.categories %}
-                                        <a href="{{ absolute_url(path('domain_search_catalog', {'localitySlug': businessProfile.citySlug, 'categorySlug': item.getSlug() })) }}" class="tag" title="{% trans %}Go to...{% endtrans %}">{{ item.name }}</a>
+                                        <a href="{{ absolute_url(path('domain_search_catalog', { 'localitySlug': businessProfile.citySlug, 'categorySlug': item.getSlug() })) }}" class="tag" title="{% trans %}Go to...{% endtrans %}" data-bw-gtm-event-click data-bw-gtm-label="{{ item.name }}">{{ item.name }}</a>
                                     {% endfor %}
                                 </div>
                             </div><!-- sidebar__section -->
@@ -286,7 +286,7 @@
                             <div class="sidebar__section section--social">
                                 <ul>
                                     <li>
-                                        <a class="button" data-show-modal-id="claimBusinessModal">
+                                        <a class="button" data-show-modal-id="claimBusinessModal" data-bw-gtm-event-click data-bw-gtm-label="{% trans %}claim_business.button{% endtrans %}">
                                             <i class="fa fa-suitcase"></i>
                                             <span>{% trans %}claim_business.button{% endtrans %}</span>
                                         </a>

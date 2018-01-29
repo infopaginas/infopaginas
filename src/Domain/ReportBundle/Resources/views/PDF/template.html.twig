@@ -80,11 +80,11 @@
             </tr>
         </thead>
         <tbody>
-            {% for i in 0..interactionCurrentData.results|length - 1 %}
+            {% for overview in interactionCurrentData.results %}
                 <tr>
-                    <td>{{ interactionCurrentData.dates[i] }}</td>
-                    <td>{{ interactionCurrentData.impressions[i] }}</td>
-                    <td>{{ interactionCurrentData.views[i] }}</td>
+                    <td>{{ overview.date }}</td>
+                    <td>{{ overview.impressions }}</td>
+                    <td>{{ overview.views }}</td>
                 </tr>
             {% endfor %}
         </tbody>
@@ -128,13 +128,15 @@
         </thead>
         <tbody>
             {% for i in 0..interactionCurrentYearData.dates|length - 1 %}
+                {% set currentDateKey = interactionCurrentYearData.dates[i] %}
+                {% set previousDateKey = interactionPreviousYearData.dates[i] %}
                 <tr>
-                    <td>{{ convert_monthly_formatted_date(interactionCurrentYearData.dates[i], monthly_report_date_format) }}</td>
-                    <td>{{ interactionCurrentYearData.impressions[i] }}</td>
-                    <td>{{ interactionCurrentYearData.views[i] }}</td>
-                    <td>{{ convert_monthly_formatted_date(interactionPreviousYearData.dates[i], monthly_report_date_format) }}</td>
-                    <td>{{ interactionPreviousYearData.impressions[i] }}</td>
-                    <td>{{ interactionPreviousYearData.views[i] }}</td>
+                    <td>{{ convert_monthly_formatted_date(interactionCurrentYearData.results[currentDateKey].date, monthly_report_date_format) }}</td>
+                    <td>{{ interactionCurrentYearData.results[currentDateKey].impressions }}</td>
+                    <td>{{ interactionCurrentYearData.results[currentDateKey].views }}</td>
+                    <td>{{ convert_monthly_formatted_date(interactionPreviousYearData.results[previousDateKey].date, monthly_report_date_format) }}</td>
+                    <td>{{ interactionPreviousYearData.results[previousDateKey].impressions }}</td>
+                    <td>{{ interactionPreviousYearData.results[previousDateKey].views }}</td>
                 </tr>
             {% endfor %}
         </tbody>

@@ -358,12 +358,25 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select', 'busi
         }
     };
 
+    reports.prototype.initSelects = function ()
+    {
+        var selectParams = {
+            minimumResultsForSearch: -1
+        };
+
+        $( this.html.inputs.dateRange ).select2( selectParams );
+        $( this.html.inputs.actionType ).select2( selectParams );
+        $( this.html.inputs.period ).select2( selectParams );
+        $( this.html.inputs.limit ).select2( selectParams );
+    };
+
     reports.prototype.run = function()
     {
         this.handleDatesChange();
         this.initDatePickers();
         this.handleReportUpdate();
         this.handleExport();
+        this.initSelects();
 
         new select();
 

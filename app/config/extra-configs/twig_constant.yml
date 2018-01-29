@@ -162,3 +162,6 @@ twig:
                 PREMIUM_GOLD:     4
                 PREMIUM_PLATINUM: 5
                 SUPER_VM:         6
+
+        REPORT_EVENT_TYPE:
+            VIDEO_WATCHED: 'videoWatched'
