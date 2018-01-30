@@ -1,5 +1,5 @@
 <!--Modal claim-->
-<div id="claimBusinessModal" class="modal modal--claim" tabindex="-1" role="dialog" aria-hidden="true">
+<div id="claimBusinessModal" class="modal modal--claim" tabindex="-1" role="dialog" aria-hidden="true" data-bw-gtm-component="modal-claim-business">
     <div class="modal__outside"></div>
     <div class="modal__content">
         <h2>{% trans %}claim_business.modal.title{% endtrans %}</h2>
@@ -11,13 +11,13 @@
                 </div>
                 <div class="form__actions">
                     {{ form_rest(claimBusinessForm) }}
-                    <button type="button" class="button button--action" id="claimBusinessButton" data-business-profile-id="{{ businessProfile.getId() }}">{% trans %}Submit{% endtrans %}</button>
-                    <button type="button" class="button button--action  hide-modal">{% trans %}Cancel{% endtrans %}</button>
+                    <button type="button" class="button button--action" id="claimBusinessButton" data-business-profile-id="{{ businessProfile.getId() }}" data-bw-gtm-event-click data-bw-gtm-label="{% trans %}Submit{% endtrans %}">{% trans %}Submit{% endtrans %}</button>
+                    <button type="button" class="button button--action  hide-modal" data-bw-gtm-event-click data-bw-gtm-label="{% trans %}Cancel{% endtrans %}">{% trans %}Cancel{% endtrans %}</button>
                 </div>
                 <p id="claimBusinessMessage"></p>
             </form>
         </div><!-- modal__section -->
         <div class="modal__section claim__footer"></div><!-- modal__section -->
-        <button type="button" class="button--remove hide-modal"><i class="fa fa-remove"></i></button>
+        <button type="button" class="button--remove hide-modal" data-bw-gtm-event-click data-bw-gtm-label="hide-modal" ><i class="fa fa-remove"></i></button>
     </div><!-- modal__content -->
 </div>

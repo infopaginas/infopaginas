@@ -5,16 +5,16 @@
     {% set currentTitle = seoData.seoTitle %}
 {% endif %}
 
-<div class="sidebar__section section--social">
+<div class="sidebar__section section--social" data-bw-gtm-component="social-share">
     <ul>
         <li>
-            <a class="button button-share--facebook social-share" target="_blank" data-href="https://www.facebook.com/sharer/sharer.php?u={{ currentUrl|url_encode }}&t={{ currentTitle|url_encode }}">
+            <a class="button button-share--facebook social-share" target="_blank" data-href="https://www.facebook.com/sharer/sharer.php?u={{ currentUrl|url_encode }}&t={{ currentTitle|url_encode }}" data-bw-gtm-event-click data-bw-gtm-label="{% trans %}Share on Facebook{% endtrans %}">
                 <i class="fa fa-facebook"></i>
                 <span>{% trans %}Share on Facebook{% endtrans %}</span>
             </a>
         </li>
         <li>
-            <a class="button button-share--twitter" data-href="https://twitter.com/intent/tweet/?text={{ currentTitle|url_encode }}&url={{ currentUrl|url_encode }}" >
+            <a class="button button-share--twitter" data-href="https://twitter.com/intent/tweet/?text={{ currentTitle|url_encode }}&url={{ currentUrl|url_encode }}" data-bw-gtm-event-click data-bw-gtm-label="{% trans %}Share on Twitter{% endtrans %}">
                 <i class="fa fa-twitter"></i>
                 <span>{% trans %}Share on Twitter{% endtrans %}</span>
             </a>

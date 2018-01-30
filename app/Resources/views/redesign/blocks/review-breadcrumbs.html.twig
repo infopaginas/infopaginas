@@ -1,4 +1,4 @@
-<div class="toolbar">
+<div class="toolbar" data-bw-gtm-component="review-breadcrumbs">
     <div class="toolbar__nav">
         <a href="{{ absolute_url(path('domain_site_home_index')) }}" title="{% trans %}Home{% endtrans %}">
             <button id="breadcrumb_location" type="button" class="button button--action button--location">
@@ -7,7 +7,7 @@
             </button>
         </a>
 
-        <a href="{{ absolute_url(path('domain_business_profile_view', {'citySlug': businessProfile.citySlug, 'slug': businessProfile.slug})) }}" title="{{ businessProfile.name }}">
+        <a href="{{ absolute_url(path('domain_business_profile_view', { 'citySlug': businessProfile.citySlug, 'slug': businessProfile.slug })) }}" title="{{ businessProfile.name }}" data-bw-gtm-event-click data-bw-gtm-label="{{ businessProfile.name|truncate(breadcrumb_max_length) }}::{{ absolute_url(path('domain_business_profile_view', { 'citySlug': businessProfile.citySlug, 'slug': businessProfile.slug })) }}">
             <button id="breadcrumb_location" type="button" class="button button--action button--location">
                 <span>{{ businessProfile.name|truncate(breadcrumb_max_length) }}</span>
             </button>

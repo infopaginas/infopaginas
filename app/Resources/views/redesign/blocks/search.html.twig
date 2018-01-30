@@ -15,19 +15,19 @@
     {% endif %}
 {% endif %}
 
-<form class="header__search search-form" action="{{ absolute_url(path('domain_search_index')) }}" id="header-search-form" {% if isHomePage is defined and isHomePage %}data-homepage="1"{% endif %}>
+<form class="header__search search-form" action="{{ absolute_url(path('domain_search_index')) }}" id="header-search-form" {% if isHomePage is defined and isHomePage %}data-homepage="1"{% endif %} data-bw-gtm-component="search-form">
     <div class="form__field field--search">
         <input id="searchBox" type="text" name="q" value="{{ qValue }}" class="search-trigger" placeholder="{% trans %}What?{% endtrans %}" data-error-placeholder="{% trans %}Please enter a search term{% endtrans %}">
     </div>
     <div class="form__field field--geo">
         <input id='searchLocation' value="{{ geoValue }}" type="text" name="geo" class="search-geo" placeholder="{% trans %}Where?{% endtrans %}">
     </div>
-    <div class="form__action">
-        <button id="searchButton" type="submit" class="button button--action button--search">
+    <div class="form__action" data-bw-gtm-event-click>
+        <button id="searchButton" type="submit" class="button button--action button--search" data-bw-gtm-event-click data-bw-gtm-label="{% trans %}Search{% endtrans %}">
             {% trans %}Search{% endtrans %}
             <i class="fa fa-angle-right"></i>
         </button>
-        <button id="close-search" type="button" class="button close-search button--text">
+        <button id="close-search" type="button" class="button close-search button--text" data-bw-gtm-event-click data-bw-gtm-label="close-search">
             <i class="fa fa-remove"></i>
         </button>
     </div>
@@ -38,12 +38,12 @@
 
 {% if showLinkListView is defined and showLinkListView %}
     <div class="views">
-        <a id="searchListView" href="{{ absolute_url(path('domain_search_index', app.request.query.all)) }}" class="button">{% trans %}List view{% endtrans %}</a>
+        <a id="searchListView" href="{{ absolute_url(path('domain_search_index', app.request.query.all)) }}" class="button" data-bw-gtm-event-click data-bw-gtm-label="{% trans %}List view{% endtrans %}">{% trans %}List view{% endtrans %}</a>
     </div><!-- views -->
 {% endif %}
 
 {% if showLinkCompareView is defined and showLinkCompareView %}
     <div class="views">
-        <a id="compareListView" href="{{ absolute_url(path('domain_search_compare', app.request.query.all)) }}" class="button">{% trans %}compare.view{% endtrans %}</a>
+        <a id="compareListView" href="{{ absolute_url(path('domain_search_compare', app.request.query.all)) }}" class="button" data-bw-gtm-event-click data-bw-gtm-label="{% trans %}compare.view{% endtrans %}">{% trans %}compare.view{% endtrans %}</a>
     </div><!-- views -->
 {% endif %}
