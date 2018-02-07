@@ -22,16 +22,16 @@ define(['jquery', 'slick'], function( $, Slick ) {
         sliderParams.autoplaySpeed = 1500;
         sliderParams.dots = false;
         sliderParams.autoplay = false;
-        sliderParams.prevArrow = $('.suggested-slider-section .prev.slick-arrow');
-        sliderParams.nextArrow = $('.suggested-slider-section .next.slick-arrow');
+        sliderParams.prevArrow = $( '.suggested-slider-section .prev.slick-arrow' );
+        sliderParams.nextArrow = $( '.suggested-slider-section .next.slick-arrow' );
 
-        var slider = $('.slider.suggested-slider').slick(sliderParams);
+        var slider = $( '.slider.suggested-slider' ).slick(sliderParams);
 
-        addSuggestedSliderEvent(slider);
+        addSuggestedSliderEvent (slider);
     });
 
-    function addSuggestedSliderEvent(slick) {
-        slick.on('beforeChange', function (event, slick, currentSlide, nextSlide) {
+    function addSuggestedSliderEvent (slick) {
+        slick.on( 'beforeChange', function (event, slick, currentSlide, nextSlide) {
             if (Math.abs(nextSlide - currentSlide) == 1) {
                 setSideClass(nextSlide - currentSlide > 0);
             }
@@ -41,8 +41,8 @@ define(['jquery', 'slick'], function( $, Slick ) {
         })
     }
 
-    function setSideClass(side) {
-        var suggestedSection = $('.suggested-slider-section');
+    function setSideClass (side) {
+        var suggestedSection = $( '.suggested-slider-section' );
 
         if (side) {
             suggestedSection.removeClass('arrow-left');

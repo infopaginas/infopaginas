@@ -251,17 +251,16 @@
     }
   }
 
-  .next {
+  .arrow {
     content: "\f104";
+    font-family: fontAwesome;
     height: 40px;
-    width: 40px;
-    right: 0;
-    left: unset;
-    z-index: 100;
-    background-color: rgba(255, 255, 255, 0.7);
-    border-radius: 50%;
     position: absolute;
     top: calc(50% - 20px);
+    width: 40px;
+    z-index: 1;
+    background-color: rgba(255, 255, 255, 0.7);
+    border-radius: 50%;
     display: none !important;
 
     i {
@@ -271,22 +270,10 @@
     }
   }
 
-  .prev {
-    content: "\f104";
-    height: 40px;
-    position: absolute;
-    top: calc(50% - 20px);
-    width: 40px;
-    z-index: 100;
-    background-color: rgba(255, 255, 255, 0.7);
-    border-radius: 50%;
-    display: none !important;
-
-    i {
-      width: 100%;
-      font-size: 40px;
-      text-align: center;
-    }
+  .next {
+    content: "\f105";
+    left: auto;
+    right: 0;
   }
 
   .item__actions {

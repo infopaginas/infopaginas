@@ -2553,7 +2553,6 @@ class BusinessProfileManager extends Manager
         $searchQuery = $this->addElasticSortQuery($searchQuery, $sort);
         $searchQuery = $this->addElasticLocationQuery($searchQuery, $locationQuery);
         $searchQuery = $this->addElasticFiltersQuery($searchQuery, $categoryFilters);
-        //$searchQuery = $this->addElasticFiltersQuery($searchQuery, $localityFilters);
         $searchQuery = $this->addElasticAdsRandomAggregationQuery($searchQuery, $params->adsPerPage);
 
         return $searchQuery;
@@ -2618,10 +2617,10 @@ class BusinessProfileManager extends Manager
 
     /**
      * @param SearchDTO $params
-     * @param array|null $variableParam
+     * @param array|null $localityQuery
      * @return array
      */
-    protected function getElasticLocationQuery(SearchDTO $params, $variableParam = null)
+    protected function getElasticLocationQuery(SearchDTO $params, $localityQuery = null)
     {
         $locationQuery = [];
 
@@ -2661,7 +2660,7 @@ class BusinessProfileManager extends Manager
                         [
                             'bool' => [
                                 'must' => [
-                                    $this->getElasticSearchParams($localityId, $variableParam),
+                                    $this->getElasticLocalityFilterQuery($localityId, $localityQuery),
                                     [
                                         'term' => [
                                             'service_areas_type' => $serviceAreasTypeLocality,
@@ -2680,12 +2679,12 @@ class BusinessProfileManager extends Manager
 
     /**
      * @param integer $localityId
-     * @param array|null $variableParam
+     * @param array|null $localityQuery
      * @return array
      */
-    private function getElasticSearchParams($localityId, $variableParam = null)
+    private function getElasticLocalityFilterQuery($localityId, $localityQuery = null)
     {
-        if (!$variableParam) {
+        if (!$localityQuery) {
             return [
                 'match' => [
                     'locality_ids' => $localityId,
@@ -2693,7 +2692,7 @@ class BusinessProfileManager extends Manager
             ];
         }
 
-        return $variableParam;
+        return $localityQuery;
     }
 
     /**
@@ -2910,7 +2909,7 @@ class BusinessProfileManager extends Manager
 
         if ($minimumMatch) {
             return [
-                $filters
+                $filters,
             ];
         } else {
             return $filters;
