@@ -401,7 +401,7 @@ class SearchManager extends Manager
      */
     public function getSearchSuggestedBusinessesDTO($request, $business)
     {
-        $location = $this->geolocationManager->buildCatalogLocationValue(
+        $location = $this->geolocationManager->buildElasticLocationValue(
             $business->getCatalogLocality(),
             $business->getLatitude(),
             $business->getLongitude()
@@ -413,9 +413,6 @@ class SearchManager extends Manager
 
         $localities = $business->getLocalities();
         $categories = $business->getCategories();
-
-        $locality = $business->getCatalogLocality();
-        $location = $this->geolocationManager->buildCatalogLocationValue($locality);
 
         $query = '';
         $page  = SearchDataUtil::getPageFromRequest($request);

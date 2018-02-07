@@ -135,13 +135,11 @@ class GeolocationManager extends Manager
 
     /**
      * @param Locality $locality
-     * @param null|float $latitude
-     * @param null|float $longitude
      * @return LocationValueObject|null
      */
-    public function buildCatalogLocationValue($locality, $latitude = null, $longitude = null)
+    public function buildCatalogLocationValue($locality)
     {
-        return $this->buildElasticLocationValue($locality, $latitude, $longitude);
+        return $this->buildElasticLocationValue($locality);
     }
 
     /**
