@@ -18,10 +18,38 @@ define(['jquery', 'slick'], function( $, Slick ) {
 
         $( '.slider:not(.suggested-slider)' ).slick( sliderParams );
 
-        sliderParams.slidesToShow  = 3;
+        sliderParams.slidesToShow = 5;
         sliderParams.autoplaySpeed = 1500;
         sliderParams.dots = false;
+        sliderParams.autoplay = false;
+        sliderParams.prevArrow = $('.suggested-slider-section .prev.slick-arrow');
+        sliderParams.nextArrow = $('.suggested-slider-section .next.slick-arrow');
 
-        $( '.slider.suggested-slider' ).slick( sliderParams );
+        var slider = $('.slider.suggested-slider').slick(sliderParams);
+
+        addSuggestedSliderEvent(slider);
     });
+
+    function addSuggestedSliderEvent(slick) {
+        slick.on('beforeChange', function (event, slick, currentSlide, nextSlide) {
+            if (Math.abs(nextSlide - currentSlide) == 1) {
+                setSideClass(nextSlide - currentSlide > 0);
+            }
+            else {
+                setSideClass(nextSlide - currentSlide <= 0);
+            }
+        })
+    }
+
+    function setSideClass(side) {
+        var suggestedSection = $('.suggested-slider-section');
+
+        if (side) {
+            suggestedSection.removeClass('arrow-left');
+            suggestedSection.addClass('arrow-right')
+        } else {
+            suggestedSection.removeClass('arrow-right');
+            suggestedSection.addClass('arrow-left')
+        }
+    }
 });

@@ -135,16 +135,17 @@ class GeolocationManager extends Manager
 
     /**
      * @param Locality $locality
-     *
+     * @param null|float $latitude
+     * @param null|float $longitude
      * @return LocationValueObject|null
      */
-    public function buildCatalogLocationValue($locality)
+    public function buildCatalogLocationValue($locality, $latitude = null, $longitude = null)
     {
         $locationValueObject = null;
 
         if ($locality) {
-            $lat = $locality->getLatitude();
-            $lng = $locality->getLongitude();
+            $lat = $latitude ?: $locality->getLatitude();
+            $lng = $longitude ?: $locality->getLongitude();
 
             if ($lat and $lng) {
                 $geoData = [

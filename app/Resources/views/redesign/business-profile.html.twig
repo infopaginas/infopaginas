@@ -134,8 +134,33 @@
                             </section>
                         {% endif %}
 
+                        {% if businessProfile.getDescription() %}
+                            <section class="page-section description-section">
+                                <div class="container">
+                                    <div class="business-view-description">{{ businessProfile.getDescription()|purify }}</div>
+                                </div>
+                            </section>
+                        {% endif %}
+
+                        {% if photos|length > 0 and hasSubscription(businessProfile, "CODE_PREMIUM_GOLD") %}
+                            <section class="page-section photos slider section--slider hide-before">
+                                {% for photo in photos %}
+                                    <div class="slider__item">
+                                        <img src="{% path photo.getMedia(), 'normal' %}" alt="{% if photo.description %}{{ photo.description }}{% else %}{{ businessProfile.getName() }}{% endif %}">
+                                    </div>
+                                {% endfor %}
+                            </section>
+                        {% endif %}
+
+                        <div class="slider-title">
+                            {% trans %}slider.title{% endtrans %}
+                        </div>
+
                         {% if hasSubscription(businessProfile, SUBSCRIPTION.CODE.FREE) and suggestedResult and suggestedResult.resultSet %}
                             <div class="suggested-slider-section" data-bw-gtm-component="business-profile-suggested">
+                                <span class="arrow prev slick-arrow" style="display: inline;">
+                                    <i class="fa fa-chevron-circle-left" aria-hidden="true"></i>
+                                </span>
                                 <section class="page-section photos slider suggested-slider section--slider hide-before">
                                     {% for suggestedBusiness in suggestedResult.resultSet %}
                                         <div class="slider__item">
@@ -182,6 +207,9 @@
                                         </div>
                                     {% endfor %}
                                 </section>
+                                <span class="arrow next slick-arrow" style="display: inline;">
+                                    <i class="fa fa-chevron-circle-right" aria-hidden="true"></i>
+                                </span>
                             </div>
                         {% endif %}
 
@@ -191,24 +219,6 @@
                         %}
                             <section class="page-section video">
                                 {{ render_video_embed(businessProfile.getVideo()) }}
-                            </section>
-                        {% endif %}
-
-                        {% if businessProfile.getDescription() %}
-                            <section class="page-section description-section">
-                                <div class="container">
-                                    <div class="business-view-description">{{ businessProfile.getDescription()|purify }}</div>
-                                </div>
-                            </section>
-                        {% endif %}
-
-                        {% if photos|length > 0 and hasSubscription(businessProfile, "CODE_PREMIUM_GOLD") %}
-                            <section class="page-section photos slider section--slider hide-before">
-                                {% for photo in photos %}
-                                    <div class="slider__item">
-                                        <img src="{% path photo.getMedia(), 'normal' %}" alt="{% if photo.description %}{{ photo.description }}{% else %}{{ businessProfile.getName() }}{% endif %}">
-                                    </div>
-                                {% endfor %}
                             </section>
                         {% endif %}
 
@@ -303,6 +313,7 @@
 
         </div><!-- main -->
     </div><!-- main__container -->
+    </div>
 {% endblock %}
 
 {% block scripts %}

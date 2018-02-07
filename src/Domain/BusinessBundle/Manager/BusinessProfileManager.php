@@ -2547,13 +2547,13 @@ class BusinessProfileManager extends Manager
 
         $sort = $this->getElasticRandomSortQuery();
 
-        $locationQuery = $this->getElasticLocationQuery($params);
+        $locationQuery = $this->getElasticLocationQuery($params, $localityFilters[0]);
 
         $searchQuery = $this->getElasticBaseQuery();
         $searchQuery = $this->addElasticSortQuery($searchQuery, $sort);
         $searchQuery = $this->addElasticLocationQuery($searchQuery, $locationQuery);
         $searchQuery = $this->addElasticFiltersQuery($searchQuery, $categoryFilters);
-        $searchQuery = $this->addElasticFiltersQuery($searchQuery, $localityFilters);
+        //$searchQuery = $this->addElasticFiltersQuery($searchQuery, $localityFilters);
         $searchQuery = $this->addElasticAdsRandomAggregationQuery($searchQuery, $params->adsPerPage);
 
         return $searchQuery;
@@ -2618,10 +2618,10 @@ class BusinessProfileManager extends Manager
 
     /**
      * @param SearchDTO $params
-     *
+     * @param array|null $variableParam
      * @return array
      */
-    protected function getElasticLocationQuery(SearchDTO $params)
+    protected function getElasticLocationQuery(SearchDTO $params, $variableParam = null)
     {
         $locationQuery = [];
 
@@ -2661,11 +2661,7 @@ class BusinessProfileManager extends Manager
                         [
                             'bool' => [
                                 'must' => [
-                                    [
-                                        'match' => [
-                                            'locality_ids' => $localityId,
-                                        ],
-                                    ],
+                                    $this->getElasticSearchParams($localityId, $variableParam),
                                     [
                                         'term' => [
                                             'service_areas_type' => $serviceAreasTypeLocality,
@@ -2680,6 +2676,24 @@ class BusinessProfileManager extends Manager
         }
 
         return $locationQuery;
+    }
+
+    /**
+     * @param integer $localityId
+     * @param array|null $variableParam
+     * @return array
+     */
+    private function getElasticSearchParams($localityId, $variableParam = null)
+    {
+        if (!$variableParam) {
+            return [
+                'match' => [
+                    'locality_ids' => $localityId,
+                ]
+            ];
+        }
+
+        return $variableParam;
     }
 
     /**

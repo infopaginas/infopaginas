@@ -401,6 +401,16 @@ class SearchManager extends Manager
      */
     public function getSearchSuggestedBusinessesDTO($request, $business)
     {
+        $location = $this->geolocationManager->buildCatalogLocationValue(
+            $business->getCatalogLocality(),
+            $business->getLatitude(),
+            $business->getLongitude()
+        );
+
+        if (!$location) {
+            return null;
+        }
+
         $localities = $business->getLocalities();
         $categories = $business->getCategories();
 
