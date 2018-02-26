@@ -5,6 +5,8 @@ define(['jquery', 'slick'], function( $, Slick ) {
         var sliderParams = {
             autoplay: true,
             autoplaySpeed: 5000,
+            slidesToScroll: 1,
+            swipeToSlide: true,
             arrows: true,
             dots: true,
             responsive: true,
@@ -19,6 +21,8 @@ define(['jquery', 'slick'], function( $, Slick ) {
         $( '.slider:not(.suggested-slider)' ).slick( sliderParams );
 
         sliderParams.slidesToShow = 5;
+        sliderParams.swipeToSlide = true;
+        sliderParams.infinite = false;
         sliderParams.autoplaySpeed = 1500;
         sliderParams.dots = false;
         sliderParams.autoplay = false;
@@ -26,7 +30,6 @@ define(['jquery', 'slick'], function( $, Slick ) {
         sliderParams.nextArrow = $( '.suggested-slider-section .next.slick-arrow' );
 
         var slider = $( '.slider.suggested-slider' ).slick( sliderParams );
-
         addSuggestedSliderEvent( slider );
     });
 
