@@ -17,7 +17,6 @@
 }
 .slick-list {
     position: relative;
-    overflow-x: auto;
     display: block;
     margin: 0;
     padding: 0;
@@ -238,7 +237,7 @@
   @media only screen and (min-width: 805px) {
     &:hover {
       .slick-arrow {
-        display: block !important;
+        display: block;
       }
     }
   }
