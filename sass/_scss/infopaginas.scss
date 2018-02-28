@@ -1872,7 +1872,7 @@ $thumb-width-mb: 60px;
       background: $white;
       border-radius: 3px;
       // box-shadow: 0 4px 8px transparentize($black, .97);
-      margin: 30px 0;
+      margin: 10px 0;
     }
 
     &.page-section--no-box {
@@ -4243,14 +4243,14 @@ li.active {
 
 .slider:hover > .arrow {
   @media only screen and (min-width: 805px) {
-    display: block !important;
+    display: block;
   }
 }
 
 .slider {
   position: relative;
   max-width: 500px;
-  margin: 0 auto 20px !important;
+  margin: 0 auto !important;
 
   .arrow {
     content: "\f104";
