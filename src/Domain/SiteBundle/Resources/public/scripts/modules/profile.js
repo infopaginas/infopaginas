@@ -5,11 +5,10 @@ define(['jquery', 'slick'], function( $, Slick ) {
         var sliderParams = {
             autoplay: true,
             autoplaySpeed: 5000,
-            slidesToScroll: 1,
+            touchThreshold: 10,
             swipeToSlide: true,
             arrows: true,
             dots: true,
-            responsive: true,
             mobileFirst: true,
             adaptiveHeight: false,
             variableWidth: false,
@@ -20,16 +19,48 @@ define(['jquery', 'slick'], function( $, Slick ) {
 
         $( '.slider:not(.suggested-slider)' ).slick( sliderParams );
 
-        sliderParams.slidesToShow = 5;
-        sliderParams.swipeToSlide = true;
-        sliderParams.infinite = false;
-        sliderParams.autoplaySpeed = 1500;
-        sliderParams.dots = false;
-        sliderParams.autoplay = false;
-        sliderParams.prevArrow = $( '.suggested-slider-section .prev.slick-arrow' );
-        sliderParams.nextArrow = $( '.suggested-slider-section .next.slick-arrow' );
+      var sliderSuggestedParams = {
+        autoplay: false,
+        touchThreshold: 10,
+        infinite: false,
+        swipeToSlide: true,
+        arrows: true,
+        dots: false,
+        mobileFirst: true,
+        adaptiveHeight: false,
+        variableWidth: false,
+        slidesToShow: 1,
+        responsive: [
+          {
+            breakpoint: 319,
+            settings: {
+              slidesToShow: 2
+            }
+          },
+          {
+            breakpoint: 620,
+            settings: {
+              slidesToShow: 3
+            }
+          },
+          {
+            breakpoint: 970,
+            settings: {
+              slidesToShow: 4
+            }
+          },
+          {
+            breakpoint: 1215,
+            settings: {
+              slidesToShow: 5
+            }
+          }
+        ],
+        prevArrow: $('.suggested-slider-section .prev.slick-arrow'),
+        nextArrow: $('.suggested-slider-section .next.slick-arrow')
+      };
 
-        var slider = $( '.slider.suggested-slider' ).slick( sliderParams );
+        var slider = $( '.slider.suggested-slider' ).slick( sliderSuggestedParams );
         addSuggestedSliderEvent( slider );
     });
 
