@@ -3,6 +3,8 @@
 namespace Domain\SiteBundle\Command;
 
 use Domain\BusinessBundle\Entity\Subscription;
+use Domain\BusinessBundle\Entity\SubscriptionPlan;
+use Domain\BusinessBundle\Model\SubscriptionPlanInterface;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputDefinition;
@@ -26,6 +28,9 @@ class BusinessSubscriptionProlongCommand extends ContainerAwareCommand
 
     /* @var \DateTime|null */
     protected $prolongTo;
+
+    /* @var bool|resource */
+    protected $logFile;
 
     protected function configure()
     {
@@ -58,9 +63,14 @@ class BusinessSubscriptionProlongCommand extends ContainerAwareCommand
      */
     protected function updateSubscriptions()
     {
+        $subscriptionPlans = $this->em->getRepository(SubscriptionPlan::class)->getSubscriptionPlans(
+            SubscriptionPlanInterface::CODE_PRIORITY
+        );
+
         $subscriptions = $this->em->getRepository(Subscription::class)->getSubscriptionProlongIterator(
             $this->dateFrom,
-            $this->dateTo
+            $this->dateTo,
+            $subscriptionPlans
         );
 
         $batchSize = 20;
@@ -70,6 +80,13 @@ class BusinessSubscriptionProlongCommand extends ContainerAwareCommand
             /* @var Subscription $subscription */
             $subscription = $row[0];
 
+            $csvRow = [
+                $subscription->getBusinessProfile()->getId(),
+                $subscription->getId(),
+                $subscription->getEndDate()->format(self::DATE_FORMAT),
+                $this->prolongTo->format(self::DATE_FORMAT),
+            ];
+
             $subscription->setEndDate($this->prolongTo);
 
             if (($i % $batchSize) === 0) {
@@ -78,9 +95,11 @@ class BusinessSubscriptionProlongCommand extends ContainerAwareCommand
             }
 
             $i++;
+            fputcsv($this->logFile, $csvRow);
         }
 
         $this->em->flush();
+        fclose($this->logFile);
     }
 
     /**
@@ -92,10 +111,20 @@ class BusinessSubscriptionProlongCommand extends ContainerAwareCommand
         $this->dateFrom  = $this->getDateFromParam($input->getOption('dateFrom'), 'dateFrom');
         $this->dateTo    = $this->getDateFromParam($input->getOption('dateTo'), 'dateTo');
         $this->prolongTo = $this->getDateFromParam($input->getOption('prolongTo'), 'prolongTo');
+
+        $this->logFile = fopen($this->getLogPath(), 'wb');
+        $csvRow = [
+            'Business ID',
+            'Subscription ID',
+            'Old End Date',
+            'New End Date',
+        ];
+
+        fputcsv($this->logFile, $csvRow);
     }
 
     /**
-     * @param $param
+     * @param string $param
      *
      * @return \DateTime
      * @throws \Exception
@@ -113,5 +142,13 @@ class BusinessSubscriptionProlongCommand extends ContainerAwareCommand
         }
 
         return $date;
+    }
+
+    /**
+     * @return string
+     */
+    protected function getLogPath()
+    {
+        return $this->getContainer()->get('kernel')->getRootDir() . '/../subscription-update.txt';
     }
 }
