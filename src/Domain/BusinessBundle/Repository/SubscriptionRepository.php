@@ -64,6 +64,38 @@ class SubscriptionRepository extends \Doctrine\ORM\EntityRepository
     }
 
     /**
+     * @param \Datetime $dateFrom
+     * @param \Datetime $dateTo
+     *
+     * @return IterableResult
+     */
+    public function getSubscriptionProlongIterator($dateFrom, $dateTo)
+    {
+        $queryBuilder = $this->createQueryBuilder('s');
+
+        $queryBuilder
+            ->select('s')
+            ->andWhere('s.status IN (:actualSubscriptions)')
+            ->andWhere('s.endDate >= :dateFrom')
+            ->andWhere('s.endDate <= :dateTo')
+            ->setParameter('actualSubscriptions', StatusTrait::getActualStatuses())
+            ->setParameter(':dateFrom', $dateFrom)
+            ->setParameter(':dateTo', $dateTo)
+        ;
+
+        $query = $this->getEntityManager()->createQuery($queryBuilder->getDQL());
+        $query
+            ->setParameter('actualSubscriptions', StatusTrait::getActualStatuses())
+            ->setParameter(':dateFrom', $dateFrom)
+            ->setParameter(':dateTo', $dateTo)
+        ;
+
+        $iterateResult = $query->iterate();
+
+        return $iterateResult;
+    }
+
+    /**
      * @return array
      */
     public function getSubscriptionStatistics()
