@@ -1,6 +1,7 @@
 <?php
 
 namespace Domain\BusinessBundle\Repository;
+
 use Domain\BusinessBundle\Entity\SubscriptionPlan;
 use Domain\BusinessBundle\Model\SubscriptionPlanInterface;
 
