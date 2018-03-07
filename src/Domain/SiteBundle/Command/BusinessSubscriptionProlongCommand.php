@@ -149,6 +149,6 @@ class BusinessSubscriptionProlongCommand extends ContainerAwareCommand
      */
     protected function getLogPath()
     {
-        return $this->getContainer()->get('kernel')->getRootDir() . '/../subscription-update.txt';
+        return $this->getContainer()->get('kernel')->getRootDir() . '/../subscription-update.csv';
     }
 }
