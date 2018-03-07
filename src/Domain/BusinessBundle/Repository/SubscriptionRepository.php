@@ -4,6 +4,7 @@ namespace Domain\BusinessBundle\Repository;
 
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\Subscription;
+use Domain\BusinessBundle\Entity\SubscriptionPlan;
 use Domain\BusinessBundle\Model\StatusInterface;
 use Domain\BusinessBundle\Util\Traits\StatusTrait;
 use Doctrine\ORM\Internal\Hydration\IterableResult;
@@ -66,10 +67,11 @@ class SubscriptionRepository extends \Doctrine\ORM\EntityRepository
     /**
      * @param \Datetime $dateFrom
      * @param \Datetime $dateTo
+     * @param SubscriptionPlan[]|array $subscriptionPlans
      *
      * @return IterableResult
      */
-    public function getSubscriptionProlongIterator($dateFrom, $dateTo)
+    public function getSubscriptionProlongIterator($dateFrom, $dateTo, $subscriptionPlans)
     {
         $queryBuilder = $this->createQueryBuilder('s');
 
@@ -78,7 +80,9 @@ class SubscriptionRepository extends \Doctrine\ORM\EntityRepository
             ->andWhere('s.status IN (:actualSubscriptions)')
             ->andWhere('s.endDate >= :dateFrom')
             ->andWhere('s.endDate <= :dateTo')
+            ->andWhere('s.subscriptionPlan IN (:subscriptionPlans)')
             ->setParameter('actualSubscriptions', StatusTrait::getActualStatuses())
+            ->setParameter('subscriptionPlans', $subscriptionPlans)
             ->setParameter(':dateFrom', $dateFrom)
             ->setParameter(':dateTo', $dateTo)
         ;
@@ -86,6 +90,7 @@ class SubscriptionRepository extends \Doctrine\ORM\EntityRepository
         $query = $this->getEntityManager()->createQuery($queryBuilder->getDQL());
         $query
             ->setParameter('actualSubscriptions', StatusTrait::getActualStatuses())
+            ->setParameter('subscriptionPlans', $subscriptionPlans)
             ->setParameter(':dateFrom', $dateFrom)
             ->setParameter(':dateTo', $dateTo)
         ;
