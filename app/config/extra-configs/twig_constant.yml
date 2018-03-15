@@ -138,6 +138,7 @@ twig:
                 USER:   'user_id'
         CONFIG:
             EMERGENCY_SITUATION_ON: 'EMERGENCY_SITUATION_ON'
+            GOOGLE_OPTIMIZATION_CONTAINER_ID: 'GOOGLE_CONTAINER_ID'
 
         EMERGENCY_FILTER:
             ALL:    'all'
