@@ -39,6 +39,26 @@ class SearchDTO extends AbstractDTO
     protected $catalogLocality;
     protected $neighborhood;
 
+    /**
+     * @var array $suggestedCategories
+     */
+    protected $suggestedCategories;
+
+    /**
+     * @var array $suggestedLocalities
+     */
+    protected $suggestedLocalities;
+
+    /**
+     * @var int $minimumCategoriesMatch
+     */
+    protected $minimumCategoriesMatch;
+
+    /**
+     * @var int $minimumLocalitiesMatch
+     */
+    protected $minimumLocalitiesMatch;
+
     protected $orderBy;
 
     /**
@@ -72,6 +92,12 @@ class SearchDTO extends AbstractDTO
         $this->adsAllowed       = false;
         $this->adsMaxPages      = 0;
         $this->adsPerPage       = 0;
+
+        $this->suggestedCategories = [];
+        $this->suggestedLocalities = [];
+
+        $this->minimumCategoriesMatch = 1;
+        $this->minimumLocalitiesMatch = 1;
     }
 
     public function setCategory($category)
@@ -151,6 +177,86 @@ class SearchDTO extends AbstractDTO
     public function getLocale()
     {
         return $this->locale;
+    }
+
+    /**
+     * @param array $categories
+     *
+     * @return SearchDTO
+     */
+    public function setSuggestedCategories($categories)
+    {
+        $this->suggestedCategories = $categories;
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getSuggestedCategories()
+    {
+        return $this->suggestedCategories;
+    }
+
+    /**
+     * @param array $localities
+     *
+     * @return SearchDTO
+     */
+    public function setSuggestedLocalities($localities)
+    {
+        $this->suggestedLocalities = $localities;
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getSuggestedLocalities()
+    {
+        return $this->suggestedLocalities;
+    }
+
+    /**
+     * @param int $minimumCategoriesMatch
+     *
+     * @return SearchDTO
+     */
+    public function setMinimumCategoriesMatch($minimumCategoriesMatch)
+    {
+        $this->minimumCategoriesMatch = $minimumCategoriesMatch;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getMinimumCategoriesMatch()
+    {
+        return $this->minimumCategoriesMatch;
+    }
+
+    /**
+     * @param int $minimumLocalitiesMatch
+     *
+     * @return SearchDTO
+     */
+    public function setMinimumLocalitiesMatch($minimumLocalitiesMatch)
+    {
+        $this->minimumLocalitiesMatch = $minimumLocalitiesMatch;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getMinimumLocalitiesMatch()
+    {
+        return $this->minimumLocalitiesMatch;
     }
 
     /**

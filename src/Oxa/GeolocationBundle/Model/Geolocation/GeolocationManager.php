@@ -135,23 +135,33 @@ class GeolocationManager extends Manager
 
     /**
      * @param Locality $locality
-     *
      * @return LocationValueObject|null
      */
     public function buildCatalogLocationValue($locality)
     {
+        return $this->buildElasticLocationValue($locality);
+    }
+
+    /**
+     * @param Locality $locality
+     * @param null|float $latitude
+     * @param null|float $longitude
+     * @return LocationValueObject|null
+     */
+    public function buildElasticLocationValue($locality, $latitude = null, $longitude = null)
+    {
         $locationValueObject = null;
 
         if ($locality) {
-            $lat = $locality->getLatitude();
-            $lng = $locality->getLongitude();
+            $lat = $latitude ?: $locality->getLatitude();
+            $lng = $longitude ?: $locality->getLongitude();
 
             if ($lat and $lng) {
                 $geoData = [
-                    'geo'       => $locality->getName(),
-                    'lat'       => $lat,
-                    'lng'       => $lng,
-                    'locality'  => $locality,
+                    'geo' => $locality->getName(),
+                    'lat' => $lat,
+                    'lng' => $lng,
+                    'locality' => $locality,
                 ];
 
                 $locationValueObject = $this->buildLocationValue($geoData);
