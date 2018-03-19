@@ -13,6 +13,6 @@
     })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
 
     ga('create', '{{ google_analytics_id }}', 'auto');
-    ga('require', '{{ google_tag_manager_id }}');
+    ga('require', '{{ config(CONFIG.GOOGLE_OPTIMIZATION_CONTAINER_ID) }}');
     ga('send', 'pageview');
 </script>
