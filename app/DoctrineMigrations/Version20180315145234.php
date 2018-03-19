@@ -4,7 +4,6 @@ namespace Application\Migrations;
 
 use Doctrine\DBAL\Migrations\AbstractMigration;
 use Doctrine\DBAL\Schema\Schema;
-use Domain\EmergencyBundle\Entity\EmergencyCategory;
 use Oxa\ConfigBundle\Entity\Config;
 use Oxa\ConfigBundle\Model\ConfigInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
