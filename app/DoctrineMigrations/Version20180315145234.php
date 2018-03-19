@@ -37,7 +37,6 @@ class Version20180315145234 extends AbstractMigration implements ContainerAwareI
     public function up(Schema $schema)
     {
         $this->createConfigValue();
-        $this->updateEmergencyCategorySearchName();
 
         $this->em->flush();
     }
@@ -68,15 +67,6 @@ class Version20180315145234 extends AbstractMigration implements ContainerAwareI
             $config->setIsActive(true);
 
             $this->em->persist($config);
-        }
-    }
-
-    protected function updateEmergencyCategorySearchName()
-    {
-        $categories = $this->em->getRepository(EmergencyCategory::class)->findAll();
-
-        foreach ($categories as $category) {
-            $category->updateSearchName();
         }
     }
 }
