@@ -301,6 +301,16 @@ class BusinessProfileManager extends Manager
      *
      * @return array
      */
+    public function searchSuggestedBusinesses(SearchDTO $searchParams)
+    {
+        return $this->searchSuggestedBusinessesInElastic($searchParams);
+    }
+
+    /**
+     * @param SearchDTO $searchParams
+     *
+     * @return array
+     */
     public function searchClosestBusinesses(SearchDTO $searchParams)
     {
         $searchResultsData = $this->searchClosestBusinessesInElastic($searchParams);
@@ -1705,6 +1715,28 @@ class BusinessProfileManager extends Manager
      *
      * @return array
      */
+    protected function searchSuggestedBusinessesInElastic(SearchDTO $searchParams)
+    {
+        $coordinates = $searchParams->getCurrentCoordinates();
+
+        if ($searchParams->checkAdsAllowed()) {
+            $searchQuery = $this->getElasticSearchSuggestedQuery($searchParams);
+            $response    = $this->searchBusinessAdElastic($searchQuery);
+        } else {
+            $response = [];
+        }
+
+        $search = $this->getBusinessAdDataFromElasticResponse($response);
+        $result = $this->setBusinessDynamicValues($search, $coordinates, true);
+
+        return $result;
+    }
+
+    /**
+     * @param $searchParams SearchDTO
+     *
+     * @return array
+     */
     protected function searchBusinessInElastic(SearchDTO $searchParams)
     {
         //randomize feature works only for relevance sorting ("Best match")
@@ -2494,6 +2526,39 @@ class BusinessProfileManager extends Manager
     }
 
     /**
+     * @param $params SearchDTO
+     *
+     * @return array
+     */
+    protected function getElasticSearchSuggestedQuery(SearchDTO $params)
+    {
+        $categoryFilters = $this->getElasticMultipleFilters(
+            $params,
+            $params->getSuggestedCategories(),
+            BusinessProfile::ELASTIC_CATEGORIES_FILED,
+            $params->getMinimumCategoriesMatch()
+        );
+        $localityFilters = $this->getElasticMultipleFilters(
+            $params,
+            $params->getSuggestedLocalities(),
+            BusinessProfile::ELASTIC_LOCALITIES_FILED,
+            $params->getMinimumLocalitiesMatch()
+        );
+
+        $sort = $this->getElasticRandomSortQuery();
+
+        $locationQuery = $this->getElasticLocationQuery($params, $localityFilters[0]);
+
+        $searchQuery = $this->getElasticBaseQuery();
+        $searchQuery = $this->addElasticSortQuery($searchQuery, $sort);
+        $searchQuery = $this->addElasticLocationQuery($searchQuery, $locationQuery);
+        $searchQuery = $this->addElasticFiltersQuery($searchQuery, $categoryFilters);
+        $searchQuery = $this->addElasticAdsRandomAggregationQuery($searchQuery, $params->adsPerPage);
+
+        return $searchQuery;
+    }
+
+    /**
      * @param SearchDTO $params
      * @param array     $excludeIds
      *
@@ -2552,10 +2617,10 @@ class BusinessProfileManager extends Manager
 
     /**
      * @param SearchDTO $params
-     *
+     * @param array|null $localityQuery
      * @return array
      */
-    protected function getElasticLocationQuery(SearchDTO $params)
+    protected function getElasticLocationQuery(SearchDTO $params, $localityQuery = null)
     {
         $locationQuery = [];
 
@@ -2595,11 +2660,7 @@ class BusinessProfileManager extends Manager
                         [
                             'bool' => [
                                 'must' => [
-                                    [
-                                        'match' => [
-                                            'locality_ids' => $localityId,
-                                        ],
-                                    ],
+                                    $this->getElasticLocalityFilterQuery($localityId, $localityQuery),
                                     [
                                         'term' => [
                                             'service_areas_type' => $serviceAreasTypeLocality,
@@ -2614,6 +2675,24 @@ class BusinessProfileManager extends Manager
         }
 
         return $locationQuery;
+    }
+
+    /**
+     * @param integer $localityId
+     * @param array|null $localityQuery
+     * @return array
+     */
+    private function getElasticLocalityFilterQuery($localityId, $localityQuery = null)
+    {
+        if (!$localityQuery) {
+            return [
+                'match' => [
+                    'locality_ids' => $localityId,
+                ]
+            ];
+        }
+
+        return $localityQuery;
     }
 
     /**
@@ -2791,6 +2870,50 @@ class BusinessProfileManager extends Manager
         }
 
         return $filters;
+    }
+
+    /**
+     * @param SearchDTO $params
+     * @param array     $ids
+     * @param string    $field
+     * @param int       $minimumMatch
+     *
+     * @return array
+     */
+    protected function getElasticMultipleFilters(SearchDTO $params, $ids, $field, $minimumMatch)
+    {
+        $filters = [];
+
+        if ($ids) {
+            if ($minimumMatch) {
+                $filters['bool'] = [
+                    'minimum_should_match' => (int) $minimumMatch,
+                    'should' => [],
+                ];
+            }
+
+            foreach ($ids as $id) {
+                $filter = [
+                    'match' => [
+                        $field => $id,
+                    ],
+                ];
+
+                if ($minimumMatch) {
+                    $filters['bool']['should'][] = $filter;
+                } else {
+                    $filters[] = $filter;
+                }
+            }
+        }
+
+        if ($minimumMatch) {
+            return [
+                $filters,
+            ];
+        } else {
+            return $filters;
+        }
     }
 
     /**

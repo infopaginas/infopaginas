@@ -91,6 +91,9 @@ class BusinessProfile implements
     const ELASTIC_DOCUMENT_TYPE_AD = 'BusinessProfileAd';
     const FLAG_IS_UPDATED = 'isUpdated';
 
+    const ELASTIC_LOCALITIES_FILED = 'locality_ids';
+    const ELASTIC_CATEGORIES_FILED = 'categories_ids';
+
     const DEFAULT_MILES_FROM_MY_BUSINESS = 0;
     const DISTANCE_TO_BUSINESS_PRECISION = 1;
 
@@ -3265,5 +3268,21 @@ class BusinessProfile implements
     public function getKeywordText()
     {
         return $this->keywordText;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getIsAllowedShowSuggestion()
+    {
+        $categories = $this->getCategories();
+
+        foreach ($categories as $category) {
+            if ($category->getShowSuggestion()) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

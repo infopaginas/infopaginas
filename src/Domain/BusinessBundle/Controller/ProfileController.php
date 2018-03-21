@@ -7,9 +7,11 @@ use Domain\BusinessBundle\Entity\Category;
 use Domain\BusinessBundle\Form\Handler\BusinessClaimFormHandler;
 use Domain\BusinessBundle\Form\Type\BusinessClaimRequestType;
 use Domain\BusinessBundle\Model\DayOfWeekModel;
+use Domain\BusinessBundle\Model\SubscriptionPlanInterface;
 use Domain\BusinessBundle\Util\BusinessProfileUtil;
 use Domain\ReportBundle\Manager\CategoryReportManager;
 use Domain\ReportBundle\Model\BusinessOverviewModel;
+use Domain\SearchBundle\Model\Manager\SearchManager;
 use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -213,6 +215,17 @@ class ProfileController extends Controller
             $claimBusinessForm = null;
         }
 
+        if ($businessProfile->getSubscriptionPlanCode() == SubscriptionPlanInterface::CODE_FREE and
+            $businessProfile->getIsAllowedShowSuggestion()
+        ) {
+            $searchManager = $this->getSearchManager();
+            $searchDTO = $searchManager->getSearchSuggestedBusinessesDTO($request, $businessProfile);
+
+            $suggestedResult = $searchManager->searchSuggestedBusinesses($searchDTO);
+        } else {
+            $suggestedResult = [];
+        }
+
         return $this->render(':redesign:business-profile.html.twig', [
             'businessProfile' => $businessProfile,
             'seoData'         => $businessProfile,
@@ -226,6 +239,7 @@ class ProfileController extends Controller
             'claimBusinessForm' => $claimBusinessForm,
             'locale'          => $locale,
             'trackingParams'  => $trackingParams,
+            'suggestedResult' => $suggestedResult,
         ]);
     }
 
@@ -376,6 +390,14 @@ class ProfileController extends Controller
     private function getBusinessProfileFormHandler() : BusinessProfileFormHandler
     {
         return $this->get('domain_business.form.handler.business_profile');
+    }
+
+    /**
+     * @return SearchManager
+     */
+    protected function getSearchManager() : SearchManager
+    {
+        return $this->get('domain_search.manager.search');
     }
 
     /**

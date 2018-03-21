@@ -139,6 +139,35 @@ class SearchManager extends Manager
     /**
      * @param SearchDTO $searchParams
      *
+     * @return SearchResultsDTO
+     */
+    public function searchSuggestedBusinesses(SearchDTO $searchParams) : SearchResultsDTO
+    {
+        $search = $this->businessProfileManager->searchSuggestedBusinesses($searchParams);
+
+        $results      = $search['data'];
+        $totalResults = $search['total'];
+
+        if ($results) {
+            $pagesCount = ceil($totalResults/$searchParams->limit);
+        } else {
+            $totalResults = 0;
+            $pagesCount   = 0;
+        }
+
+        $response = SearchDataUtil::buildResponceDTO(
+            $results,
+            $totalResults,
+            $searchParams->page,
+            $pagesCount
+        );
+
+        return $response;
+    }
+
+    /**
+     * @param SearchDTO $searchParams
+     *
      * @return array
      */
     public function searchClosestBusinessesApi(SearchDTO $searchParams)
@@ -349,6 +378,63 @@ class SearchManager extends Manager
         if ($neighborhood) {
             $searchDTO->setNeighborhood($neighborhood);
         }
+
+        $orderBy = SearchDataUtil::getOrderByFromRequest($request);
+
+        if ($orderBy) {
+            $searchDTO->setOrderBy($orderBy);
+        }
+
+        if ($request->getLocale()) {
+            $locale = LocaleHelper::getLocale($request->getLocale());
+            $searchDTO->setLocale($locale);
+        }
+
+        return $searchDTO;
+    }
+
+    /**
+     * @param Request         $request
+     * @param BusinessProfile $business
+     *
+     * @return SearchDTO
+     */
+    public function getSearchSuggestedBusinessesDTO($request, $business)
+    {
+        $location = $this->geolocationManager->buildElasticLocationValue(
+            $business->getCatalogLocality(),
+            $business->getLatitude(),
+            $business->getLongitude()
+        );
+
+        if (!$location) {
+            return null;
+        }
+
+        $localities = $business->getLocalities();
+        $categories = $business->getCategories();
+
+        $query = '';
+        $page  = SearchDataUtil::getPageFromRequest($request);
+
+        $limit     = (int) $this->configService->getSetting(ConfigInterface::SEARCH_ADS_PER_PAGE)->getValue();
+        $searchDTO = SearchDataUtil::buildRequestDTO($query, $location, $page, $limit);
+        $searchDTO = $this->setSearchAdsParams($searchDTO);
+
+        if ($categories) {
+            $searchDTO->setSuggestedCategories(BusinessProfileUtil::extractEntitiesId($categories->toArray()));
+        }
+
+        if ($localities) {
+            $searchDTO->setSuggestedLocalities(BusinessProfileUtil::extractEntitiesId($localities->toArray()));
+        }
+
+        $searchDTO->setMinimumCategoriesMatch(
+            (int) $this->configService->getSetting(ConfigInterface::SUGGEST_CATEGORY_MINIMUM_MATCH)->getValue()
+        );
+        $searchDTO->setMinimumLocalitiesMatch(
+            (int) $this->configService->getSetting(ConfigInterface::SUGGEST_LOCALITY_MINIMUM_MATCH)->getValue()
+        );
 
         $orderBy = SearchDataUtil::getOrderByFromRequest($request);
 
