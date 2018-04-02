@@ -1,6 +1,6 @@
-<div class="toolbar">
+<div class="toolbar" data-bw-gtm-component="article-breadcrumbs">
     <div class="toolbar__nav">
-        <a href="{{ absolute_url(path('domain_article_homepage')) }}" title="{% trans %}Articles{% endtrans %}">
+        <a href="{{ absolute_url(path('domain_article_homepage')) }}" title="{% trans %}Articles{% endtrans %}" data-bw-gtm-event-click data-bw-gtm-label="Articles::{{ absolute_url(path('domain_article_homepage')) }}">
             <button id="breadcrumb_location" type="button" class="button button--action button--location">
                 <i class="fa fa-list"></i>
                 <span>{% trans %}Articles{% endtrans %}</span>
@@ -8,7 +8,7 @@
         </a>
 
         {% if articleCategory is defined %}
-            <a href="{{ absolute_url(path('domain_article_category', {'categorySlug':  articleCategory.getSlug() })) }}" title="{{ articleCategory.name }}">
+            <a href="{{ absolute_url(path('domain_article_category', { 'categorySlug':  articleCategory.getSlug() })) }}" title="{{ articleCategory.name }}" data-bw-gtm-event-click data-bw-gtm-label="{{ articleCategory.name|truncate(breadcrumb_max_length) }}::{{ absolute_url(path('domain_article_category', { 'categorySlug':  articleCategory.getSlug() })) }}">
                 <button id="breadcrumb_location" type="button" class="button button--action button--location">
                     <span>{{ articleCategory.name|truncate(breadcrumb_max_length) }}</span>
                 </button>
@@ -16,7 +16,7 @@
 
             {% if article is defined %}
                 <div class="breadcrumb">
-                    <a href="{{ absolute_url(path('domain_article_view', {'slug':article.slug})) }}" title="{{ article.title }}" class="button categorie__item categorie__parent">
+                    <a href="{{ absolute_url(path('domain_article_view', { 'slug': article.slug })) }}" title="{{ article.title }}" class="button categorie__item categorie__parent" data-bw-gtm-event-click data-bw-gtm-label="{{ article.title|truncate(breadcrumb_max_length) }}::{{ absolute_url(path('domain_article_view', { 'slug': article.slug })) }}">
                         <span>{{ article.title|truncate(breadcrumb_max_length) }}</span>
                     </a>
                 </div>

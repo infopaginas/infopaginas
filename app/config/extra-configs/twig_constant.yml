@@ -138,6 +138,7 @@ twig:
                 USER:   'user_id'
         CONFIG:
             EMERGENCY_SITUATION_ON: 'EMERGENCY_SITUATION_ON'
+            GOOGLE_OPTIMIZATION_CONTAINER_ID: 'GOOGLE_CONTAINER_ID'
 
         EMERGENCY_FILTER:
             ALL:    'all'
@@ -153,6 +154,15 @@ twig:
             MAIN:   'main'
             COMMON: 'common'
             HIDDEN: 'hidden'
+
+        SUBSCRIPTION:
+            CODE:
+                FREE:             1
+                PRIORITY:         2
+                PREMIUM_PLUS:     3
+                PREMIUM_GOLD:     4
+                PREMIUM_PLATINUM: 5
+                SUPER_VM:         6
 
         REPORT_EVENT_TYPE:
             VIDEO_WATCHED: 'videoWatched'

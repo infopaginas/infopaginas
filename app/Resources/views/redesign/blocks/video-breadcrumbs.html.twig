@@ -1,6 +1,6 @@
-<div class="toolbar">
+<div class="toolbar" data-bw-gtm-component="video-breadcrumbs">
     <div class="toolbar__nav">
-        <a href="{{ absolute_url(path('domain_site_home_index')) }}" title="{% trans %}Homepage{% endtrans %}">
+        <a href="{{ absolute_url(path('domain_site_home_index')) }}" title="{% trans %}Homepage{% endtrans %}" data-bw-gtm-event-click data-bw-gtm-label="Homepage::{{ absolute_url(path('domain_site_home_index')) }}">
             <button id="breadcrumb_location" type="button" class="button button--action button--location">
                 <i class="fa fa-list"></i>
                 <span>{% trans %}Homepage{% endtrans %}</span>
@@ -8,7 +8,7 @@
         </a>
 
         <div class="breadcrumb">
-            <a href="{{ absolute_url(path('domain_business_video_list')) }}" title="{% trans %}Videos{% endtrans %}" class="button categorie__item categorie__parent">
+            <a href="{{ absolute_url(path('domain_business_video_list')) }}" title="{% trans %}Videos{% endtrans %}" class="button categorie__item categorie__parent" data-bw-gtm-event-click data-bw-gtm-label="Videos::{{ absolute_url(path('domain_business_video_list')) }}">
                 <span>{% trans %}Videos{% endtrans %}</span>
             </a>
         </div>

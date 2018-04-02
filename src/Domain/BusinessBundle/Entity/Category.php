@@ -171,6 +171,13 @@ class Category implements DefaultEntityInterface, CopyableEntityInterface, Trans
      */
     protected $catalogItems;
 
+    /**
+     * @var bool
+     *
+     * @ORM\Column(name="show_suggestion", type="boolean", options={"default" : 0})
+     */
+    protected $showSuggestion;
+
     public function setLocale($locale)
     {
         $this->locale = $locale;
@@ -199,6 +206,7 @@ class Category implements DefaultEntityInterface, CopyableEntityInterface, Trans
         $this->extraSearches    = new ArrayCollection();
 
         $this->isUpdated = true;
+        $this->showSuggestion = false;
     }
 
     /**
@@ -574,6 +582,26 @@ class Category implements DefaultEntityInterface, CopyableEntityInterface, Trans
         $this->catalogItems->removeElement($catalogItem);
 
         return $this;
+    }
+
+    /**
+     * @param bool $showSuggestion
+     *
+     * @return Category
+     */
+    public function setShowSuggestion($showSuggestion)
+    {
+        $this->showSuggestion = $showSuggestion;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getShowSuggestion()
+    {
+        return $this->showSuggestion;
     }
 
     /**

@@ -1,8 +1,8 @@
-<section class="page-section page-section--no-box articles-section">
+<section class="page-section page-section--no-box articles-section" data-bw-gtm-component="homepage-articles-list">
     {% block titleTag %} {% endblock %}
     <div class="articles__container clearfix">
         {% for article in articles %}
-            <a href="{{ absolute_url(path('domain_article_view', { 'slug' : article.getSlug() })) }}" title="{% trans %}Go to read...{% endtrans %}" class="news__item clearfix">
+            <a href="{{ absolute_url(path('domain_article_view', { 'slug' : article.getSlug() })) }}" title="{% trans %}Go to read...{% endtrans %}" class="news__item clearfix" data-bw-gtm-event-click data-bw-gtm-label="{{ article.title }}::{{ absolute_url(path('domain_article_view', { 'slug' : article.getSlug() })) }}">
                 <img class="news__img" src="{% path article.getImage(), 'list' %}" alt="{{ article.title }}">
                 <h2 class="news__title">{{ article.title }}</h2>
                 <p>{{ cut_body_extension(article.getBody()) }}</p>

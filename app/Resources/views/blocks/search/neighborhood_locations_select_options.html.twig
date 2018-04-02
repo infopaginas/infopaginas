@@ -1,10 +1,10 @@
-<option data-route="{{ absolute_url(path(pageRouter, searchData|merge({'neighborhood': '' }))) }}">
+<option data-route="{{ absolute_url(path(pageRouter, searchData|merge({ 'neighborhood': '' }))) }}">
     {% trans %}Neighborhoods{% endtrans %}
 </option>
 {% if results and results.neighborhoods is not empty %}
     {% for neighborhood in results.neighborhoods %}
-        <option data-route="{{ absolute_url(path(pageRouter, searchData|merge({'neighborhood': neighborhood.id }))) }}"
-            {% if searchData.neighborhood == neighborhood.id %}selected{% endif %} value="{{ neighborhood.getName() }}">
+        <option data-route="{{ absolute_url(path(pageRouter, searchData|merge({ 'neighborhood': neighborhood.id }))) }}"
+            {% if searchData.neighborhood == neighborhood.id %}selected{% endif %} value="{{ neighborhood.getName() }}" data-bw-gtm-event-click data-bw-gtm-label="{{ neighborhood.getName() }}">
             {{ neighborhood.getName() }}
         </option>
     {% endfor %}

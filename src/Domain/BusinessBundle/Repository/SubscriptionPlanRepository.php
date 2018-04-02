@@ -2,6 +2,9 @@
 
 namespace Domain\BusinessBundle\Repository;
 
+use Domain\BusinessBundle\Entity\SubscriptionPlan;
+use Domain\BusinessBundle\Model\SubscriptionPlanInterface;
+
 /**
  * SubscriptionPlanRepository
  *
@@ -10,4 +13,22 @@ namespace Domain\BusinessBundle\Repository;
  */
 class SubscriptionPlanRepository extends \Doctrine\ORM\EntityRepository
 {
+    /**
+     * @param int $minSubscription
+     *
+     * @return SubscriptionPlan[]
+     */
+    public function getSubscriptionPlans($minSubscription = SubscriptionPlanInterface::CODE_FREE)
+    {
+        $queryBuilder = $this->createQueryBuilder('sp');
+
+        $queryBuilder
+            ->select('sp')
+            ->andWhere('sp.code >= :minSubscription')
+            ->andWhere('sp.isActive = true')
+            ->setParameter(':minSubscription', $minSubscription)
+        ;
+
+        return $queryBuilder->getQuery()->getResult();
+    }
 }

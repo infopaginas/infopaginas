@@ -1872,7 +1872,7 @@ $thumb-width-mb: 60px;
       background: $white;
       border-radius: 3px;
       // box-shadow: 0 4px 8px transparentize($black, .97);
-      margin: 30px 0;
+      margin: 10px 0;
     }
 
     &.page-section--no-box {
@@ -1891,7 +1891,7 @@ $thumb-width-mb: 60px;
 
   .section--slider {
     margin-bottom: 40px;
-    padding: 20px 0;
+    padding: 0 0 20px 0;
   }
 
   .panorama-frame {
@@ -4242,13 +4242,15 @@ li.active {
 }
 
 .slider:hover > .arrow {
-  display: block !important;
+  @media only screen and (min-width: 805px) {
+    display: block;
+  }
 }
 
 .slider {
   position: relative;
   max-width: 500px;
-  margin: 0 auto 20px !important;
+  margin: 0 auto !important;
 
   .arrow {
     content: "\f104";
@@ -4260,7 +4262,6 @@ li.active {
     z-index: 1;
     background-color: rgba(255, 255, 255, 0.7);
     border-radius: 50%;
-    display: none !important;
 
     i {
       width: 100%;

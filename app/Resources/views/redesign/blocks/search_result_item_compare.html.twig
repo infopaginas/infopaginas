@@ -1,4 +1,4 @@
-<div class="comparison__item" id="business-{{ item.id }}">
+<div class="comparison__item" id="business-{{ item.id }}" data-bw-gtm-component="search-results-item-compare">
     <div class="comparison__row comparison__where">
         {% set workingHoursData = get_business_profile_open_status(item) %}
         {% include ':redesign/blocks/workingHours:working_hours_current_status.html.twig' with { 'workingHoursData': workingHoursData } %}
@@ -17,7 +17,7 @@
 
     <div class="comparison__row comparison__description">
         <h2>
-            <a href="{{ absolute_url(path('domain_business_profile_view', { 'citySlug' : item.citySlug, 'slug' : item.slug })) }}" title="{% trans %}Go to...{% endtrans %}">{{ item.displayedPosition }}. <span class="{{ seoTags.name }}-full">{{ item.name }}</span></a>
+            <a href="{{ absolute_url(path('domain_business_profile_view', { 'citySlug' : item.citySlug, 'slug' : item.slug })) }}" title="{% trans %}Go to...{% endtrans %}" data-bw-gtm-event-click data-bw-gtm-label="{{ item.name }}::{{ absolute_url(path('domain_business_profile_view', { 'citySlug' : item.citySlug, 'slug' : item.slug })) }}">{{ item.displayedPosition }}. <span class="{{ seoTags.name }}-full">{{ item.name }}</span></a>
         </h2>
         <p>
             {% if (hasSubscription(item, "CODE_PREMIUM_PLUS") and item.slogan) %}
@@ -25,7 +25,7 @@
             {% endif %}
         </p>
         <div class="detail-link">
-            <a href="{{ absolute_url(path('domain_business_profile_view', { 'citySlug' : item.citySlug, 'slug' : item.slug })) }}" class="button button--small button--text">{% trans %}Details{% endtrans %} <i class="fa fa-angle-right"></i></a>
+            <a href="{{ absolute_url(path('domain_business_profile_view', { 'citySlug' : item.citySlug, 'slug' : item.slug })) }}" class="button button--small button--text" data-bw-gtm-event-click data-bw-gtm-label="{% trans %}Details{% endtrans %}">{% trans %}Details{% endtrans %} <i class="fa fa-angle-right"></i></a>
         </div>
     </div><!-- comparison-row -->
 
@@ -58,7 +58,7 @@
                         {% for phone in item.phones %}
                             <li {% if phone.type == BUSINESS_PROFILE_PHONE.TYPE.MAIN %}class="main-phone"{% endif %} title="{{ ('business_profile.phone.tooltip.' ~ phone.type)|trans }}">
                                 <i class="fa {{ get_business_profile_phone_icon(phone) }}"></i>
-                                <a href="tel:{{ phone.phone }}" class="hide-desktop phone-call" data-id="{{ item.id }}" data-type="callMobButton">{{ phone.phone }}</a>
+                                <a href="tel:{{ phone.phone }}" class="hide-desktop phone-call" data-id="{{ item.id }}" data-type="callMobButton" data-bw-gtm-event-click>{{ phone.phone }}</a>
                                 <span class="hide-mobile">{{ phone.phone }}</span>
                             </li>
                         {% endfor %}
@@ -110,11 +110,11 @@
     </div><!-- comparison-row -->
 
     <div class="comparison__row comparison__actions no-flex">
-        <section class="actions-section">
+        <section class="actions-section" data-bw-gtm-component="actions-sections">
             <div class="header-actions">
                 {% include ':redesign/blocks/businessProfile/view:action-buttons.html.twig' %}
             </div>
         </section>
     </div><!-- comparison-row -->
-    <button class="button--remove remove-compare-item"><i class="fa fa-remove"></i></button>
+    <button class="button--remove remove-compare-item" data-bw-gtm-event-click data-bw-gtm-label="remove-compare-item"><i class="fa fa-remove"></i></button>
 </div><!-- comparison__item -->

@@ -28,6 +28,7 @@ class CategoryAdmin extends OxaAdmin
             ->add('searchTextEs', null, [
                 'label' => 'Name Esp',
             ])
+            ->add('showSuggestion')
         ;
     }
 
@@ -39,6 +40,7 @@ class CategoryAdmin extends OxaAdmin
         $listMapper
             ->add('id')
             ->add('name')
+            ->add('showSuggestion')
         ;
 
         $this->addGridActions($listMapper);
@@ -51,6 +53,7 @@ class CategoryAdmin extends OxaAdmin
     {
         $formMapper
             ->add('name')
+            ->add('showSuggestion')
             ->add('slug', null, ['read_only' => true, 'required' => false])
         ;
     }
@@ -63,6 +66,7 @@ class CategoryAdmin extends OxaAdmin
         $showMapper
             ->add('id')
             ->add('name')
+            ->add('showSuggestion')
             ->add('slug')
         ;
     }

@@ -41,8 +41,8 @@ class SearchDataUtil
         int $totalCount,
         int $page,
         int $pageCount,
-        array $categories,
-        $neighborhoods
+        $categories = array(),
+        $neighborhoods = array()
     ) : SearchResultsDTO {
         return new SearchResultsDTO($resutlSet, $totalCount, $page, $pageCount, $categories, $neighborhoods);
     }

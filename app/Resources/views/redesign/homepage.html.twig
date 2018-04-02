@@ -7,7 +7,7 @@
 {% block searchBlock %}{% endblock %}
 
 {% block body %}
-    <div class="main__container main__container--centered">
+    <div class="main__container main__container--centered" data-bw-gtm-component="homepage">
         <div class="main">
             <div class="video-header__container" data-desktop-background="{% if landingPage.getBackground() %}{% path landingPage.getBackground(), 'normal' %}{% else %}{{ absolute_url(asset('redesign/img/home-header.jpg')) }}{% endif %}">
 

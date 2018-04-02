@@ -1,9 +1,9 @@
 <!-- Pagination -->
 {% if pageCount > 1 %}
-    <div class="pagination">
+    <div class="pagination" data-bw-gtm-component="pagination">
         {% if page > 1 %}
             <li>
-                <a data-page="{{ page - 1 }}" title="{% trans %}Previous page{% endtrans %}">
+                <a data-page="{{ page - 1 }}" title="{% trans %}Previous page{% endtrans %}" data-bw-gtm-event-click data-bw-gtm-label="{% trans %}Previous page{% endtrans %}">
                     <i class="fa fa-angle-left"></i>
                 </a>
             </li>
@@ -27,7 +27,7 @@
                     </li>
                 {% else %}
                     <li>
-                        <a data-page="{{ pageItem }}">{{ pageItem }}</a>
+                        <a data-page="{{ pageItem }}" data-bw-gtm-event-click data-bw-gtm-label="{{ pageItem }}">{{ pageItem }}</a>
                     </li>
                 {% endif %}
             {% endif %}
@@ -35,7 +35,7 @@
 
         {% if page < pageCount %}
             <li>
-                <a data-page="{{ page + 1 }}" title="{% trans %}Next page{% endtrans %}">
+                <a data-page="{{ page + 1 }}" title="{% trans %}Next page{% endtrans %}" data-bw-gtm-event-click data-bw-gtm-label="{% trans %}Next page{% endtrans %}">
                     <i class="fa fa-angle-right"></i>
                 </a>
             </li>
