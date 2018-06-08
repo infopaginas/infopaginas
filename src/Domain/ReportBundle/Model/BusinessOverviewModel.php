@@ -7,6 +7,7 @@ class BusinessOverviewModel implements ReportInterface
     const TYPE_CODE_IMPRESSION = 'impressions';
     const TYPE_CODE_VIEW       = 'views';
     const TYPE_CODE_KEYWORD    = 'keyword';
+    const TYPE_CODE_ADS        = 'ads';
     const TYPE_CODE_CATEGORY_BUSINESS   = 'category_business';
     const TYPE_CODE_CATEGORY_CATALOG    = 'category_catalog';
 
@@ -169,6 +170,7 @@ class BusinessOverviewModel implements ReportInterface
             self::TYPE_CODE_VIDEO_WATCHED,
         ];
     }
+    // todo add function to get all chart types
 
     /**
      * @return array
@@ -178,6 +180,21 @@ class BusinessOverviewModel implements ReportInterface
         $allowedEvents = self::getChartEventTypes();
 
         $result = array_intersect_key(self::EVENT_TYPES, array_flip($allowedEvents));
+
+        return $result;
+    }
+
+    /**
+     * @return array
+     */
+    public static function getAllChartEventTypesWithTranslation()
+    {
+        $allowedEvents = self::getChartEventTypes();
+
+        $result = array_intersect_key(self::EVENT_TYPES, array_flip($allowedEvents));
+
+        $result[self::TYPE_CODE_ADS]     = 'report.type.ads';
+        $result[self::TYPE_CODE_KEYWORD] = 'report.type.keywords';
 
         return $result;
     }

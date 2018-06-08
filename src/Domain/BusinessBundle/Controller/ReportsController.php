@@ -3,7 +3,9 @@
 namespace Domain\BusinessBundle\Controller;
 
 use AntiMattr\GoogleBundle\Analytics\Impression;
+use Domain\BusinessBundle\Admin\BusinessProfileAdmin;
 use Domain\BusinessBundle\Entity\BusinessProfile;
+use Domain\BusinessBundle\Form\Type\BusinessChartFilterType;
 use Domain\BusinessBundle\Form\Type\BusinessCloseRequestType;
 use Domain\BusinessBundle\Form\Type\BusinessReportFilterType;
 use Domain\BusinessBundle\Manager\BusinessProfileManager;
@@ -21,6 +23,7 @@ use Domain\ReportBundle\Service\Export\BusinessInteractionReportExcelExporter;
 use Domain\ReportBundle\Util\DatesUtil;
 use Oxa\Sonata\AdminBundle\Util\Helpers\AdminHelper;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -270,6 +273,44 @@ class ReportsController extends Controller
     }
 
     /**
+     * @param int $id
+     *
+     * @return Response
+     * @throws \Exception
+     */
+    public function chartPreviewAction($id)
+    {
+        // todo check access
+        $business = $this->getBusinessProfileManager()->find($id);
+
+        if (!$business) {
+            throw $this->createNotFoundException();
+        }
+
+        // todo has ads report???
+        $filtersForm = $this->createForm(new BusinessChartFilterType());
+
+        return $this->render(':redesign:chart-preview.html.twig', [
+            'business' => $business,
+            'filtersForm' => $filtersForm->createView(),
+        ]);
+    }
+
+    /**
+     * @param Request $request
+     *
+     * @return JsonResponse
+     * @throws \Exception
+     */
+    public function chartExportAction(Request $request)
+    {
+        $params   = $this->getChartExportParams($request);
+        $exporter = $this->get('domain_report.charts_exporter.pdf');
+
+        return $exporter->getResponse($params);
+    }
+
+    /**
      * @param Request $request
      * @param bool    $isExport
      *
@@ -308,6 +349,24 @@ class ReportsController extends Controller
         $params['businessProfile'] = $businessProfile;
 
         $this->userActionExportLog($businessProfile);
+
+        return $params;
+    }
+
+    /**
+     * @param Request $request
+     *
+     * @return array
+     * @throws \Exception
+     */
+    protected function getChartExportParams(Request $request)
+    {
+        $params['charts'] = $request->request->get('chart', []);
+        $businessProfile = $this->getBusinessProfileManager()->find($request->request->get('businessId'));
+
+        $this->checkBusinessProfileOrAdminAccess($businessProfile);
+
+        $params['businessProfile'] = $businessProfile;
 
         return $params;
     }
@@ -552,6 +611,26 @@ class ReportsController extends Controller
         }
 
         if (!($businessProfile->getUser() and $businessProfile->getUser()->getId() == $user->getId())) {
+            throw $this->createNotFoundException();
+        }
+    }
+
+    /**
+     * @param BusinessProfile $businessProfile
+     *
+     * @throws \Exception
+     */
+    protected function checkBusinessProfileOrAdminAccess(BusinessProfile $businessProfile)
+    {
+        $user    = $this->getUser();
+        $isAdmin = $this->get('security.authorization_checker')->isGranted('ROLE_ADMIN');
+        // todo check roles that can access user's report
+
+        if (!$user || !($user instanceof User)) {
+            throw $this->createNotFoundException();
+        }
+
+        if (!(($businessProfile->getUser() and $businessProfile->getUser()->getId() == $user->getId()) || $isAdmin)) {
             throw $this->createNotFoundException();
         }
     }

@@ -32,7 +32,7 @@ services:
         class: Domain\ReportBundle\Service\Export\SubscriptionPdfExporter
         calls:
             - [ setTemplateEngine, [ '@templating' ]]
-            - [ setPdfGenerator, [ '@spraed.pdf.generator' ]]
+            - [ setPdfGenerator, [ '@knp_snappy.pdf' ]]
             - [ setSubscriptionReportManager, [ '@domain_report.manager.subscription_report_manager' ]]
     domain_report.exporter.subscription_excel_exporter:
         class: Domain\ReportBundle\Service\Export\SubscriptionExcelExporter
@@ -44,7 +44,7 @@ services:
         class: Domain\ReportBundle\Service\Export\CategoryPdfExporter
         calls:
             - [ setTemplateEngine, [ '@templating' ]]
-            - [ setPdfGenerator, [ '@spraed.pdf.generator' ]]
+            - [ setPdfGenerator, [ '@knp_snappy.pdf' ]]
             - [ setCategoryReportManager, [ '@domain_report.manager.category_report_manager' ]]
     domain_report.exporter.category_excel_exporter:
         class: Domain\ReportBundle\Service\Export\CategoryExcelExporter
@@ -56,7 +56,7 @@ services:
         class: Domain\ReportBundle\Service\Export\BusinessOverviewPdfExporter
         calls:
             - [ setTemplateEngine, [ '@templating' ]]
-            - [ setPdfGenerator, [ '@spraed.pdf.generator' ]]
+            - [ setPdfGenerator, [ '@knp_snappy.pdf' ]]
             - [ setViewsAndVisitorsReportManager, [ '@domain_report.manager.views_and_visitors' ]]
     domain_report.exporter.business_overview_excel_exporter:
         class: Domain\ReportBundle\Service\Export\BusinessOverviewExcelExporter
@@ -113,7 +113,7 @@ services:
             - [ setBusinessOverviewReportManager, [ '@domain_report.manager.business_overview_report_manager' ]]
             - [ setAdUsageReportManager, [ '@domain_report.manager.ad_usage' ]]
             - [ setTemplateEngine, [ '@templating' ]]
-            - [ setPdfGenerator, [ '@spraed.pdf.generator' ]]
+            - [ setPdfGenerator, [ '@knp_snappy.pdf' ]]
 
     domain_report.interaction_exporter.pdf:
         class: Domain\ReportBundle\Service\Export\BusinessInteractionReportPdfExporter
@@ -121,7 +121,14 @@ services:
             - [ setBusinessOverviewReportManager, [ '@domain_report.manager.business_overview_report_manager' ]]
             - [ setKeywordsReportManager, [ '@domain_report.manager.keywords_report_manager' ]]
             - [ setTemplateEngine, [ '@templating' ]]
-            - [ setPdfGenerator, [ '@spraed.pdf.generator' ]]
+            - [ setPdfGenerator, [ '@knp_snappy.pdf' ]]
+
+# todo use "knp_snappy.pdf" for all pdf
+    domain_report.charts_exporter.pdf:
+        class: Domain\ReportBundle\Service\Export\BusinessChartReportPdfExporter
+        calls:
+            - [ setTemplateEngine, [ '@templating' ]]
+            - [ setPdfGenerator, [ '@knp_snappy.pdf' ]]
 
     domain_report.manager.business_report_api_manager:
             class: Domain\ReportBundle\Manager\BusinessReportApiManager

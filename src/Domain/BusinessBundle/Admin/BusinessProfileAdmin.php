@@ -1308,6 +1308,7 @@ class BusinessProfileAdmin extends OxaAdmin
         $collection
             ->add('show')
             ->add('restore')
+            ->add('exportPreview');
         ;
     }
 

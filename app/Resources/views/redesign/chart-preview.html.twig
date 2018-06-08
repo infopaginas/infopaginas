@@ -1,0 +1,110 @@
+{% extends "redesign/layout/base.html.twig" %}
+
+{% block bodyClass %}generic-page article-page has-sidebar{% endblock %}
+
+{% block body %}
+    <div class="main__container main__container--centered">
+        <div class="container clearfix">
+            <div class="main main-column">
+                <form class="form">
+                    <div class="form__section">
+                        <div class="form-column__container clearfix">
+                            <div class="form__column">
+                                <div class="form__row vertical__row">
+                                    {{ form_label(filtersForm.dateRange) }}
+                                    {{ form_widget(filtersForm.dateRange) }}
+                                </div>
+
+                                <div class="form__row vertical__row" id="action_type_container">
+                                    {{ form_label(filtersForm.actionType) }}
+                                    {{ form_widget(filtersForm.actionType) }}
+                                </div>
+                            </div>
+
+                            <div class="form__column">
+                                <div class="form__row vertical__row" id="group_period_container">
+                                    {{ form_label(filtersForm.groupPeriod) }}
+                                    {{ form_widget(filtersForm.groupPeriod) }}
+                                </div>
+
+                                <div class="form__row vertical__row display-none" id="keywords_limit_container">
+                                    {{ form_label(filtersForm.limit) }}
+                                    {{ form_widget(filtersForm.limit) }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-column__container clearfix display-none" id="custom_dates_container">
+                            <div class="form__column">
+                                <div class="form__row">
+                                    <div class="form__field field--date">
+                                        {{ form_label(filtersForm.start) }}
+                                        {{ form_widget(filtersForm.start) }}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form__column">
+                                <div class="form__row">
+                                    <div class="form__field field--date">
+                                        {{ form_label(filtersForm.end) }}
+                                        {{ form_widget(filtersForm.end) }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <section class="page-section">
+                        <h3 class="language-title">{{ 'Chart'|trans }}</h3>
+
+                        <div id="chart_container"
+                             class="overview-chart-container"
+                             data-title-keywords="{{ 'Keywords Statistics'|trans }}"
+                             data-y-axis-keywords="{{ 'Number of searches'|trans }}"
+                             data-series-keywords="{{ 'Searches'|trans }}"
+                             data-title-ads="{{ 'ad_usage_report.chart.name'|trans }}"
+                             data-series-name-click-ads="{{ 'Clicks'|trans }}"
+                             data-series-name-imp-ads="{{ 'Impressions'|trans }}"
+                             data-y-axis="{{ 'Count'|trans }}"></div>
+                    </section>
+
+                    <input type="hidden" id="business_profile_id" value="{{ business.id }}">
+                </form>
+
+                <div class="section-filters">
+                    <h3 class="language-title">{{ 'report.preview.button.add_to_export'|trans }}</h3>
+
+                    <div class="form__section">
+                        <div class="form-btn report-button-group">
+                            <button type="button" id="add-to-export" class="btn green-btn">{{ 'Add'|trans }}</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <aside class="profile__sidebar sidebar">
+                <div class="sidebar__section">
+                    <form id="export_form" action="{{ path('domain_business_admin_chart_reports_export') }}" method="post">
+                        <input type="hidden" id="businessId" name="businessId" value="{{ business.id }}">
+                        <button id="export_preview" type="button">{{ 'report.preview.button.export_chart'|trans }}</button>
+                        <ul id="chart_preview_block" class="chart-export-preview"></ul>
+                    </form>
+                </div>
+            </aside>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script type="text/javascript" src="{{ asset('bundles/domainbusiness/scripts/modules/tools/html2canvas.min.js')}}"></script>
+    {{ parent() }}
+
+    <script type="text/javascript">
+        requirejs(['{{ absolute_url(asset("assetic/require_common_js.js")) }}'], function( common ) {
+            requirejs(['{{ absolute_url(asset("assetic/require_chart_preview_js.js")) }}'], function( ReportPreview ) {
+                var reportPreview = new ReportPreview();
+            })
+        })
+    </script>
+{% endblock%}

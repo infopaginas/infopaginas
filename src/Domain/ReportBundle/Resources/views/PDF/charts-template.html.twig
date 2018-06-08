@@ -1,0 +1,57 @@
+<head>
+    <link rel="stylesheet" type="text/css" href="{{ asset('bundles/sonatacore/vendor/bootstrap/dist/css/bootstrap.min.css', null, true) }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('bundles/sonataadmin/vendor/admin-lte/dist/css/AdminLTE.min.css', null, true) }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('bundles/oxasonataadmin/css/admin.css', null, true) }}">
+</head>
+<style>
+    table, th, td {
+        border: 1px solid black;
+    }
+
+    table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    th, td {
+        text-align: left;
+        padding: 8px;
+    }
+    tr:nth-child(even){background-color: #f2f2f2}
+
+    div.box.box-primary.box-pdf {
+        display: block;
+        clear: both;
+        page-break-after: always;
+    }
+</style>
+{# todo move to file #}
+<div>
+    <b>{{ businessProfile.name }}</b>,
+    {{ 'now'|date(report_generated_datetime_format) }}
+</div>
+
+<br>
+
+<div>{{ businessProfile.fullAddress }}</div>
+
+<br>
+
+<div class="box box-primary box-pdf">
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>{{ 'Chart'|trans }}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for image in charts %}
+                <tr>
+                    <td>
+                        <img src="{{ image }}">
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>

@@ -137,7 +137,7 @@ class CategoryManager extends Manager
     /**
      * @return array
      */
-    protected function getCategoryElasticSearchIndexParams()
+    public function getCategoryElasticSearchIndexParams()
     {
         $params = [
             'auto_suggest_en' => [

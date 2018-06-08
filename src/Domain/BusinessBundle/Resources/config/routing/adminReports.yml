@@ -27,3 +27,10 @@ domain_business_admin_inretaction_reports_export:
     defaults: { _controller: DomainBusinessBundle:Reports:interactionAdminExport, format: '' }
     options:
         expose: true
+
+# todo add user's chart export
+domain_business_admin_chart_reports_export:
+    path:     /chart/export
+    defaults: { _controller: DomainBusinessBundle:Reports:chartExport }
+    options:
+        expose: true

@@ -17,7 +17,7 @@ $( document ).ready( function() {
             keywordLimit:     '#' + uniqueId + '_keywordReportLimit',
             adUsageDateStart: '#' + uniqueId + '_adUsageReportFiltersDateStart',
             adUsageDateEnd:   '#' + uniqueId + '_adUsageReportFiltersDateEnd',
-            mainPeriods:      'input[name="' + uniqueId + '[period]"]'
+            mainPeriods:      'input[name="' + uniqueId + '_mainReportFilters[period]"]'
         },
         buttons: {
             mainFilter:         '#' + uniqueId + '_mainReportFiltersFilter',

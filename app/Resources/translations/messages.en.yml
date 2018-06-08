@@ -497,6 +497,15 @@ interaction_report:
     direction: '"Directions button" counts how many times the users have clicked on the button "Show on Map" to look where the business is located'
     video_watched: '"Video views" counts how many times the video was viewed by users.'
 
+report:
+  type:
+    ads: 'Ads'
+    keywords: 'Keywords'
+  preview:
+    button:
+      add_to_export: 'Add to export'
+      export_chart:  'Export'
+
 date: Date
 interaction_report.total: Total
 interaction_report.overall: Total Interactions

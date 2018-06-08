@@ -51,3 +51,7 @@ domain_business_reports_api_overview:
 domain_business_reports_api_keywords:
      path:     /api/keywords
      defaults: { _controller: DomainBusinessBundle:Api:keywords }
+
+domain_business_chart_preview_export:
+     path:     /chart/preview/{id}
+     defaults: { _controller: DomainBusinessBundle:Reports:chartPreview, id: 0 }

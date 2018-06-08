@@ -14,5 +14,10 @@
             <i class="fa fa-print" aria-hidden="true"></i>
             Print
         </button>
+        {#exportPreview#}
+        <a href="{{ admin.generateObjectUrl('exportPreview', object) }}">
+            {#<i class="glyphicon glyphicon-subtitles"></i>#}
+            {{ 'export_preview'|trans({}, 'SonataAdminBundle') }}
+        </a>
     {% endif %}
 {% endblock %}
