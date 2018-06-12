@@ -505,6 +505,7 @@ report:
     button:
       add_to_export: 'Agregar a exportar'
       export_chart:  'Exportar'
+      export_custom_pdf: 'Exportar PDF personalizado'
 
 date: Fecha
 interaction_report.total: Total

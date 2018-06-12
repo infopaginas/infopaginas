@@ -52,7 +52,6 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select', 'jque
         };
 
         this.spinner = new Spin();
-        console.log(1);
 
         this.run();
     };

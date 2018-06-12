@@ -262,8 +262,6 @@ $( document ).ready( function() {
                         $( document ).trigger( events.chartConverted );
                     });
                 });
-            } else {
-                console.log( 'ajax is running' );
             }
         });
 

@@ -44,7 +44,7 @@
         {% endblock %}
 
         {% block googleTagManagerScript %}
-            {#{% include ':widgets:google_tag_manager_script.html.twig' %}#}
+            {% include ':widgets:google_tag_manager_script.html.twig' %}
         {% endblock %}
 
         {% block doubleClickHeader %}
@@ -61,7 +61,7 @@
     </head>
     <body class="{% block bodyClass %}{% endblock %}">
         {% block googleTagManagerNoScript %}
-            {#{% include ':widgets:google_tag_manager_no_script.html.twig' %}#}
+            {% include ':widgets:google_tag_manager_no_script.html.twig' %}
         {% endblock %}
 
         {% block systemNoJsWarning %}
