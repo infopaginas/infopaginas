@@ -1,31 +1,15 @@
-{#
-
-This file is part of the Sonata package.
-
-(c) Thomas Rabaix <thomas.rabaix@sonata-project.org>
-
-For the full copyright and license information, please view the LICENSE
-file that was distributed with this source code.
-
-#}
-
 {% extends "@SonataAdmin/CRUD/show.html.twig" %}
 
 {% block navbar_title %}
-    {{ 'export_preview'|trans({'%object%': object}, 'SonataAdminBundle') }}
+    Custom PDF export
 {% endblock %}
 
-{#{% block list_table %}#}
-{# todo move chart export outside admin panel #}
-{# todo min width #}
-{# todo load all charts #}
-{# todo export #}
 {% block sonata_admin_content %}
-    <div class="sonata-ba-delete">
+    <div class="sonata-ba-delete export-preview">
 
-        <div class="box box-danger">
+        <div class="box box-info">
             <div class="box-header">
-                    <h3 class="box-title">{{ 'title_delete'|trans({}, 'SonataAdminBundle') }}</h3>
+                    <h3 class="box-title">Custom PDF export</h3>
             </div>
             <div class="box-body">
                 {% if existDependentFields is not defined or existDependentFields is null %}
@@ -89,4 +73,3 @@ file that was distributed with this source code.
     <script type="text/javascript" src="{{ asset('bundles/domainsite/scripts/vendors/highcharts.js')}}"></script>
     <script type="text/javascript" src="{{ asset('bundles/domainbusiness/scripts/modules/tools/html2canvas.min.js')}}"></script>
 {% endblock %}
-

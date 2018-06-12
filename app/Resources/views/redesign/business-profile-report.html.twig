@@ -107,6 +107,13 @@
                                 <i class="fa fa-print" aria-hidden="true"></i>
                                 {% trans %}Print{% endtrans %}
                             </button>
+                            <a href="{{ path('domain_business_chart_preview_export', {'id': businessProfile.id}) }}"
+                               class="button-a">
+                                <button type="button" class="btn green-btn">
+                                    <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
+                                    Custom PDF export
+                                </button>
+                            </a>
                         </div>
                     </div>
                 </div>

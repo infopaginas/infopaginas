@@ -291,3 +291,10 @@ div.single-media-preview-block img {
     font-size: x-large;
 }
 
+.button-a {
+    color: inherit;
+}
+
+.export-preview{
+    min-width: 650px;
+}

@@ -14,10 +14,13 @@
             <i class="fa fa-print" aria-hidden="true"></i>
             Print
         </button>
-        {#exportPreview#}
-        <a href="{{ admin.generateObjectUrl('exportPreview', object) }}">
-            {#<i class="glyphicon glyphicon-subtitles"></i>#}
-            {{ 'export_preview'|trans({}, 'SonataAdminBundle') }}
-        </a>
+        {% if admin.isGranted('EXPORT', object) and admin.hasRoute('exportPreview') %}
+            <a href="{{ admin.generateObjectUrl('exportPreview', object) }}" class="button-a">
+                <button type="button" class="btn green-btn">
+                    <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
+                    Custom PDF export
+                </button>
+            </a>
+        {% endif %}
     {% endif %}
 {% endblock %}

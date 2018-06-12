@@ -280,10 +280,11 @@ class ReportsController extends Controller
      */
     public function chartPreviewAction($id)
     {
-        // todo check access
-        $business = $this->getBusinessProfileManager()->find($id);
+        /** @var BusinessProfile $businessProfile */
+        $businessProfile = $this->getBusinessProfileManager()->find($id);
+        $this->checkBusinessProfileAccess($businessProfile);
 
-        if (!$business) {
+        if (!$businessProfile) {
             throw $this->createNotFoundException();
         }
 
@@ -291,7 +292,7 @@ class ReportsController extends Controller
         $filtersForm = $this->createForm(new BusinessChartFilterType());
 
         return $this->render(':redesign:chart-preview.html.twig', [
-            'business' => $business,
+            'business' => $businessProfile,
             'filtersForm' => $filtersForm->createView(),
         ]);
     }
