@@ -62,11 +62,17 @@ class BusinessAdsReportPdfExporter extends PdfExporterModel
         return $this->sendResponse($html, $filename, $params['print']);
     }
 
+    /**
+     * @return AdUsageReportManager
+     */
     protected function getAdUsageReportManager() : AdUsageReportManager
     {
         return $this->adUsageReportManager;
     }
 
+    /**
+     * @return BusinessOverviewReportManager
+     */
     protected function getBusinessOverviewReportManager() : BusinessOverviewReportManager
     {
         return $this->businessOverviewReportManager;

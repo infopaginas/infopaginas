@@ -288,7 +288,6 @@ class ReportsController extends Controller
             throw $this->createNotFoundException();
         }
 
-        // todo has ads report???
         $filtersForm = $this->createForm(new BusinessChartFilterType());
 
         return $this->render(':redesign:chart-preview.html.twig', [
@@ -625,7 +624,6 @@ class ReportsController extends Controller
     {
         $user    = $this->getUser();
         $isAdmin = $this->get('security.authorization_checker')->isGranted('ROLE_ADMIN');
-        // todo check roles that can access user's report
 
         if (!$user || !($user instanceof User)) {
             throw $this->createNotFoundException();

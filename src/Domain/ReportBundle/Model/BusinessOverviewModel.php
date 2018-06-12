@@ -170,7 +170,6 @@ class BusinessOverviewModel implements ReportInterface
             self::TYPE_CODE_VIDEO_WATCHED,
         ];
     }
-    // todo add function to get all chart types
 
     /**
      * @return array

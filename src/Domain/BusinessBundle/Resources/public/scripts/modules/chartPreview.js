@@ -2,9 +2,6 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select', 'jque
     'use strict';
 
     //init reportPreview object variables
-    // todo add max chart limit
-    // todo clean up
-    // todo min-width, min-height (for mobile device)
     var reportPreview = function() {
         this.urls = {
             interaction: Routing.generate( 'domain_business_reports_business_overview_data' ),

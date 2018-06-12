@@ -123,7 +123,6 @@ services:
             - [ setTemplateEngine, [ '@templating' ]]
             - [ setPdfGenerator, [ '@knp_snappy.pdf' ]]
 
-# todo use "knp_snappy.pdf" for all pdf
     domain_report.charts_exporter.pdf:
         class: Domain\ReportBundle\Service\Export\BusinessChartReportPdfExporter
         calls:

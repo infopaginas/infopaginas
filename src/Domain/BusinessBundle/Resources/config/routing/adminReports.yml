@@ -28,7 +28,6 @@ domain_business_admin_inretaction_reports_export:
     options:
         expose: true
 
-# todo add user's chart export
 domain_business_admin_chart_reports_export:
     path:     /chart/export
     defaults: { _controller: DomainBusinessBundle:Reports:chartExport }
