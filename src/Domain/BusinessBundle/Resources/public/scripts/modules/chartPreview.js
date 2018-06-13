@@ -278,14 +278,13 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select', 'jque
 
         $( document ).on('click', this.html.buttons.addToExport, function() {
             var chartBlock = $( self.html.containers.chartContainer );
-            var previewBlock = $( self.html.containers.previewBlock );
-            var childrenLength = previewBlock.children().length;
+            var currentAmountOfCharts = self.getLength();
 
-            if ( childrenLength >= self.values.maxAmountOfCharts ) {
+            if ( currentAmountOfCharts >= self.values.maxAmountOfCharts ) {
                 self.showItem( self.html.messages.errorSpan )
             }
 
-            if ( chartBlock.children().length && childrenLength < self.values.maxAmountOfCharts ) {
+            if ( chartBlock.children().length && currentAmountOfCharts < self.values.maxAmountOfCharts ) {
                 html2canvas( chartBlock[ 0 ] ).then(function( canvas ) {
                     var image = canvas.toDataURL( self.values.imageFormat );
 
@@ -297,9 +296,8 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select', 'jque
 
         $( document ).on('click', this.html.buttons.removePreview, function() {
             var previewBlock = $( this ).parent();
-            var previewCount = $( self.html.containers.previewBlock ).children().length;
 
-            if (previewCount < self.values.maxAmountOfCharts ) {
+            if (self.getLength() < self.values.maxAmountOfCharts ) {
                 self.hideItem( self.html.messages.errorSpan );
             }
 
@@ -391,6 +389,10 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select', 'jque
         new select();
 
         this.loadReport();
+    };
+
+    reportPreview.prototype.getLength = function () {
+       return $( this.html.containers.previewBlock ).children().length;
     };
 
     return reportPreview;
