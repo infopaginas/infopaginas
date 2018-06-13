@@ -283,10 +283,10 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select', 'jque
             if ( currentAmountOfCharts >= self.values.maxAmountOfCharts ) {
                 self.showItem( self.html.messages.errorSpan )
             } else if ( chartBlock.children().length ) {
-                html2canvas(chartBlock[0]).then( function( canvas ) {
-                    var image = canvas.toDataURL(self.values.imageFormat);
+                html2canvas( chartBlock[ 0 ] ).then(function( canvas ) {
+                    var image = canvas.toDataURL( self.values.imageFormat );
 
-                    self.addPreview(image);
+                    self.addPreview( image );
                     self.clearChartBlock();
                 });
             }
