@@ -51,7 +51,6 @@
         "friendsofsymfony/jsrouting-bundle": "^1.6",
         "spine/postgres-search-bundle": "^0.1.1",
         "liuggio/excelbundle": "v2.1.0",
-        "spraed/pdf-generator-bundle": "v1.0",
         "guzzlehttp/guzzle": "^6.2",
         "spine/spine-trigonometric-dql-bundle": "^0.1.6",
         "antimattr/google-bundle": "^2.0",
@@ -76,7 +75,9 @@
         "mongodb/mongodb": "1.1.2",
         "exercise/htmlpurifier-bundle": "^0.2.4",
         "pulse00/ffmpeg-bundle": "^0.6",
-        "egulias/email-validator": "~1.2"
+        "egulias/email-validator": "~1.2",
+        "knplabs/knp-snappy-bundle": "^1.5",
+        "h4cc/wkhtmltopdf-amd64": "^0.12.4"
     },
     "require-dev": {
         "sensio/generator-bundle": "~3.0"

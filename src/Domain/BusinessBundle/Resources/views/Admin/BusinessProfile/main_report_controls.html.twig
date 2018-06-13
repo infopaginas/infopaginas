@@ -46,12 +46,12 @@
                     </label>
 
                     <div class="sonata-ba-field sonata-ba-field-standard-natural">
-                        <ul id="{{ admin.uniqid }}_period" class="list-unstyled">
+                        <ul id="{{ admin.uniqid }}_{{ field_description.name }}_period" class="list-unstyled">
                             {% for key, period in field_description.options.periodChoices %}
                                 <li>
                                     <div class="radio">
                                         <label>
-                                            <input type="radio" id="{{ admin.uniqid }}_period_{{ loop.index }}" name="{{ admin.uniqid }}[period]" value="{{ key }}" data-month="{{ get_month_range_by_period(key) }}" {% if key == field_description.options.periodData %}checked="checked"{% endif %}>
+                                            <input type="radio" id="{{ admin.uniqid }}_{{ field_description.name }}_period_{{ loop.index }}" name="{{ admin.uniqid }}_{{ field_description.name }}[period]" value="{{ key }}" data-month="{{ get_month_range_by_period(key) }}" {% if key == field_description.options.periodData %}checked="checked"{% endif %}>
                                             <span class="control-label__text">{{ period|trans }}</span>
                                         </label>
                                     </div>

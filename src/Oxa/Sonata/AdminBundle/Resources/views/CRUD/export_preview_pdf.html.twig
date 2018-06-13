@@ -1,0 +1,75 @@
+{% extends "@SonataAdmin/CRUD/show.html.twig" %}
+
+{% block navbar_title %}
+    Custom PDF export
+{% endblock %}
+
+{% block sonata_admin_content %}
+    <div class="sonata-ba-delete export-preview">
+
+        <div class="box box-info">
+            <div class="box-header">
+                    <h3 class="box-title">Custom PDF export</h3>
+            </div>
+            <div class="box-body">
+                {% if existDependentFields is not defined or existDependentFields is null %}
+                    {{ 'message_delete_confirmation'|trans({'%object%': admin.toString(object)}, 'SonataAdminBundle') }}
+                {% endif %}
+            </div>
+            <div class="box-footer clearfix">
+                {% for key, value in interactionCharts %}
+                    <div class="box-body table-responsive no-padding" id="{{ admin.uniqid }}_{{ key }}ChartParentBlock">
+                        {% if value.isAds %}
+                            {% include 'DomainBusinessBundle:Admin:BusinessProfile/main_report_controls.html.twig' with { field_description: value } %}
+                            {% include 'DomainBusinessBundle:Admin:BusinessProfile/report_data.html.twig' with { field_description: value } %}
+                        {% else %}
+                            {% include 'DomainBusinessBundle:Admin:BusinessProfile/main_report_controls.html.twig' with { field_description: value } %}
+                            {% if value.hasLimit %}
+                                {% set limitSettings = value|merge({ options: { choices: value.options.limitChoices, data: value.options.limitData }, name: value.name ~ 'limit' }) %}
+                                {% include 'DomainBusinessBundle:Admin:BusinessProfile/report_choice.html.twig' with { field_description: limitSettings, selector: 'limit-option' } %}
+                            {% else %}
+                                {% include 'DomainBusinessBundle:Admin:BusinessProfile/report_choice.html.twig' with { field_description: value, selector: 'period-option' } %}
+                            {% endif %}
+                            {% include 'DomainBusinessBundle:Admin:BusinessProfile/action_report_data.html.twig' with { field_description: value } %}
+                        {% endif %}
+
+                        <input type="hidden" value="{{ key }}" data-action-type>
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="box-footer clearfix">
+                <form id="exportForm" action="{{ path('domain_business_admin_chart_reports_export') }}" method="post">
+                    {% for key, value in interactionCharts %}
+                        <input id="chart_{{ key }}" type="hidden" name="chart[{{ key }}]" value=""/>
+                    {% endfor %}
+                    <input type="hidden" id="businessId" name="businessId" value="{{ object.id }}">
+                    <button id="exportPdf" type="button">Export</button>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block nav_bar_right %}
+    <li class="dropdown sonata-actions">
+        {% if admin.hasRoute('list') and admin.isGranted('LIST') %}
+            <a href="{{ admin.generateUrl('list') }}">
+                <i class="fa fa-list"></i>
+                {{ 'return_to_list'|trans({}, 'SonataAdminBundle') }}
+            </a>
+        {% endif %}
+    </li>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        var uniqueId = '{{ admin.uniqid }}';
+        var businessProfileId = '{{ admin.subject.id }}';
+    </script>
+    <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
+    <script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
+    <script type="text/javascript" src="{{ asset('bundles/domainbusiness/scripts/modules/reportsPreviewAdmin.js')}}"></script>
+    <script type="text/javascript" src="{{ asset('bundles/domainsite/scripts/vendors/highcharts.js')}}"></script>
+    <script type="text/javascript" src="{{ asset('bundles/domainbusiness/scripts/modules/tools/html2canvas.min.js')}}"></script>
+{% endblock %}

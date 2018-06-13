@@ -51,7 +51,7 @@ services:
 
     domain_business.admin.business_profile:
         class: Domain\BusinessBundle\Admin\BusinessProfileAdmin
-        arguments: [~, Domain\BusinessBundle\Entity\BusinessProfile, DomainReportBundle:CRUD]
+        arguments: [~, Domain\BusinessBundle\Entity\BusinessProfile, DomainBusinessBundle:BusinessProfileCRUD]
         tags:
             - {name: sonata.admin, manager_type: orm, group: admin, label: Business Profiles, audit: true}
         calls:

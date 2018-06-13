@@ -3,7 +3,8 @@
 namespace Domain\ReportBundle\Model\Exporter;
 
 use Domain\ReportBundle\Model\ExporterInterface;
-use Spraed\PDFGeneratorBundle\PDFGenerator\PDFGenerator;
+use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
+use Knp\Snappy\Pdf;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\Templating\EngineInterface;
 use Symfony\Component\HttpFoundation\Response;
@@ -17,7 +18,7 @@ abstract class PdfExporterModel implements ExporterInterface
     const FORMAT = 'pdf';
 
     /**
-     * @var PDFGenerator $pdfGenerator
+     * @var Pdf $pdfGenerator
      */
     protected $pdfGenerator;
 
@@ -44,11 +45,11 @@ abstract class PdfExporterModel implements ExporterInterface
      * @param string $filename
      * @param bool $print
      *
-     * @return Response
+     * @return PdfResponse
      */
     protected function sendResponse($html, $filename, $print = false)
     {
-        $content = $this->pdfGenerator->generatePDF($html, 'UTF-8');
+        $content = $this->pdfGenerator->getOutputFromHtml($html);
 
         if ($print) {
             $dispositionType = ResponseHeaderBag::DISPOSITION_INLINE;
@@ -56,13 +57,11 @@ abstract class PdfExporterModel implements ExporterInterface
             $dispositionType = ResponseHeaderBag::DISPOSITION_ATTACHMENT;
         }
 
-        return new Response(
+        return new PdfResponse(
             $content,
-            200,
-            [
-                'Content-Type' => 'application/pdf',
-                'Content-Disposition' => sprintf('%s; filename=%s', $dispositionType, $filename),
-            ]
+            $filename,
+            'application/pdf',
+            $dispositionType
         );
     }
 }
