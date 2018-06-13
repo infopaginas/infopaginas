@@ -506,6 +506,7 @@ report:
       add_to_export: 'Add to export'
       export_chart:  'Export'
       export_custom_pdf: 'Export custom PDF'
+      error_max_amount: 'Maximum number of graphs on page 15'
 
 date: Date
 interaction_report.total: Total

@@ -42,7 +42,6 @@ class BusinessAdsReportPdfExporter extends PdfExporterModel
      */
     public function getResponse($params = [])
     {
-
         $interactionCurrentData  = $this->businessOverviewReportManager->getBusinessOverviewReportData($params);
         $adUsageData = $this->adUsageReportManager->getAdUsageData($params);
 

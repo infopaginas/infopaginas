@@ -274,8 +274,14 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select', 'jque
 
         $( document ).on('click', this.html.buttons.addToExport, function() {
             var chartBlock = $( self.html.containers.chartContainer );
+            var previewBlock = $( self.html.containers.previewBlock );
+            var errorSpan = $('#max-amount-error');
 
-            if ( chartBlock.children().length ) {
+            if (previewBlock.children().length >= 15) {
+                errorSpan.show();
+            }
+
+            if ( chartBlock.children().length && previewBlock.children().length < 15 ) {
                 html2canvas( chartBlock[ 0 ] ).then(function( canvas ) {
                     var image = canvas.toDataURL( self.values.imageFormat );
 
@@ -287,6 +293,12 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select', 'jque
 
         $( document ).on('click', this.html.buttons.removePreview, function() {
             var previewBlock = $( this ).parent();
+            var errorSpan = $('#max-amount-error');
+            var previewCount = $( self.html.containers.previewBlock ).children().length;
+
+            if (previewCount < 15) {
+                errorSpan.hide();
+            }
 
             previewBlock.remove();
         });
