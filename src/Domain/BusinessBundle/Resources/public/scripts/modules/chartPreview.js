@@ -36,6 +36,9 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select', 'jque
                 export:        '#export_preview',
                 addToExport:   '#add-to-export',
                 removePreview: 'i[data-remove]'
+            },
+            messages: {
+                errorSpan: '#max-amount-error'
             }
         };
 
@@ -48,7 +51,8 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select', 'jque
                 ads:      'ads'
             },
             previewChartName:   'chart',
-            previewChartNumber: 0
+            previewChartNumber: 0,
+            maxAmountOfCharts: 15
         };
 
         this.spinner = new Spin();
@@ -275,13 +279,13 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select', 'jque
         $( document ).on('click', this.html.buttons.addToExport, function() {
             var chartBlock = $( self.html.containers.chartContainer );
             var previewBlock = $( self.html.containers.previewBlock );
-            var errorSpan = $('#max-amount-error');
+            var childrenLength = previewBlock.children().length;
 
-            if (previewBlock.children().length >= 15) {
-                errorSpan.show();
+            if ( childrenLength >= self.values.maxAmountOfCharts ) {
+                self.showItem( self.html.messages.errorSpan )
             }
 
-            if ( chartBlock.children().length && previewBlock.children().length < 15 ) {
+            if ( chartBlock.children().length && childrenLength < self.values.maxAmountOfCharts ) {
                 html2canvas( chartBlock[ 0 ] ).then(function( canvas ) {
                     var image = canvas.toDataURL( self.values.imageFormat );
 
@@ -293,11 +297,10 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select', 'jque
 
         $( document ).on('click', this.html.buttons.removePreview, function() {
             var previewBlock = $( this ).parent();
-            var errorSpan = $('#max-amount-error');
             var previewCount = $( self.html.containers.previewBlock ).children().length;
 
-            if (previewCount < 15) {
-                errorSpan.hide();
+            if (previewCount < self.values.maxAmountOfCharts ) {
+                self.hideItem( self.html.messages.errorSpan );
             }
 
             previewBlock.remove();
