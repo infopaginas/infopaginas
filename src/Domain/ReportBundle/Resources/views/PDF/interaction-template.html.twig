@@ -74,29 +74,6 @@
     <table class="table table-bordered table-striped">
         <thead>
             <tr>
-                <th>Date</th>
-                <th>Impressions</th>
-                <th>Views</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for overview in interactionCurrentData.results %}
-                <tr>
-                    <td>{{ overview.date }}</td>
-                    <td>{{ overview.impressions }}</td>
-                    <td>{{ overview.views }}</td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
-
-<br>
-
-<div class="box box-primary box-pdf">
-    <table class="table table-bordered table-striped">
-        <thead>
-            <tr>
                 <th>Keyword</th>
                 <th>Number of searches</th>
             </tr>
@@ -113,77 +90,6 @@
 </div>
 
 <br>
-
-<div class="box box-primary box-pdf">
-    <table class="table table-bordered table-striped">
-        <thead>
-            <tr>
-                <th>Current Year</th>
-                <th>Current Year Impressions</th>
-                <th>Current Year Views</th>
-                <th>Previous Year</th>
-                <th>Previous Year Impressions</th>
-                <th>Previous Year Views</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for i in 0..interactionCurrentYearData.dates|length - 1 %}
-                {% set currentDateKey = interactionCurrentYearData.dates[i] %}
-                {% set previousDateKey = interactionPreviousYearData.dates[i] %}
-                <tr>
-                    <td>{{ convert_monthly_formatted_date(interactionCurrentYearData.results[currentDateKey].date, monthly_report_date_format) }}</td>
-                    <td>{{ interactionCurrentYearData.results[currentDateKey].impressions }}</td>
-                    <td>{{ interactionCurrentYearData.results[currentDateKey].views }}</td>
-                    <td>{{ convert_monthly_formatted_date(interactionPreviousYearData.results[previousDateKey].date, monthly_report_date_format) }}</td>
-                    <td>{{ interactionPreviousYearData.results[previousDateKey].impressions }}</td>
-                    <td>{{ interactionPreviousYearData.results[previousDateKey].views }}</td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
-
-<br>
-
-{% if businessProfile.dcOrderId %}
-    <div class="box box-primary box-pdf">
-        <table class="table table-bordered table-striped">
-            <thead>
-            <tr class="sonata-ba-list-field-header">
-                <th>{% trans %}Date{% endtrans %}</th>
-                <th>{% trans %}ad_usage_report.device_category{% endtrans %}</th>
-                <th>{% trans %}ad_usage_report.clicks{% endtrans %}</th>
-                <th>{% trans %}ad_usage_report.impressions{% endtrans %}</th>
-                <th>{% trans %}ad_usage_report.ctr{% endtrans %}</th>
-            </tr>
-            </thead>
-
-            <tbody>
-            {% for key, date in adUsageData.dates %}
-                {% for id, deviceCategory in adUsageData.deviceCategories %}
-                    <tr>
-                        {% for item in adUsageData.results[id][key] %}
-                            <td>{{ item|trans }}</td>
-                        {% endfor %}
-                    </tr>
-                {% endfor %}
-            {% endfor %}
-            </tbody>
-            <tfoot>
-            <tr>
-                <th></th>
-                <th>{% trans %}ad_usage_report.total{% endtrans %}</th>
-                {% for item in adUsageData.total %}
-                    <th>{{ item }}</th>
-                {% endfor %}
-                <th></th>
-            </tr>
-            </tfoot>
-        </table>
-    </div>
-
-    <br>
-{% endif %}
 
 {% for page in paginatedInteractionData.results %}
     <div class="box box-primary box-pdf">

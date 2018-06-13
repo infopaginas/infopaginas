@@ -95,20 +95,25 @@
 
                     <div class="form__section">
                         <div class="form-btn report-button-group">
-                            {% set pdfExportURL = absolute_url(path('domain_business_reports_pdf_export')) %}
-                            <button type="button" href="{{ pdfExportURL }}" id="export-pdf" class="btn green-btn">
+                            <button type="button" id="export-pdf" data-format="{{ exportPdf }}" data-export-type="export-pdf" class="btn green-btn">
                                 <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
                                 {% trans %}PDF{% endtrans %}
                             </button>
-                            {% set excelExportURL = absolute_url(path('domain_business_reports_excel_export')) %}
-                            <button type="button" href="{{ excelExportURL }}" id="export-excel" class="btn green-btn">
+                            <button type="button" id="export-excel" data-format="{{ exportExcel }}" data-export-type="export-excel" class="btn green-btn">
                                 <i class="fa fa-file-excel-o" aria-hidden="true"></i>
                                 {% trans %}Excel{% endtrans %}
                             </button>
-                            <button type="button" id="print" href="{{ pdfExportURL }}" class="btn green-btn">
+                            <button type="button" id="print" data-format="{{ exportPdf }}" data-export-type="print" class="btn green-btn">
                                 <i class="fa fa-print" aria-hidden="true"></i>
                                 {% trans %}Print{% endtrans %}
                             </button>
+                            <a href="{{ path('domain_business_chart_preview_export', {'id': businessProfile.id}) }}"
+                               class="button-a">
+                                <button type="button" class="btn green-btn">
+                                    <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
+                                    {{ "report.preview.button.export_custom_pdf"|trans }}
+                                </button>
+                            </a>
                         </div>
                     </div>
                 </div>

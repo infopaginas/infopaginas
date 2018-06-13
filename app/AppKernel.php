@@ -52,7 +52,7 @@ class AppKernel extends Kernel
             new FOS\JsRoutingBundle\FOSJsRoutingBundle(),
             new Alsatian\PostgresSearchBundle\AlsatianPostgresSearchBundle(),
             new \JMaitan\SonataMediaCropBundle\JMaitanSonataMediaCropBundle(),
-            new Spraed\PDFGeneratorBundle\SpraedPDFGeneratorBundle(),
+            new Knp\Bundle\SnappyBundle\KnpSnappyBundle(),
             new Liuggio\ExcelBundle\LiuggioExcelBundle(),
             new Spine\TrigonometricDQLBundle\SpineTrigonometricDQLBundle(),
             new AntiMattr\GoogleBundle\GoogleBundle(),

@@ -1,0 +1,23 @@
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+table th, td {
+    text-align: left;
+    padding: 8px;
+}
+
+table tr:nth-child(even) {
+    background-color: #f2f2f2
+}
+
+table div.box.box-primary.box-pdf {
+    display: block;
+    clear: both;
+    page-break-after: always;
+}
+
+table table, th, td {
+    border: 1px solid black;
+}

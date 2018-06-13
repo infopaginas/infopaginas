@@ -6104,3 +6104,49 @@ span.no-js-warning-message {
 .modal--opened .modal__content.emergency {
   top: 0;
 }
+
+#chart_container {
+  padding-bottom: 60px;
+}
+
+#chart_preview_block {
+  &.chart-export-preview {
+    li {
+      &:not(:last-child) {
+        border-bottom: 1px solid $grey--medium;
+      }
+
+      img {
+        max-width: 100%;
+      }
+
+      i {
+        &[data-remove] {
+          cursor: pointer;
+        }
+      }
+    }
+  }
+}
+
+#keywords_limit_container {
+  #domain_business_bundle_business_chart_filter_type_limit {
+    width: 100%;
+  }
+
+  span {
+    &.select2 {
+      &.select2-container {
+        width: 100%!important;
+      }
+    }
+  }
+}
+
+.width-restriction {
+  min-width: 650px;
+}
+
+#max-amount-error {
+  color: red;
+}

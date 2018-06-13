@@ -76,6 +76,11 @@ assetic:
                 - '@DomainBusinessBundle/Resources/public/scripts/modules/reports.js'
             filters:
                 - jsqueeze
+        require_chart_preview_js:
+            inputs:
+                - '@DomainBusinessBundle/Resources/public/scripts/modules/chartPreview.js'
+            filters:
+                - jsqueeze
         require_map_search_page_js:
             inputs:
                 - '@DomainSiteBundle/Resources/public/scripts/modules/mapsearchpage.js'

@@ -497,6 +497,17 @@ interaction_report:
     direction: '"Botón Indicaciones" cuenta cuántas veces los usuarios hicieron clic en el botón " Ir al mapa" para ver dónde se encuentra la empresa.'
     video_watched: '"Vistas de video" cuentan cuántas veces los usuarios vieron el video.'
 
+report:
+  type:
+    ads: 'Anuncios'
+    keywords: 'Palabras clave'
+  preview:
+    button:
+      add_to_export: 'Agregar a exportar'
+      export_chart:  'Exportar'
+      export_custom_pdf: 'Exportar PDF personalizado'
+      error_max_amount: 'Número máximo de gráficos en la página 15'
+
 date: Fecha
 interaction_report.total: Total
 interaction_report.overall: Interacciones totales

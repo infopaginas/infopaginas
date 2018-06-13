@@ -16,6 +16,7 @@ abstract class ExcelExporterModel implements ExporterInterface
 {
     const FORMAT = 'xls';
     const ROW_AUTO_HEIGHT = -1;
+    const TITLE_MAX_LENGTH = 31;
 
     /**
      * @var Factory $phpExcel
