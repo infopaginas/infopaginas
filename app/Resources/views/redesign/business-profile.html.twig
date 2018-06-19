@@ -77,6 +77,24 @@
                                         </ul>
                                     </div><!-- highlights__item -->
                                 {% endif %}
+                                {% if businessProfile.actionUrl %}
+                                    <div class="highlights__item">
+                                        <h3>{% trans %}Url{% endtrans %}</h3>
+                                        <ul>
+                                            <li class="main-phone">
+                                                <i class="fa fa-link"></i>
+                                                <a
+                                                    href="{{ businessProfile.actionUrl }}"
+                                                    class="hide-desktop phone-call"
+                                                    data-bw-gtm-event-click
+                                                >
+                                                    {{ businessProfile.actionUrl|truncate(20) }}
+                                                </a>
+                                                <span class="hide-mobile">{{ businessProfile.actionUrl|truncate(20) }}</span>
+                                            </li>
+                                        </ul>
+                                    </div><!-- highlights__item -->
+                                {% endif %}
 
                                 {% if businessProfile.getEmail() %}
                                     <div class="highlights__item">
