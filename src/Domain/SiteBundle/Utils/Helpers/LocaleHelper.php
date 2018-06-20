@@ -181,10 +181,10 @@ class LocaleHelper
     public static function getLanguageCodeForSCAYT($locale)
     {
         switch ($locale) {
-            case 'en':
+            case self::LOCALE_EN:
                 $languageCode = 'en_US';
                 break;
-            case 'es':
+            case self::LOCALE_ES:
                 $languageCode = 'es_ES';
                 break;
             default:
