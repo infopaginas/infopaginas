@@ -171,4 +171,26 @@ class LocaleHelper
 
         return $business;
     }
+
+    /**
+     * @param $locale
+     *
+     * @return string
+     * @throws \InvalidArgumentException
+     */
+    public static function getLanguageCodeForSCAYT($locale)
+    {
+        switch ($locale) {
+            case 'en':
+                $languageCode = 'en_US';
+                break;
+            case 'es':
+                $languageCode = 'es_ES';
+                break;
+            default:
+                throw new \InvalidArgumentException('Undefined locale "' . $locale . '"');
+        }
+
+        return $languageCode;
+    }
 }

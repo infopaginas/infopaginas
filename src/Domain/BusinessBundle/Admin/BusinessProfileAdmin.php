@@ -313,7 +313,11 @@ class BusinessProfileAdmin extends OxaAdmin
         $formMapper
             ->tab('Main')
                 ->with('Common')
-                    ->add('name')
+                    ->add('name', null, [
+                        'attr' => [
+                            'spellcheck' => 'true',
+                        ],
+                    ])
                 ->end()
             ->end()
         ;
@@ -422,6 +426,9 @@ class BusinessProfileAdmin extends OxaAdmin
                 ->with('Addresses')
                     ->add('city', null, [
                         'required' => true,
+                        'attr'     => [
+                            'spellcheck' => 'true',
+                        ],
                     ])
                     ->add('catalogLocality', 'sonata_type_model_list', [
                         'required'      => true,
@@ -433,8 +440,15 @@ class BusinessProfileAdmin extends OxaAdmin
                     ])
                     ->add('streetAddress', null, [
                         'required' => true,
+                        'attr'     => [
+                            'spellcheck' => 'true',
+                        ],
                     ])
-                    ->add('customAddress')
+                    ->add('customAddress', null, [
+                        'attr' => [
+                            'spellcheck' => 'true',
+                        ],
+                    ])
                     ->add('hideAddress')
                     ->add('hideMap')
                 ->end()
@@ -1408,6 +1422,9 @@ class BusinessProfileAdmin extends OxaAdmin
                 'required' => false,
                 'mapped'   => false,
                 'data'     => $businessProfile->getTranslation(BusinessProfile::BUSINESS_PROFILE_FIELD_SLOGAN, $locale),
+                'attr'     => [
+                    'spellcheck' => 'true',
+                ],
                 'constraints' => [
                     new Length(
                         [
@@ -1417,14 +1434,15 @@ class BusinessProfileAdmin extends OxaAdmin
                 ],
             ])
             ->add('description' . $localePostfix, CKEditorType::class, [
-                'label'    => 'Description',
-                'required' => false,
-                'mapped'   => false,
-                'config_name' => 'extended_text',
+                'label'       => 'Description',
+                'required'    => false,
+                'mapped'      => false,
+                'config_name' => 'extended_text_scayt',
                 'config'      => [
-                    'width'  => '100%',
+                    'width'       => '100%',
+                    'scayt_sLang' => LocaleHelper::getLanguageCodeForSCAYT($locale),
                 ],
-                'attr' => [
+                'attr'        => [
                     'class' => 'text-editor',
                 ],
                 'data'     => $businessProfile->getTranslation(
@@ -1441,8 +1459,9 @@ class BusinessProfileAdmin extends OxaAdmin
             ])
             ->add('product' . $localePostfix, TextareaType::class, [
                 'attr' => [
-                    'rows' => 3,
-                    'class' => 'vertical-resize',
+                    'rows'       => 3,
+                    'class'      => 'vertical-resize',
+                    'spellcheck' => 'true',
                 ],
                 'label'    => 'Products',
                 'required' => false,
@@ -1461,8 +1480,9 @@ class BusinessProfileAdmin extends OxaAdmin
             ])
             ->add('brands' . $localePostfix, TextareaType::class, [
                 'attr' => [
-                    'rows' => 3,
-                    'class' => 'vertical-resize',
+                    'rows'       => 3,
+                    'class'      => 'vertical-resize',
+                    'spellcheck' => 'true',
                 ],
                 'label'    => 'Brands',
                 'required' => false,
