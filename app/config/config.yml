@@ -145,6 +145,7 @@ twig:
         google_analytics_id:       '%google_analytics_id%'
         default_country:           'pr'
         defaultLocale: '%locale%'
+        profile_action_url_span_length: 20
 
 #       validation patterns
         validators: '%validators%'

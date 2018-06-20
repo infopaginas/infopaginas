@@ -84,13 +84,15 @@
                                             <li class="main-phone">
                                                 <i class="fa fa-link"></i>
                                                 <a
-                                                    href="{{ businessProfile.actionUrl }}"
-                                                    class="hide-desktop phone-call"
+                                                    class="redirect-event link-pointer"
+                                                    data-href="{{ businessProfile.actionUrl }}"
+                                                    data-id="{{ businessProfile.id }}"
+                                                    data-type="webActionButton"
                                                     data-bw-gtm-event-click
+                                                    data-bw-gtm-label="{{ businessProfile.actionUrl }}"
                                                 >
-                                                    {{ businessProfile.actionUrl|truncate(20) }}
+                                                    {{ businessProfile.actionUrl|truncate(profile_action_url_span_length) }}
                                                 </a>
-                                                <span class="hide-mobile">{{ businessProfile.actionUrl|truncate(20) }}</span>
                                             </li>
                                         </ul>
                                     </div><!-- highlights__item -->

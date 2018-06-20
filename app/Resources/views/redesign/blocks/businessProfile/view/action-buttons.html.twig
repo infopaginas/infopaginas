@@ -4,9 +4,9 @@
     {% else %}
         {% set phoneToCall = item.phones.first.phone %}
     {% endif %}
-    <a href="tel:{{ phoneToCall }}" class="button button--small button--featured hide-desktop" data-id="{{ item.id }}" data-type="callMobButton" data-bw-gtm-event-click data-bw-gtm-label="{% trans %}Call{% endtrans %}">
+    <a href="tel:{{ phoneToCall }}" class="button button--small button--featured hide-desktop phone-call" data-id="{{ item.id }}" data-type="callMobButton" data-bw-gtm-event-click data-bw-gtm-label="{% trans %}Call{% endtrans %}">
         <i class="fa fa-phone"></i>
-        <span>{% trans %}Call{% endtrans %}</span>
+        <span>{% trans %}ActionButtonCall{% endtrans %}</span>
     </a>
 {% endif %}
 {% if not item.getHideAddress() %}
