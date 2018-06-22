@@ -207,11 +207,11 @@
                                                     {% endif %}
 
                                                     <div class="item__actions">
-                                                        <a href="tel:{{ phoneToCall }}" class="slide-button button button--small button--featured hide-desktop phone-call {% if suggestedBusiness.isAd %}svm-callmobile{% endif %}" data-id="{{ suggestedBusiness.id }}" data-type="callMobButton" data-bw-gtm-event-click data-bw-gtm-label="{{ phoneToCall }}">
+                                                        <a href="tel:{{ phoneToCall }}" class="slide-button button button--small button--featured hide-desktop phone-call {% if suggestedBusiness.isAd %}svm-callmobile{% endif %}" data-id="{{ suggestedBusiness.id }}" data-type="callMobButton" data-bw-gtm-event-click data-bw-gtm-label="{{ phoneToCall }}" data-bname="{{ suggestedBusiness.name }}">
                                                             <i class="fa fa-phone"></i>
                                                             {% trans %}Call{% endtrans %}
                                                         </a>
-                                                        <button class="btn btn-default dropdown-call-button phone-call link-pointer {% if suggestedBusiness.isAd %}svm-calldesktop{% endif %} hide-mobile" type="button" data-id="{{ suggestedBusiness.id }}" data-type="callDeskButton" data-bw-gtm-event-click data-bw-gtm-label="{{ phoneToCall }}">
+                                                        <button class="btn btn-default dropdown-call-button phone-call link-pointer {% if suggestedBusiness.isAd %}svm-calldesktop{% endif %} hide-mobile" type="button" data-id="{{ suggestedBusiness.id }}" data-type="callDeskButton" data-bw-gtm-event-click data-bw-gtm-label="{{ phoneToCall }}" data-bname="{{ suggestedBusiness.name }}">
                                                             <i class="fa fa-phone"></i>
                                                             {{ phoneToCall }}
                                                         </button>
@@ -219,7 +219,7 @@
                                                 {% else %}
                                                     {% set hasPhone = false %}
                                                 {% endif %}
-                                                <a class="slide-button get-dir button button--small button--featured link-pointer {% if suggestedBusiness.isAd %}svm-getdir{% endif %} {% if not hasPhone %}empty-phone{% endif %}" data-id="{{ suggestedBusiness.id }}" data-latlng="{{ suggestedBusiness.latLng }}" data-bw-gtm-event-click data-bw-gtm-label="{% trans %}Directions{% endtrans %}">
+                                                <a class="slide-button get-dir button button--small button--featured link-pointer {% if suggestedBusiness.isAd %}svm-getdir{% endif %} {% if not hasPhone %}empty-phone{% endif %}" data-id="{{ suggestedBusiness.id }}" data-latlng="{{ suggestedBusiness.latLng }}" data-bw-gtm-event-click data-bw-gtm-label="{% trans %}Directions{% endtrans %}" data-bname="{{ suggestedBusiness.name }}">
                                                     <i class="fa fa-location-arrow"></i>
                                                     {% trans %}Directions{% endtrans %}
                                                 </a>
