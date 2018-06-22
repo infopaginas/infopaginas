@@ -77,21 +77,21 @@
                                         </ul>
                                     </div><!-- highlights__item -->
                                 {% endif %}
-                                {% if businessProfile.actionUrl %}
+                                {% if businessProfile.getWebsite() %}
                                     <div class="highlights__item">
-                                        <h3>{% trans %}Url{% endtrans %}</h3>
+                                        <h3>{% trans %}WebsiteButton{% endtrans %}</h3>
                                         <ul>
                                             <li class="main-phone">
                                                 <i class="fa fa-link"></i>
                                                 <a
                                                     class="redirect-event link-pointer"
-                                                    data-href="{{ businessProfile.actionUrl }}"
+                                                    data-href="{{ businessProfile.getWebsite() }}"
                                                     data-id="{{ businessProfile.id }}"
                                                     data-type="webActionButton"
                                                     data-bw-gtm-event-click
-                                                    data-bw-gtm-label="{{ businessProfile.actionUrl }}"
+                                                    data-bw-gtm-label="{{ businessProfile.getWebsite() }}"
                                                 >
-                                                    {{ businessProfile.actionUrl|truncate(profile_action_url_span_length) }}
+                                                    {{ businessProfile.getWebsite() |truncate(profile_action_url_span_length) }}
                                                 </a>
                                             </li>
                                         </ul>

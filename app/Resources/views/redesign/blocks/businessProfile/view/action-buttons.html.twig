@@ -4,21 +4,15 @@
     {% else %}
         {% set phoneToCall = item.phones.first.phone %}
     {% endif %}
-    <a href="tel:{{ phoneToCall }}" class="button button--small button--featured hide-desktop phone-call" data-id="{{ item.id }}" data-type="callMobButton" data-bw-gtm-event-click data-bw-gtm-label="{% trans %}ActionButtonCall{% endtrans %}">
+    <a href="tel:{{ phoneToCall }}" class="button button--small button--featured hide-desktop phone-call" data-id="{{ item.id }}" data-type="callMobButton" data-bw-gtm-event-click data-bw-gtm-label="{% trans %}WebsiteButton{% endtrans %}">
         <i class="fa fa-phone"></i>
-        <span>{% trans %}ActionButtonCall{% endtrans %}</span>
+        <span>{% trans %}WebsiteButton{% endtrans %}</span>
     </a>
 {% endif %}
 {% if not item.getHideAddress() %}
     <a class="get-dir button button--small button--featured link-pointer direction-button vertical-left-separator" data-id="{{ item.getId() }}" data-latlng="{{ item.getLatLng() }}" data-bw-gtm-event-click data-bw-gtm-label="{% trans %}Directions{% endtrans %}">
         <i class="fa fa-location-arrow"></i>
         <span>{% trans %}Directions{% endtrans %}</span>
-    </a>
-{% endif %}
-{% if item.getWebsite() %}
-    <a class="button button--small button--featured redirect-event link-pointer vertical-left-separator" data-href="{{ item.getWebsiteLink() }}" data-id="{{ item.id }}" data-type="webButton" data-bw-gtm-event-click data-bw-gtm-label="Web::{{ item.getWebsiteLink() }}">
-        <i class="fa fa-external-link"></i>
-        <span>{% trans %}Web{% endtrans %}</span>
     </a>
 {% endif %}
 {% if item.actionUrl %}
