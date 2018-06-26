@@ -8,13 +8,21 @@ use Symfony\Component\HttpFoundation\Response;
 
 class BusinessChartReportPdfExporter extends PdfExporterModel
 {
+    const DATE_EXPORT_FORMAT = 'Y_m_d_H_i_s';
+
     /**
      * @param array $params
      * @return Response
      */
     public function getResponse($params = [])
     {
-        $filename = 'chart.pdf';
+        $businessName = '';
+
+        if (isset($params['businessProfile'])) {
+            $businessName = str_replace(' ', '_', $params['businessProfile']->name);
+        }
+
+        $filename = $businessName . '_' . date(self::DATE_EXPORT_FORMAT);
 
         $html = $this->templateEngine->render(
             'DomainReportBundle:PDF:charts-template.html.twig',
