@@ -2,6 +2,8 @@
 
 namespace Domain\ReportBundle\Service\Export;
 
+use Domain\BusinessBundle\Entity\BusinessProfile;
+use Domain\BusinessBundle\Util\SlugUtil;
 use Domain\ReportBundle\Model\Exporter\PdfExporterModel;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -18,8 +20,9 @@ class BusinessChartReportPdfExporter extends PdfExporterModel
     {
         $businessName = '';
 
+        /** @var BusinessProfile $params ['businessProfile'] */
         if (isset($params['businessProfile'])) {
-            $businessName = str_replace(' ', '_', $params['businessProfile']->name);
+            $businessName = SlugUtil::convertSlug($params['businessProfile']->getSlug());
         }
 
         $filename = $businessName . '_' . date(self::DATE_EXPORT_FORMAT);
