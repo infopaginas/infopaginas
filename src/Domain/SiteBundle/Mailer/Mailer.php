@@ -320,7 +320,7 @@ class Mailer
     {
         $fromEmail = $this->getConfigService()->getValue(ConfigInterface::DEFAULT_EMAIL_ADDRESS);
 
-        $body = $this->compareEmailBody($body, $subject);
+        $body = $this->collectEmailBody($body, $subject);
 
         $message = \Swift_Message::newInstance()
             ->setSubject($subject)
@@ -338,7 +338,7 @@ class Mailer
      * @param string $subject
      * @return string
      */
-    private function compareEmailBody($body, $subject)
+    private function collectEmailBody($body, $subject)
     {
         $message = $this->templateEngine->render(
             'DomainSiteBundle:email:base_template.html.twig',
