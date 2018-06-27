@@ -5,16 +5,11 @@
 {% endblock %}
 
 {% block sonata_admin_content %}
-    <div class="sonata-ba-delete export-preview">
+    <div class="export-preview">
 
         <div class="box box-info">
             <div class="box-header">
                     <h3 class="box-title">PDF export</h3>
-            </div>
-            <div class="box-body">
-                {% if existDependentFields is not defined or existDependentFields is null %}
-                    {{ 'message_delete_confirmation'|trans({'%object%': admin.toString(object)}, 'SonataAdminBundle') }}
-                {% endif %}
             </div>
             <div class="box-footer clearfix">
                 {% for key, value in interactionCharts %}
