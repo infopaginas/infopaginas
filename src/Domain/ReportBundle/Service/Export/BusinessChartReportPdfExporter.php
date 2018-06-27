@@ -22,7 +22,7 @@ class BusinessChartReportPdfExporter extends PdfExporterModel
 
         /** @var BusinessProfile $params ['businessProfile'] */
         if (isset($params['businessProfile'])) {
-            $businessName = SlugUtil::convertSlug($params['businessProfile']->getSlug());
+            $businessName = SlugUtil::convertSlug($params['businessProfile']->getName());
         }
 
         $filename = $businessName . '_' . date(self::DATE_EXPORT_FORMAT);
