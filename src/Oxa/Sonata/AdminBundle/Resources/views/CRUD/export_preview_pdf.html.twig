@@ -21,19 +21,14 @@
             <div class="box-footer clearfix">
                 {% for key, value in interactionCharts %}
                     <div class="box-body table-responsive no-padding chart-box" id="{{ admin.uniqid }}_{{ key }}ChartParentBlock">
-                        {% if value.isAds %}
-                            {% include 'DomainBusinessBundle:Admin:BusinessProfile/main_report_controls.html.twig' with { field_description: value } %}
-                            {% include 'DomainBusinessBundle:Admin:BusinessProfile/report_data.html.twig' with { field_description: value } %}
+                        {% include 'DomainBusinessBundle:Admin:BusinessProfile/main_report_controls.html.twig' with { field_description: value } %}
+                        {% if value.hasLimit %}
+                            {% set limitSettings = value|merge({ options: { choices: value.options.limitChoices, data: value.options.limitData }, name: value.name ~ 'limit' }) %}
+                            {% include 'DomainBusinessBundle:Admin:BusinessProfile/report_choice.html.twig' with { field_description: limitSettings, selector: 'limit-option' } %}
                         {% else %}
-                            {% include 'DomainBusinessBundle:Admin:BusinessProfile/main_report_controls.html.twig' with { field_description: value } %}
-                            {% if value.hasLimit %}
-                                {% set limitSettings = value|merge({ options: { choices: value.options.limitChoices, data: value.options.limitData }, name: value.name ~ 'limit' }) %}
-                                {% include 'DomainBusinessBundle:Admin:BusinessProfile/report_choice.html.twig' with { field_description: limitSettings, selector: 'limit-option' } %}
-                            {% else %}
-                                {% include 'DomainBusinessBundle:Admin:BusinessProfile/report_choice.html.twig' with { field_description: value, selector: 'period-option' } %}
-                            {% endif %}
-                            {% include 'DomainBusinessBundle:Admin:BusinessProfile/action_report_data.html.twig' with { field_description: value } %}
+                            {% include 'DomainBusinessBundle:Admin:BusinessProfile/report_choice.html.twig' with { field_description: value, selector: 'period-option' } %}
                         {% endif %}
+                        {% include 'DomainBusinessBundle:Admin:BusinessProfile/action_report_data.html.twig' with { field_description: value } %}
 
                         <input type="hidden" value="{{ key }}" data-action-type>
                     </div>

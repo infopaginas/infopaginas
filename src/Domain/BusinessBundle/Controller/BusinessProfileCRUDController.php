@@ -47,7 +47,6 @@ class BusinessProfileCRUDController extends Controller
         $chartList = BusinessOverviewModel::getChartEventTypesWithTranslation();
 
         $chartList[BusinessOverviewModel::TYPE_CODE_KEYWORD] = 'Keyword Limit';
-        $chartList[BusinessOverviewModel::TYPE_CODE_ADS] = 'Ads';
 
         $interactionOptions = [
             'format' => BusinessProfileAdmin::DATE_PICKER_REPORT_FORMAT,
@@ -75,7 +74,6 @@ class BusinessProfileCRUDController extends Controller
         }
 
         $interactionCharts[BusinessOverviewModel::TYPE_CODE_KEYWORD]['hasLimit'] = true;
-        $interactionCharts[BusinessOverviewModel::TYPE_CODE_ADS]['isAds'] = true;
 
         $previousUrl = $this->generateUrl(
             'admin_domain_business_businessprofile_show',
