@@ -77,6 +77,11 @@ class BusinessProfileCRUDController extends Controller
         $interactionCharts[BusinessOverviewModel::TYPE_CODE_KEYWORD]['hasLimit'] = true;
         $interactionCharts[BusinessOverviewModel::TYPE_CODE_ADS]['isAds'] = true;
 
+        $previousUrl = $this->generateUrl(
+            'admin_domain_business_businessprofile_show',
+            ['id' => $id]
+        );
+
         return $this->render(
             'OxaSonataAdminBundle:CRUD:export_preview_pdf.html.twig',
             [
@@ -84,6 +89,7 @@ class BusinessProfileCRUDController extends Controller
                 'interactionCharts' => $interactionCharts,
                 'action' => 'exportPreview',
                 'csrf_token' => $this->getCsrfToken('sonata.delete'),
+                'previousUrl' => $previousUrl,
             ]
         );
     }
