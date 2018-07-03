@@ -20,7 +20,7 @@
             </div>
             <div class="box-footer clearfix">
                 {% for key, value in interactionCharts %}
-                    <div class="box-body table-responsive no-padding" id="{{ admin.uniqid }}_{{ key }}ChartParentBlock">
+                    <div class="box-body table-responsive no-padding chart-box" id="{{ admin.uniqid }}_{{ key }}ChartParentBlock">
                         {% if value.isAds %}
                             {% include 'DomainBusinessBundle:Admin:BusinessProfile/main_report_controls.html.twig' with { field_description: value } %}
                             {% include 'DomainBusinessBundle:Admin:BusinessProfile/report_data.html.twig' with { field_description: value } %}
