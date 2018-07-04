@@ -362,6 +362,7 @@ class ReportsController extends Controller
     protected function getChartExportParams(Request $request)
     {
         $params['charts'] = $request->request->get('chart', []);
+        $params['dates'] = $request->request->get('date', []);
         $businessProfile = $this->getBusinessProfileManager()->find($request->request->get('businessId'));
 
         $this->checkBusinessProfileOrAdminAccess($businessProfile);
