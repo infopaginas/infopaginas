@@ -1,14 +1,22 @@
 {% extends "redesign/layout/base.html.twig" %}
 
+{% block toolbar %}
+    <div class="toolbar">
+        <div class="toolbar__nav">
+            <a href="{{ path('domain_business_reports_index',{ 'businessProfileId': business.id }) }}">
+                <button id="breadcrumb_location" type="button" class="button button--action button--location">
+                    <i class="fa fa-arrow-left"></i><span>Back</span></button>
+            </a>
+        </div>
+    </div>
+{% endblock %}
+
 {% block bodyClass %}generic-page article-page has-sidebar{% endblock %}
 
 {% block body %}
     <div class="main__container main__container--centered width-restriction">
         <div class="container clearfix">
             <div class="main main-column">
-                <a href="{{ path('domain_business_reports_index',{ 'businessProfileId': business.id }) }}">
-                    {{ 'Previous page'|trans }}
-                </a>
                 <form class="form">
                     <div class="form__section">
                         <div class="form-column__container clearfix">
