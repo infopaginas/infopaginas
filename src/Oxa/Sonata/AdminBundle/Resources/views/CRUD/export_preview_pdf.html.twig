@@ -38,6 +38,8 @@
                 <form id="exportForm" action="{{ path('domain_business_admin_chart_reports_export') }}" method="post">
                     {% for key, value in interactionCharts %}
                         <input id="chart_{{ key }}" type="hidden" name="chart[{{ key }}]" value=""/>
+                        <input type="hidden" name="date[{{ key }}][startDate]" value="{{ value.options.dateStart }}"/>
+                        <input type="hidden" name="date[{{ key }}][endDate]" value="{{ value.options.dateEnd }}"/>
                     {% endfor %}
                     <input type="hidden" id="businessId" name="businessId" value="{{ object.id }}">
                     <button id="exportPdf" type="button">Export</button>

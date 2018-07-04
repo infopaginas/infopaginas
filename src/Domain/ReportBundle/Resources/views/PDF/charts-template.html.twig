@@ -16,8 +16,22 @@
 <br>
 
 <div class="box box-primary box-pdf">
-    {% for image in charts %}
+    {% for key, image in charts %}
         <div class="{% if not loop.last %}page-break{% endif %} page-break-border">
+            <table>
+                <tr>
+                    <td colspan="2">Date period</td>
+                </tr>
+                <tr>
+                    <td>Start date</td>
+                    <td>End date</td>
+                </tr>
+                <tr>
+                    <td>{{ dates[key]['startDate'] }}</td>
+                    <td>{{ dates[key]['endDate'] }}</td>
+                </tr>
+            </table>
+            <br/>
             <img src="{{ image }}">
         </div>
     {% endfor %}

@@ -306,13 +306,30 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select', 'jque
     reportPreview.prototype.addPreview = function( image )
     {
         var previewBlock = $( this.html.containers.previewBlock );
-        var previewName  = this.values.previewChartName + '[' + this.values.previewChartNumber + ']';
-
+        var previewNumber = this.values.previewChartNumber;
+        var startDate = this.convertDate( $( this.html.inputs.dateStart ).val() );
+        var endDate = this.convertDate( $( this.html.inputs.dateEnd ).val() );
+        var previewName  = this.values.previewChartName + '[' + previewNumber + ']';
+        var startDateInput = '<input type="hidden" name="date[' + previewNumber + '][startDate]" value="' + startDate + '"/>';
+        var endDateInput = '<input type="hidden" name="date[' + previewNumber + '][endDate]" value="' + endDate + '"/>';
         this.values.previewChartNumber++;
 
-        var imageBlock = $( '<li><i class="fa fa-trash" aria-hidden="true" data-remove></i><img src="' + image + '"><input name="' + previewName + '" type="hidden" value="' + image + '"></li>' );
+        var imageBlock = $(
+            '<li>' +
+                '<i class="fa fa-trash" aria-hidden="true" data-remove></i>' +
+                '<img src="' + image + '">' +
+                '<input name="' + previewName + '" type="hidden" value="' + image + '">' +
+                 startDateInput +
+                 endDateInput +
+            '</li>' );
 
         previewBlock.append( imageBlock );
+    };
+
+    reportPreview.prototype.convertDate = function ( string ) {
+        var dateArray = string.split('-');
+
+        return dateArray[0] + '-' + dateArray[2] + '-' + dateArray[1];
     };
 
     reportPreview.prototype.clearChartBlock = function()
