@@ -300,6 +300,6 @@ div.single-media-preview-block img {
 }
 
 .chart-box {
-    padding-bottom: 10px !important;
+    padding-bottom: 10px;
     border-bottom: 4px solid #00c0ef;
 }

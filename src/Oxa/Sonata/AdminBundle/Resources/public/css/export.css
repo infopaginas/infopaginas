@@ -20,4 +20,26 @@ table div.box.box-primary.box-pdf {
 
 table table, th, td {
     border: 1px solid black;
+    text-align: center;
+}
+
+div.box.box-primary.box-pdf {
+    display: block;
+    clear: both;
+}
+
+.page-break {
+    page-break-after: always;
+}
+
+.page-break-border {
+    border: 1px solid black;
+}
+
+.page-break-border > img {
+    display: block;
+    max-height: 100%;
+    max-width: 100%;
+    text-align: left;
+    padding: 8px;
 }

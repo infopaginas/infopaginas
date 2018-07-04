@@ -6,7 +6,7 @@
     <div class="main__container main__container--centered width-restriction">
         <div class="container clearfix">
             <div class="main main-column">
-                <a href="{{ path('domain_business_reports_index',{'businessProfileId': '1'}) }}">
+                <a href="{{ path('domain_business_reports_index',{ 'businessProfileId': business.id }) }}">
                     {{ 'Previous page'|trans }}
                 </a>
                 <form class="form">
