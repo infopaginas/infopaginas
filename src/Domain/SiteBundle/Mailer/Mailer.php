@@ -320,6 +320,8 @@ class Mailer
     {
         $fromEmail = $this->getConfigService()->getValue(ConfigInterface::DEFAULT_EMAIL_ADDRESS);
 
+        $body = $this->getEmailBody($body, $subject);
+
         $message = \Swift_Message::newInstance()
             ->setSubject($subject)
             ->setFrom($fromEmail)
@@ -329,6 +331,24 @@ class Mailer
         ;
 
         $this->mailer->send($message);
+    }
+
+    /**
+     * @param string $body
+     * @param string $subject
+     * @return string
+     */
+    private function getEmailBody($body, $subject)
+    {
+        $message = $this->templateEngine->render(
+            'DomainSiteBundle:email:base_template.html.twig',
+            [
+                'content' => $body,
+                'subject' => $subject,
+            ]
+        );
+
+        return $message;
     }
 
     /**
