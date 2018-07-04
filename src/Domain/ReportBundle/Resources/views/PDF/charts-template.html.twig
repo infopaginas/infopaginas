@@ -16,20 +16,9 @@
 <br>
 
 <div class="box box-primary box-pdf">
-    <table class="table table-bordered table-striped">
-        <thead>
-            <tr>
-                <th>{{ 'Chart'|trans }}</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for image in charts %}
-                <tr>
-                    <td>
-                        <img src="{{ image }}">
-                    </td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    {% for image in charts %}
+        <div class="{% if not loop.last %}page-break{% endif %} page-break-border">
+            <img src="{{ image }}">
+        </div>
+    {% endfor %}
 </div>
