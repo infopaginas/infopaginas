@@ -1,11 +1,11 @@
 {% extends "redesign/layout/base.html.twig" %}
 
-{% block toolbar %}
+{% block breadcrumbs %}
     <div class="toolbar">
         <div class="toolbar__nav">
-            <a href="{{ path('domain_business_reports_index',{ 'businessProfileId': business.id }) }}">
+            <a href="{{ path('domain_business_reports_index', { 'businessProfileId': business.id }) }}">
                 <button id="breadcrumb_location" type="button" class="button button--action button--location">
-                    <i class="fa fa-arrow-left"></i><span>Back</span></button>
+                    <i class="fa fa-arrow-left"></i><span>{{ 'Back'|trans }}</span></button>
             </a>
         </div>
     </div>
