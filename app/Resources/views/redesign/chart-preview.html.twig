@@ -1,5 +1,17 @@
 {% extends "redesign/layout/base.html.twig" %}
 
+{% block breadcrumbs %}
+    <div class="toolbar">
+        <div class="toolbar__nav">
+            <a href="{{ path('domain_business_reports_index', { 'businessProfileId': business.id }) }}">
+                <button id="breadcrumb_location" type="button" class="button button--action button--location">
+                    <i class="fa fa-arrow-left"></i><span>{{ 'Back'|trans }}</span>
+                </button>
+            </a>
+        </div>
+    </div>
+{% endblock %}
+
 {% block bodyClass %}generic-page article-page has-sidebar{% endblock %}
 
 {% block body %}
@@ -90,6 +102,7 @@
                 <div class="sidebar__section">
                     <form id="export_form" action="{{ path('domain_business_admin_chart_reports_export') }}" method="post">
                         <input type="hidden" id="businessId" name="businessId" value="{{ business.id }}">
+
                         <button id="export_preview" type="button">{{ 'report.preview.button.export_chart'|trans }}</button>
                         <ul id="chart_preview_block" class="chart-export-preview"></ul>
                     </form>

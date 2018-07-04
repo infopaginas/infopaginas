@@ -16,20 +16,23 @@
 <br>
 
 <div class="box box-primary box-pdf">
-    <table class="table table-bordered table-striped">
-        <thead>
-            <tr>
-                <th>{{ 'Chart'|trans }}</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for image in charts %}
+    {% for key, image in charts %}
+        <div class="{% if not loop.last %}page-break{% endif %} page-break-border">
+            <table>
                 <tr>
-                    <td>
-                        <img src="{{ image }}">
-                    </td>
+                    <td colspan="2">{{ 'Date period'|trans }}</td>
                 </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+                <tr>
+                    <td>{{ 'Date Start'|trans }}</td>
+                    <td>{{ 'Date End'|trans }}</td>
+                </tr>
+                <tr>
+                    <td>{{ dates[key]['startDate'] }}</td>
+                    <td>{{ dates[key]['endDate'] }}</td>
+                </tr>
+            </table>
+            <br/>
+            <img src="{{ image }}">
+        </div>
+    {% endfor %}
 </div>

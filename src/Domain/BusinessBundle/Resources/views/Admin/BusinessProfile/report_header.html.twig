@@ -1,0 +1,50 @@
+<div class="hidden-xs">
+    {% if _breadcrumb is not empty or action is defined %}
+        <ol class="nav navbar-top-links breadcrumb">
+            {% if _breadcrumb is empty %}
+                {% if action is defined %}
+                    {% for menu in breadcrumbs_builder.breadcrumbs(admin, action) %}
+                        {%- set translation_domain = menu.extra('translation_domain', 'messages') -%}
+                        {%- set label = menu.label -%}
+                        {%- if translation_domain is not same as(false) -%}
+                            {%- set label = label|trans(menu.extra('translation_params', {}), translation_domain) -%}
+                        {%- endif -%}
+
+                        {% if loop.first and not customElement is defined %}
+                            <li>
+                                {% if menu.uri is not empty %}
+                                    <a href="{{ menu.uri }}">
+                                        {% if menu.extra('safe_label', true) %}
+                                            {{- label|raw -}}
+                                        {% else %}
+                                            {{- label -}}
+                                        {% endif %}
+                                    </a>
+                                {% else %}
+                                    {{ label }}
+                                {% endif %}
+                            </li>
+                            <li class="active"><span>{{ admin.label|trans }}</span></li>
+                        {% else %}
+                            <li>
+                                <a href="{% if menu.uri %}{{ menu.uri }}{% else %}{{ previousUrl }}{% endif %}">
+                                    {% if menu.extra('safe_label', true) %}
+                                        {{- label|raw -}}
+                                    {% else %}
+                                        {{- label -}}
+                                    {% endif %}
+                                </a>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+            {% else %}
+                {{ _breadcrumb|raw }}
+            {% endif %}
+
+            {% if customElement is defined %}
+                <li class="active"><span>{{ customElement }}</span></li>
+            {% endif %}
+        </ol>
+    {% endif %}
+</div>
