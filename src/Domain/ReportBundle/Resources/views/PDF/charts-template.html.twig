@@ -8,12 +8,7 @@
     <b>{{ businessProfile.name }}</b>,
     {{ 'now'|date(report_generated_datetime_format) }}
 </div>
-
-<br>
-
-<div>{{ businessProfile.fullAddress }}</div>
-
-<br>
+<div class="page-break">{{ businessProfile.fullAddress }}</div>
 
 <div class="box box-primary box-pdf">
     {% for key, image in charts %}
