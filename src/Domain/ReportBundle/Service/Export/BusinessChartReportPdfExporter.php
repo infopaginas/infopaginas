@@ -25,7 +25,7 @@ class BusinessChartReportPdfExporter extends PdfExporterModel
             $businessName = SlugUtil::convertSlug($params['businessProfile']->getName());
         }
 
-        $filename = $businessName . '_' . date(self::DATE_EXPORT_FORMAT);
+        $filename = $businessName . '_' . date(self::DATE_EXPORT_FORMAT) . '.pdf';
 
         $html = $this->templateEngine->render(
             'DomainReportBundle:PDF:charts-template.html.twig',
