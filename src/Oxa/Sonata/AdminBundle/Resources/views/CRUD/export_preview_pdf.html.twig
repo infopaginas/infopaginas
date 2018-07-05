@@ -41,6 +41,7 @@
                         <input type="hidden" name="date[{{ key }}][startDate]" value="{{ value.options.dateStart }}"/>
                         <input type="hidden" name="date[{{ key }}][endDate]" value="{{ value.options.dateEnd }}"/>
                     {% endfor %}
+                    <input type="hidden" id="keywordsStats" name="keywordsStats" value=""/>
                     <input type="hidden" id="businessId" name="businessId" value="{{ object.id }}">
                     <button id="exportPdf" type="button">Export</button>
                 </form>

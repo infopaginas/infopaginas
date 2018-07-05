@@ -4,7 +4,8 @@ $( document ).ready( function() {
             businessOverviewChartContainerId: 'div[id$="ChartContainer"]',
             businessOverviewStatsContainerId: 'div[id$="StatisticsContainer"]',
             businessOverviewHintContainerId:  'div[id$="ChartHintContainer"]',
-            chartParentBlockId:               'div[id$="ChartParentBlock"]'
+            chartParentBlockId:               'div[id$="ChartParentBlock"]',
+            keywordStatsContainerId:          'div[id$="StatisticsKeywordsContainer"]'
         },
         inputs: {
             mainDateStart: 'input[id$="DateStart"]',
@@ -82,6 +83,8 @@ $( document ).ready( function() {
                 chartBlock.find( html.containers.businessOverviewHintContainerId ).html( response.chartHint );
 
                 if ( data.chartType === chartType.keywords ) {
+                    $( html.containers.keywordStatsContainerId ).html( response.stats );
+                    $( '#keywordsStats' ).val( response.stats );
                     loadKeywordsChart( chartBlock, response.keywords, response.searches );
                 } else if ( data.chartType === chartType.ads ) {
                     loadAdUsageChart( chartBlock, response.dates, response.clicks, response.impressions );

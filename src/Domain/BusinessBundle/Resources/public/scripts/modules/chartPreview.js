@@ -20,7 +20,8 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select', 'jque
                 actionType:     '#action_type_container',
                 groupPeriod:    '#group_period_container',
                 keywordsLimit:  '#keywords_limit_container',
-                customDates:    '#custom_dates_container'
+                customDates:    '#custom_dates_container',
+                keywordStatsContainerId:          'div[id$="StatisticsKeywordsContainer"]'
             },
             inputs: {
                 dateRange:  '#domain_business_bundle_business_chart_filter_type_dateRange',
@@ -30,7 +31,8 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select', 'jque
                 actionType: '#domain_business_bundle_business_chart_filter_type_actionType',
                 period:     '#domain_business_bundle_business_chart_filter_type_groupPeriod',
                 businessId: '#business_profile_id',
-                datePicker: '.js-datepicker'
+                datePicker: '.js-datepicker',
+                keywordStatsInput: '#keywordsStats'
             },
             buttons: {
                 export:        '#export_preview',
@@ -100,6 +102,8 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select', 'jque
             },
             success: function( response ) {
                 if ( data.chartType === self.values.chartType.keywords ) {
+                    $( self.html.containers.keywordStatsContainerId ).html( response.stats );
+                    $( self.html.inputs.keywordStatsInput ).val( response.stats );
                     self.loadKeywordsChart( response.keywords, response.searches );
                 } else if ( data.chartType === self.values.chartType.ads ) {
                     self.loadAdUsageChart( response.dates, response.clicks, response.impressions );
@@ -191,7 +195,7 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select', 'jque
                 type: 'column'
             },
             title: {
-                text: $( this.html.containers.chartContainer ).data( 'data-title-keywords' )
+                text: $( this.html.containers.chartContainer ).data( 'title-keywords' )
             },
             xAxis: {
                 categories: keywords
@@ -261,12 +265,15 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select', 'jque
             if ( actionType === self.values.chartType.keywords ) {
                 self.hideItem( self.html.containers.groupPeriod );
                 self.showItem( self.html.containers.keywordsLimit );
+                self.showItem( self.html.containers.keywordStatsContainerId );
             } else if ( actionType === self.values.chartType.ads ) {
                 self.hideItem( self.html.containers.groupPeriod );
                 self.hideItem( self.html.containers.keywordsLimit );
+                self.hideItem( self.html.containers.keywordStatsContainerId );
             } else {
                 self.showItem( self.html.containers.groupPeriod );
                 self.hideItem( self.html.containers.keywordsLimit );
+                self.hideItem( self.html.containers.keywordStatsContainerId );
             }
 
             self.loadReport();
@@ -312,7 +319,9 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select', 'jque
         var previewName  = this.values.previewChartName + '[' + previewNumber + ']';
         var startDateInput = '<input type="hidden" name="date[' + previewNumber + '][startDate]" value="' + startDate + '"/>';
         var endDateInput = '<input type="hidden" name="date[' + previewNumber + '][endDate]" value="' + endDate + '"/>';
-        this.values.previewChartNumber++;
+        var keywordsStats = '<input type="hidden" id="keywordsStats[' + previewNumber + ']" ' +
+            'name="keywordsStats[' + previewNumber + ']" ' +
+            'value/>';
 
         var imageBlock = $(
             '<li>' +
@@ -321,9 +330,18 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select', 'jque
                 '<input name="' + previewName + '" type="hidden" value="' + image + '">' +
                  startDateInput +
                  endDateInput +
+                 keywordsStats +
             '</li>' );
 
         previewBlock.append( imageBlock );
+
+        if( $( this.html.containers.keywordStatsContainerId ).is( ":visible" ) ){
+            document.getElementById('keywordsStats[' + previewNumber + ']').value = $( this.html.inputs.keywordStatsInput ).val();
+            this.hideItem( this.html.containers.keywordStatsContainerId );
+            $( this.html.inputs.keywordStatsInput ).val();
+        }
+
+        this.values.previewChartNumber++;
     };
 
     reportPreview.prototype.convertDate = function ( string ) {

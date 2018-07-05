@@ -33,6 +33,7 @@ class BusinessChartReportPdfExporter extends PdfExporterModel
                 'charts'          => $params['charts'],
                 'businessProfile' => $params['businessProfile'],
                 'dates'           => $params['dates'],
+                'keywordsStats'   => $params['keywordsStats'],
             ]
         );
 

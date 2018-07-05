@@ -28,6 +28,12 @@
             </table>
             <br/>
             <img src="{{ image }}">
+
+            {% if keywordsStats[key] is defined %}
+                {{ keywordsStats[key]|raw }}
+            {% elseif key == 'keyword' %}
+                {{ keywordsStats|raw }}
+            {% endif %}
         </div>
     {% endfor %}
 </div>
