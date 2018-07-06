@@ -5,7 +5,7 @@ $( document ).ready( function() {
             businessOverviewStatsContainerId: 'div[id$="StatisticsContainer"]',
             businessOverviewHintContainerId:  'div[id$="ChartHintContainer"]',
             chartParentBlockId:               'div[id$="ChartParentBlock"]',
-            keywordStatsContainerId:          'div[id$="StatisticsContainer"]'
+            keywordStatsContainerId:          'div[id$="StatisticsKeywordsContainer"]'
         },
         inputs: {
             mainDateStart: 'input[id$="DateStart"]',

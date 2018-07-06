@@ -21,7 +21,7 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select', 'jque
                 groupPeriod:    '#group_period_container',
                 keywordsLimit:  '#keywords_limit_container',
                 customDates:    '#custom_dates_container',
-                statsContainerId: 'div[id$="StatisticsContainer"]'
+                statsContainerId: '#statisticsTableContainer'
             },
             inputs: {
                 dateRange:  '#domain_business_bundle_business_chart_filter_type_dateRange',
@@ -32,7 +32,7 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select', 'jque
                 period:     '#domain_business_bundle_business_chart_filter_type_groupPeriod',
                 businessId: '#business_profile_id',
                 datePicker: '.js-datepicker',
-                keywordStatsInput: '#keywordsStats'
+                statsContainerInput: '#keywordsStats'
             },
             buttons: {
                 export:        '#export_preview',
@@ -104,7 +104,7 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select', 'jque
             success: function( response ) {
                 if ( data.chartType === self.values.chartType.keywords ) {
                     $( self.html.containers.statsContainerId ).html( response.stats );
-                    $( self.html.inputs.keywordStatsInput ).val( response.stats );
+                    $( self.html.inputs.statsContainerInput ).val( response.stats );
                     self.loadKeywordsChart( response.keywords, response.searches );
                 } else if ( data.chartType === self.values.chartType.ads ) {
                     self.loadAdUsageChart( response.dates, response.clicks, response.impressions );
@@ -337,7 +337,7 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select', 'jque
         previewBlock.append( imageBlock );
 
         if( $( this.html.containers.statsContainerId ).is( ':visible' ) ) {
-            $( '[name="keywordsStats[' + previewNumber + ']"]' ).val( $( this.html.inputs.keywordStatsInput ).val() );
+            $( '[name="keywordsStats[' + previewNumber + ']"]' ).val( $( this.html.inputs.statsContainerInput ).val() );
             this.hideItem( this.html.containers.statsContainerId );
         }
 
