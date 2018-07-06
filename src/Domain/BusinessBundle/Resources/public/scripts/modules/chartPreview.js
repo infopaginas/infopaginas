@@ -21,7 +21,7 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select', 'jque
                 groupPeriod:    '#group_period_container',
                 keywordsLimit:  '#keywords_limit_container',
                 customDates:    '#custom_dates_container',
-                keywordStatsContainerId: 'div[id$="StatisticsKeywordsContainer"]'
+                statsContainerId: 'div[id$="StatisticsKeywordsContainer"]'
             },
             inputs: {
                 dateRange:  '#domain_business_bundle_business_chart_filter_type_dateRange',
@@ -98,12 +98,12 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select', 'jque
             type:     'POST',
             beforeSend: function() {
                 $( self.html.containers.chartContainer ).html( '' );
-                this.hideItem( this.html.containers.keywordStatsContainerId );
+                seof.hideItem( this.html.containers.statsContainerId );
                 self.showLoader( self.html.containers.chartContainer );
             },
             success: function( response ) {
                 if ( data.chartType === self.values.chartType.keywords ) {
-                    $( self.html.containers.keywordStatsContainerId ).html( response.stats );
+                    $( self.html.containers.statsContainerId ).html( response.stats );
                     $( self.html.inputs.keywordStatsInput ).val( response.stats );
                     self.loadKeywordsChart( response.keywords, response.searches );
                 } else if ( data.chartType === self.values.chartType.ads ) {
@@ -266,15 +266,15 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select', 'jque
             if ( actionType === self.values.chartType.keywords ) {
                 self.hideItem( self.html.containers.groupPeriod );
                 self.showItem( self.html.containers.keywordsLimit );
-                self.showItem( self.html.containers.keywordStatsContainerId );
+                self.showItem( self.html.containers.statsContainerId );
             } else if ( actionType === self.values.chartType.ads ) {
                 self.hideItem( self.html.containers.groupPeriod );
                 self.hideItem( self.html.containers.keywordsLimit );
-                self.hideItem( self.html.containers.keywordStatsContainerId );
+                self.hideItem( self.html.containers.statsContainerId );
             } else {
                 self.showItem( self.html.containers.groupPeriod );
                 self.hideItem( self.html.containers.keywordsLimit );
-                self.hideItem( self.html.containers.keywordStatsContainerId );
+                self.hideItem( self.html.containers.statsContainerId );
             }
 
             self.loadReport();
@@ -336,7 +336,7 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select', 'jque
 
         previewBlock.append( imageBlock );
 
-        if( $( this.html.containers.keywordStatsContainerId ).is( ':visible' ) ) {
+        if( $( this.html.containers.statsContainerId ).is( ':visible' ) ) {
             $( '[name="keywordsStats[' + previewNumber + ']"]' ).val( $( this.html.inputs.keywordStatsInput ).val() );
         }
 
