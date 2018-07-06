@@ -317,13 +317,11 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select', 'jque
         var previewNumber = this.values.previewChartNumber;
         var startDate = this.convertDate( $( this.html.inputs.dateStart ).val() );
         var endDate = this.convertDate( $( this.html.inputs.dateEnd ).val() );
-        var keywordsId = 'statisticsTableData[' + previewNumber + ']';
+        var statisticsId = 'statisticsTableData[' + previewNumber + ']';
         var previewName  = this.values.previewChartName + '[' + previewNumber + ']';
         var startDateInput = '<input type="hidden" name="date[' + previewNumber + '][startDate]" value="' + startDate + '"/>';
         var endDateInput = '<input type="hidden" name="date[' + previewNumber + '][endDate]" value="' + endDate + '"/>';
-        var statisticsTableData = '<input type="hidden" id="' + keywordsId +
-            '" name="' + keywordsId + '"' +
-            'value/>';
+        var statisticsTableData = '<input type="hidden" name="' + statisticsId + '" value/>';
 
         var imageBlock = $(
             '<li>' +
@@ -338,7 +336,7 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select', 'jque
         previewBlock.append( imageBlock );
 
         if( $( this.html.containers.statsContainerId ).is( ':visible' ) ) {
-            $( '[name="' + keywordsId + '"]' ).val( $( this.html.inputs.statsContainerInput ).val() );
+            $( '[name="' + statisticsId + '"]' ).val( $( this.html.inputs.statsContainerInput ).val() );
             this.hideItem( this.html.containers.statsContainerId );
         }
 
