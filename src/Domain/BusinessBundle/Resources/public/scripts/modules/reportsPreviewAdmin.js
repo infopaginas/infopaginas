@@ -54,6 +54,16 @@ $( document ).ready( function() {
     initDatetimePickers();
     initAjaxRequestTracker();
 
+    function updateChartDates( data ) {
+        var startDateInput = $( '[name="date[' + data.chartType + '][startDate]"]' );
+        var endDateInput = $( '[name="date[' + data.chartType + '][endDate]"]' );
+        var startDateFilterInput = $( 'input[id$="' + data.chartType + 'DateStart"]' );
+        var endDateFilterInput = $( 'input[id$="' + data.chartType + 'DateEnd"]' );
+
+        startDateInput.val( startDateFilterInput.val() );
+        endDateInput.val( endDateFilterInput.val() );
+    }
+
     function loadBusinessInteractionReport( chartBlock ) {
         var data = getInteractionFilterValues( chartBlock );
         var url;
@@ -65,6 +75,9 @@ $( document ).ready( function() {
         } else {
             url = reportUrls.businessOverviewDataAction;
         }
+
+        updateChartDates( data );
+
 
         if ( chartAjaxCall[ data.chartType ] ) {
             return false;
