@@ -21,7 +21,7 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select', 'jque
                 groupPeriod:    '#group_period_container',
                 keywordsLimit:  '#keywords_limit_container',
                 customDates:    '#custom_dates_container',
-                keywordStatsContainerId:          'div[id$="StatisticsKeywordsContainer"]'
+                keywordStatsContainerId: 'div[id$="StatisticsKeywordsContainer"]'
             },
             inputs: {
                 dateRange:  '#domain_business_bundle_business_chart_filter_type_dateRange',
@@ -98,6 +98,7 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select', 'jque
             type:     'POST',
             beforeSend: function() {
                 $( self.html.containers.chartContainer ).html( '' );
+                this.hideItem( this.html.containers.keywordStatsContainerId );
                 self.showLoader( self.html.containers.chartContainer );
             },
             success: function( response ) {
@@ -335,10 +336,8 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select', 'jque
 
         previewBlock.append( imageBlock );
 
-        if( $( this.html.containers.keywordStatsContainerId ).is( ":visible" ) ){
-            document.getElementById('keywordsStats[' + previewNumber + ']').value = $( this.html.inputs.keywordStatsInput ).val();
-            this.hideItem( this.html.containers.keywordStatsContainerId );
-            $( this.html.inputs.keywordStatsInput ).val();
+        if( $( this.html.containers.keywordStatsContainerId ).is( ':visible' ) ) {
+            $( '[name="keywordsStats[' + previewNumber + ']"]' ).val( $( this.html.inputs.keywordStatsInput ).val() );
         }
 
         this.values.previewChartNumber++;
