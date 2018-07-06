@@ -29,8 +29,8 @@
             <br/>
             <img src="{{ image }}">
 
-            {% if keywordsStats[key] is defined %}
-                {{ keywordsStats[key]|raw }}
+            {% if statisticsTableData[key] is defined %}
+                {{ statisticsTableData[key]|raw }}
             {% endif %}
         </div>
     {% endfor %}

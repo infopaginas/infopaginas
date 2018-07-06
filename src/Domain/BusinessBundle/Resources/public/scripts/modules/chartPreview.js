@@ -32,7 +32,7 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select', 'jque
                 period:     '#domain_business_bundle_business_chart_filter_type_groupPeriod',
                 businessId: '#business_profile_id',
                 datePicker: '.js-datepicker',
-                statsContainerInput: '#keywordsStats'
+                statsContainerInput: '#statisticsTableData'
             },
             buttons: {
                 export:        '#export_preview',
@@ -317,11 +317,12 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select', 'jque
         var previewNumber = this.values.previewChartNumber;
         var startDate = this.convertDate( $( this.html.inputs.dateStart ).val() );
         var endDate = this.convertDate( $( this.html.inputs.dateEnd ).val() );
+        var keywordsId = 'statisticsTableData[' + previewNumber + ']';
         var previewName  = this.values.previewChartName + '[' + previewNumber + ']';
         var startDateInput = '<input type="hidden" name="date[' + previewNumber + '][startDate]" value="' + startDate + '"/>';
         var endDateInput = '<input type="hidden" name="date[' + previewNumber + '][endDate]" value="' + endDate + '"/>';
-        var keywordsStats = '<input type="hidden" id="keywordsStats[' + previewNumber + ']" ' +
-            'name="keywordsStats[' + previewNumber + ']" ' +
+        var statisticsTableData = '<input type="hidden" id="' + keywordsId +
+            '" name="' + keywordsId + '"' +
             'value/>';
 
         var imageBlock = $(
@@ -331,13 +332,13 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select', 'jque
                 '<input name="' + previewName + '" type="hidden" value="' + image + '">' +
                  startDateInput +
                  endDateInput +
-                 keywordsStats +
+                 statisticsTableData +
             '</li>' );
 
         previewBlock.append( imageBlock );
 
         if( $( this.html.containers.statsContainerId ).is( ':visible' ) ) {
-            $( '[name="keywordsStats[' + previewNumber + ']"]' ).val( $( this.html.inputs.statsContainerInput ).val() );
+            $( '[name="' + keywordsId + '"]' ).val( $( this.html.inputs.statsContainerInput ).val() );
             this.hideItem( this.html.containers.statsContainerId );
         }
 

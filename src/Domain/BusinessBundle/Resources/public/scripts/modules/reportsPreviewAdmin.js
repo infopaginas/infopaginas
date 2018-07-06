@@ -16,7 +16,7 @@ $( document ).ready( function() {
             mainPeriods:   'input[name$="[period]"]',
             datePicker:    '[data-date-format]',
             chartPrefix:   '#chart_',
-            keywordsStats: '#keywordsStats'
+            statisticsTableData: '#statisticsTableData'
         },
         buttons: {
             exportPdf: '#exportPdf',
@@ -85,7 +85,7 @@ $( document ).ready( function() {
 
                 if ( data.chartType === chartType.keywords ) {
                     $( html.containers.keywordStatsContainerId ).html( response.stats );
-                    $( html.inputs.keywordsStats ).val( response.stats );
+                    $( html.inputs.statisticsTableData ).val( response.stats );
                     loadKeywordsChart( chartBlock, response.keywords, response.searches );
                 } else if ( data.chartType === chartType.ads ) {
                     loadAdUsageChart( chartBlock, response.dates, response.clicks, response.impressions );
