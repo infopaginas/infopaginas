@@ -21,7 +21,7 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select', 'jque
                 groupPeriod:    '#group_period_container',
                 keywordsLimit:  '#keywords_limit_container',
                 customDates:    '#custom_dates_container',
-                statsContainerId: 'div[id$="StatisticsKeywordsContainer"]'
+                statsContainerId: 'div[id$="StatisticsContainer"]'
             },
             inputs: {
                 dateRange:  '#domain_business_bundle_business_chart_filter_type_dateRange',
@@ -338,6 +338,7 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select', 'jque
 
         if( $( this.html.containers.statsContainerId ).is( ':visible' ) ) {
             $( '[name="keywordsStats[' + previewNumber + ']"]' ).val( $( this.html.inputs.keywordStatsInput ).val() );
+            this.hideItem( this.html.containers.statsContainerId );
         }
 
         this.values.previewChartNumber++;
