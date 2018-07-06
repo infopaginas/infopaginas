@@ -98,7 +98,7 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select', 'jque
             type:     'POST',
             beforeSend: function() {
                 $( self.html.containers.chartContainer ).html( '' );
-                self.hideItem( self.html.containers.statsContainerId );
+                $( self.html.containers.statsContainerId ).html( '' );
                 self.showLoader( self.html.containers.chartContainer );
             },
             success: function( response ) {
