@@ -32,7 +32,7 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select', 'jque
                 period:     '#domain_business_bundle_business_chart_filter_type_groupPeriod',
                 businessId: '#business_profile_id',
                 datePicker: '.js-datepicker',
-                statsContainerInput: '#statisticsTableData'
+                statsContainerInput: '#statisticsTableContainer'
             },
             buttons: {
                 export:        '#export_preview',
@@ -253,6 +253,11 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select', 'jque
         $( document ).on('change', this.html.inputs.dateRange, function() {
             if ( $( this ).val() !== self.values.customDates ) {
                 self.loadReport();
+
+                if( $( self.html.inputs.actionType ).val() === self.values.chartType.keywords
+                        && $( self.html.containers.statsContainerId ).is( ':hidden' ) ) {
+                    self.showItem( self.html.containers.statsContainerId );
+                }
             }
         });
 
@@ -317,11 +322,11 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select', 'jque
         var previewNumber = this.values.previewChartNumber;
         var startDate = this.convertDate( $( this.html.inputs.dateStart ).val() );
         var endDate = this.convertDate( $( this.html.inputs.dateEnd ).val() );
-        var statisticsId = 'statisticsTableData[' + previewNumber + ']';
+        var statisticsName = 'statisticsTableData[' + previewNumber + ']';
         var previewName  = this.values.previewChartName + '[' + previewNumber + ']';
         var startDateInput = '<input type="hidden" name="date[' + previewNumber + '][startDate]" value="' + startDate + '"/>';
         var endDateInput = '<input type="hidden" name="date[' + previewNumber + '][endDate]" value="' + endDate + '"/>';
-        var statisticsTableData = '<input type="hidden" name="' + statisticsId + '" value/>';
+        var statisticsTableData = '<input type="hidden" name="' + statisticsName + '" value/>';
 
         var imageBlock = $(
             '<li>' +
@@ -336,7 +341,7 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select', 'jque
         previewBlock.append( imageBlock );
 
         if( $( this.html.containers.statsContainerId ).is( ':visible' ) ) {
-            $( '[name="' + statisticsId + '"]' ).val( $( this.html.inputs.statsContainerInput ).val() );
+            $( '[name="' + statisticsName + '"]' ).val( $( this.html.inputs.statsContainerInput ).val() );
             this.hideItem( this.html.containers.statsContainerId );
         }
 
