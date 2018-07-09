@@ -105,6 +105,10 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select', 'jque
                     $( self.html.containers.statsContainerId ).html( response.stats );
                     $( self.html.containers.statsContainerId ).val( response.stats );
                     self.loadKeywordsChart( response.keywords, response.searches );
+
+                    if( $( self.html.containers.statsContainerId ).is( ':hidden' ) ) {
+                        self.showItem( self.html.containers.statsContainerId );
+                    }
                 } else if ( data.chartType === self.values.chartType.ads ) {
                     self.loadAdUsageChart( response.dates, response.clicks, response.impressions );
                 } else {
@@ -299,7 +303,7 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select', 'jque
                     var image = canvas.toDataURL( self.values.imageFormat );
 
                     self.addPreview( image );
-                    self.clearChartBlock( self.values.previewChartNumber );
+                    self.clearChartBlock();
                 });
             }
         });
@@ -339,6 +343,10 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select', 'jque
 
         previewBlock.append( imageBlock );
 
+        if( $( this.html.containers.statsContainerId ).is( ':visible' ) ) {
+            $( '[name="' + statisticsName + '"]' ).val( $( this.html.containers.statsContainerId ).val() );
+        }
+
         this.values.previewChartNumber++;
     };
 
@@ -348,16 +356,10 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select', 'jque
         return dateArray[0] + '-' + dateArray[2] + '-' + dateArray[1];
     };
 
-    reportPreview.prototype.clearChartBlock = function( previewNumber )
+    reportPreview.prototype.clearChartBlock = function()
     {
-        var statisticsName = 'statisticsTableData[' + previewNumber + ']';
-
         $( this.html.containers.chartContainer ).html( '' );
-
-        if( $( this.html.containers.statsContainerId ).is( ':visible' ) ) {
-            $( '[name="' + statisticsName + '"]' ).val( $( this.html.containers.statsContainerId ).val() );
-            this.hideItem( this.html.containers.statsContainerId );
-        }
+        this.hideItem( this.html.containers.statsContainerId );
     };
 
     reportPreview.prototype.initDatePickers = function()
