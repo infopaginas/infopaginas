@@ -110,6 +110,9 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select', 'jque
                 } else {
                     self.loadBusinessOverviewChart( response.dates, response.chart, response.chartTitle );
                 }
+
+                $( self.html.inputs.dateStart ).val( response.dates[0] );
+                $( self.html.inputs.dateEnd ).val( response.dates.slice(-1)[0] );
             }
         });
     };
@@ -341,9 +344,9 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select', 'jque
     };
 
     reportPreview.prototype.convertDate = function ( string ) {
-        var dateArray = string.split('-');
+        var dateArray = string.split('/');
 
-        return dateArray[0] + '-' + dateArray[2] + '-' + dateArray[1];
+        return dateArray[0] +  '/' + dateArray[1];
     };
 
     reportPreview.prototype.clearChartBlock = function()
