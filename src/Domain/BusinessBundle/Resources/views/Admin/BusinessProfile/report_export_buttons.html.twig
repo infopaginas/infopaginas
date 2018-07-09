@@ -2,14 +2,12 @@
 
 {% block field %}
     {% if object.id is not null %}
-        {% if admin.isGranted('EXPORT', object) and admin.hasRoute('exportPreview') %}
-            <a href="{{ admin.generateObjectUrl('exportPreview', object) }}" class="button-a">
-                <button type="button" class="btn green-btn">
-                    <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
-                    PDF
-                </button>
-            </a>
-        {% endif %}
+        <a href="{{ admin.generateObjectUrl('exportPreview', object) }}" class="button-a">
+            <button type="button" class="btn green-btn">
+                <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
+                PDF
+            </button>
+        </a>
         <button type="button" data-route="{{ field_description.options.exportRoute }}" data-format="{{ field_description.options.exportExcel }}" data-export-type="export-excel" class="btn green-btn">
             <i class="fa fa-file-excel-o" aria-hidden="true"></i>
             Excel
