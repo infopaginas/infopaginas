@@ -20,7 +20,8 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select', 'jque
                 actionType:     '#action_type_container',
                 groupPeriod:    '#group_period_container',
                 keywordsLimit:  '#keywords_limit_container',
-                customDates:    '#custom_dates_container'
+                customDates:    '#custom_dates_container',
+                statsContainerId: '#statisticsTableContainer'
             },
             inputs: {
                 dateRange:  '#domain_business_bundle_business_chart_filter_type_dateRange',
@@ -96,11 +97,14 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select', 'jque
             type:     'POST',
             beforeSend: function() {
                 $( self.html.containers.chartContainer ).html( '' );
+                $( self.html.containers.statsContainerId ).html( '' );
                 self.showLoader( self.html.containers.chartContainer );
             },
             success: function( response ) {
                 if ( data.chartType === self.values.chartType.keywords ) {
+                    $( self.html.containers.statsContainerId ).html( response.stats );
                     self.loadKeywordsChart( response.keywords, response.searches );
+                    self.showItem( self.html.containers.statsContainerId );
                 } else if ( data.chartType === self.values.chartType.ads ) {
                     self.loadAdUsageChart( response.dates, response.clicks, response.impressions );
                 } else {
@@ -191,7 +195,7 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select', 'jque
                 type: 'column'
             },
             title: {
-                text: $( this.html.containers.chartContainer ).data( 'data-title-keywords' )
+                text: $( this.html.containers.chartContainer ).data( 'title-keywords' )
             },
             xAxis: {
                 categories: keywords
@@ -264,9 +268,11 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select', 'jque
             } else if ( actionType === self.values.chartType.ads ) {
                 self.hideItem( self.html.containers.groupPeriod );
                 self.hideItem( self.html.containers.keywordsLimit );
+                self.hideItem( self.html.containers.statsContainerId );
             } else {
                 self.showItem( self.html.containers.groupPeriod );
                 self.hideItem( self.html.containers.keywordsLimit );
+                self.hideItem( self.html.containers.statsContainerId );
             }
 
             self.loadReport();
@@ -309,10 +315,11 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select', 'jque
         var previewNumber = this.values.previewChartNumber;
         var startDate = this.convertDate( $( this.html.inputs.dateStart ).val() );
         var endDate = this.convertDate( $( this.html.inputs.dateEnd ).val() );
+        var statisticsName = 'statisticsTableData[' + previewNumber + ']';
         var previewName  = this.values.previewChartName + '[' + previewNumber + ']';
         var startDateInput = '<input type="hidden" name="date[' + previewNumber + '][startDate]" value="' + startDate + '"/>';
         var endDateInput = '<input type="hidden" name="date[' + previewNumber + '][endDate]" value="' + endDate + '"/>';
-        this.values.previewChartNumber++;
+        var statisticsTableData = '<input type="hidden" name="' + statisticsName + '" value/>';
 
         var imageBlock = $(
             '<li>' +
@@ -321,9 +328,16 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select', 'jque
                 '<input name="' + previewName + '" type="hidden" value="' + image + '">' +
                  startDateInput +
                  endDateInput +
+                 statisticsTableData +
             '</li>' );
 
         previewBlock.append( imageBlock );
+
+        if( $( this.html.containers.statsContainerId ).is( ':visible' ) ) {
+            $( '[name="' + statisticsName + '"]' ).val( $( this.html.containers.statsContainerId ).html() );
+        }
+
+        this.values.previewChartNumber++;
     };
 
     reportPreview.prototype.convertDate = function ( string ) {
@@ -335,6 +349,7 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select', 'jque
     reportPreview.prototype.clearChartBlock = function()
     {
         $( this.html.containers.chartContainer ).html( '' );
+        this.hideItem( this.html.containers.statsContainerId );
     };
 
     reportPreview.prototype.initDatePickers = function()

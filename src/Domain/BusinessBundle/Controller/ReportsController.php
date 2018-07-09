@@ -363,6 +363,7 @@ class ReportsController extends Controller
     {
         $params['charts'] = $request->request->get('chart', []);
         $params['dates'] = $request->request->get('date', []);
+        $params['statisticsTableData'] = $request->request->get('statisticsTableData', []);
         $businessProfile = $this->getBusinessProfileManager()->find($request->request->get('businessId'));
 
         $this->checkBusinessProfileOrAdminAccess($businessProfile);
@@ -624,7 +625,7 @@ class ReportsController extends Controller
     protected function checkBusinessProfileOrAdminAccess(BusinessProfile $businessProfile)
     {
         $user    = $this->getUser();
-        $isAdmin = $this->get('security.authorization_checker')->isGranted('ROLE_ADMIN');
+        $isAdmin = $this->get('security.authorization_checker')->isGranted('ROLE_SALES_MANAGER');
 
         if (!$user || !($user instanceof User)) {
             throw $this->createNotFoundException();

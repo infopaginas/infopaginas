@@ -4,7 +4,8 @@ $( document ).ready( function() {
             businessOverviewChartContainerId: 'div[id$="ChartContainer"]',
             businessOverviewStatsContainerId: 'div[id$="StatisticsContainer"]',
             businessOverviewHintContainerId:  'div[id$="ChartHintContainer"]',
-            chartParentBlockId:               'div[id$="ChartParentBlock"]'
+            chartParentBlockId:               'div[id$="ChartParentBlock"]',
+            keywordStatsContainerId:          'div[id$="StatisticsKeywordsContainer"]'
         },
         inputs: {
             mainDateStart: 'input[id$="DateStart"]',
@@ -14,7 +15,8 @@ $( document ).ready( function() {
             limit:         'div.limit-option select',
             mainPeriods:   'input[name$="[period]"]',
             datePicker:    '[data-date-format]',
-            chartPrefix:   '#chart_'
+            chartPrefix:   '#chart_',
+            statisticsTableData: '#statisticsTableData'
         },
         buttons: {
             exportPdf: '#exportPdf',
@@ -52,6 +54,16 @@ $( document ).ready( function() {
     initDatetimePickers();
     initAjaxRequestTracker();
 
+    function updateChartDates( data ) {
+        var startDateInput = $( '[name="date[' + data.chartType + '][startDate]"]' );
+        var endDateInput = $( '[name="date[' + data.chartType + '][endDate]"]' );
+        var startDateFilterInput = $( 'input[id$="' + data.chartType + 'DateStart"]' );
+        var endDateFilterInput = $( 'input[id$="' + data.chartType + 'DateEnd"]' );
+
+        startDateInput.val( startDateFilterInput.val() );
+        endDateInput.val( endDateFilterInput.val() );
+    }
+
     function loadBusinessInteractionReport( chartBlock ) {
         var data = getInteractionFilterValues( chartBlock );
         var url;
@@ -63,6 +75,8 @@ $( document ).ready( function() {
         } else {
             url = reportUrls.businessOverviewDataAction;
         }
+
+        updateChartDates( data );
 
         if ( chartAjaxCall[ data.chartType ] ) {
             return false;
@@ -82,6 +96,8 @@ $( document ).ready( function() {
                 chartBlock.find( html.containers.businessOverviewHintContainerId ).html( response.chartHint );
 
                 if ( data.chartType === chartType.keywords ) {
+                    $( html.containers.keywordStatsContainerId ).html( response.stats );
+                    $( html.inputs.statisticsTableData ).val( response.stats );
                     loadKeywordsChart( chartBlock, response.keywords, response.searches );
                 } else if ( data.chartType === chartType.ads ) {
                     loadAdUsageChart( chartBlock, response.dates, response.clicks, response.impressions );
