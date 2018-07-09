@@ -112,7 +112,7 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select', 'jque
                 }
 
                 $( self.html.inputs.dateStart ).val( response.dates[0] );
-                $( self.html.inputs.dateEnd ).val( response.dates.slice(-1)[0] );
+                $( self.html.inputs.dateEnd ).val( response.dates[response.dates.length-1] );
             }
         });
     };
@@ -316,8 +316,8 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select', 'jque
     {
         var previewBlock = $( this.html.containers.previewBlock );
         var previewNumber = this.values.previewChartNumber;
-        var startDate = this.convertDate( $( this.html.inputs.dateStart ).val() );
-        var endDate = this.convertDate( $( this.html.inputs.dateEnd ).val() );
+        var startDate = $( this.html.inputs.dateStart ).val();
+        var endDate = $( this.html.inputs.dateEnd ).val();
         var statisticsName = 'statisticsTableData[' + previewNumber + ']';
         var previewName  = this.values.previewChartName + '[' + previewNumber + ']';
         var startDateInput = '<input type="hidden" name="date[' + previewNumber + '][startDate]" value="' + startDate + '"/>';
@@ -341,12 +341,6 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select', 'jque
         }
 
         this.values.previewChartNumber++;
-    };
-
-    reportPreview.prototype.convertDate = function ( string ) {
-        var dateArray = string.split('/');
-
-        return dateArray[0] +  '/' + dateArray[1];
     };
 
     reportPreview.prototype.clearChartBlock = function()

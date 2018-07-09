@@ -27,7 +27,7 @@ class BusinessProfileCRUDController extends Controller
      */
     public function exportPreviewAction()
     {
-        if (false === $this->admin->isGranted('EXPORT')) {
+        if (false === $this->admin->isGranted('VIEW')) {
             throw new AccessDeniedException();
         }
 
@@ -39,8 +39,6 @@ class BusinessProfileCRUDController extends Controller
         if (!$object) {
             throw $this->createNotFoundException(sprintf('unable to find the object with id : %s', $id));
         }
-
-        $this->admin->checkAccess('export', $object);
 
         $dateRange = DatesUtil::getDateRangeValueObjectFromRangeType(DatesUtil::RANGE_LAST_MONTH);
 
