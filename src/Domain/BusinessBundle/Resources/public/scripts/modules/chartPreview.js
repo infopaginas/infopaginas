@@ -103,21 +103,12 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select', 'jque
             success: function( response ) {
                 if ( data.chartType === self.values.chartType.keywords ) {
                     $( self.html.containers.statsContainerId ).html( response.stats );
-                    $( self.html.containers.statsContainerId ).val( response.stats );
                     self.loadKeywordsChart( response.keywords, response.searches );
-
-                    if( $( self.html.containers.statsContainerId ).is( ':hidden' ) ) {
-                        self.showItem( self.html.containers.statsContainerId );
-                    }
+                    self.showItem( self.html.containers.statsContainerId );
                 } else if ( data.chartType === self.values.chartType.ads ) {
                     self.loadAdUsageChart( response.dates, response.clicks, response.impressions );
                 } else {
                     self.loadBusinessOverviewChart( response.dates, response.chart, response.chartTitle );
-                }
-
-                if( $( self.html.inputs.actionType ).val() === self.values.chartType.keywords
-                    && $( self.html.containers.statsContainerId ).is( ':hidden' ) ) {
-                    self.showItem( self.html.containers.statsContainerId );
                 }
             }
         });
@@ -274,7 +265,6 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select', 'jque
             if ( actionType === self.values.chartType.keywords ) {
                 self.hideItem( self.html.containers.groupPeriod );
                 self.showItem( self.html.containers.keywordsLimit );
-                self.showItem( self.html.containers.statsContainerId );
             } else if ( actionType === self.values.chartType.ads ) {
                 self.hideItem( self.html.containers.groupPeriod );
                 self.hideItem( self.html.containers.keywordsLimit );
@@ -344,7 +334,7 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select', 'jque
         previewBlock.append( imageBlock );
 
         if( $( this.html.containers.statsContainerId ).is( ':visible' ) ) {
-            $( '[name="' + statisticsName + '"]' ).val( $( this.html.containers.statsContainerId ).val() );
+            $( '[name="' + statisticsName + '"]' ).val( $( this.html.containers.statsContainerId ).html() );
         }
 
         this.values.previewChartNumber++;
