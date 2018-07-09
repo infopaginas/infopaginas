@@ -625,7 +625,7 @@ class ReportsController extends Controller
     protected function checkBusinessProfileOrAdminAccess(BusinessProfile $businessProfile)
     {
         $user    = $this->getUser();
-        $isAdmin = $this->get('security.authorization_checker')->isGranted('ROLE_ADMIN');
+        $isAdmin = $this->get('security.authorization_checker')->isGranted('ROLE_SALES_MANAGER');
 
         if (!$user || !($user instanceof User)) {
             throw $this->createNotFoundException();

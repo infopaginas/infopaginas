@@ -55,3 +55,9 @@ domain_business_reports_api_keywords:
 domain_business_chart_preview_export:
      path:     /chart/preview/{id}
      defaults: { _controller: DomainBusinessBundle:Reports:chartPreview, id: 0 }
+
+domain_business_admin_chart_reports_export:
+    path:     /chart/export
+    defaults: { _controller: DomainBusinessBundle:Reports:chartExport }
+    options:
+        expose: true
