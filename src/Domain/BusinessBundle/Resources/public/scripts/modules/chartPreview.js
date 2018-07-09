@@ -31,8 +31,7 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select', 'jque
                 actionType: '#domain_business_bundle_business_chart_filter_type_actionType',
                 period:     '#domain_business_bundle_business_chart_filter_type_groupPeriod',
                 businessId: '#business_profile_id',
-                datePicker: '.js-datepicker',
-                statsContainerInput: '#statisticsTableContainer'
+                datePicker: '.js-datepicker'
             },
             buttons: {
                 export:        '#export_preview',
@@ -104,12 +103,17 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select', 'jque
             success: function( response ) {
                 if ( data.chartType === self.values.chartType.keywords ) {
                     $( self.html.containers.statsContainerId ).html( response.stats );
-                    $( self.html.inputs.statsContainerInput ).val( response.stats );
+                    $( self.html.containers.statsContainerId ).val( response.stats );
                     self.loadKeywordsChart( response.keywords, response.searches );
                 } else if ( data.chartType === self.values.chartType.ads ) {
                     self.loadAdUsageChart( response.dates, response.clicks, response.impressions );
                 } else {
                     self.loadBusinessOverviewChart( response.dates, response.chart, response.chartTitle );
+                }
+
+                if( $( self.html.inputs.actionType ).val() === self.values.chartType.keywords
+                    && $( self.html.containers.statsContainerId ).is( ':hidden' ) ) {
+                    self.showItem( self.html.containers.statsContainerId );
                 }
             }
         });
@@ -253,11 +257,6 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select', 'jque
         $( document ).on('change', this.html.inputs.dateRange, function() {
             if ( $( this ).val() !== self.values.customDates ) {
                 self.loadReport();
-
-                if( $( self.html.inputs.actionType ).val() === self.values.chartType.keywords
-                        && $( self.html.containers.statsContainerId ).is( ':hidden' ) ) {
-                    self.showItem( self.html.containers.statsContainerId );
-                }
             }
         });
 
@@ -300,7 +299,7 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select', 'jque
                     var image = canvas.toDataURL( self.values.imageFormat );
 
                     self.addPreview( image );
-                    self.clearChartBlock();
+                    self.clearChartBlock( self.values.previewChartNumber );
                 });
             }
         });
@@ -340,11 +339,6 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select', 'jque
 
         previewBlock.append( imageBlock );
 
-        if( $( this.html.containers.statsContainerId ).is( ':visible' ) ) {
-            $( '[name="' + statisticsName + '"]' ).val( $( this.html.inputs.statsContainerInput ).val() );
-            this.hideItem( this.html.containers.statsContainerId );
-        }
-
         this.values.previewChartNumber++;
     };
 
@@ -354,9 +348,16 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select', 'jque
         return dateArray[0] + '-' + dateArray[2] + '-' + dateArray[1];
     };
 
-    reportPreview.prototype.clearChartBlock = function()
+    reportPreview.prototype.clearChartBlock = function( previewNumber )
     {
+        var statisticsName = 'statisticsTableData[' + previewNumber + ']';
+
         $( this.html.containers.chartContainer ).html( '' );
+
+        if( $( this.html.containers.statsContainerId ).is( ':visible' ) ) {
+            $( '[name="' + statisticsName + '"]' ).val( $( this.html.containers.statsContainerId ).val() );
+            this.hideItem( this.html.containers.statsContainerId );
+        }
     };
 
     reportPreview.prototype.initDatePickers = function()

@@ -78,7 +78,6 @@ $( document ).ready( function() {
 
         updateChartDates( data );
 
-
         if ( chartAjaxCall[ data.chartType ] ) {
             return false;
         }
