@@ -112,7 +112,7 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select', 'jque
                 }
 
                 $( self.html.inputs.dateStart ).val( response.dates[0] );
-                $( self.html.inputs.dateEnd ).val( response.dates[response.dates.length-1] );
+                $( self.html.inputs.dateEnd ).val( response.dates[response.dates.length - 1] );
             }
         });
     };
