@@ -16,14 +16,14 @@ domain_business_admin_reports_ad_usage_data:
     options:
         expose: true
 
-domain_business_admin_reports_excel_export:
-    path:     /export/excel
-    defaults: { _controller: DomainBusinessBundle:Reports:excelAdminExport }
+domain_business_admin_ads_reports_export:
+    path:     /ads/export/{format}
+    defaults: { _controller: DomainBusinessBundle:Reports:adsAdminExport, format: '' }
     options:
         expose: true
 
-domain_business_admin_reports_pdf_export:
-    path:     /export/pdf
-    defaults: { _controller: DomainBusinessBundle:Reports:pdfAdminExport }
+domain_business_admin_inretaction_reports_export:
+    path:     /interaction/export/{format}
+    defaults: { _controller: DomainBusinessBundle:Reports:interactionAdminExport, format: '' }
     options:
         expose: true

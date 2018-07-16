@@ -1,8 +1,6 @@
-{% extends 'SonataAdminBundle:CRUD:base_show_field.html.twig' %}
-
 {% block field %}
     {% if object.id is not null %}
-        <div class="row">
+        <div class="row {% if selector is defined %}{{ selector }}{% endif %}">
             <div class="col-sm-6">
                 <div class="form-group">
                     <div class="sonata-ba-field sonata-ba-field-standard-natural">

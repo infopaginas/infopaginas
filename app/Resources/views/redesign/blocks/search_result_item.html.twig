@@ -54,7 +54,7 @@
     </div><!-- item__content -->
     <div class="item__actions">
         <div class="item__primary-actions" data-bw-gtm-component="search-results-primary-action">
-            <a class="get-dir button button--small button--featured link-pointer {% if item.isAd %}svm-getdir{% endif %}" data-id="{{ item.getId() }}" data-latlng="{{ item.getLatLng() }}" data-bw-gtm-event-click data-bw-gtm-label="{% trans %}Directions{% endtrans %}">
+            <a data-bname="{{ item.name }}" class="get-dir button button--small button--featured link-pointer {% if item.isAd %}svm-getdir{% endif %}" data-id="{{ item.getId() }}" data-latlng="{{ item.getLatLng() }}" data-bw-gtm-event-click data-bw-gtm-label="{% trans %}Directions{% endtrans %}">
                 <i class="fa fa-location-arrow"></i>
                 {% trans %}Directions{% endtrans %}
             </a>
@@ -68,7 +68,7 @@
                 {% else %}
                     {% set phoneToCall = item.phones.first.phone %}
                 {% endif %}
-                <a href="tel:{{ phoneToCall }}" class="button button--small button--featured hide-desktop phone-call {% if item.isAd %}svm-callmobile{% endif %}" data-id="{{ item.id }}" data-type="callMobButton" data-bw-gtm-event-click data-bw-gtm-label="{% trans %}Call{% endtrans %}">
+                <a data-bname="{{ item.name }}" href="tel:{{ phoneToCall }}" class="button button--small button--featured hide-desktop phone-call {% if item.isAd %}svm-callmobile{% endif %}" data-id="{{ item.id }}" data-type="callMobButton" data-bw-gtm-event-click data-bw-gtm-label="{% trans %}Call{% endtrans %}">
                     <i class="fa fa-phone"></i>
                     {% trans %}Call{% endtrans %}
                 </a>

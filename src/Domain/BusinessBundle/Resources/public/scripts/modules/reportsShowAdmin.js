@@ -17,7 +17,7 @@ $( document ).ready( function() {
             keywordLimit:     '#' + uniqueId + '_keywordReportLimit',
             adUsageDateStart: '#' + uniqueId + '_adUsageReportFiltersDateStart',
             adUsageDateEnd:   '#' + uniqueId + '_adUsageReportFiltersDateEnd',
-            mainPeriods:      'input[name="' + uniqueId + '[period]"]'
+            mainPeriods:      'input[name="' + uniqueId + '_mainReportFilters[period]"]'
         },
         buttons: {
             mainFilter:         '#' + uniqueId + '_mainReportFiltersFilter',
@@ -25,6 +25,7 @@ $( document ).ready( function() {
             periodOptionFilter: '#' + uniqueId + '_periodOptionFilter',
             keywordFilter:      '#' + uniqueId + '_keywordReportLimitFilter',
             adUsageFilter:      '#' + uniqueId + '_adUsageReportFiltersFilter',
+            export:             '[data-export-type]',
             exportExcel:        '[data-export-type = "export-excel"]',
             exportPdf:          '[data-export-type = "export-pdf"]',
             print:              '[data-export-type = "print"]'
@@ -40,9 +41,7 @@ $( document ).ready( function() {
     var reportUrls = {
         businessOverviewDataAction: Routing.generate( 'domain_business_admin_reports_business_overview_data' ),
         keywordsDataAction:         Routing.generate( 'domain_business_admin_reports_keywords_data' ),
-        adUsageDataAction:          Routing.generate( 'domain_business_admin_reports_ad_usage_data' ),
-        pdfExportURL:               Routing.generate( 'domain_business_admin_reports_pdf_export' ),
-        excelExportURL:             Routing.generate( 'domain_business_admin_reports_excel_export' )
+        adUsageDataAction:          Routing.generate( 'domain_business_admin_reports_ad_usage_data' )
     };
 
     initDatetimePickers();
@@ -275,24 +274,17 @@ $( document ).ready( function() {
     handleExport();
 
     function handleExport() {
-        $( document ).on( 'click', html.buttons.exportExcel, function (e) {
-            var filtersData = $.param( getFilterParams() );
-            window.open( $( this ).data( 'href' ) + '?' + filtersData );
-        });
-
-        $( document ).on('click', html.buttons.exportPdf, function (e) {
-            var filtersData = $.param( getFilterParams() );
-
-            window.open( $( this ).data( 'href' ) + '?' + filtersData );
-        });
-
-        $( document ).on('click', html.buttons.print, function (e) {
+        $( document ).on('click', html.buttons.export, function (e) {
             var filterParams = getFilterParams();
-            filterParams.print = true;
+            var exportRoute  = $( this ).data( 'route' );
 
-            var filtersData = $.param( filterParams );
+            filterParams.format = $( this ).data( 'format' );
 
-            window.open( $( this ).data( 'href' ) + '?' + filtersData );
+            if ( $( this ).data( 'export-type' ) == 'print' ) {
+                filterParams.print = true;
+            }
+
+            window.open( Routing.generate( exportRoute, filterParams ) );
         });
     }
 

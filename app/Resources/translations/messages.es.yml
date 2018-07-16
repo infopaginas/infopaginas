@@ -52,6 +52,9 @@ Relevance: Relevancia
 Distance: Distancia
 Get Direction: Obtener Dirección
 Call: Telefono
+ActionButtonCall: Llamar
+WebsiteButton: Website
+Url: Url
 Reviews: Comentarios
 list: Ok
 map: Mapa
@@ -284,6 +287,8 @@ Searches Count: Conteo de Búsquedas
 Clicks: Clics
 Image: Imagen
 Social Network: Red social
+Previous page: Página anterior
+Back: Regresará
 
 Coupons: Cupones
 View more reviews: Ver más opiniones
@@ -496,6 +501,17 @@ interaction_report:
     call_desk: '"Botón de llamada desde Computadora" cuántas veces un usuario hizo clic en el botón "Teléfono" mientras revisaba Infopaginas.com a través de la computadora.'
     direction: '"Botón Indicaciones" cuenta cuántas veces los usuarios hicieron clic en el botón " Ir al mapa" para ver dónde se encuentra la empresa.'
     video_watched: '"Vistas de video" cuentan cuántas veces los usuarios vieron el video.'
+
+report:
+  type:
+    ads: 'Anuncios'
+    keywords: 'Palabras clave'
+  preview:
+    button:
+      add_to_export: 'Agregar a exportar'
+      export_chart:  'Exportar'
+      export_custom_pdf: 'Exportar PDF personalizado'
+      error_max_amount: 'Número máximo de gráficos en la página 15'
 
 date: Fecha
 interaction_report.total: Total

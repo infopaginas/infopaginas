@@ -291,3 +291,15 @@ div.single-media-preview-block img {
     font-size: x-large;
 }
 
+.button-a {
+    color: inherit;
+}
+
+.export-preview {
+    min-width: 650px;
+}
+
+.chart-box {
+    padding-bottom: 10px;
+    border-bottom: 4px solid #00c0ef;
+}

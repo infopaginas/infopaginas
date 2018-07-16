@@ -1,0 +1,45 @@
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+table th, td {
+    text-align: left;
+    padding: 8px;
+}
+
+table tr:nth-child(even) {
+    background-color: #f2f2f2
+}
+
+table div.box.box-primary.box-pdf {
+    display: block;
+    clear: both;
+    page-break-after: always;
+}
+
+table table, th, td {
+    border: 1px solid black;
+    text-align: center;
+}
+
+div.box.box-primary.box-pdf {
+    display: block;
+    clear: both;
+}
+
+.page-break {
+    page-break-after: always;
+}
+
+.page-break-border {
+    border: 1px solid black;
+}
+
+.page-break-border > img {
+    display: block;
+    max-height: 100%;
+    max-width: 100%;
+    text-align: left;
+    padding: 8px;
+}

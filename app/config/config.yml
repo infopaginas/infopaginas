@@ -145,6 +145,7 @@ twig:
         google_analytics_id:       '%google_analytics_id%'
         default_country:           'pr'
         defaultLocale: '%locale%'
+        profile_action_url_span_length: 20
 
 #       validation patterns
         validators: '%validators%'
@@ -341,3 +342,12 @@ elastic_search:
 mongo_db:
     host: '%mongodb.host%'
     db:   '%mongodb.db%'
+
+knp_snappy:
+    temporary_folder: "%kernel.cache_dir%/snappy"
+    pdf:
+        enabled: true
+        binary:  "%kernel.root_dir%/../vendor/h4cc/wkhtmltopdf-amd64/bin/wkhtmltopdf-amd64"
+        options:
+            - { name: 'viewport-size', value: ‘1024x768’ }
+            - { name: 'page-size', value: 'A4' }

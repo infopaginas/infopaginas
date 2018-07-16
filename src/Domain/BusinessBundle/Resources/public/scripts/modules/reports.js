@@ -9,6 +9,11 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select', 'busi
             keywordsDataAction: Routing.generate('domain_business_reports_keywords_data')
         };
 
+        this.routes = {
+            adsExport:         'domain_business_ads_reports_export',
+            interactionExport: 'domain_business_interaction_reports_export'
+        };
+
         this.html = {
             containers: {
                 businessOverviewChartContainerId: '#businessOverviewChartContainer',
@@ -30,6 +35,9 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select', 'busi
                 limit:      '#domain_business_bundle_business_report_filter_type_limit',
                 actionType: '#domain_business_bundle_business_report_filter_type_actionType',
                 period:     '#domain_business_bundle_business_report_filter_type_groupPeriod'
+            },
+            buttons: {
+                export: 'button[data-export-type]'
             }
         };
 
@@ -302,6 +310,23 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select', 'busi
         }
     };
 
+    reports.prototype.getExportRoute = function()
+    {
+        var activeTab = $( '.tabs-block li.active' ).find( 'a' ).attr( 'aria-controls' );
+        var route;
+
+        switch ( activeTab ) {
+            case 'overview':
+                route = this.routes.interactionExport;
+                break;
+            case 'ad_usage':
+                route = this.routes.adsExport;
+                break;
+        }
+
+        return route;
+    };
+
     reports.prototype.initDatePickers = function()
     {
         var self = this;
@@ -324,23 +349,17 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select', 'busi
     {
         var self = this;
 
-        $(document).on('click', '#export-excel', function (e) {
-            var filtersData = $.param(self.getFilterValues());
-            location.href = $(this).attr('href') + '?' + filtersData;
-        });
-
-        $(document).on('click', '#export-pdf', function (e) {
-            var filtersData = $.param(self.getFilterValues());
-            location.href = $(this).attr('href') + '?' + filtersData;
-        });
-
-        $(document).on('click', '#print', function (e) {
+        $( document ).on('click', self.html.buttons.export, function (e) {
             var filterParams = self.getFilterValues();
-            filterParams.print = true;
+            var exportRoute  = self.getExportRoute();
 
-            var filtersData = $.param( filterParams );
+            filterParams.format = $( this ).data( 'format' );
 
-            location.href = $( this ).attr( 'href' ) + '?' + filtersData;
+            if ( $( this ).data( 'export-type' ) == 'print' ) {
+                filterParams.print = true;
+            }
+
+            window.open( Routing.generate( exportRoute, filterParams ) );
         });
     };
 

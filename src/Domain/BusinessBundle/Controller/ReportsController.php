@@ -3,7 +3,9 @@
 namespace Domain\BusinessBundle\Controller;
 
 use AntiMattr\GoogleBundle\Analytics\Impression;
+use Domain\BusinessBundle\Admin\BusinessProfileAdmin;
 use Domain\BusinessBundle\Entity\BusinessProfile;
+use Domain\BusinessBundle\Form\Type\BusinessChartFilterType;
 use Domain\BusinessBundle\Form\Type\BusinessCloseRequestType;
 use Domain\BusinessBundle\Form\Type\BusinessReportFilterType;
 use Domain\BusinessBundle\Manager\BusinessProfileManager;
@@ -13,11 +15,15 @@ use Domain\ReportBundle\Google\Analytics\DataFetcher;
 use Domain\ReportBundle\Manager\AdUsageReportManager;
 use Domain\ReportBundle\Manager\BusinessOverviewReportManager;
 use Domain\ReportBundle\Manager\KeywordsReportManager;
+use Domain\ReportBundle\Model\ExporterInterface;
+use Domain\ReportBundle\Model\ReportInterface;
 use Domain\ReportBundle\Model\UserActionModel;
-use Domain\ReportBundle\Service\Export\BusinessReportExcelExporter;
+use Domain\ReportBundle\Service\Export\BusinessAdsReportExcelExporter;
+use Domain\ReportBundle\Service\Export\BusinessInteractionReportExcelExporter;
 use Domain\ReportBundle\Util\DatesUtil;
 use Oxa\Sonata\AdminBundle\Util\Helpers\AdminHelper;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -69,6 +75,8 @@ class ReportsController extends Controller
                 'businessProfileId'        => $businessProfileId,
                 'businessProfile'          => $businessProfile,
                 'closeBusinessProfileForm' => $closeBusinessProfileForm->createView(),
+                'exportPdf'                => ReportInterface::FORMAT_PDF,
+                'exportExcel'              => ReportInterface::FORMAT_EXCEL,
             ]
         );
     }
@@ -210,50 +218,96 @@ class ReportsController extends Controller
 
     /**
      * @param Request $request
+     * @param string  $format
      *
      * @return Response
      */
-    public function excelExportAction(Request $request)
+    public function adsExportAction(Request $request, $format)
     {
-        $params = $this->getExportParams($request, true);
+        $params   = $this->getExportParams($request, true);
+        $exporter = $this->getAdsExporterByFormat($format);
 
-        return $this->getExcelExporterService()->getResponse($params);
+        return $exporter->getResponse($params);
+    }
+
+    /**
+     * @param Request $request
+     * @param string  $format
+     *
+     * @return Response
+     */
+    public function interactionExportAction(Request $request, $format)
+    {
+        $params   = $this->getExportParams($request, true);
+        $exporter = $this->getInteractionExporterByFormat($format);
+
+        return $exporter->getResponse($params);
+    }
+
+    /**
+     * @param Request $request
+     * @param string  $format
+     *
+     * @return Response
+     */
+    public function adsAdminExportAction(Request $request, $format)
+    {
+        $params   = $this->getAdminExportParams($request);
+        $exporter = $this->getAdsExporterByFormat($format);
+
+        return $exporter->getResponse($params);
+    }
+
+    /**
+     * @param Request $request
+     * @param string  $format
+     *
+     * @return Response
+     */
+    public function interactionAdminExportAction(Request $request, $format)
+    {
+        $params   = $this->getAdminExportParams($request);
+        $exporter = $this->getInteractionExporterByFormat($format);
+
+        return $exporter->getResponse($params);
+    }
+
+    /**
+     * @param int $id
+     *
+     * @return Response
+     * @throws \Exception
+     */
+    public function chartPreviewAction($id)
+    {
+        /** @var BusinessProfile $businessProfile */
+        $businessProfile = $this->getBusinessProfileManager()->find($id);
+        $this->checkBusinessProfileAccess($businessProfile);
+
+        if (!$businessProfile) {
+            throw $this->createNotFoundException();
+        }
+
+        $filtersForm = $this->createForm(new BusinessChartFilterType());
+
+        return $this->render(':redesign:chart-preview.html.twig', [
+            'business' => $businessProfile,
+            'filtersForm' => $filtersForm->createView(),
+        ]);
     }
 
     /**
      * @param Request $request
      *
-     * @return Response
+     * @return JsonResponse
+     * @throws \Exception
      */
-    public function excelAdminExportAction(Request $request)
+    public function chartExportAction(Request $request)
     {
-        $params = $this->getAdminExportParams($request);
+        $params   = $this->getChartExportParams($request);
+        $exporter = $this->get('domain_report.charts_exporter.pdf');
 
-        return $this->getExcelExporterService()->getResponse($params);
-    }
-
-    /**
-     * @param Request $request
-     *
-     * @return Response
-     */
-    public function pdfExportAction(Request $request)
-    {
-        $params = $this->getExportParams($request, true);
-
-        return $this->getPdfExporterService()->getResponse($params);
-    }
-
-    /**
-     * @param Request $request
-     *
-     * @return Response
-     */
-    public function pdfAdminExportAction(Request $request)
-    {
-        $params = $this->getAdminExportParams($request);
-
-        return $this->getPdfExporterService()->getResponse($params);
+        return $exporter->getResponse($params);
     }
 
     /**
@@ -295,6 +349,26 @@ class ReportsController extends Controller
         $params['businessProfile'] = $businessProfile;
 
         $this->userActionExportLog($businessProfile);
+
+        return $params;
+    }
+
+    /**
+     * @param Request $request
+     *
+     * @return array
+     * @throws \Exception
+     */
+    protected function getChartExportParams(Request $request)
+    {
+        $params['charts'] = $request->request->get('chart', []);
+        $params['dates'] = $request->request->get('date', []);
+        $params['statisticsTableData'] = $request->request->get('statisticsTableData', []);
+        $businessProfile = $this->getBusinessProfileManager()->find($request->request->get('businessId'));
+
+        $this->checkBusinessProfileOrAdminAccess($businessProfile);
+
+        $params['businessProfile'] = $businessProfile;
 
         return $params;
     }
@@ -354,17 +428,17 @@ class ReportsController extends Controller
             $params['print'] = false;
         }
 
+        if (!empty($requestData['periodOption']) and
+            !empty(AdminHelper::getPeriodOptionValues()[$requestData['periodOption']])
+        ) {
+            $params['periodOption'] = $requestData['periodOption'];
+        }
+
         if (!$isExport) {
             if (!empty($requestData['chartType']) and
                 in_array($requestData['chartType'], BusinessOverviewModel::getChartEventTypes())
             ) {
                 $params['chartType'] = $requestData['chartType'];
-            }
-
-            if (!empty($requestData['periodOption']) and
-                !empty(AdminHelper::getPeriodOptionValues()[$requestData['periodOption']])
-            ) {
-                $params['periodOption'] = $requestData['periodOption'];
             }
         }
 
@@ -451,17 +525,33 @@ class ReportsController extends Controller
     /**
      * @return \Domain\ReportBundle\Model\Exporter\PdfExporterModel
      */
-    protected function getPdfExporterService()
+    protected function getAdsPdfExporterService()
     {
-        return $this->get('domain_report.exporter.pdf');
+        return $this->get('domain_report.ads_exporter.pdf');
     }
 
     /**
-     * @return \Domain\ReportBundle\Service\Export\BusinessReportExcelExporter
+     * @return \Domain\ReportBundle\Model\Exporter\PdfExporterModel
      */
-    protected function getExcelExporterService() : BusinessReportExcelExporter
+    protected function getInteractionPdfExporterService()
     {
-        return $this->get('domain_report.exporter.excel');
+        return $this->get('domain_report.interaction_exporter.pdf');
+    }
+
+    /**
+     * @return \Domain\ReportBundle\Service\Export\BusinessInteractionReportExcelExporter
+     */
+    protected function getInteractionExcelExporterService() : BusinessInteractionReportExcelExporter
+    {
+        return $this->get('domain_report.interaction_exporter.excel');
+    }
+
+    /**
+     * @return \Domain\ReportBundle\Service\Export\BusinessAdsReportExcelExporter
+     */
+    protected function getAdsExcelExporterService() : BusinessAdsReportExcelExporter
+    {
+        return $this->get('domain_report.ads_exporter.excel');
     }
 
     /**
@@ -525,5 +615,56 @@ class ReportsController extends Controller
         if (!($businessProfile->getUser() and $businessProfile->getUser()->getId() == $user->getId())) {
             throw $this->createNotFoundException();
         }
+    }
+
+    /**
+     * @param BusinessProfile $businessProfile
+     *
+     * @throws \Exception
+     */
+    protected function checkBusinessProfileOrAdminAccess(BusinessProfile $businessProfile)
+    {
+        $user    = $this->getUser();
+        $isAdmin = $this->get('security.authorization_checker')->isGranted('ROLE_SALES_MANAGER');
+
+        if (!$user || !($user instanceof User)) {
+            throw $this->createNotFoundException();
+        }
+
+        if (!(($businessProfile->getUser() and $businessProfile->getUser()->getId() == $user->getId()) || $isAdmin)) {
+            throw $this->createNotFoundException();
+        }
+    }
+
+    /**
+     * @param string $format
+     *
+     * @return ExporterInterface
+     */
+    protected function getInteractionExporterByFormat($format)
+    {
+        if ($format == ReportInterface::FORMAT_PDF) {
+            $exporter = $this->getInteractionPdfExporterService();
+        } else {
+            $exporter = $this->getInteractionExcelExporterService();
+        }
+
+        return $exporter;
+    }
+
+    /**
+     * @param string $format
+     *
+     * @return ExporterInterface
+     */
+    protected function getAdsExporterByFormat($format)
+    {
+        if ($format == ReportInterface::FORMAT_PDF) {
+            $exporter = $this->getAdsPdfExporterService();
+        } else {
+            $exporter = $this->getAdsExcelExporterService();
+        }
+
+        return $exporter;
     }
 }

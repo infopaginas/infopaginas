@@ -38,3 +38,37 @@ business_profile:
 
 filter.label_categories.en: Categories En
 filter.label_categories.es: Categories Es
+
+# interaction report
+interaction_report:
+  event:
+    view: Views
+    impression: Impressions
+  button:
+    direction: Directions
+    show_map: Show on Map
+    marker_map: Marker on Map
+    web: Web
+    web_action: Web Action
+    call_mob: Call (mob)
+    call_desk: Call (desktop)
+    add_compare: Add to Compare
+    remove_compare: Remove from Compare
+  share:
+    facebook: Share Facebook
+    twitter: Share Twitter
+  visit:
+    facebook: Visit Facebook
+    twitter: Visit Twitter
+    google: Visit Google
+    youtube: Visit Youtube
+    instagram: Visit Instagram
+    tripadvisor: Visit TripAdvisor
+  video:
+    watched: Video Watched
+  review:
+    click: Reviews
+  email:
+    click: Emails
+  sum:
+    interaction: Interactions

@@ -52,6 +52,9 @@ Relevance: Relevance
 Distance: Distance
 Get Direction: Get Direction
 Call: Call
+ActionButtonCall: Call
+WebsiteButton: Website
+Url: Url
 Reviews: Reviews
 list: list
 map: map
@@ -284,6 +287,8 @@ Searches Count: Searches Count
 Clicks: Clicks
 Image: Image
 Social Network: Social Network
+Previous page: Previous page
+Back: Back
 
 Coupons: Coupons
 View more reviews: View more reviews
@@ -496,6 +501,17 @@ interaction_report:
     call_desk: '"Desktop call button" how many times a user clicked the Call button while checking Infopaginas.com via computer.'
     direction: '"Directions button" counts how many times the users have clicked on the button "Show on Map" to look where the business is located'
     video_watched: '"Video views" counts how many times the video was viewed by users.'
+
+report:
+  type:
+    ads: 'Ads'
+    keywords: 'Keywords'
+  preview:
+    button:
+      add_to_export: 'Add to export'
+      export_chart:  'Export'
+      export_custom_pdf: 'Export custom PDF'
+      error_max_amount: 'Maximum number of graphs on page 15'
 
 date: Date
 interaction_report.total: Total

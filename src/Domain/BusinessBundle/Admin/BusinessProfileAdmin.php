@@ -17,6 +17,7 @@ use Domain\BusinessBundle\Validator\Constraints\BusinessProfilePhoneTypeValidato
 use Domain\BusinessBundle\Validator\Constraints\BusinessProfileWorkingHourTypeValidator;
 use Domain\ReportBundle\Manager\KeywordsReportManager;
 use Domain\ReportBundle\Model\BusinessOverviewModel;
+use Domain\ReportBundle\Model\ReportInterface;
 use Domain\ReportBundle\Util\DatesUtil;
 use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
 use Oxa\ConfigBundle\Model\ConfigInterface;
@@ -312,7 +313,11 @@ class BusinessProfileAdmin extends OxaAdmin
         $formMapper
             ->tab('Main')
                 ->with('Common')
-                    ->add('name')
+                    ->add('name', null, [
+                        'attr' => [
+                            'spellcheck' => 'true',
+                        ],
+                    ])
                 ->end()
             ->end()
         ;
@@ -421,6 +426,9 @@ class BusinessProfileAdmin extends OxaAdmin
                 ->with('Addresses')
                     ->add('city', null, [
                         'required' => true,
+                        'attr'     => [
+                            'spellcheck' => 'true',
+                        ],
                     ])
                     ->add('catalogLocality', 'sonata_type_model_list', [
                         'required'      => true,
@@ -432,8 +440,15 @@ class BusinessProfileAdmin extends OxaAdmin
                     ])
                     ->add('streetAddress', null, [
                         'required' => true,
+                        'attr'     => [
+                            'spellcheck' => 'true',
+                        ],
                     ])
-                    ->add('customAddress')
+                    ->add('customAddress', null, [
+                        'attr' => [
+                            'spellcheck' => 'true',
+                        ],
+                    ])
                     ->add('hideAddress')
                     ->add('hideMap')
                 ->end()
@@ -1067,6 +1082,9 @@ class BusinessProfileAdmin extends OxaAdmin
                         ->add('mainExport', null, [
                             'label'    => 'Export',
                             'template' => 'DomainBusinessBundle:Admin:BusinessProfile/report_export_buttons.html.twig',
+                            'exportRoute' => 'domain_business_admin_inretaction_reports_export',
+                            'exportPdf'   => ReportInterface::FORMAT_PDF,
+                            'exportExcel' => ReportInterface::FORMAT_EXCEL,
                         ])
                     ->end()
                 ->end()
@@ -1090,7 +1108,10 @@ class BusinessProfileAdmin extends OxaAdmin
                                 'template' => 'DomainBusinessBundle:Admin:BusinessProfile/report_data.html.twig',
                             ])
                             ->add('adUsageExport', null, [
-                                'template' => $showReportExportButtons,
+                                'template'   => $showReportExportButtons,
+                                'exportRoute' => 'domain_business_admin_ads_reports_export',
+                                'exportPdf'   => ReportInterface::FORMAT_PDF,
+                                'exportExcel' => ReportInterface::FORMAT_EXCEL,
                             ])
                         ->end()
                     ->end()
@@ -1301,7 +1322,7 @@ class BusinessProfileAdmin extends OxaAdmin
         $collection
             ->add('show')
             ->add('restore')
-        ;
+            ->add('exportPreview');
     }
 
     /**
@@ -1401,6 +1422,9 @@ class BusinessProfileAdmin extends OxaAdmin
                 'required' => false,
                 'mapped'   => false,
                 'data'     => $businessProfile->getTranslation(BusinessProfile::BUSINESS_PROFILE_FIELD_SLOGAN, $locale),
+                'attr'     => [
+                    'spellcheck' => 'true',
+                ],
                 'constraints' => [
                     new Length(
                         [
@@ -1410,14 +1434,15 @@ class BusinessProfileAdmin extends OxaAdmin
                 ],
             ])
             ->add('description' . $localePostfix, CKEditorType::class, [
-                'label'    => 'Description',
-                'required' => false,
-                'mapped'   => false,
-                'config_name' => 'extended_text',
+                'label'       => 'Description',
+                'required'    => false,
+                'mapped'      => false,
+                'config_name' => 'extended_text_scayt',
                 'config'      => [
-                    'width'  => '100%',
+                    'width'       => '100%',
+                    'scayt_sLang' => LocaleHelper::getLanguageCodeForSCAYT($locale),
                 ],
-                'attr' => [
+                'attr'        => [
                     'class' => 'text-editor',
                 ],
                 'data'     => $businessProfile->getTranslation(
@@ -1434,8 +1459,9 @@ class BusinessProfileAdmin extends OxaAdmin
             ])
             ->add('product' . $localePostfix, TextareaType::class, [
                 'attr' => [
-                    'rows' => 3,
-                    'class' => 'vertical-resize',
+                    'rows'       => 3,
+                    'class'      => 'vertical-resize',
+                    'spellcheck' => 'true',
                 ],
                 'label'    => 'Products',
                 'required' => false,
@@ -1454,8 +1480,9 @@ class BusinessProfileAdmin extends OxaAdmin
             ])
             ->add('brands' . $localePostfix, TextareaType::class, [
                 'attr' => [
-                    'rows' => 3,
-                    'class' => 'vertical-resize',
+                    'rows'       => 3,
+                    'class'      => 'vertical-resize',
+                    'spellcheck' => 'true',
                 ],
                 'label'    => 'Brands',
                 'required' => false,

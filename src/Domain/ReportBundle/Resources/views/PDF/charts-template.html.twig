@@ -1,0 +1,37 @@
+<head>
+    <link rel="stylesheet" type="text/css" href="{{ asset('bundles/sonatacore/vendor/bootstrap/dist/css/bootstrap.min.css', null, true) }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('bundles/sonataadmin/vendor/admin-lte/dist/css/AdminLTE.min.css', null, true) }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('bundles/oxasonataadmin/css/admin.css', null, true) }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('bundles/oxasonataadmin/css/export.css', null, true) }}">
+</head>
+<div>
+    <b>{{ businessProfile.name }}</b>,
+    {{ 'now'|date(report_generated_datetime_format) }}
+</div>
+<div class="page-break">{{ businessProfile.fullAddress }}</div>
+
+<div class="box box-primary box-pdf">
+    {% for key, image in charts %}
+        <div class="{% if not loop.last %}page-break{% endif %} page-break-border">
+            <table>
+                <tr>
+                    <td colspan="2">{{ 'Date period'|trans }}</td>
+                </tr>
+                <tr>
+                    <td>{{ 'Date Start'|trans }}</td>
+                    <td>{{ 'Date End'|trans }}</td>
+                </tr>
+                <tr>
+                    <td>{{ dates[key]['startDate'] }}</td>
+                    <td>{{ dates[key]['endDate'] }}</td>
+                </tr>
+            </table>
+            <br/>
+            <img src="{{ image }}">
+
+            {% if statisticsTableData[key] is defined %}
+                {{ statisticsTableData[key]|raw }}
+            {% endif %}
+        </div>
+    {% endfor %}
+</div>

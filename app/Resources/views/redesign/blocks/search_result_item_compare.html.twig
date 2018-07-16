@@ -58,7 +58,7 @@
                         {% for phone in item.phones %}
                             <li {% if phone.type == BUSINESS_PROFILE_PHONE.TYPE.MAIN %}class="main-phone"{% endif %} title="{{ ('business_profile.phone.tooltip.' ~ phone.type)|trans }}">
                                 <i class="fa {{ get_business_profile_phone_icon(phone) }}"></i>
-                                <a href="tel:{{ phone.phone }}" class="hide-desktop phone-call" data-id="{{ item.id }}" data-type="callMobButton" data-bw-gtm-event-click>{{ phone.phone }}</a>
+                                <a data-bname="{{ item.name }}" href="tel:{{ phone.phone }}" class="hide-desktop phone-call" data-id="{{ item.id }}" data-type="callMobButton" data-bw-gtm-event-click>{{ phone.phone }}</a>
                                 <span class="hide-mobile">{{ phone.phone }}</span>
                             </li>
                         {% endfor %}
@@ -70,9 +70,34 @@
                 </div>
             {% endif %}
 
-                <div class="highlights__item highlights__item--checklist highlights__item_brands-row highlights__item_fixed-height empty">
-                  <ul></ul>
+            {% if item.getWebsite() %}
+                <div class="highlights__item highlights__item_phone-row highlights__item_fixed-height highlights__item--phone">
+                    <h3>{% trans %}WebsiteButton{% endtrans %}</h3>
+                    <ul>
+                        <li class="main-phone">
+                            <i class="fa fa-link"></i>
+                            <a
+                                    class="redirect-event link-pointer"
+                                    data-href="{{ item.getWebsite() }}"
+                                    data-id="{{ item.id }}"
+                                    data-type="webActionButton"
+                                    data-bw-gtm-event-click
+                                    data-bw-gtm-label="{{ item.getWebsite() }}"
+                            >
+                                {{ item.getWebsite()|truncate(profile_action_url_span_length) }}
+                            </a>
+                        </li>
+                    </ul>
+                </div><!-- highlights__item -->
+            {% else %}
+                <div class="highlights__item highlights__item--checklist highlights__item_phone-row highlights__item_fixed-height empty">
+                    <ul></ul>
                 </div>
+            {% endif %}
+
+            <div class="highlights__item highlights__item--checklist highlights__item_brands-row highlights__item_fixed-height empty">
+                <ul></ul>
+            </div>
 
             {% include ':redesign/blocks/workingHours:working_hours_daily_list.html.twig' with { 'businessProfile': item, 'isCompare': true } %}
 

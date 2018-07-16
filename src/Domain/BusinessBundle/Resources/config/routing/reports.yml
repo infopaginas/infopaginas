@@ -32,13 +32,17 @@ domain_business_reports_event_track:
      options:
         expose: true
 
-domain_business_reports_excel_export:
-     path:     /export/excel
-     defaults: { _controller: DomainBusinessBundle:Reports:excelExport }
+domain_business_ads_reports_export:
+     path:     /ads/export/{format}
+     defaults: { _controller: DomainBusinessBundle:Reports:adsExport, format: '' }
+     options:
+        expose: true
 
-domain_business_reports_pdf_export:
-     path:     /export/pdf
-     defaults: { _controller: DomainBusinessBundle:Reports:pdfExport }
+domain_business_interaction_reports_export:
+     path:     /interaction/export/{format}
+     defaults: { _controller: DomainBusinessBundle:Reports:interactionExport, format: '' }
+     options:
+        expose: true
 
 domain_business_reports_api_overview:
      path:     /api/overview
@@ -47,3 +51,13 @@ domain_business_reports_api_overview:
 domain_business_reports_api_keywords:
      path:     /api/keywords
      defaults: { _controller: DomainBusinessBundle:Api:keywords }
+
+domain_business_chart_preview_export:
+     path:     /chart/preview/{id}
+     defaults: { _controller: DomainBusinessBundle:Reports:chartPreview, id: 0 }
+
+domain_business_admin_chart_reports_export:
+    path:     /chart/export
+    defaults: { _controller: DomainBusinessBundle:Reports:chartExport }
+    options:
+        expose: true
