@@ -302,6 +302,14 @@ class DatesUtil
     }
 
     /**
+     * @return \DateTime
+     */
+    public static function getLastMonth()
+    {
+        return new \DateTime('-1 month');
+    }
+
+    /**
      * @param string $period
      *
      * @return \Datetime
@@ -413,7 +421,7 @@ class DatesUtil
     }
 
     /**
-     * @return array
+     * @return \DateTime[]
      */
     public static function getCurrentDatetimePeriod()
     {

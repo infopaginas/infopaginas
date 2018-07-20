@@ -39,7 +39,6 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
     {
         $businessProfiles = $this->findBy([
             'user' => $user,
-            'isActive' => true,
         ]);
 
         return $businessProfiles;

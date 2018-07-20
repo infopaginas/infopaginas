@@ -1,4 +1,4 @@
-define(['jquery', 'bootstrap', 'tools/spin', 'tools/geolocation'], function( $, bootstrap, Spin, Geolocation ) {
+define(['jquery', 'bootstrap', 'tools/spin', 'tools/geolocation', 'business/tools/businessProfileClose', 'business/tools/businessProfileUpgrade'], function( $, bootstrap, Spin, Geolocation, BusinessProfileClose, BusinessProfileUpgrade ) {
     'use strict';
 
     //init userProfile object variables
@@ -9,13 +9,17 @@ define(['jquery', 'bootstrap', 'tools/spin', 'tools/geolocation'], function( $, 
         };
 
         this.modals = {
-            passwordUpdateModalId: '#updatePasswordModal'
+            passwordUpdateModalId: '#updatePasswordModal',
+            closeBusinessId: '#closeBusinessProfileModal',
+            upgradeBusiness: '#upgradeBusinessProfileModal'
         };
 
         this.html = {
             buttons: {
                 saveProfileButtonId: '#saveProfile',
-                saveNewPasswordButtonId: '#savePassword'
+                saveNewPasswordButtonId: '#savePassword',
+                closeBusiness: '[data-close-business-id]',
+                upgradeBusiness: '#upgradeBusiness'
             },
             forms: {
                 profileFormName: 'domain_site_user_profile',
@@ -31,6 +35,8 @@ define(['jquery', 'bootstrap', 'tools/spin', 'tools/geolocation'], function( $, 
         };
 
         this.spinner = new Spin();
+        this.businessProfileClose = new BusinessProfileClose;
+        this.businessProfileUpgrate = new BusinessProfileUpgrade;
 
         this.geolocation = new Geolocation( {
             'locationBoxSelector' : this.html.fields.locationFieldId
@@ -192,10 +198,37 @@ define(['jquery', 'bootstrap', 'tools/spin', 'tools/geolocation'], function( $, 
         });
     };
 
+    userProfile.prototype.addEvents = function() {
+        var that = this;
+
+        $( document ).on( 'click', this.html.buttons.closeBusiness, function ( event ) {
+            event.preventDefault();
+
+            var businessId = $( event.target ).data( 'close-business-id' );
+
+            var closeButton = $( that.modals.closeBusinessId ).find( 'button[data-business-profile-id]' );
+
+            closeButton.data( 'business-profile-id', businessId );
+
+            $( that.modals.closeBusinessId ).modalFunc();
+        });
+
+        $( document ).on( 'click', this.html.buttons.upgradeBusiness, function ( event ) {
+            event.preventDefault();
+
+            $( that.modals.upgradeBusiness ).modalFunc();
+        });
+
+        $('.bps__table__data .bps__row').click(function () {
+            $(this).toggleClass('open');
+        })
+    };
+
     //setup required "listeners"
     userProfile.prototype.run = function() {
         this.handleProfileSaving();
         this.handlePasswordUpdate();
+        this.addEvents();
     };
 
     return userProfile;

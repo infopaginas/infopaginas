@@ -67,56 +67,129 @@
                                             {{ form_widget(profileForm.phone, {'attr': {'placeholder':''}}) }}
                                         </div><!-- form-field -->
                                     </div><!-- form__row -->
+                                    <div class="form__actions">
+                                        <button type="button" class="button button--action" id="saveProfile">{% trans %}Save changes{% endtrans %}</button>
+                                    </div><!-- form-actions -->
                                 </div><!-- form__column -->
                             </div><!-- form-column__container -->
                         </div><!-- form section -->
 
                         <div class="form__section">
-                            <h2>{% trans %}My Business Profiles{% endtrans %}</h2>
+                            <div class="form__row form__row-bps">
+                                <h2>{% trans %}My Business Profiles{% endtrans %}</h2>
+                                <a class="btn green-btn request button" href="{{ absolute_url(path('domain_business_profile_create')) }}">
+                                    {% trans %}Request Business Profile{% endtrans %}
+                                </a>
+                            </div><!-- form__row -->
 
-                            {% if userBusinessProfiles|length > 0 %}
-                                {% set businessesPerColumn = ((userBusinessProfiles|length) / 2)|round %}
-
-                                {% for row in userBusinessProfiles|batch(businessesPerColumn) %}
-                                    <div class="col-xs-6 form-col">
-                                        {% for business in row %}
-                                            <div class="col-xs-12">
+                            <div class="bps">
+                                <div class="bps__table">
+                                    <div class="bps__row">
+                                        <div class="bps__head bps__head--empty"></div>
+                                        <div class="bps__head bps__head--stat">
+                                            {% trans %}user_profile.label.last_month_statistics{% endtrans %}
+                                            <div class="bps__tooltip">
+                                                <i class="fa fa-question-circle"></i>
                                                 <span>
-                                                    {% if business.getIsActive() %}
-                                                        <a href="{{ absolute_url(path('domain_business_profile_edit', {id: business.getId()})) }}">
-                                                                {{ business.getName() }}
-                                                        </a>
-                                                    {% else %}
-                                                        {% if not business.getIsClosed() %}
-                                                            <a href="#">
-                                                                {{ business.getName() }} ({% trans %}Pending{% endtrans %})
-                                                            </a>
-                                                        {% endif %}
-                                                    {% endif %}
+                                                    {% trans %}From{% endtrans %} {{ '-1 month'|date(user_profile_date_format) }}
+                                                    {% trans %}To{% endtrans %} {{ 'now'|date(user_profile_date_format) }}
                                                 </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="bps__row">
+                                        <div class="bps__head bps__head--empty"></div>
+                                        <div class="bps__head bps__head--status">
+                                            {% trans %}Status{% endtrans %}
+                                            <div class="bps__tooltip">
+                                                <i class="fa fa-question-circle"></i>
+                                                <span>{% trans %}user_profile.tooltip.status{% endtrans %}</span>
+                                            </div>
+                                        </div>
+                                        <div class="bps__head bps__head--actions">{% trans %}Actions{% endtrans %}</div>
+                                        {% for action, translation in actions %}
+                                            <div class="bps__head">
+                                                {{ translation|trans }}
+                                                <div class="bps__tooltip">
+                                                    <i class="fa fa-question-circle"></i>
+                                                    <span>{{ tooltips[action]|trans }}</span>
+                                                </div>
                                             </div>
                                         {% endfor %}
                                     </div>
-                                {% endfor %}
-                            {% else %}
-                                <div class="form__row">
-                                    <div class="empty-message">
-                                        <p>{% trans %}No business profiles found.{% endtrans %}</p>
-                                    </div><!-- empty-message -->
-                                </div><!-- form__row -->
-                            {% endif %}
-                            <div class="form__row">
-                                <div class="empty-message">
-                                    <a class="btn green-btn request" href="{{ absolute_url(path('domain_business_profile_create')) }}">
-                                        {% trans %}Request Business Profile{% endtrans %}
-                                    </a>
-                                </div><!-- empty-message -->
-                            </div><!-- form__row -->
-                        </div><!-- form section -->
+                                    <div class="bps__table__data">
+                                    {% if userBusinessProfiles|length > 0 %}
+                                        {% set businessesPerColumn = ((userBusinessProfiles|length) / 2)|round %}
 
-                        <div class="form__actions">
-                            <button type="button" class="button button--action" id="saveProfile">{% trans %}Save changes{% endtrans %}</button>
-                        </div><!-- form-actions -->
+                                        {% for row in userBusinessProfiles|batch(businessesPerColumn) %}
+                                                {% for business in row %}
+                                                    <div class="bps__row">
+                                                        <div class="bps__business">
+                                                            {{ business.getName() }}
+                                                        </div>
+                                                        {% if business.getIsActive() %}
+                                                            <div class="bps__status active">
+                                                                {{ business.getActiveStatus()|capitalize }}
+                                                            </div>
+                                                        {% else %}
+                                                            {% if not business.getIsClosed() %}
+                                                                <div class="bps__status pending">
+                                                                    ({% trans %}Pending{% endtrans %})
+                                                                </div>
+                                                            {% else %}
+                                                                <div class="bps__status closed">
+                                                                    ({% trans %}Closed{% endtrans %})
+                                                                </div>
+                                                            {% endif %}
+                                                        {% endif %}
+
+                                                        {% for action, translation in actions %}
+                                                            <div class="bps__mobile">{{ translation|trans }}</div>
+                                                            <div>
+                                                                {{ summaryData[business.id][action]|default(0)|number_format }}
+                                                            </div>
+                                                        {% endfor %}
+
+                                                        <div class="bps__edit">
+                                                            {% if business.getIsActive() %}
+                                                                <a href="{{ absolute_url(path('domain_business_profile_edit', {id: business.getId()})) }}">
+                                                                    {% trans %}user_profile.label.edit_business{% endtrans %}
+                                                                </a>
+                                                            {% else %}
+                                                                {% if not business.getIsClosed() %}
+                                                                    <div class="bps__status pending">
+                                                                        {{ business.getName() }} ({% trans %}Pending{% endtrans %})
+                                                                    </div>
+                                                                {% endif %}
+                                                            {% endif %}
+                                                        </div>
+                                                        <div class="bps__delete">
+                                                            <a href="#" data-close-business-id="{{ business.getId() }}">
+                                                                {% trans %}user_profile.label.delete_business{% endtrans %}
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                {% endfor %}
+                                        {% endfor %}
+                                        {% else %}
+                                        <div class="form__row">
+                                        <div class="empty-message">
+                                        <p>{% trans %}No business profiles found.{% endtrans %}</p>
+                                        </div><!-- empty-message -->
+                                        </div><!-- form__row -->
+                                    {% endif %}
+                                    </div>
+                                </div>
+                                <div class="bps__upgrade">
+                                    <div>
+                                        <p>{% trans %}user_profile.text.to_make_more_popular{% endtrans %}</p>
+                                    </div>
+                                    <div>
+                                        <button type="button" id="upgradeBusiness" class="button">{% trans %}user_profile.label.upgrade_now{% endtrans %}!</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><!-- form section -->
                         {{ form_rest(profileForm) }}
                     </form>
                 </section>
@@ -127,8 +200,16 @@
 {% endblock %}
 
 {% block modals %}
-    {{ parent() }}
-    {% include ':redesign/blocks/modals:password_update.html.twig' with { 'passwordUpdateForm' : passwordUpdateForm} %}
+    <div class="user-profile-modals">
+        {{ parent() }}
+        {% include ':redesign/blocks/modals:password_update.html.twig' with { 'passwordUpdateForm' : passwordUpdateForm} %}
+
+        {% if closeBusinessProfileForm is defined %}
+            {% include ':redesign/blocks/modals:close_business_profile.html.twig' %}
+        {% endif %}
+
+        {% include ':redesign/blocks/modals:upgrade_profile.html.twig' %}
+    </div>
 {% endblock %}
 
 {% block scripts %}

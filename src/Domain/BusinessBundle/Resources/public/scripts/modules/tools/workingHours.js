@@ -16,66 +16,22 @@ define(['jquery', 'selectize', 'bootstrap', 'moment', 'dateTimePicker'], functio
         this.handleRemove();
         this.handleSelect();
         this.handleOpenAllTime();
+        this.addOneIfEmpty();
     };
 
     workingHours.prototype.handleAdd = function() {
         var that = this;
 
-        $(document).on('click', that.html.addLinkId, function(event) {
-
-            var workingHoursList = $( that.html.containerListId );
-
-            var workingHoursCount = workingHoursList.data( 'length' );
-
-            // grab the prototype template
-            var newWidget = workingHoursList.attr( 'data-prototype' );
-
-            var $newWidget = $( newWidget.replace( /__name__/g, workingHoursCount ) );
-
-            $newWidget.find( '.help-block' ).addClass( 'working-hours-error-section-' + workingHoursCount );
-
-            var formInput = $newWidget.find( '.form__field input' );
-
-            formInput.focus( function() {
-                $( this ).parent().addClass( 'field-active' );
-                $( this ).parent().find( 'label' ).addClass( 'label-active' );
-            });
-
-            formInput.blur( function() {
-                if( $( this ).val() === '' ) {
-                    $( this ).parent().removeClass( 'field-active field-filled' );
-                    $( this).parent().find( 'label' ).removeClass( 'label-active' );
-                } else {
-                    $( this ).parent().addClass( 'field-filled' );
-                }
-            });
-
-            workingHoursCount++;
-
-            $newWidget.appendTo( workingHoursList );
-
-            workingHoursList.data( 'length', workingHoursCount );
-
-            that.handleSelect();
-            that.handleNewInput();
-
+        $(document).on( 'click', that.html.addLinkId, function( event ) {
+            that.add();
             event.preventDefault();
-        });
-
-        $( 'body' ).on( 'focus', '.working-hours-time-start', function(){
-            $( this ).datetimepicker({
-                format: 'hh:mm a',
-                pickDate: false,
-                pickSeconds: false,
-                pick12HourFormat: false
-            });
         });
     };
 
     workingHours.prototype.handleRemove = function() {
         var that = this;
 
-        $( document ).on( 'click', that.html.removeLinkClass, function(event) {
+        $( document ).on( 'click', that.html.removeLinkClass, function( event ) {
             $( this ).parent().remove();
             
             event.preventDefault();
@@ -126,6 +82,66 @@ define(['jquery', 'selectize', 'bootstrap', 'moment', 'dateTimePicker'], functio
             } else {
                 timeInputs.prop( 'disabled', false );
             }
+        }
+    };
+
+    workingHours.prototype.handleDatepicker = function () {
+        $( 'body' ).on( 'focus', '.working-hours-time-start', function() {
+            $( this ).datetimepicker({
+                format: 'hh:mm a',
+                pickDate: false,
+                pickSeconds: false,
+                pick12HourFormat: false
+            });
+        });
+    };
+
+    workingHours.prototype.add = function () {
+        var that = this,
+            workingHoursList = $( that.html.containerListId ),
+            workingHoursCount = workingHoursList.data( 'length' ),
+            newWidget = workingHoursList.attr( 'data-prototype' ),
+            $newWidget = $( newWidget.replace( /__name__/g, workingHoursCount ) ),
+            formInput = $newWidget.find( '.form__field input' );
+
+        $newWidget.find( '.help-block' ).addClass( 'working-hours-error-section-' + workingHoursCount );
+
+        formInput.focus( function() {
+            var parent = $( this ).parent();
+
+            parent.addClass( 'field-active' );
+            parent.find( 'label' ).addClass( 'label-active' );
+        });
+
+        formInput.blur( function() {
+            var parent = $( this ).parent();
+
+            if( $( this ).val() === '' ) {
+                parent.removeClass( 'field-active field-filled' );
+                parent.find( 'label' ).removeClass( 'label-active' );
+            } else {
+                parent.addClass( 'field-filled' );
+            }
+        });
+
+        workingHoursCount++;
+
+        $newWidget.appendTo( workingHoursList );
+
+        workingHoursList.data( 'length', workingHoursCount );
+
+        that.handleSelect();
+        that.handleNewInput();
+        that.handleDatepicker();
+    };
+
+    workingHours.prototype.addOneIfEmpty = function() {
+        var that              = this,
+            workingHoursList  = $( that.html.containerListId ),
+            workingHoursCount = workingHoursList.data( 'length' );
+
+        if (!workingHoursCount) {
+            that.add()
         }
     };
 

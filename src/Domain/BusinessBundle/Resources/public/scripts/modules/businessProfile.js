@@ -15,7 +15,6 @@ define(['jquery', 'bootstrap', 'business/tools/form', 'tools/spin', 'tools/selec
 
         this.html = {
             buttons: {
-                geocodeButtonId: '#geocodeButton',
                 newProfileSaveButtonId: '#newProfileRequestButton',
                 fileUploadButton: '.file-upload-button'
             },
@@ -77,9 +76,7 @@ define(['jquery', 'bootstrap', 'business/tools/form', 'tools/spin', 'tools/selec
             persist: true
         };
 
-        this.geocoder = new google.maps.Geocoder();
         this.businessProfileClose = new businessProfileClose;
-        this.mapSpinner = new MapSpin( this.html.mapContainerId );
 
         this.spinner = new Spin();
 
@@ -99,32 +96,6 @@ define(['jquery', 'bootstrap', 'business/tools/form', 'tools/spin', 'tools/selec
         var address = $( this.html.fields.addressInputId ).val();
 
         return country + ' ' + state + ' ' + city + ' ' + zip + ' ' + address;
-    };
-
-    businessProfile.prototype.getLatLngByAddress = function(address, callback) {
-        this.geocoder.geocode({
-            "address": address
-        }, function(results) {
-            if (results[0]) {
-                callback(results[0].geometry.location);
-            } else {
-                console.log('results[0] is empty');
-            }
-        });
-    };
-
-    businessProfile.prototype.updateAddressByLatLng = function(latlng) {
-        var self = this;
-
-        this.geocoder.geocode({
-            'location': latlng
-        }, function(results) {
-            if (results[0]) {
-                self.updateAddress(results[0].address_components);
-            } else {
-                console.log('results[0] is empty');
-            }
-        });
     };
 
     businessProfile.prototype.updateLocality = function (localityId) {
@@ -165,123 +136,6 @@ define(['jquery', 'bootstrap', 'business/tools/form', 'tools/spin', 'tools/selec
         $( this.html.fields.cityInputId ).val( city );
         $( this.html.fields.stateInputId ).val( state );
         $( this.html.fields.zipInputId ).val( zip );
-    };
-
-    businessProfile.prototype.updateLatLngFields = function(lat, lng) {
-        $( this.html.fields.latitudeInputId ).val( lat );
-        $( this.html.fields.longitudeInputId ).val( lng );
-    };
-
-    businessProfile.prototype.onMarkerPositionChange = function(event) {
-        var that = this;
-
-        var latlng = event.latLng;
-
-        $.ajax({
-            type: 'POST',
-            url: this.urls.getLocalityByCoord,
-            data: {'clt': latlng.lat(), 'clg': latlng.lng()},
-            success: function(data){
-                that.updateLocality(data['localityId']);
-            }
-        });
-
-        this.geocoder.geocode({
-            'location': latlng
-        }, function(results) {
-            that.updateAddress(results[0].address_components);
-            that.updateLatLngFields( latlng.lat(), latlng.lng() );
-            that.updateFieldSelectionFocus();
-        });
-    };
-
-    businessProfile.prototype.getGoogleMapObject = function(lat, lng)
-    {
-        var mapOptions = {
-            zoom: 15,
-            center: new google.maps.LatLng(lat, lng),
-            mapTypeId: google.maps.MapTypeId.ROADMAP
-        };
-
-        var mapContainer = document.getElementById(this.html.mapContainerId);
-
-        return new google.maps.Map(mapContainer, mapOptions);
-    };
-
-    businessProfile.prototype.initGoogleMap = function() {
-        var address = this.getBusinessAddress();
-        var that = this;
-
-        // convert decimal delimiter
-        // see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/parseFloat
-        var lat = parseFloat( $( that.html.fields.latitudeInputId ).val().replace( ',', '.' ) );
-        var lng = parseFloat( $( that.html.fields.longitudeInputId ).val().replace( ',', '.' ) );
-
-        if ( !lat ) {
-            lat = MAP_LAT;
-        }
-
-        if ( !lng ) {
-            lng = MAP_LNG;
-        }
-
-        var map = that.getGoogleMapObject( lat, lng );
-
-        google.maps.event.trigger( map, 'resize' );
-
-        var marker = new google.maps.Marker({
-            position: {
-                lat: lat,
-                lng: lng
-            },
-            map: map,
-            title: address,
-            draggable: true
-        });
-
-        // change address value when marker is dragged
-        marker.addListener( 'dragend', $.proxy( that.onMarkerPositionChange, that ) );
-
-        that.updateLatLngFields( lat, lng );
-        that.updateFieldSelectionFocus();
-    };
-
-    businessProfile.prototype.handleGeocodeSearch = function() {
-        var that = this;
-
-        $( this.html.buttons.geocodeButtonId ).on('click', function( event ) {
-            that.initGoogleMap();
-            event.preventDefault();
-        });
-    };
-
-    /**
-     * Move marker correspond of coordinates
-     */
-    businessProfile.prototype.moveMarker = function() {
-        var self = this;
-
-        $.each( [this.html.fields.latitudeInputId, this.html.fields.longitudeInputId], function( index, fieldId ) {
-            $( fieldId ).change( function( event ) {
-                var lat = function() {
-                    return parseFloat( $( self.html.fields.latitudeInputId ).val() );
-                };
-
-                var lng = function() {
-                    return parseFloat( $( self.html.fields.longitudeInputId ).val() );
-                };
-
-                var Latlng = new google.maps.LatLng(lat(), lng());
-
-                self.updateAddressByLatLng(Latlng);
-                self.initGoogleMap();
-                setTimeout(
-                    function() {
-                        $( self.html.buttons.geocodeButtonId ).click();
-                    }, 100
-                );
-            });
-        } );
     };
 
     businessProfile.prototype.validateImages = function() {
@@ -703,8 +557,6 @@ define(['jquery', 'bootstrap', 'business/tools/form', 'tools/spin', 'tools/selec
 
     //setup required "listeners"
     businessProfile.prototype.run = function() {
-        this.handleGeocodeSearch();
-        this.moveMarker();
         this.handleProfileSave();
         this.handleServiceAreaChange();
         this.handleFormChange();
@@ -712,10 +564,6 @@ define(['jquery', 'bootstrap', 'business/tools/form', 'tools/spin', 'tools/selec
         this.initAutoCompleteCategoriesField();
 
         var that = this;
-
-        $( 'a[href="#businessAddress"]').on('shown.bs.tab', function(){
-            that.initGoogleMap();
-        } );
 
         $( this.html.buttons.fileUploadButton ).on( 'click', function() {
             $( this ).parent().find( 'input' ).click();

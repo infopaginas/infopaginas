@@ -3,6 +3,7 @@
 namespace Domain\BusinessBundle\Controller;
 
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
+use Domain\BusinessBundle\Entity\BusinessProfilePhone;
 use Domain\BusinessBundle\Entity\Category;
 use Domain\BusinessBundle\Form\Handler\BusinessClaimFormHandler;
 use Domain\BusinessBundle\Form\Type\BusinessClaimRequestType;
@@ -350,14 +351,6 @@ class ProfileController extends Controller
         );
 
         return new JsonResponse($results);
-    }
-
-    /**
-     * @return \Symfony\Component\Form\Form
-     */
-    private function getBusinessReviewForm()
-    {
-        return $this->createForm(new BusinessReviewType());
     }
 
     /**

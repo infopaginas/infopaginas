@@ -364,6 +364,7 @@ class BusinessOverviewReportManager extends BaseReportManager
         foreach ($cursor as $document) {
             $document[self::MONGO_DB_FIELD_ACTION]      = $document['_id']['action'];
             $document[self::MONGO_DB_FIELD_BUSINESS_ID] = $document['_id']['bid'];
+            $document[self::MONGO_DB_FIELD_COUNT]       = (int) $document[self::MONGO_DB_FIELD_COUNT];
             $document[self::MONGO_DB_FIELD_DATE_TIME]   = $aggregateStartDate;
 
             $document['_id'] = $this->mongoDbManager->generateId();
@@ -453,5 +454,76 @@ class BusinessOverviewReportManager extends BaseReportManager
     protected function getBusinessProfileManager() : BusinessProfileManager
     {
         return $this->businessProfileManager;
+    }
+
+    /**
+     * @param array $businessIds
+     * @param array $actions
+     * @return mixed
+     */
+    protected function getSummaryByAction($businessIds, $actions)
+    {
+        $startDate = $this->mongoDbManager->typeUTCDateTime(DatesUtil::getLastMonth());
+
+        $cursor = $this->mongoDbManager->aggregateData(
+            self::MONGO_DB_COLLECTION_NAME_AGGREGATE,
+            [
+                [
+                    '$match' => [
+                        self::MONGO_DB_FIELD_ACTION      => [
+                            '$in' => $actions,
+                        ],
+                        self::MONGO_DB_FIELD_BUSINESS_ID => [
+                            '$in' => $businessIds,
+                        ],
+                        self::MONGO_DB_FIELD_DATE_TIME   => [
+                            '$gte' => $startDate,
+                        ],
+                    ],
+                ],
+                [
+                    '$group' => [
+                        '_id' => [
+                            '_id' => '$' . self::MONGO_DB_FIELD_BUSINESS_ID,
+                            self::MONGO_DB_FIELD_ACTION => '$' . self::MONGO_DB_FIELD_ACTION,
+                        ],
+                        self::MONGO_DB_FIELD_COUNT => [
+                            '$sum' => '$' . self::MONGO_DB_FIELD_COUNT,
+                        ],
+                    ],
+                ],
+            ]
+        );
+
+        return $cursor;
+    }
+
+    /**
+     * @param array $businessIds
+     * @param array $actions
+     * @return array
+     */
+    public function getSummaryByActionData($businessIds, $actions)
+    {
+        $data = [];
+
+        if (!$businessIds || !$actions) {
+            return $data;
+        }
+
+        $cursor = $this->getSummaryByAction($businessIds, $actions);
+
+        foreach ($cursor as $item) {
+            $businessId = $item['_id']['_id'];
+            $action = $item['_id']['action'];
+
+            if (isset($data[$businessId][$action])) {
+                $data[$businessId][$action] += $item['count'];
+            } else {
+                $data[$businessId][$action] = $item['count'];
+            }
+        }
+
+        return $data;
     }
 }

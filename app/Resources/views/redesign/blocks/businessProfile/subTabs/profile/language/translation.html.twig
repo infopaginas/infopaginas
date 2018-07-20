@@ -1,10 +1,9 @@
 {% import '::widgets/custom_form_label_redesign.html.twig' as custom_form_label %}
 
 <div class="form__column column--english">
-    <h3 class="language-title">{{ blockTitle|trans }}</h3>
 
     <div class="form__section">
-        <h2>{% trans %}Business Description{% endtrans %}</h2>
+        <h2>{% trans %}Business Description{% endtrans %} <span class="m-l-10">{{ ('business_profile.lang.' ~ langPostfix|lower )|trans }}</span></h2>
 
         {% if businessProfileForm['slogan' ~ langPostfix] is defined %}
             <div class="form__row">
@@ -22,18 +21,6 @@
             <div class="form__field field--description">
                 {{ custom_form_label.widget(businessProfileForm['description' ~ langPostfix]) }}
                 {{ form_widget(businessProfileForm['description' ~ langPostfix], {'attr': {'placeholder': ''}}) }}
-            </div>
-        </div>
-        <div class="form__row">
-            <div class="form__field field--products">
-                {{ custom_form_label.widget(businessProfileForm['product' ~ langPostfix]) }}
-                {{ form_widget(businessProfileForm['product' ~ langPostfix], {'attr': {'placeholder': ''}}) }}
-            </div>
-        </div>
-        <div class="form__row">
-            <div class="form__field field--brands">
-                {{ custom_form_label.widget(businessProfileForm['brands' ~ langPostfix]) }}
-                {{ form_widget(businessProfileForm['brands' ~ langPostfix], {'attr': {'placeholder': ''}}) }}
             </div>
         </div>
     </div>

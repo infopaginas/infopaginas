@@ -54,8 +54,8 @@ class LocaleHelper
     public static function getLocaleList()
     {
         return [
-            self::LOCALE_EN => 'English',
             self::LOCALE_ES => 'Spanish',
+            self::LOCALE_EN => 'English',
         ];
     }
 

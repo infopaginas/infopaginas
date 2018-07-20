@@ -19,7 +19,7 @@ Log In: Ingresar
 or: o
 Log In with: Login con
 New to Infopaginas?: Nuevo en Infopáginas?
-Create account: Crear cuenta
+Create account: Crear perfil
 By joining Infopaginas you agree to our: Al unirse a Infopáginas está de acuerdo con nuestra
 Terms of Service: Términos de servicio
 and: y
@@ -29,7 +29,7 @@ First Name: Nombre
 Last Name: Apellido
 Confirm Password: Confirmar Contraseña
 Location: Ubicación
-Create Account: Crear Cuenta
+Create Account: Crear perfil
 Already have an account?: ¿Ya tiene una cuenta?
 Reset Password: Restablecer contraseña
 Update Password: Actualizar contraseña
@@ -73,6 +73,7 @@ Social networks: Redes Sociales
 miles: millas
 Filter: Filtro
 Submit: Enviar
+Confirm: Confirmar
 
 Homepage: Página principal
 User profile: Perfil
@@ -386,6 +387,9 @@ Close list: Cerrar lista
 Go to watch...: Ir a ver...
 Sort: Ordenar
 View: Ver
+From: De
+To: Hasta
+Status: Estado
 
 business_profile.seoTitle: name | company
 business_profile.seoDescription.main: name en location
@@ -434,6 +438,9 @@ business_profile.video_count_limit: Solo se puede subir un vídeo a la vez
 business_profile.max_length: Por favor, use max {{ limit }} símbolos
 business_profile.logo.image_count_limit: Error: sólo se permite un solo logotipo
 business_profile.background.image_count_limit: Error: sólo se permite un fondo único
+business_profile.lang.es: en espanol
+business_profile.lang.en: en ingles
+
 Updated By: Actualizado por
 Back to Business Profile: Volver al perfil del negocio
 Create Profile: Crear perfil
@@ -696,3 +703,20 @@ emergency.catalog_search.empty: No hay negocios aquí todavía
 emergency.menu.link: Horarios María
 
 slider.title: Considera estos negocios similares
+
+user_profile:
+  label:
+    last_month_statistics: Las estadísticas del mes pasado
+    edit_business: Editar negocio
+    delete_business: Eliminar negocio
+    upgrade_now: solicitar ahora
+    when_call: ¿Cuándo podemos llamaros?
+    your_phone: Vuestro telefono
+  tooltip:
+    status: Estado actual de su negocio
+    impression: Cuántas veces se ha visto el perfil comercial
+    call_mob_button: Cuantas veces el usuario ha intentado llamar a su empresa
+    direction_button: Cuántas veces los usuarios han buscado la ubicación de su empresa
+  text:
+    to_make_more_popular: ¿Quieres hacer tu negocio más popular?
+    give_phone: Por favor denos su número de teléfono para que podamos contactarlo con una oferta única
