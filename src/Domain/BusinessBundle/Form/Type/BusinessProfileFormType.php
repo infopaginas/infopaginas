@@ -328,24 +328,6 @@ class BusinessProfileFormType extends AbstractType
             'required' => true,
         ];
 
-        $areasFieldOptions = [
-            'attr' => [
-                'class' => 'form-control selectize-control select-multiple',
-                'placeholder' => 'Select areas',
-                'multiple' => 'multiple',
-            ],
-            'class' => 'Domain\BusinessBundle\Entity\Area',
-            'label' => 'Areas',
-            'label_attr' => [
-                'class' => 'title-label',
-            ],
-            'required' => true,
-            'multiple' => true,
-            'query_builder' => function (AreaRepository $repository) {
-                return $repository->getAvailableAreasQb();
-            },
-        ];
-
         $localitiesFieldOptions = [
             'attr'          => [
                 'class'       => 'form-control selectize-control',
@@ -378,7 +360,6 @@ class BusinessProfileFormType extends AbstractType
         }
 
         $form->add('milesOfMyBusiness', TextType::class, $milesOfMyBusinessFieldOptions);
-        $form->add('areas', EntityType::class, $areasFieldOptions);
         $form->add('localities', EntityType::class, $localitiesFieldOptions);
     }
 
