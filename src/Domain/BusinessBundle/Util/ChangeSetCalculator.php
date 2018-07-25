@@ -372,8 +372,8 @@ class ChangeSetCalculator
                         $oldIds[] = $item->getId();
                     }
 
-                    asort($newIds);
-                    asort($oldIds);
+                    sort($newIds);
+                    sort($oldIds);
 
                     if ($newIds != $oldIds) {
                         $updated = true;
@@ -401,8 +401,8 @@ class ChangeSetCalculator
                         $oldIds[] = $item->getId();
                     }
 
-                    asort($newIds);
-                    asort($oldIds);
+                    sort($newIds);
+                    sort($oldIds);
 
                     if ($newIds != $oldIds) {
                         $updated = true;
