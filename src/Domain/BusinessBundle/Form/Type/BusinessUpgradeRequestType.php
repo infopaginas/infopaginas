@@ -17,7 +17,7 @@ class BusinessUpgradeRequestType extends AbstractType
 {
     const TIME_CHOICES = [
         '9-1' => '9 a.m. - 1 p.m.',
-        '1-6' =>'1 p.m. - 6 p.m.',
+        '1-6' => '1 p.m. - 6 p.m.',
     ];
 
     /**

@@ -75,13 +75,6 @@ class BusinessProfileAdmin extends OxaAdmin
     public $allowBatchRestore = true;
 
     /**
-     * @var array
-     */
-    protected $formOptions = [
-        'validation_groups' => ['Default', 'Admin']
-    ];
-
-    /**
      * @return BusinessProfile
      */
     public function getNewInstance()

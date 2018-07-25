@@ -132,6 +132,34 @@
         </div>
 
         <div class="form__row vertical__row">
+            {% for key, serviceType in businessProfileForm.serviceAreasType.children %}
+                <div class="service-type">
+                    {{ form_widget(serviceType) }}
+                    {{ form_label(serviceType) }}
+                </div>
+            {% endfor %}
+        </div>
+
+        <div class="form__row vertical__row">
+            {{ form_label(businessProfileForm.milesOfMyBusiness) }}
+            <div class="form__field field--website">
+                {{ form_widget(businessProfileForm.milesOfMyBusiness, {'attr': {'placeholder': ''}}) }}
+            </div>
+        </div>
+
+        <div class="form__row vertical__row">
+            {{ form_label(businessProfileForm.areas) }}
+            {{ form_widget(businessProfileForm.areas) }}
+            {% include ':widgets:select_all_options.html.twig' %}
+        </div>
+
+        <div class="form__row vertical__row">
+            {{ form_label(businessProfileForm.localities) }}
+            {{ form_widget(businessProfileForm.localities) }}
+            {% include ':widgets:select_all_options.html.twig' %}
+        </div>
+
+        <div class="form__row vertical__row">
             <div class="form__field field--website">
                 {{ custom_form_label.widget(businessProfileForm.streetAddress) }}
                 {{ form_widget(businessProfileForm.streetAddress, {'attr': {'placeholder': ''}}) }}
@@ -215,6 +243,32 @@
                 <i class="fa fa-plus-square"></i>
                 {% trans %}Add working hours{% endtrans %}
             </button>
+        </div>
+
+        <div class="form__row vertical__row">
+            <div class="form__field field--website">
+                {{ custom_form_label.widget(businessProfileForm.latitude) }}
+                {{ form_widget(businessProfileForm.latitude) }}
+            </div>
+        </div>
+
+        <div class="form__row vertical__row">
+            <div class="form__field field--website">
+                {{ custom_form_label.widget(businessProfileForm.longitude) }}
+                {{ form_widget(businessProfileForm.longitude) }}
+            </div>
+        </div>
+
+        <div class="form__row vertical__row">
+            {{ form_label(businessProfileForm.map) }}
+            {{ form_widget(businessProfileForm.map) }}
+        </div>
+
+        <div class="form__row vertical__row">
+            <a href="#" class="btn green-btn geo-btn" id="geocodeButton">
+                <i class="fa fa-map-marker" aria-hidden="true"></i>
+                {% trans %}Geocode{% endtrans %}
+            </a>
         </div>
     </div>
 </div>

@@ -46,7 +46,7 @@ class Version20180724084721 extends AbstractMigration implements ContainerAwareI
 
             $configMail = new Config();
             $configMail->setKey(ConfigInterface::UPDATE_PROFILE_REQUEST_EMAIL_TEMPLATE)
-                ->setTitle('')
+                ->setTitle('Update Profile Request Email Template')
                 ->setValue($value)
                 ->setFormat('html')
                 ->setDescription('Update Profile Request')

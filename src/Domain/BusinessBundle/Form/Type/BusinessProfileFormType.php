@@ -5,6 +5,7 @@ namespace Domain\BusinessBundle\Form\Type;
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\SubscriptionPlan;
 use Domain\BusinessBundle\Model\SubscriptionPlanInterface;
+use Domain\BusinessBundle\Repository\AreaRepository;
 use Domain\BusinessBundle\Repository\LocalityRepository;
 use Domain\BusinessBundle\Repository\PaymentMethodRepository;
 use Domain\BusinessBundle\Validator\Constraints\BusinessProfilePhoneTypeValidator;
@@ -17,6 +18,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -26,6 +28,7 @@ use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Count;
 use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Type;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 
 /**
@@ -128,7 +131,7 @@ class BusinessProfileFormType extends AbstractType
                 'class' => 'Domain\BusinessBundle\Entity\PaymentMethod',
                 'label' => 'Payment methods',
                 'label_attr' => [
-                    'class' => 'title-label'
+                    'class' => 'title-label',
                 ],
                 'multiple' => true,
                 'query_builder' => function (PaymentMethodRepository $repository) {
@@ -136,12 +139,49 @@ class BusinessProfileFormType extends AbstractType
                 },
                 'required' => false,
             ])
+            ->add('serviceAreasType', ChoiceType::class, [
+                'choices' => BusinessProfile::getServiceAreasTypes(),
+                'label' => 'Service Areas',
+                'multiple' => false,
+                'expanded' => true,
+                'required' => true,
+                'choice_translation_domain' => true,
+            ])
             ->add('streetAddress', TextType::class, [
                 'attr' => [
-                    'class' => 'form-control',
+                    'class'       => 'form-control',
                     'placeholder' => 'business.add.streetAddress.placeholder',
                 ],
                 'label' => 'Street address',
+            ])
+            ->add('map', GoogleMapFrontType::class, [
+                'mapped'     => false,
+                'label'      => 'Map',
+                'label_attr' => [
+                    'class' => 'title-label',
+                ],
+            ])
+            ->add('latitude', NumberType::class, [
+                'attr'        => [
+                    'class'       => 'form-control',
+                    'placeholder' => 'latitude.example.placeholder',
+                ],
+                'label'       => 'Latitude',
+                'required'    => false,
+                'constraints' => [
+                    new Type('float'),
+                ],
+            ])
+            ->add('longitude', NumberType::class, [
+                'attr'        => [
+                    'class'       => 'form-control',
+                    'placeholder' => 'longitude.example.placeholder',
+                ],
+                'label'       => 'Longitude',
+                'required'    => false,
+                'constraints' => [
+                    new Type('float'),
+                ],
             ])
             ->add('catalogLocality', EntityType::class, [
                 'attr' => [
@@ -151,7 +191,7 @@ class BusinessProfileFormType extends AbstractType
                 'class' => 'Domain\BusinessBundle\Entity\Locality',
                 'label' => 'Catalog Locality',
                 'label_attr' => [
-                    'class' => 'title-label'
+                    'class' => 'title-label',
                 ],
                 'query_builder' => function (LocalityRepository $repository) {
                     return $repository->getAvailableLocalitiesQb();
@@ -224,6 +264,8 @@ class BusinessProfileFormType extends AbstractType
                 $subscription = $businessProfile->getSubscriptionPlan();
             }
 
+            $this->setupServiceAreasFormFields($businessProfile, $event->getForm());
+
             switch ($subscription->getCode()) {
                 case SubscriptionPlanInterface::CODE_PRIORITY:
                     $this->setupPriorityPlanFormFields($businessProfile, $event->getForm());
@@ -269,6 +311,75 @@ class BusinessProfileFormType extends AbstractType
             'data_class' => 'Oxa\VideoBundle\Entity\VideoMedia',
             'by_reference' => false,
         ]);
+    }
+
+    /**
+     * @param BusinessProfile $businessProfile
+     * @param FormInterface $form
+     */
+    private function setupServiceAreasFormFields(BusinessProfile $businessProfile, FormInterface $form)
+    {
+        $milesOfMyBusinessFieldOptions = [
+            'attr'     => [
+                'class'       => 'form-control',
+                'placeholder' => '100',
+            ],
+            'label'    => 'Within miles of my business',
+            'required' => true,
+        ];
+
+        $areasFieldOptions = [
+            'attr' => [
+                'class' => 'form-control selectize-control select-multiple',
+                'placeholder' => 'Select areas',
+                'multiple' => 'multiple',
+            ],
+            'class' => 'Domain\BusinessBundle\Entity\Area',
+            'label' => 'Areas',
+            'label_attr' => [
+                'class' => 'title-label',
+            ],
+            'required' => true,
+            'multiple' => true,
+            'query_builder' => function (AreaRepository $repository) {
+                return $repository->getAvailableAreasQb();
+            },
+        ];
+
+        $localitiesFieldOptions = [
+            'attr'          => [
+                'class'       => 'form-control selectize-control',
+                'placeholder' => 'Select Localities',
+                'multiple'    => true,
+            ],
+            'class'         => 'Domain\BusinessBundle\Entity\Locality',
+            'label'         => 'Localities',
+            'label_attr'    => [
+                'class' => 'title-label',
+            ],
+            'multiple'      => true,
+            'required'      => true,
+            'query_builder' => function (LocalityRepository $repository) {
+                return $repository->getAvailableLocalitiesQb();
+            },
+        ];
+
+        if ($businessProfile->getServiceAreasType() === BusinessProfile::SERVICE_AREAS_AREA_CHOICE_VALUE) {
+            $localitiesFieldOptions['attr']['disabled'] = 'disabled';
+            $localitiesFieldOptions['required'] = false;
+
+            $areasFieldOptions['attr']['disabled'] = 'disabled';
+            $areasFieldOptions['required'] = false;
+
+            $neighborhoodsFieldOptions['attr']['disabled'] = 'disabled';
+        } else {
+            $milesOfMyBusinessFieldOptions['attr']['disabled'] = 'disabled';
+            $milesOfMyBusinessFieldOptions['required'] = false;
+        }
+
+        $form->add('milesOfMyBusiness', TextType::class, $milesOfMyBusinessFieldOptions);
+        $form->add('areas', EntityType::class, $areasFieldOptions);
+        $form->add('localities', EntityType::class, $localitiesFieldOptions);
     }
 
     /**
@@ -419,6 +530,18 @@ class BusinessProfileFormType extends AbstractType
         $resolver->setDefaults([
             'allow_extra_fields' => true,
             'data_class'         => 'Domain\BusinessBundle\Entity\BusinessProfile',
+            'validation_groups'  => function (FormInterface $form) {
+                /** @var BusinessProfile $profile */
+                $profile = $form->getData();
+
+                if (BusinessProfile::SERVICE_AREAS_AREA_CHOICE_VALUE == $profile->getServiceAreasType()) {
+                    return ['Default', 'service_area_chosen'];
+                } elseif (BusinessProfile::SERVICE_AREAS_LOCALITY_CHOICE_VALUE == $profile->getServiceAreasType()) {
+                    return ['Default', 'service_locality_chosen'];
+                } else {
+                    return ['Default'];
+                }
+            },
         ]);
     }
 
