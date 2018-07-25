@@ -228,4 +228,28 @@ class BusinessOverviewModel implements ReportInterface
 
         return $hint;
     }
+
+    /**
+     * @return array
+     */
+    public static function getActionsUserData()
+    {
+        return [
+            self::TYPE_CODE_IMPRESSION       => self::EVENT_TYPES[self::TYPE_CODE_IMPRESSION],
+            self::TYPE_CODE_CALL_MOB_BUTTON  => self::EVENT_TYPES[self::TYPE_CODE_CALL_MOB_BUTTON],
+            self::TYPE_CODE_DIRECTION_BUTTON => self::EVENT_TYPES[self::TYPE_CODE_DIRECTION_BUTTON],
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public static function getActionTooltip()
+    {
+        return [
+            self::TYPE_CODE_IMPRESSION       => 'user_profile.tooltip.impression',
+            self::TYPE_CODE_CALL_MOB_BUTTON  => 'user_profile.tooltip.call_mob_button',
+            self::TYPE_CODE_DIRECTION_BUTTON => 'user_profile.tooltip.direction_button',
+        ];
+    }
 }

@@ -127,6 +127,12 @@ services:
         tags:
             - { name: form.type, alias: domain_business_bundle_business_close_request_type }
 
+    domain_business.form.type.business_upgrade_request:
+        class: Domain\BusinessBundle\Form\Type\BusinessUpgradeRequestType
+        arguments: [null]
+        tags:
+            - { name: form.type, alias: domain_business_bundle_business_upgrade_request_type }
+
     domain_business.form.type.claim:
         class: Domain\BusinessBundle\Form\Type\BusinessClaimRequestType
         arguments: [null]
@@ -166,6 +172,14 @@ services:
             - 'domain_business_bundle_business_close_request_type'
             - 'domain_business_bundle_business_close_request_type'
 
+    domain_business.form.business_upgrade_request:
+        factory_method: createNamed
+        factory_service: form.factory
+        class: Symfony\Component\Form\Form
+        arguments:
+            - 'domain_business_bundle_business_upgrade_request_type'
+            - 'domain_business_bundle_business_upgrade_request_type'
+
     #form handlers section
     domain_business.form.handler.business_profile:
         class: Domain\BusinessBundle\Form\Handler\BusinessProfileFormHandler
@@ -203,6 +217,15 @@ services:
             - '@domain_business.manager.business_profile'
             - '@domain_business.manager.tasks'
             - '@translator'
+
+    domain_business.form.handler.business_upgrade_request:
+        class: Domain\BusinessBundle\Form\Handler\BusinessUpgradeRequestFormHandler
+        scope: request
+        arguments:
+            - '@domain_business.form.business_upgrade_request'
+            - '@request'
+            - '@domain_site.mailer'
+            - '@security.token_storage'
 
     #event listeners section
     domain_business.listener.datetime_period_status_subscriber:

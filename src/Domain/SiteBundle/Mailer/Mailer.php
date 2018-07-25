@@ -311,6 +311,40 @@ class Mailer
     }
 
     /**
+     * @param User  $user
+     * @param array $updateProfileData
+     */
+    public function sendUpdateProfileRequestMessage(User $user, array $updateProfileData)
+    {
+        $email   = $this->getConfigService()->getValue(ConfigInterface::UPDATE_PROFILE_REQUEST_EMAIL_ADDRESS);
+        $subject = $this->getConfigService()->getValue(ConfigInterface::UPDATE_PROFILE_REQUEST_EMAIL_SUBJECT);
+        $message = $this->getConfigService()->getValue(ConfigInterface::UPDATE_PROFILE_REQUEST_EMAIL_TEMPLATE);
+
+        $userUrl = $this->getRouter()->generate(
+            'admin_sonata_user_user_edit',
+            ['id' => $user->getId()],
+            UrlGeneratorInterface::ABSOLUTE_URL
+        );
+
+        $params = [
+            '{FIRST_NAME}' => htmlentities($user->getFirstname()),
+            '{LAST_NAME}'  => htmlentities($user->getLastname()),
+            '{LOCATION}'   => htmlentities($user->getLocation()),
+            '{USER_ID}'    => $user->getId(),
+            '{EMAIL}'      => $user->getEmail(),
+            '{USER_URL}'   => $userUrl,
+            '{TIME}'       => $updateProfileData['time'],
+            '{PHONE}'      => $updateProfileData['phone'],
+        ];
+
+        $parsedMessage = strtr($message, $params);
+
+        if ($email) {
+            $this->send($email, $subject, $parsedMessage, self::CONTENT_TYPE_HTML);
+        }
+    }
+
+    /**
      * @param mixed $toEmail
      * @param string $subject
      * @param string $body

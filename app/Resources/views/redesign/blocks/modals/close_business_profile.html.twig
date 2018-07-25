@@ -4,14 +4,14 @@
     <div class="modal__content">
         <h2>{% trans %}Close Business Profile Request{% endtrans %}</h2>
         <div class="modal__section">
-            <form class="account-form login-form" id="closeBusinessProfileForm" data-bw-gtm-component="modal-close-business-profile">
+            <form class="account-form login-form" id="closeBusinessProfileForm" name="{{ closeBusinessProfileForm.vars.name }}" data-bw-gtm-component="modal-close-business-profile">
                 <div class="form__field field--user">
                     {{ form_label(closeBusinessProfileForm.reason) }}
                     {{ form_widget(closeBusinessProfileForm.reason, { 'attr': { 'placeholder': '' }} ) }}
                 </div>
                 <div class="form__actions">
                     {{ form_rest(closeBusinessProfileForm) }}
-                    <button type="button" class="button button--action" data-business-profile-id="{{ businessProfile.getId() }}" id="closeBusinessProfileButton" data-bw-gtm-event-click data-bw-gtm-label="Submit">
+                    <button type="button" class="button button--action" data-business-profile-id="{% if businessProfile is defined %}{{ businessProfile.getId() }}{% endif %}" id="closeBusinessProfileButton" data-bw-gtm-event-click data-bw-gtm-label="Submit">
                         {% trans %}Submit{% endtrans %}
                     </button>
                     <button type="button" class="button button--action  hide-modal"  data-bw-gtm-event-click data-bw-gtm-label="{% trans %}Cancel{% endtrans %}">{% trans %}Cancel{% endtrans %}</button>

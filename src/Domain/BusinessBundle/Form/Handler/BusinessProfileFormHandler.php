@@ -106,6 +106,7 @@ class BusinessProfileFormHandler extends BaseFormHandler implements BusinessForm
             $this->businessProfileNew = $this->form->getData();
             $this->businessProfileNew->setLocale(LocaleHelper::DEFAULT_LOCALE);
 
+            $this->addAreas();
             $this->handleMediaUpdate();
             $this->handleCategoriesUpdate();
 
@@ -347,5 +348,19 @@ class BusinessProfileFormHandler extends BaseFormHandler implements BusinessForm
         return [
             'id',
         ];
+    }
+
+    private function addAreas()
+    {
+        $areas = $this->businessProfileNew->getAreas();
+        $areas->clear();
+
+        foreach ($this->businessProfileNew->getLocalities() as $locality) {
+            $area = $locality->getArea();
+
+            if (!$areas->contains($area)) {
+                $this->businessProfileNew->addArea($area);
+            }
+        }
     }
 }

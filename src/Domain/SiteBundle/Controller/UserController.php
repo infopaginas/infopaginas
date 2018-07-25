@@ -2,6 +2,11 @@
 
 namespace Domain\SiteBundle\Controller;
 
+use Domain\BusinessBundle\Form\Type\BusinessCloseRequestType;
+use Domain\BusinessBundle\Form\Type\BusinessUpgradeRequestType;
+use Domain\BusinessBundle\Util\BusinessProfileUtil;
+use Domain\ReportBundle\Manager\BusinessOverviewReportManager;
+use Domain\ReportBundle\Model\BusinessOverviewModel;
 use Domain\SiteBundle\Form\Handler\PasswordUpdateFormHandler;
 use Domain\SiteBundle\Form\Handler\UserProfileFormHandler;
 use FOS\UserBundle\Model\UserInterface;
@@ -25,25 +30,49 @@ class UserController extends Controller
     const ERROR_VALIDATION_FAILURE = 'Validation failure';
 
     /**
-     * @param Request $request
-     * @return JsonResponse|\Symfony\Component\HttpFoundation\Response
+     * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function profileAction(Request $request)
+    public function profileAction()
     {
         $profileForm        = $this->getUserProfileForm();
         $passwordUpdateForm = $this->getPasswordUpdateForm();
+        $businessOverviewReportManager = $this->getBusinessOverviewReportManager();
 
         $user = $this->getCurrentUser();
 
         $usersManager = $this->getUsersManager();
 
         $userBusinessProfiles = $usersManager->getUserBusinessProfiles($user);
+        $userBusinessProfilesIds = BusinessProfileUtil::extractEntitiesId($userBusinessProfiles);
+
+        $actions = BusinessOverviewModel::getActionsUserData();
+
+        $summaryData = $businessOverviewReportManager->getSummaryByActionData(
+            $userBusinessProfilesIds,
+            array_keys($actions)
+        );
+
+        $closeBusinessProfileForm = $this->createForm(new BusinessCloseRequestType());
+        $upgradeBusinessProfileForm = $this->createForm(new BusinessUpgradeRequestType());
 
         return $this->render(':redesign:user-profile.html.twig', [
-            'profileForm'          => $profileForm->createView(),
-            'passwordUpdateForm'   => $passwordUpdateForm->createView(),
-            'userBusinessProfiles' => $userBusinessProfiles,
+            'profileForm'                => $profileForm->createView(),
+            'closeBusinessProfileForm'   => $closeBusinessProfileForm->createView(),
+            'upgradeBusinessProfileForm' => $upgradeBusinessProfileForm->createView(),
+            'passwordUpdateForm'         => $passwordUpdateForm->createView(),
+            'userBusinessProfiles'       => $userBusinessProfiles,
+            'summaryData'                => $summaryData,
+            'actions'                    => $actions,
+            'tooltips'                   => BusinessOverviewModel::getActionTooltip(),
         ]);
+    }
+
+    /**
+     * @return BusinessOverviewReportManager
+     */
+    protected function getBusinessOverviewReportManager() : BusinessOverviewReportManager
+    {
+        return $this->get('domain_report.manager.business_overview_report_manager');
     }
 
     /**
@@ -74,6 +103,24 @@ class UserController extends Controller
         try {
             if ($formHandler->process()) {
                 return $this->getSuccessResponse(self::SUCCESS_PASSWORD_UPDATE_MESSAGE);
+            }
+        } catch (\Exception $e) {
+            return $this->getFailureResponse($e->getMessage());
+        }
+
+        return $this->getFailureResponse(self::ERROR_VALIDATION_FAILURE, $formHandler->getErrors());
+    }
+
+    /**
+     * @return JsonResponse
+     */
+    public function processUpgradeAction()
+    {
+        $formHandler = $this->getBusinessProfileUpgradeRequestFormHandler();
+
+        try {
+            if ($formHandler->process()) {
+                return $this->getSuccessResponse('success');
             }
         } catch (\Exception $e) {
             return $this->getFailureResponse($e->getMessage());
@@ -168,5 +215,13 @@ class UserController extends Controller
             'message' => $this->getTranslator()->trans($message),
             'errors'  => $errors,
         ]);
+    }
+
+    /**
+     * @return \Domain\BusinessBundle\Form\Handler\BusinessUpgradeRequestFormHandler
+     */
+    private function getBusinessProfileUpgradeRequestFormHandler()
+    {
+        return $this->get('domain_business.form.handler.business_upgrade_request');
     }
 }
