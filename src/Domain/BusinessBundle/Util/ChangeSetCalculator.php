@@ -376,7 +376,7 @@ class ChangeSetCalculator
                     asort($oldIds);
 
                     if ($newIds != $oldIds) {
-                        $updated = false;
+                        $updated = true;
                     }
 
                 } elseif ($valueOld and $valueOld->isEmpty() and !$valueNew) {
@@ -405,7 +405,7 @@ class ChangeSetCalculator
                     asort($oldIds);
 
                     if ($newIds != $oldIds) {
-                        $updated = false;
+                        $updated = true;
                     }
                 } else {
                     $updated = true;

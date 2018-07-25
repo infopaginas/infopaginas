@@ -352,15 +352,13 @@ class BusinessProfileFormHandler extends BaseFormHandler implements BusinessForm
 
     private function addAreasIfEmpty()
     {
-        if ($this->businessProfileNew->getAreas()->isEmpty()) {
-            $areas = [];
+        $areas = $this->businessProfileNew->getAreas();
+        $areas->clear();
 
-            foreach ($this->businessProfileNew->getLocalities() as $locality) {
-                $area = $locality->getArea();
-                $areas[$area->getId()] = $area;
-            }
+        foreach ($this->businessProfileNew->getLocalities() as $locality) {
+            $area = $locality->getArea();
 
-            foreach ($areas as $area) {
+            if (!$areas->contains($area)) {
                 $this->businessProfileNew->addArea($area);
             }
         }
