@@ -87,6 +87,7 @@ class BusinessProfileFormHandler extends BaseFormHandler implements BusinessForm
 
     /**
      * @return bool
+     * @throws \Exception
      */
     public function process()
     {
@@ -98,6 +99,10 @@ class BusinessProfileFormHandler extends BaseFormHandler implements BusinessForm
             $this->businessProfileOld = $this->businessProfileManager->find($businessProfileId);
         } else {
             $this->businessProfileOld = null;
+        }
+
+        if ($this->businessProfileOld && !$this->businessProfileOld->getIsEditableByUser()) {
+            throw new \Exception('You cannot edit this business');
         }
 
         if ($this->request->getMethod() == Request::METHOD_POST) {

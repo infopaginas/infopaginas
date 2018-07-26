@@ -3,7 +3,10 @@
 namespace Domain\BusinessBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\Mapping as ORM;
+use Domain\BusinessBundle\DBAL\Types\TaskStatusType;
+use Domain\BusinessBundle\DBAL\Types\TaskType;
 use Domain\BusinessBundle\Entity\Address\Country;
 use Domain\BusinessBundle\Entity\Media\BusinessGallery;
 use Domain\BusinessBundle\Entity\Review\BusinessReview;
@@ -170,6 +173,11 @@ class BusinessProfile implements
     const BUSINESS_PROFILE_FIELD_UPDATED_AT       = 'updatedAt';
 
     const KEYWORD_DELIMITER = ',';
+
+    const USER_STATUS_PENDING     = 'Pending';
+    const USER_STATUS_ACCEPTED    = 'Accepted';
+    const USER_STATUS_REJECTED    = 'Rejected';
+    const USER_STATUS_DEACTIVATED = 'Deactivated';
 
     /**
      * @var int
@@ -809,6 +817,9 @@ class BusinessProfile implements
      * @Assert\Count(max="5", maxMessage = "business_profile.extra_search.max_count")
      */
     protected $extraSearches;
+
+    /* @var string */
+    private $statusForUser;
 
     /**
      * @return mixed
@@ -1468,6 +1479,48 @@ class BusinessProfile implements
     public function getTasks()
     {
         return $this->tasks;
+    }
+
+    /**
+     * @return string
+     */
+    public function getStatusForUser()
+    {
+        if ($this->statusForUser === null) {
+            if ($this->getIsClosed()) {
+                $this->statusForUser = self::USER_STATUS_DEACTIVATED;
+            } else {
+                $statuses = [
+                    TaskStatusType::TASK_STATUS_OPEN     => self::USER_STATUS_PENDING,
+                    TaskStatusType::TASK_STATUS_CLOSED   => self::USER_STATUS_ACCEPTED,
+                    TaskStatusType::TASK_STATUS_REJECTED => self::USER_STATUS_REJECTED,
+                ];
+
+                $criteria = Criteria::create()
+                    ->where(Criteria::expr()->neq('type', TaskType::TASK_PROFILE_CLAIM))
+                    ->setMaxResults(1)
+                    ->orderBy(['id' => Criteria::DESC]);
+
+                $task = $this->getTasks()->matching($criteria)[0];
+                $this->statusForUser = $statuses[$task->getStatus()];
+            }
+        }
+
+        return $this->statusForUser;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getIsEditableByUser()
+    {
+        return in_array(
+            $this->getStatusForUser(),
+            [
+                self::USER_STATUS_ACCEPTED,
+                self::USER_STATUS_REJECTED,
+            ]
+        );
     }
 
     /**
