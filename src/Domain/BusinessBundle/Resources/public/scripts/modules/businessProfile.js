@@ -557,9 +557,7 @@ define(['jquery', 'bootstrap', 'business/tools/form', 'tools/spin', 'tools/selec
 
         var that = this;
 
-        $( 'a[href="#businessAddress"]').on('shown.bs.tab', function(){
-            that.initGoogleMap();
-        } );
+        that.initGoogleMap();
 
         $( this.html.buttons.fileUploadButton ).on( 'click', function() {
             $( this ).parent().find( 'input' ).click();
