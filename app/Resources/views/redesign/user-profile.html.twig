@@ -126,22 +126,9 @@
                                                     <div class="bps__business">
                                                         {{ business.getName() }}
                                                     </div>
-                                                    {% if business.getIsActive() %}
-                                                        <div class="bps__status active">
-                                                            {{ business.getActiveStatus()|capitalize }}
-                                                        </div>
-                                                    {% else %}
-                                                        {% if not business.getIsClosed() %}
-                                                            <div class="bps__status pending">
-                                                                ({% trans %}Pending{% endtrans %})
-                                                            </div>
-                                                        {% else %}
-                                                            <div class="bps__status closed">
-                                                                ({% trans %}Closed{% endtrans %})
-                                                            </div>
-                                                        {% endif %}
-                                                    {% endif %}
-
+                                                    <div class="bps__status {{ business.getStatusForUser|lower}}">
+                                                        {{ business.getStatusForUser() }}
+                                                    </div>
                                                     {% for action, translation in actions %}
                                                         <div class="bps__mobile">{{ translation|trans }}</div>
                                                         <div>
@@ -150,22 +137,22 @@
                                                     {% endfor %}
 
                                                     <div class="bps__edit">
-                                                        {% if business.getIsActive() %}
+                                                        {% if business.getIsEditableByUser() %}
                                                             <a href="{{ absolute_url(path('domain_business_profile_edit', {id: business.getId()})) }}">
                                                                 {% trans %}user_profile.label.edit_business{% endtrans %}
                                                             </a>
                                                         {% else %}
-                                                            {% if not business.getIsClosed() %}
-                                                                <div class="bps__status pending">
-                                                                    {{ business.getName() }} ({% trans %}Pending{% endtrans %})
-                                                                </div>
-                                                            {% endif %}
+                                                            <span class="disabled-text">{% trans %}user_profile.label.edit_business{% endtrans %}</span>
                                                         {% endif %}
                                                     </div>
                                                     <div class="bps__delete">
-                                                        <a href="#" data-close-business-id="{{ business.getId() }}">
-                                                            {% trans %}user_profile.label.delete_business{% endtrans %}
-                                                        </a>
+                                                        {% if business.getIsEditableByUser() %}
+                                                            <a href="#" data-close-business-id="{{ business.getId() }}">
+                                                                {% trans %}user_profile.label.delete_business{% endtrans %}
+                                                            </a>
+                                                        {% else %}
+                                                            <span class="disabled-text">{% trans %}user_profile.label.delete_business{% endtrans %}</span>
+                                                        {% endif %}
                                                     </div>
                                                 </div>
                                             {% endfor %}

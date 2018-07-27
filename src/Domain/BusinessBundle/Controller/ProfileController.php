@@ -90,7 +90,7 @@ class ProfileController extends Controller
         /** @var BusinessProfile $businessProfile */
         $businessProfile = $this->getBusinessProfilesManager()->find($id, $locale);
 
-        if (!$businessProfile or !$businessProfile->getIsActive()) {
+        if (!$businessProfile or !$businessProfile->getIsActive() or !$businessProfile->getIsEditableByUser()) {
             throw $this->createNotFoundException();
         }
 
