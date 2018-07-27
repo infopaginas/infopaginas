@@ -1392,14 +1392,14 @@ $bps-border: 1px dotted #bcbcbc;
             }
 
             &:first-of-type {
-              background: transparent;
-              border: 1px solid #acc02f;
-              color: #acc02f;
+              background: #acc02f;
+              color: #fff;
             }
 
             &:last-of-type {
-              background: #acc02f;
-              color: #fff;
+              background: transparent;
+              border: 1px solid #acc02f;
+              color: #acc02f;
             }
           }
         }
