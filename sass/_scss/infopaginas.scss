@@ -6185,11 +6185,6 @@ body.results-list.results--map-view {
   z-index: 999;
 }
 
-a.select-all-button {
-  cursor: pointer;
-  float: right;
-}
-
 #map {
   div[data-item-content] {
     padding-right: 0px;
@@ -6551,4 +6546,8 @@ span.no-js-warning-message {
 
 .m-l-10 {
   margin-left:3rem;
+}
+
+.text-align-left {
+  text-align: left;
 }
