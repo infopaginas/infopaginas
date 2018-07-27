@@ -163,9 +163,11 @@
                                                         {% endif %}
                                                     </div>
                                                     <div class="bps__delete">
-                                                        <a href="#" data-close-business-id="{{ business.getId() }}">
-                                                            {% trans %}user_profile.label.delete_business{% endtrans %}
-                                                        </a>
+                                                        {% if business.getIsActive() %}
+                                                            <a href="#" data-close-business-id="{{ business.getId() }}">
+                                                                {% trans %}user_profile.label.delete_business{% endtrans %}
+                                                            </a>
+                                                        {% endif %}
                                                     </div>
                                                 </div>
                                             {% endfor %}
