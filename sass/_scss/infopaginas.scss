@@ -1395,17 +1395,21 @@ $bps-border: 1px dotted #bcbcbc;
               padding: 0 62px;
             }
 
-            &:first-of-type {
-              background: #acc02f;
-              color: #fff;
-            }
-
             &:last-of-type {
               background: transparent;
               border: 1px solid #acc02f;
               color: #acc02f;
             }
+
+            &:first-of-type {
+              background: #acc02f;
+              color: #fff;
+            }
           }
+        }
+
+        .form__actions.center {
+          justify-content: center;
         }
 
         select {
