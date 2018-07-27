@@ -709,7 +709,7 @@ user_profile:
     last_month_statistics: Las estadísticas del mes pasado
     edit_business: Editar negocio
     delete_business: Eliminar negocio
-    upgrade_now: solicitar ahora
+    upgrade_now!: ¡Solicitar ahora!
     when_call: ¿Cuándo podemos llamaros?
     your_phone: Vuestro telefono
   tooltip:

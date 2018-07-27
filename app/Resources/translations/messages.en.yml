@@ -709,7 +709,7 @@ user_profile:
     last_month_statistics: Last month statistics
     edit_business: Edit bussines
     delete_business: Delete bussines
-    upgrade_now: Upgrade Now
+    upgrade_now!: Upgrade Now!
     when_call: When can we call you?
     your_phone: Your phone
   tooltip:
