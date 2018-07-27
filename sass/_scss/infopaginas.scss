@@ -1115,6 +1115,10 @@ $bps-border: 1px dotted #bcbcbc;
         text-align: center;
       }
 
+      & > .bps__business {
+        border-left: $bps-border;
+      }
+
       & > div:not(.bps__head) {
         text-overflow: ellipsis;
         width: 100% / $bps-column-number;
