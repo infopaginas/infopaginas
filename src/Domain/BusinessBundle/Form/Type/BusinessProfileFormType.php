@@ -67,12 +67,6 @@ class BusinessProfileFormType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        if ($this->isUserSectionRequired) {
-            $emailConstraints = [new NotBlank()];
-        } else {
-            $emailConstraints = [];
-        }
-
         $builder
             ->add('name', TextType::class, [
                 'label'    => 'Name',
@@ -120,7 +114,9 @@ class BusinessProfileFormType extends AbstractType
                     'placeholder' => 'email.example.placeholder',
                 ],
                 'label' => 'Email',
-                'constraints' => $emailConstraints,
+                'constraints' =>  [
+                    new NotBlank(),
+                ],
             ])
             ->add('paymentMethods', EntityType::class, [
                 'attr' => [
