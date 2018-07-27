@@ -182,14 +182,14 @@
         <div class="form__row vertical__row">
             <div class="form__field field--website">
                 {{ custom_form_label.widget(businessProfileForm.latitude) }}
-                {{ form_widget(businessProfileForm.latitude) }}
+                {{ form_widget(businessProfileForm.latitude, {'attr': {'placeholder': ''}}) }}
             </div>
         </div>
 
         <div class="form__row vertical__row">
             <div class="form__field field--website">
                 {{ custom_form_label.widget(businessProfileForm.longitude) }}
-                {{ form_widget(businessProfileForm.longitude) }}
+                {{ form_widget(businessProfileForm.longitude, {'attr': {'placeholder': ''}}) }}
             </div>
         </div>
 
