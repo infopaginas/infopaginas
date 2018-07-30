@@ -120,11 +120,11 @@
                                                     {% else %}
                                                         {% if not business.getIsClosed() %}
                                                             <div class="bps__status pending">
-                                                                ({% trans %}Pending{% endtrans %})
+                                                                {% trans %}Pending{% endtrans %}
                                                             </div>
                                                         {% else %}
                                                             <div class="bps__status closed">
-                                                                ({% trans %}Closed{% endtrans %})
+                                                                {% trans %}Closed{% endtrans %}
                                                             </div>
                                                         {% endif %}
                                                     {% endif %}
