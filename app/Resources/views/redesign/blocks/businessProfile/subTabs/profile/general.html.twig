@@ -96,7 +96,7 @@
         </div>
     </div>
 
-    {% for locale, name in localeBlocks %}
+    {% for locale, name in localeBlocks|reverse %}
         {% include ':redesign/blocks/businessProfile/subTabs/profile/language:translation.html.twig' with {'blockTitle': name, 'langPostfix': locale|capitalize} %}
     {% endfor %}
 </div>
