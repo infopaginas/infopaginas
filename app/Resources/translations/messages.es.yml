@@ -459,10 +459,11 @@ Show on Map: Ir al Mapa
 Successfully saved profile data: Datos de perfil guardados correctamente
 Successfully updated password: Contraseña actualizada correctamente
 Validation failure: Error de validación
-business_profile.message.created: El perfil de negocio se creó correctamente (los cambios se aplicarán después de la confirmación del administrador)
+business_profile.message.created: Gracias por crear el perfil. Nuestro equipo revisará la información en los próximos 7 días. Recibirá un correo electrónico una vez que se apruebe el perfil y se cargue en el directorio.
 business_profile.message.updated: El perfil de la empresa se actualizó correctamente (los cambios se aplicarán después de la confirmación del administrador)
 business_profile.message.closed: El perfil de la empresa se actualizó correctamente (los cambios se aplicarán después de la confirmación del administrador)
 business_profile.message.welcome: Bienvenido
+business_profile.message.upgrade: ¡Gracias! Nuestro equipo se comunicará con usted pronto.
 user.reset_password_request.email.not_found: El usuario {-email-} no existe
 business_profile.seoDescription.search: Encuentra el mejor {-categories-} en {-locality-}
 business_profile.seoTitle.search: categories en locality

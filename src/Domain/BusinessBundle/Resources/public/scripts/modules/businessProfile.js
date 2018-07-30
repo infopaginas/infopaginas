@@ -31,8 +31,10 @@ define(['jquery', 'bootstrap', 'business/tools/form', 'tools/spin', 'tools/selec
                 latitudeInputId: '#' + this.freeProfileFormName + '_latitude',
                 longitudeInputId: '#' + this.freeProfileFormName + '_longitude',
                 withinMilesOfMyBusinessFieldId: '#' + this.freeProfileFormName + '_milesOfMyBusiness',
+                areasFieldId: '#' + this.freeProfileFormName + '_areas',
                 localitiesFieldId: '#' + this.freeProfileFormName + '_localities',
                 catalogLocalityId: '#' + this.freeProfileFormName + '_catalogLocality',
+                neighborhoodsFieldId: '#' + this.freeProfileFormName + '_neighborhoods',
                 serviceAreaRadioName: '[serviceAreasType]',
                 categoriesId: '#' + this.freeProfileFormName + '_categories',
                 categoryOptions: '#category_options'
@@ -53,6 +55,15 @@ define(['jquery', 'bootstrap', 'business/tools/form', 'tools/spin', 'tools/selec
             asteriskTag: '<i class="fa fa-asterisk" aria-hidden="true"></i>',
             imageValidationErrors: '#imageValidationErrors',
             videoValidationErrors: '#videoValidationErrors'
+        };
+
+        this.ajax = {
+            locality:     null,
+            neighborhood: null
+        };
+
+        this.ajaxLocked = {
+            neighborhood: false
         };
 
         this.newProfileRequestFormHandler = new FormHandler({
@@ -399,18 +410,27 @@ define(['jquery', 'bootstrap', 'business/tools/form', 'tools/spin', 'tools/selec
             var $self = $(this);
             var milesOfMyBusinessAsteriskClass = that.html.milesOfMyBusinessSpan + ' ' + that.html.asteriskClass;
             var localitiesFieldAsteriskClass = that.html.localitiesFieldSpan + ' ' + that.html.asteriskClass;
+            var areasFieldAsteriskClass = that.html.areasFieldSpan + ' ' + that.html.asteriskClass;
             var html = '';
 
             var withinMiles = $( that.html.fields.withinMilesOfMyBusinessFieldId );
+            var areas = $( that.html.fields.areasFieldId );
             var localities = $( that.html.fields.localitiesFieldId );
+            var neighborhoods = $( that.html.fields.neighborhoodsFieldId );
 
+            var areasSelectize          = areas.selectize( that.selectizeOptions )[0].selectize;
             var localitiesSelectize     = localities.selectize( that.selectizeOptions )[0].selectize;
+            var neighborhoodsSelectize  = neighborhoods.selectize( that.selectizeOptions )[0].selectize;
 
             if ( $self.val() == that.serviceAreasAreaChoiceValue ) {
                 withinMiles.removeAttr( 'disabled' );
+                areas.attr( 'disabled', 'disabled' );
                 localities.attr( 'disabled', 'disabled' );
+                neighborhoods.attr( 'disabled', 'disabled' );
 
+                areasSelectize.disable();
                 localitiesSelectize.disable();
+                neighborhoodsSelectize.disable();
 
                 if ( !$( milesOfMyBusinessAsteriskClass ).length ) {
                     html = $( that.html.milesOfMyBusinessSpan ).text();
@@ -421,17 +441,24 @@ define(['jquery', 'bootstrap', 'business/tools/form', 'tools/spin', 'tools/selec
                 withinMiles.attr('required', 'required');
                 $( milesOfMyBusinessAsteriskClass ).show();
                 $( localitiesFieldAsteriskClass ).hide();
+                $( areasFieldAsteriskClass ).hide();
             } else {
                 areas.removeAttr( 'disabled' );
                 localities.removeAttr( 'disabled' );
+                neighborhoods.removeAttr( 'disabled' );
                 withinMiles.attr( 'disabled', 'disabled' );
 
+                areasSelectize.enable();
                 localitiesSelectize.enable();
+                neighborhoodsSelectize.enable();
 
                 withinMiles.removeAttr( 'required' );
                 if ( $( localitiesFieldAsteriskClass ).length ) {
                     localities.attr('required', 'required');
                     $( localitiesFieldAsteriskClass ).show();
+
+                    areas.attr( 'required', 'required' );
+                    $( areasFieldAsteriskClass ).show();
                 } else {
                     html = $( that.html.localitiesFieldSpan ).text();
                     var pos = html.indexOf( ':', 1 );
@@ -489,6 +516,134 @@ define(['jquery', 'bootstrap', 'business/tools/form', 'tools/spin', 'tools/selec
     //build form field id
     businessProfile.prototype.getFormFieldId = function( prefix, field ) {
         return prefix + '_' + field;
+    };
+
+    businessProfile.prototype.handleBusinessProfileAreas = function () {
+        var self = this;
+
+        var areasField = $( self.html.fields.areasFieldId );
+        var localitiesField = $( self.html.fields.localitiesFieldId );
+        var neighborhoodsField = $( self.html.fields.neighborhoodsFieldId );
+        var businessProfileId = $( self.html.forms.newProfileRequestFormId ).data( 'id' );
+
+        updatedLocalities();
+
+        addAreasEvents();
+
+        function addAreasEvents() {
+            $( self.html.fields.areasFieldId ).on( 'change', function() {
+                updatedLocalities();
+            });
+
+            $( self.html.fields.localitiesFieldId ).on( 'change', function() {
+                if ( !self.ajaxLocked.neighborhood ) {
+                    updatedNeighborhoods();
+                }
+            });
+
+            $( 'body' ).on( 'click', 'a.select-all-button', function( e ) {
+                e.preventDefault();
+
+                var selectField = $( this ).parent().parent().find( 'select' );
+
+                if ( !selectField.attr( 'disabled' ) ) {
+                    var selectBlock = selectField.selectize( self.selectizeOptions );
+                    var selectize = selectBlock[0].selectize;
+
+                    selectize.setValue( _.keys( selectize.options ) );
+
+                    selectField.trigger( 'change' );
+                }
+            });
+        }
+
+        function updatedLocalities() {
+            var data = {
+                'areas': areasField.val()
+            };
+
+            if ( localitiesField.length ) {
+                self.ajaxLocked.neighborhood = true;
+
+                var selectBlock = localitiesField.selectize( self.selectizeOptions );
+                var selectize = selectBlock[0].selectize;
+
+                localitiesField.html( '' );
+                selectize.disable();
+
+                if ( self.ajax.locality ) {
+                    self.ajax.locality.abort();
+                }
+
+                self.ajax.locality = $.post( Routing.generate('domain_business_get_localities', {businessProfileId: businessProfileId}), data, function( response ) {
+                    updateSelectizeFieldValues( localitiesField, response.data, selectize );
+                    self.ajaxLocked.neighborhood = false;
+                    updatedNeighborhoods();
+                });
+            }
+        }
+
+        function updatedNeighborhoods() {
+            var data = {
+                'localities': localitiesField.val()
+            };
+
+            if ( neighborhoodsField.length ) {
+                var selectBlock = neighborhoodsField.selectize( self.selectizeOptions );
+                var selectize = selectBlock[0].selectize;
+
+                neighborhoodsField.html( '' );
+                selectize.disable();
+
+                if ( self.ajax.neighborhood ) {
+                    self.ajax.neighborhood.abort();
+                }
+
+                self.ajax.neighborhood = $.post( Routing.generate('domain_business_get_neighborhoods', {businessProfileId: businessProfileId}), data, function( response ) {
+                    updateSelectizeFieldValues( neighborhoodsField, response.data, selectize );
+                });
+            }
+        }
+
+        function updateSelectizeFieldValues( field, data, selectize ) {
+            var html = '';
+            var selected = [];
+            var selectOptions = [];
+
+            if ( data ) {
+                $.each( data, function ( key, value ) {
+                    html += '<option value="' + value.id + '">' + value.name + '</option>';
+
+                    selectOptions.push({
+                        text: value.name,
+                        value: value.id
+                    });
+
+                    if ( value.selected ) {
+                        selected.push( value.id );
+                    }
+                });
+            }
+
+            field.html( html );
+
+            if ( html ) {
+                field.attr( 'disabled', false );
+                selectize.enable();
+            } else {
+                field.attr( 'disabled', 'disabled' );
+                selectize.disable();
+            }
+
+            selectize.clear();
+            selectize.clearOptions();
+            selectize.renderCache = {};
+            selectize.load( function ( callback ) {
+                callback( selectOptions );
+            });
+
+            selectize.setValue( selected );
+        }
     };
 
     businessProfile.prototype.updateFieldSelectionFocus = function () {
@@ -553,11 +708,9 @@ define(['jquery', 'bootstrap', 'business/tools/form', 'tools/spin', 'tools/selec
         this.handleProfileSave();
         this.handleServiceAreaChange();
         this.handleFormChange();
+        this.handleBusinessProfileAreas();
         this.initAutoCompleteCategoriesField();
-
-        var that = this;
-
-        that.initGoogleMap();
+        this.initGoogleMap();
 
         $( this.html.buttons.fileUploadButton ).on( 'click', function() {
             $( this ).parent().find( 'input' ).click();

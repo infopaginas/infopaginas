@@ -226,6 +226,7 @@ services:
             - '@request'
             - '@domain_site.mailer'
             - '@security.token_storage'
+            - '@translator'
 
     #event listeners section
     domain_business.listener.datetime_period_status_subscriber:
