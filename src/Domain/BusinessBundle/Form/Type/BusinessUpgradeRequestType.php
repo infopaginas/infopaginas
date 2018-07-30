@@ -2,12 +2,13 @@
 
 namespace Domain\BusinessBundle\Form\Type;
 
+use Domain\BusinessBundle\Entity\BusinessProfilePhone;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Regex;
 
 /**
  * Class BusinessReviewType
@@ -34,6 +35,10 @@ class BusinessUpgradeRequestType extends AbstractType
                 ],
                 'constraints' => [
                     new NotBlank(),
+                    new Regex([
+                        'pattern' => BusinessProfilePhone::REGEX_PHONE_PATTERN,
+                        'message' => 'business_profile.phone.digit_dash',
+                    ]),
                 ],
             ])
             ->add('time', ChoiceType::class, [

@@ -20,7 +20,9 @@
     <div class="main__container main__container--centered">
         <div class="main">
             <div class="container clearfix">
-                {% embed ':redesign/blocks/businessProfile/tabs:nav_tab.html.twig' with {'activeTab': 'profile'} %}{% endembed %}
+                {% if businessProfileForm.vars.value.getId() %}
+                    {% embed ':redesign/blocks/businessProfile/tabs:nav_tab.html.twig' with {'activeTab': 'profile'} %}{% endembed %}
+                {% endif %}
                 <section class="page-section" id="profile-user">
                     <div class="form__section">
                         <form class="form user-profile-form"
