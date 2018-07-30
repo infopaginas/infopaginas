@@ -148,8 +148,21 @@
         </div>
 
         <div class="form__row vertical__row">
+            {{ form_label(businessProfileForm.areas) }}
+            {{ form_widget(businessProfileForm.areas) }}
+            {% include ':widgets:select_all_options.html.twig' %}
+        </div>
+
+        <div class="form__row vertical__row">
             {{ form_label(businessProfileForm.localities) }}
             {{ form_widget(businessProfileForm.localities) }}
+            {% include ':widgets:select_all_options.html.twig' %}
+        </div>
+
+        <div class="form__row vertical__row">
+            {{ form_label(businessProfileForm.neighborhoods) }}
+            {{ form_widget(businessProfileForm.neighborhoods) }}
+            {% include ':widgets:select_all_options.html.twig' %}
         </div>
 
         <div class="form__row vertical__row">
