@@ -48,7 +48,7 @@ define(['jquery', 'bootstrap'], function( $, bootstrap ) {
                                     this.invisibleErrosExists = true;
                                 }
 
-                                $field.after( "<span data-error-message class='error'>" + errors[field][phoneField][phoneFieldItem] + "</span>" );
+                                $field.parent().append( "<span data-error-message class='error'>" + errors[field][phoneField][phoneFieldItem] + "</span>" );
                             }
                         }
                     } else {
@@ -63,7 +63,14 @@ define(['jquery', 'bootstrap'], function( $, bootstrap ) {
                         }
 
                         for( var key in errors[field] ) {
-                            $field.after( "<span data-error-message class='error'>" + errors[field][key] + "</span>" );
+                            var $errorSpan = "<span data-error-message class='error'>" + errors[field][key] + "</span>";
+
+                            if ($field.hasClass('selectized')) {
+                                $field.next().after( $errorSpan );
+                            } else {
+                                $field.after( $errorSpan );
+                            }
+
                         }
                     }
                 } else {

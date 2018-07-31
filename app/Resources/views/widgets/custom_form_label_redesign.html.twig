@@ -10,6 +10,6 @@
     {% endif %}
 
     <label for="{{ field.vars.id }}" class="{{ class }}">
-        {{ label|trans({}, translation_domain) }}{% if required %}*{% endif %}
+        {{ label|trans({}, translation_domain) }}{% if required %}<span data-required-indicator>*</span>{% endif %}
     </label>
 {% endmacro %}
