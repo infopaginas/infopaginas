@@ -86,7 +86,7 @@ class BusinessProfileFormType extends AbstractType
                 'allow_delete' => true,
                 'entry_type'   => BusinessProfilePhoneType::class,
                 'label' => 'Phone number',
-                'required' => false,
+                'required' => true,
             ])
             ->add(BusinessProfilePhoneTypeValidator::ERROR_BLOCK_PATH, TextType::class, [
                 'mapped'   => false,
@@ -100,7 +100,7 @@ class BusinessProfileFormType extends AbstractType
                 'allow_delete' => true,
                 'entry_type'   => BusinessProfileWorkingHourType::class,
                 'label' => 'Working Hours',
-                'required' => false,
+                'required' => true,
             ])
             ->add(BusinessProfileWorkingHourTypeValidator::ERROR_BLOCK_PATH, TextType::class, [
                 'mapped' => false,

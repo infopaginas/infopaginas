@@ -51,8 +51,6 @@ define(['jquery', 'bootstrap', 'business/tools/form', 'tools/spin', 'tools/selec
             milesOfMyBusinessSpan: '.miles-of-business',
             localitiesFieldSpan: '.locality-field',
             areasFieldSpan: '.area-field',
-            asteriskClass: 'i.fa-asterisk',
-            asteriskTag: '<i class="fa fa-asterisk" aria-hidden="true"></i>',
             imageValidationErrors: '#imageValidationErrors',
             videoValidationErrors: '#videoValidationErrors'
         };
@@ -408,9 +406,6 @@ define(['jquery', 'bootstrap', 'business/tools/form', 'tools/spin', 'tools/selec
 
         $( document ).on( 'change' , 'input[name="' + serviceAreasRadioName + '"]', function() {
             var $self = $(this);
-            var milesOfMyBusinessAsteriskClass = that.html.milesOfMyBusinessSpan + ' ' + that.html.asteriskClass;
-            var localitiesFieldAsteriskClass = that.html.localitiesFieldSpan + ' ' + that.html.asteriskClass;
-            var areasFieldAsteriskClass = that.html.areasFieldSpan + ' ' + that.html.asteriskClass;
             var html = '';
 
             var withinMiles = $( that.html.fields.withinMilesOfMyBusinessFieldId );
@@ -422,6 +417,10 @@ define(['jquery', 'bootstrap', 'business/tools/form', 'tools/spin', 'tools/selec
             var localitiesSelectize     = localities.selectize( that.selectizeOptions )[0].selectize;
             var neighborhoodsSelectize  = neighborhoods.selectize( that.selectizeOptions )[0].selectize;
 
+            var areasLabel       = $('label[for="' + areas.attr('id') + '-selectized"]');
+            var localitiesLabel  = $('label[for="' + localities.attr('id') + '-selectized"]');
+            var withinMilesLabel = $('label[for="' + withinMiles.attr('id') + '"]');
+
             if ( $self.val() == that.serviceAreasAreaChoiceValue ) {
                 withinMiles.removeAttr( 'disabled' );
                 areas.attr( 'disabled', 'disabled' );
@@ -432,16 +431,14 @@ define(['jquery', 'bootstrap', 'business/tools/form', 'tools/spin', 'tools/selec
                 localitiesSelectize.disable();
                 neighborhoodsSelectize.disable();
 
-                if ( !$( milesOfMyBusinessAsteriskClass ).length ) {
-                    html = $( that.html.milesOfMyBusinessSpan ).text();
-                    var pos = html.indexOf( ':', 1 );
-                    html = html.slice( 0, pos ) + that.html.asteriskTag + ' ' + html.slice( pos );
-                    $( that.html.milesOfMyBusinessSpan ).html( html );
+                areasLabel.find('[data-required-indicator]').remove();
+                localitiesLabel.find('[data-required-indicator]').remove();
+
+                if (!withinMilesLabel.find('[data-required-indicator]').length) {
+                    withinMilesLabel.append('<span data-required-indicator>*</span>');
                 }
+
                 withinMiles.attr('required', 'required');
-                $( milesOfMyBusinessAsteriskClass ).show();
-                $( localitiesFieldAsteriskClass ).hide();
-                $( areasFieldAsteriskClass ).hide();
             } else {
                 areas.removeAttr( 'disabled' );
                 localities.removeAttr( 'disabled' );
@@ -452,20 +449,15 @@ define(['jquery', 'bootstrap', 'business/tools/form', 'tools/spin', 'tools/selec
                 localitiesSelectize.enable();
                 neighborhoodsSelectize.enable();
 
-                withinMiles.removeAttr( 'required' );
-                if ( $( localitiesFieldAsteriskClass ).length ) {
-                    localities.attr('required', 'required');
-                    $( localitiesFieldAsteriskClass ).show();
-
-                    areas.attr( 'required', 'required' );
-                    $( areasFieldAsteriskClass ).show();
-                } else {
-                    html = $( that.html.localitiesFieldSpan ).text();
-                    var pos = html.indexOf( ':', 1 );
-                    html = html.slice( 0, pos ) + that.html.asteriskTag + ' ' + html.slice( pos );
-                    $( that.html.localitiesFieldSpan ).html( html );
+                if (!areasLabel.find('[data-required-indicator]').length) {
+                    areasLabel.append('<span data-required-indicator>*</span>')
                 }
-                $( milesOfMyBusinessAsteriskClass ).hide();
+
+                if (!localitiesLabel.find('[data-required-indicator]').length) {
+                    localitiesLabel.append('<span data-required-indicator>*</span>');
+                }
+
+                withinMilesLabel.find('[data-required-indicator]').remove();
             }
 
             new select();

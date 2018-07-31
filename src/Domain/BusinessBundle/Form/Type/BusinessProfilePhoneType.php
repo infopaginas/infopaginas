@@ -36,6 +36,7 @@ class BusinessProfilePhoneType extends AbstractType
                 'choice_translation_domain' => true,
             ])
             ->add('phone', TextType::class, [
+                'label' => 'Phone',
                 'attr'  => [
                     'class' => 'form-control',
                 ],
@@ -44,7 +45,8 @@ class BusinessProfilePhoneType extends AbstractType
                         'pattern' => BusinessProfilePhone::REGEX_PHONE_PATTERN,
                         'message' => 'business_profile.phone.digit_dash',
                     ]),
-                ]
+                ],
+                'required' => true,
             ])
         ;
     }
