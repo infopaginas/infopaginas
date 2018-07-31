@@ -52,7 +52,9 @@ define(['jquery', 'bootstrap', 'business/tools/form', 'tools/spin', 'tools/selec
             localitiesFieldSpan: '.locality-field',
             areasFieldSpan: '.area-field',
             imageValidationErrors: '#imageValidationErrors',
-            videoValidationErrors: '#videoValidationErrors'
+            videoValidationErrors: '#videoValidationErrors',
+            requiredTagSelector: '[data-required-indicator]',
+            requiredTag: '<span data-required-indicator>*</span>'
         };
 
         this.ajax = {
@@ -417,9 +419,9 @@ define(['jquery', 'bootstrap', 'business/tools/form', 'tools/spin', 'tools/selec
             var localitiesSelectize     = localities.selectize( that.selectizeOptions )[0].selectize;
             var neighborhoodsSelectize  = neighborhoods.selectize( that.selectizeOptions )[0].selectize;
 
-            var areasLabel       = $('label[for="' + areas.attr('id') + '-selectized"]');
-            var localitiesLabel  = $('label[for="' + localities.attr('id') + '-selectized"]');
-            var withinMilesLabel = $('label[for="' + withinMiles.attr('id') + '"]');
+            var areasLabel       = $( 'label[for="' + areas.attr( 'id' ) + '-selectized"]' );
+            var localitiesLabel  = $( 'label[for="' + localities.attr( 'id' ) + '-selectized"]' );
+            var withinMilesLabel = $( 'label[for="' + withinMiles.attr( 'id' ) + '"]' );
 
             if ( $self.val() == that.serviceAreasAreaChoiceValue ) {
                 withinMiles.removeAttr( 'disabled' );
@@ -431,12 +433,9 @@ define(['jquery', 'bootstrap', 'business/tools/form', 'tools/spin', 'tools/selec
                 localitiesSelectize.disable();
                 neighborhoodsSelectize.disable();
 
-                areasLabel.find('[data-required-indicator]').remove();
-                localitiesLabel.find('[data-required-indicator]').remove();
-
-                if (!withinMilesLabel.find('[data-required-indicator]').length) {
-                    withinMilesLabel.append('<span data-required-indicator>*</span>');
-                }
+                that.removeRequiredTag( areasLabel );
+                that.removeRequiredTag( localitiesLabel );
+                that.addRequiredTag( withinMilesLabel );
 
                 withinMiles.attr('required', 'required');
             } else {
@@ -449,15 +448,9 @@ define(['jquery', 'bootstrap', 'business/tools/form', 'tools/spin', 'tools/selec
                 localitiesSelectize.enable();
                 neighborhoodsSelectize.enable();
 
-                if (!areasLabel.find('[data-required-indicator]').length) {
-                    areasLabel.append('<span data-required-indicator>*</span>')
-                }
-
-                if (!localitiesLabel.find('[data-required-indicator]').length) {
-                    localitiesLabel.append('<span data-required-indicator>*</span>');
-                }
-
-                withinMilesLabel.find('[data-required-indicator]').remove();
+                that.addRequiredTag( areasLabel );
+                that.addRequiredTag( localitiesLabel );
+                that.removeRequiredTag( withinMilesLabel );
             }
 
             new select();
@@ -691,6 +684,16 @@ define(['jquery', 'bootstrap', 'business/tools/form', 'tools/spin', 'tools/selec
         });
 
         categories[0].selectize.setValue( optionIds );
+    };
+
+    businessProfile.prototype.addRequiredTag = function( element ) {
+        if (!element.find( this.html.requiredTagSelector ).length) {
+            element.append( this.html.requiredTag );
+        }
+    };
+
+    businessProfile.prototype.removeRequiredTag = function( element ) {
+        element.find( this.html.requiredTagSelector ).remove();
     };
 
     //setup required "listeners"
