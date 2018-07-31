@@ -687,7 +687,7 @@ define(['jquery', 'bootstrap', 'business/tools/form', 'tools/spin', 'tools/selec
     };
 
     businessProfile.prototype.addRequiredTag = function( element ) {
-        if (!element.find( this.html.requiredTagSelector ).length) {
+        if ( !element.find( this.html.requiredTagSelector ).length ) {
             element.append( this.html.requiredTag );
         }
     };
