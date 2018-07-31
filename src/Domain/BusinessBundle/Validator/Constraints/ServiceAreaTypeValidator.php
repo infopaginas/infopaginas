@@ -15,21 +15,28 @@ class ServiceAreaTypeValidator extends ConstraintValidator
      */
     public function validate($object, Constraint $constraint)
     {
-        $path = '';
+        $paths = [];
 
         if ($object->getServiceAreasType() == $object::SERVICE_AREAS_AREA_CHOICE_VALUE) {
             if (empty($object->getMilesOfMyBusiness())) {
-                $path = 'milesOfMyBusiness';
+                $paths[] = 'milesOfMyBusiness';
             }
-        } elseif ($object->getLocalities()->isEmpty()) {
-            $path = 'localities';
+        } else {
+            if ($object->getAreas()->isEmpty()) {
+                $paths[] = 'areas';
+            }
+            if ($object->getLocalities()->isEmpty()) {
+                $paths[] = 'localities';
+            }
         }
 
-        if ($path) {
-            $this->context->buildViolation($constraint->message)
-                ->atPath($path)
-                ->addViolation()
-            ;
+        if ($paths) {
+            foreach ($paths as $path) {
+                $this->context->buildViolation($constraint->message)
+                    ->atPath($path)
+                    ->addViolation()
+                ;
+            }
         }
     }
 }
