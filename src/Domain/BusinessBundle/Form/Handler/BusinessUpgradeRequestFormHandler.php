@@ -9,6 +9,7 @@ use Oxa\Sonata\UserBundle\Entity\User;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Translation\TranslatorInterface;
 
 /**
  * Class BusinessUpgradeRequestFormHandler
@@ -17,14 +18,19 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
  */
 class BusinessUpgradeRequestFormHandler extends BaseFormHandler implements BusinessFormHandlerInterface
 {
-    /** @var Request */
+    const MESSAGE_BUSINESS_PROFILE_UPGRADE = 'business_profile.message.upgrade';
+
+    /* @var Request */
     private $request;
 
-    /** @var Mailer */
+    /* @var Mailer */
     private $mailer;
 
-    /** @var User */
+    /* @var User */
     private $currentUser;
+
+    /* @var TranslatorInterface */
+    private $translator;
 
     /**
      * BusinessUpgradeRequestFormHandler constructor.
@@ -33,17 +39,20 @@ class BusinessUpgradeRequestFormHandler extends BaseFormHandler implements Busin
      * @param Request               $request
      * @param Mailer                $mailer
      * @param TokenStorageInterface $tokenStorage
+     * @param TranslatorInterface   $translator
      */
     public function __construct(
         FormInterface $form,
         Request $request,
         Mailer $mailer,
-        TokenStorageInterface $tokenStorage
+        TokenStorageInterface $tokenStorage,
+        TranslatorInterface $translator
     ) {
         $this->form        = $form;
         $this->request     = $request;
         $this->mailer      = $mailer;
         $this->currentUser = $tokenStorage->getToken()->getUser();
+        $this->translator  = $translator;
     }
 
     /**
@@ -69,5 +78,11 @@ class BusinessUpgradeRequestFormHandler extends BaseFormHandler implements Busin
         $data = $this->form->getData();
         $data['time'] = BusinessUpgradeRequestType::TIME_CHOICES[$data['time']];
         $this->mailer->sendUpdateProfileRequestMessage($this->currentUser, $data);
+
+        $session = $this->request->getSession();
+        $session->getFlashBag()->add(
+            self::MESSAGE_BUSINESS_PROFILE_FLASH_GROUP,
+            $this->translator->trans(self::MESSAGE_BUSINESS_PROFILE_UPGRADE)
+        );
     }
 }

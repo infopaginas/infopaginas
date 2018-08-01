@@ -28,7 +28,8 @@ define(['jquery', 'bootstrap', 'tools/spin', 'tools/geolocation', 'business/tool
                 passwordUpdateFormId: '#passwordUpdateForm'
             },
             fields: {
-                locationFieldId: '#domain_site_user_profile_location'
+                locationFieldId: '#domain_site_user_profile_location',
+                updateBusinessRequestPhone: '#domain_business_bundle_business_upgrade_request_type_phone'
             },
             successBlock: '#success-block',
             loadingSpinnerContainerClass: '.spinner-container'
@@ -224,11 +225,22 @@ define(['jquery', 'bootstrap', 'tools/spin', 'tools/geolocation', 'business/tool
         })
     };
 
+    userProfile.prototype.addMaskEvent = function() {
+        var that = this,
+            $phone = $(that.html.fields.updateBusinessRequestPhone);
+
+        $phone.mask( '999-999-9999' );
+        $phone.bind( 'paste', function () {
+            $( this ).val( '' );
+        });
+    };
+
     //setup required "listeners"
     userProfile.prototype.run = function() {
         this.handleProfileSaving();
         this.handlePasswordUpdate();
         this.addEvents();
+        this.addMaskEvent();
     };
 
     return userProfile;

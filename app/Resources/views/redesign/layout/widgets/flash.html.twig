@@ -1,0 +1,19 @@
+{% if flashMessages is not empty %}
+    <div class="modal modal--review modal--opened" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal__outside"></div>
+        <div class="modal__content">
+            <h2>&nbsp;</h2>
+            <div class="modal__section">
+                <div class="account-form">
+                    {% for flashMessage in flashMessages %}
+                        <p>{{ flashMessage }}</p>
+                    {% endfor %}
+                    <div class="form__actions center">
+                        {{ form_rest(upgradeBusinessProfileForm) }}
+                        <button type="button" class="button button-ok button--action hide-modal"  data-bw-gtm-event-click data-bw-gtm-label="{% trans %}Cancel{% endtrans %}">{% trans %}OK{% endtrans %}</button>
+                    </div>
+                </div>
+            </div><!-- modal__section -->
+        </div><!-- modal__content -->
+    </div>
+{% endif %}

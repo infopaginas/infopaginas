@@ -1,12 +1,14 @@
 {% import '::widgets/custom_form_label_redesign.html.twig' as custom_form_label %}
 
 {% macro phone_prototype(phoneField) %}
+    {% import '::widgets/custom_form_label_redesign.html.twig' as custom_form_label %}
+
     <div class="multi-field">
         <div class="form__field field--multi-select select-phone-type">
             {{ form_widget(phoneField.type ) }}
         </div>
         <div class="form__field field-phone-value">
-            {{ form_label(phoneField.phone) }}
+            {{ custom_form_label.widget(phoneField.phone) }}
             {{ form_widget(phoneField.phone, {'attr': {'placeholder': ''}} ) }}
         </div>
         <button class="button button--small remove-phone">
@@ -17,23 +19,25 @@
 {% endmacro %}
 
 {% macro working_hours_prototype(workingHoursField) %}
+    {% import '::widgets/custom_form_label_redesign.html.twig' as custom_form_label %}
+
     <div>
         <div class="multi-field">
             <div class="form__field field--multi-select select-weekday-user">
                 {{ form_widget(workingHoursField.days, {'attr': {'style': 'width: 100%'}}) }}
             </div><!-- form-field -->
             <div class="form__field field-hour-select hours-user">
-                {{ form_label(workingHoursField.timeStart) }}
+                {{ custom_form_label.widget(workingHoursField.timeStart) }}
                 {{ form_widget(workingHoursField.timeStart, {'attr': {'style': 'width: 6.5em'}}) }}
             </div><!-- form-field -->
             <div class="field-middle-text">to</div>
             <div class="form__field field-hour-select hours-user">
-                {{ form_label(workingHoursField.timeEnd) }}
+                {{ custom_form_label.widget(workingHoursField.timeEnd) }}
                 {{ form_widget(workingHoursField.timeEnd, {'attr': {'style': 'width: 6.5em'}}) }}
             </div><!-- form-field -->
 
             <div class="form__field field--website field-active-time">
-                {{ form_label(workingHoursField.openAllTime) }}
+                {{ custom_form_label.widget(workingHoursField.openAllTime) }}
                 {{ form_widget(workingHoursField.openAllTime) }}
             </div>
         </div><!-- multifield -->
@@ -96,7 +100,7 @@
         </div>
     </div>
 
-    {% for locale, name in localeBlocks %}
+    {% for locale, name in localeBlocks|reverse %}
         {% include ':redesign/blocks/businessProfile/subTabs/profile/language:translation.html.twig' with {'blockTitle': name, 'langPostfix': locale|capitalize} %}
     {% endfor %}
 </div>
@@ -148,8 +152,20 @@
         </div>
 
         <div class="form__row vertical__row">
-            {{ form_label(businessProfileForm.localities) }}
+            {{ custom_form_label.widget(businessProfileForm.areas) }}
+            {{ form_widget(businessProfileForm.areas) }}
+            {% include ':widgets:select_all_options.html.twig' %}
+        </div>
+
+        <div class="form__row vertical__row">
+            {{ custom_form_label.widget(businessProfileForm.localities) }}
             {{ form_widget(businessProfileForm.localities) }}
+            {% include ':widgets:select_all_options.html.twig' %}
+        </div>
+
+        <div class="form__row vertical__row">
+            {{ form_label(businessProfileForm.neighborhoods) }}
+            {{ form_widget(businessProfileForm.neighborhoods) }}
             {% include ':widgets:select_all_options.html.twig' %}
         </div>
 
@@ -177,6 +193,32 @@
                 {{ custom_form_label.widget(businessProfileForm.zipCode) }}
                 {{ form_widget(businessProfileForm.zipCode, {'attr': {'placeholder': ''}}) }}
             </div>
+        </div>
+
+        <div class="form__row vertical__row">
+            <div class="form__field field--website">
+                {{ custom_form_label.widget(businessProfileForm.latitude) }}
+                {{ form_widget(businessProfileForm.latitude, {'attr': {'placeholder': ''}}) }}
+            </div>
+        </div>
+
+        <div class="form__row vertical__row">
+            <div class="form__field field--website">
+                {{ custom_form_label.widget(businessProfileForm.longitude) }}
+                {{ form_widget(businessProfileForm.longitude, {'attr': {'placeholder': ''}}) }}
+            </div>
+        </div>
+
+        <div class="form__row vertical__row">
+            {{ form_label(businessProfileForm.map) }}
+            {{ form_widget(businessProfileForm.map) }}
+        </div>
+
+        <div class="form__row vertical__row">
+            <a href="#" class="btn green-btn geo-btn" id="geocodeButton">
+                <i class="fa fa-map-marker" aria-hidden="true"></i>
+                {% trans %}Geocode{% endtrans %}
+            </a>
         </div>
     </div>
 
@@ -220,7 +262,7 @@
              data-length="{{ businessProfileForm.collectionWorkingHours|length }}"
              data-prototype="{{ _self.working_hours_prototype(businessProfileForm.collectionWorkingHours.vars.prototype)|e }}">
 
-            <label class="title-label">{% trans %}Working hours{% endtrans %}</label>
+            <label class="title-label">{% trans %}Working hours{% endtrans %}*</label>
             <small class="field__description">{% trans %}business.working.hours.edit_note{% endtrans %}</small>
 
             <div class="form__row vertical__row">
@@ -237,32 +279,6 @@
                 <i class="fa fa-plus-square"></i>
                 {% trans %}Add working hours{% endtrans %}
             </button>
-        </div>
-
-        <div class="form__row vertical__row">
-            <div class="form__field field--website">
-                {{ custom_form_label.widget(businessProfileForm.latitude) }}
-                {{ form_widget(businessProfileForm.latitude) }}
-            </div>
-        </div>
-
-        <div class="form__row vertical__row">
-            <div class="form__field field--website">
-                {{ custom_form_label.widget(businessProfileForm.longitude) }}
-                {{ form_widget(businessProfileForm.longitude) }}
-            </div>
-        </div>
-
-        <div class="form__row vertical__row">
-            {{ form_label(businessProfileForm.map) }}
-            {{ form_widget(businessProfileForm.map) }}
-        </div>
-
-        <div class="form__row vertical__row">
-            <a href="#" class="btn green-btn geo-btn" id="geocodeButton">
-                <i class="fa fa-map-marker" aria-hidden="true"></i>
-                {% trans %}Geocode{% endtrans %}
-            </a>
         </div>
     </div>
 </div>
