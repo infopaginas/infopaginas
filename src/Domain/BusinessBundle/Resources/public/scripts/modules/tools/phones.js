@@ -14,48 +14,14 @@ define(['jquery', 'bootstrap', 'select2', 'maskedInput'], function( $, bootstrap
         this.handleRemove();
         this.handleSelect();
         this.addMaskEvent();
+        this.addOneIfEmpty();
     };
 
     phones.prototype.handleAdd = function() {
         var that = this;
 
         $(document).on('click', that.html.addLinkId, function(event) {
-
-            var phonesList = $( that.html.containerListId );
-
-            var phonesCount = phonesList.data('length');
-
-            // grab the prototype template
-            var newWidget = phonesList.attr('data-prototype');
-
-            var $newWidget = $(newWidget.replace(/__name__/g, phonesCount));
-
-            $newWidget.find( '.help-block' ).addClass( 'phone-error-section-' + phonesCount );
-
-            var formInput = $newWidget.find( '.form__field input' );
-
-            formInput.focus(function(){
-                $(this).parent().addClass("field-active");
-                $(this).parent().find('label').addClass("label-active");
-            });
-
-            formInput.blur(function(){
-                if($(this).val() === "") {
-                    $(this).parent().removeClass("field-active field-filled");
-                    $(this).parent().find('label').removeClass("label-active");
-                } else {
-                    $(this).parent().addClass("field-filled");
-                }
-            });
-
-            phonesCount++;
-
-            $newWidget.appendTo(phonesList);
-
-            phonesList.data('length', phonesCount);
-
-            that.handleSelect();
-            that.addMaskEvent();
+            that.add();
             event.preventDefault();
         });
     };
@@ -82,6 +48,54 @@ define(['jquery', 'bootstrap', 'select2', 'maskedInput'], function( $, bootstrap
         phones.bind( 'paste', function () {
             $( this ).val( '' );
         });
+    };
+
+    phones.prototype.add = function() {
+        var that = this,
+            phonesList  = $( that.html.containerListId ),
+            phonesCount = phonesList.data( 'length' ),
+            newWidget   = phonesList.attr( 'data-prototype' ),
+            $newWidget  = $( newWidget.replace( /__name__/g, phonesCount ) ),
+            formInput   = $newWidget.find( '.form__field input' );
+
+        $newWidget.find( '.help-block' ).addClass( 'phone-error-section-' + phonesCount );
+
+        formInput.focus(function(){
+            var $parent = $( this ).parent();
+
+            $parent.addClass( "field-active" );
+            $parent.find( 'label' ).addClass( "label-active" );
+        });
+
+        formInput.blur(function(){
+            var $parent = $( this ).parent();
+
+            if($( this ).val() === "") {
+                $parent.removeClass( "field-active field-filled") ;
+                $parent.find( 'label' ).removeClass( "label-active" );
+            } else {
+                $parent.addClass( "field-filled" );
+            }
+        });
+
+        phonesCount++;
+
+        $newWidget.appendTo( phonesList );
+
+        phonesList.data( 'length', phonesCount );
+
+        that.handleSelect();
+        that.addMaskEvent();
+    };
+
+    phones.prototype.addOneIfEmpty = function() {
+        var that        = this,
+            phonesList  = $( that.html.containerListId ),
+            phonesCount = phonesList.data('length');
+
+        if (!phonesCount) {
+            that.add()
+        }
     };
 
     //auto-init

@@ -15,3 +15,9 @@ domain_site_user_password_update:
     defaults: { _controller: DomainSiteBundle:User:passwordUpdate }
     options:
         expose: true
+
+domain_site_user_profile_upgrade:
+    path:     /profile/upgrade
+    defaults: { _controller: DomainSiteBundle:User:processUpgrade }
+    options:
+        expose: true

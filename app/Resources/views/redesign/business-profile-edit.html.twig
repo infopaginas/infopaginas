@@ -20,85 +20,67 @@
     <div class="main__container main__container--centered">
         <div class="main">
             <div class="container clearfix">
-                {% embed ':redesign/blocks/businessProfile/tabs:nav_tab.html.twig' with {'activeTab': 'profile'} %}
-                    {% block profileSubTab %}
-                        {% include ':redesign/blocks/businessProfile/subTabs/profile:nav_subtab.html.twig' %}
-                    {% endblock %}
-                {% endembed %}
-
+                {% if businessProfileForm.vars.value.getId() %}
+                    {% embed ':redesign/blocks/businessProfile/tabs:nav_tab.html.twig' with {'activeTab': 'profile'} %}{% endembed %}
+                {% endif %}
                 <section class="page-section" id="profile-user">
-                    <form class="form user-profile-form"
+                    <div class="form__section">
+                        <form class="form user-profile-form"
                           id="businessProfileRequestForm"
                           novalidate="novalidate"
                           name="{{ businessProfileForm.vars.name }}"
-                          {% if businessProfileForm.vars.value %}data-id="{{ businessProfileForm.vars.value.getId() }}"{% endif %}>
+                          {% if businessProfileForm.vars.value %}data-id="{{ businessProfileForm.vars.value.getId() }}"{% endif %}
+                        >
+                            <div id="new-profile-loading-spinner-container-id"></div>
 
-                        <div id="new-profile-loading-spinner-container-id"></div>
-
-                        <div class="tab-content">
-                            <div class="tab-pane active" id="general">
+                            <div class="tab-content">
                                 {% include ':redesign/blocks/businessProfile/subTabs/profile:general.html.twig' %}
                             </div>
-                            <div class="tab-pane" id="businessAddress">
-                                {% include ':redesign/blocks/businessProfile/subTabs/profile:address.html.twig' %}
+
+                            <div class="display-none">
+                                {{ form_rest(businessProfileForm) }}
                             </div>
 
                             {% if businessProfile is defined %}
-                                {% if media_tab_allowed_for_business(businessProfile) %}
-                                    <div class="tab-pane" id="media">
-                                        {% include ':redesign/blocks/businessProfile/subTabs/profile:media.html.twig' %}
+                                {% set updatedBy = businessProfile.getUpdatedUser() %}
+                                {% if updatedBy %}
+                                    <div class="form-column__container clearfix">
+                                        <div class="info-box">
+                                            <ul class="clearfix">
+                                                <li>
+                                                    <span class="info__label">
+                                                        {% trans %}Last date of profile update{% endtrans %}
+                                                    </span>
+                                                    <span class="info__content">
+                                                        {{ businessProfile.getUpdatedAt()|date(business_date_format) }}
+                                                    </span>
+                                                </li>
+                                                <li>
+                                                    <span class="info__label">
+                                                        {% trans %}Updated By{% endtrans %}
+                                                    </span>
+                                                    <span class="info__content">
+                                                        {{ updatedBy.getFirstname() }} {{ updatedBy.getLastname() }}
+                                                    </span>
+                                                </li>
+                                            </ul>
+                                        </div>
                                     </div>
                                 {% endif %}
                             {% endif %}
 
-                            <div class="tab-pane" id="socialNetworks">
-                                {% include ':redesign/blocks/businessProfile/subTabs/profile:social.html.twig' %}
-                            </div>
-                        </div>
+                            <div class="form__actions">
+                                {% if businessProfile is defined %}
+                                    {% set resetUrl = absolute_url(path('domain_business_profile_edit', {'id': businessProfile.id})) %}
+                                {% else %}
+                                    {% set resetUrl = absolute_url(path('domain_business_profile_create')) %}
+                                {% endif %}
 
-                        <div style="display:none;">
-                            {{ form_rest(businessProfileForm) }}
-                        </div>
-
-                        {% if businessProfile is defined %}
-                            {% set updatedBy = businessProfile.getUpdatedUser() %}
-                            {% if updatedBy %}
-                                <div class="form-column__container clearfix">
-                                    <div class="info-box">
-                                        <ul class="clearfix">
-                                            <li>
-                                                <span class="info__label">
-                                                    {% trans %}Last date of profile update{% endtrans %}
-                                                </span>
-                                                <span class="info__content">
-                                                    {{ businessProfile.getUpdatedAt()|date(business_date_format) }}
-                                                </span>
-                                            </li>
-                                            <li>
-                                                <span class="info__label">
-                                                    {% trans %}Updated By{% endtrans %}
-                                                </span>
-                                                <span class="info__content">
-                                                    {{ updatedBy.getFirstname() }} {{ updatedBy.getLastname() }}
-                                                </span>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            {% endif %}
-                        {% endif %}
-
-                        <div class="form__actions">
-                            {% if businessProfile is defined %}
-                                {% set resetUrl = absolute_url(path('domain_business_profile_edit', {'id': businessProfile.id})) %}
-                            {% else %}
-                                {% set resetUrl = absolute_url(path('domain_business_profile_create')) %}
-                            {% endif %}
-
-                            <a href="{{ resetUrl }}" class="button button--text">{% trans %}Reset{% endtrans %}</a>
-                            <button type="submit" class="button button--action" id="saveBusinessProfile">{% trans %}Save changes{% endtrans %}</button>
-                        </div><!-- form-actions -->
-                    </form>
+                                <a href="{{ resetUrl }}" class="button button--text">{% trans %}Reset{% endtrans %}</a>
+                                <button type="submit" class="button button--action" id="saveBusinessProfile">{% trans %}Save changes{% endtrans %}</button>
+                            </div><!-- form-actions -->
+                        </form>
+                    </div>
                 </section>
             </div>
         </div>

@@ -73,6 +73,7 @@ Social networks: Social networks
 miles: miles
 Filter: Filter
 Submit: Submit
+Confirm: Confirm
 
 Homepage: Homepage
 User profile: User profile
@@ -386,6 +387,9 @@ Close list: Close list
 Go to watch...: Go to watch...
 Sort: Sort
 View: View
+From: From
+To: To
+Status: Status
 
 business_profile.seoTitle: name | company
 business_profile.seoDescription.main: name in location
@@ -434,6 +438,9 @@ business_profile.video_count_limit: Only one video can be uploaded at a time
 business_profile.max_length: Please use max {{ limit }} symbols
 business_profile.logo.image_count_limit: Error: only single logo is allowed
 business_profile.background.image_count_limit: Error: only single background is allowed
+business_profile.lang.es: in Spanish
+business_profile.lang.en: in English
+
 Updated By: Updated By
 Back to Business Profile: Back to Business Profile
 Create Profile: Create Profile
@@ -452,10 +459,11 @@ Show on Map: Show on Map
 Successfully saved profile data: Successfully saved profile data
 Successfully updated password: Successfully updated password
 Validation failure: Validation failure
-business_profile.message.created: Business profile was successfully created (changes will be applied after admin confirmation)
+business_profile.message.created: Thanks for creating the profile. Our team will review the information in the next 7 days. You will receive an email once the profile is approved and upload to the directory.
 business_profile.message.updated: Business profile was successfully updated (changes will be applied after admin confirmation)
 business_profile.message.closed: Business profile was successfully updated (changes will be applied after admin confirmation)
 business_profile.message.welcome: Welcome
+business_profile.message.upgrade: Thank you! Our team will contact you soon.
 user.reset_password_request.email.not_found: User {-email-} doesn't exists
 business_profile.seoDescription.search: Find best {-categories-} in {-locality-}
 business_profile.seoTitle.search: categories in locality
@@ -696,3 +704,21 @@ emergency.catalog_search.empty: No businesses here yet
 emergency.menu.link: María Working Hours
 
 slider.title: Consider the following similar businesses
+
+user_profile:
+  label:
+    last_month_statistics: Last month statistics
+    edit_business: Edit bussines
+    delete_business: Delete bussines
+    upgrade_now: Upgrade Now
+    upgrade_now!: Upgrade Now!
+    when_call: When can we call you?
+    your_phone: Your phone
+  tooltip:
+    status: Current status of your business
+    impression: How many times the business profile has been viewed
+    call_mob_button: How many times user have attempted to call your business
+    direction_button: How many times users have looked for your business's location
+  text:
+    to_make_more_popular: Want to make your business more popular?
+    give_phone: Please give us your phone number so that we could present to you a unique offer

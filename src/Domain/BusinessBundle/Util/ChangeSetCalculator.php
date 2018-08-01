@@ -372,11 +372,11 @@ class ChangeSetCalculator
                         $oldIds[] = $item->getId();
                     }
 
-                    asort($newIds);
-                    asort($oldIds);
+                    sort($newIds);
+                    sort($oldIds);
 
                     if ($newIds != $oldIds) {
-                        $updated = false;
+                        $updated = true;
                     }
 
                 } elseif ($valueOld and $valueOld->isEmpty() and !$valueNew) {
@@ -401,11 +401,11 @@ class ChangeSetCalculator
                         $oldIds[] = $item->getId();
                     }
 
-                    asort($newIds);
-                    asort($oldIds);
+                    sort($newIds);
+                    sort($oldIds);
 
                     if ($newIds != $oldIds) {
-                        $updated = false;
+                        $updated = true;
                     }
                 } else {
                     $updated = true;

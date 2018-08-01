@@ -19,7 +19,7 @@ Log In: Ingresar
 or: o
 Log In with: Login con
 New to Infopaginas?: Nuevo en Infopáginas?
-Create account: Crear cuenta
+Create account: Crear perfil
 By joining Infopaginas you agree to our: Al unirse a Infopáginas está de acuerdo con nuestra
 Terms of Service: Términos de servicio
 and: y
@@ -29,7 +29,7 @@ First Name: Nombre
 Last Name: Apellido
 Confirm Password: Confirmar Contraseña
 Location: Ubicación
-Create Account: Crear Cuenta
+Create Account: Crear perfil
 Already have an account?: ¿Ya tiene una cuenta?
 Reset Password: Restablecer contraseña
 Update Password: Actualizar contraseña
@@ -73,6 +73,7 @@ Social networks: Redes Sociales
 miles: millas
 Filter: Filtro
 Submit: Enviar
+Confirm: Confirmar
 
 Homepage: Página principal
 User profile: Perfil
@@ -386,6 +387,9 @@ Close list: Cerrar lista
 Go to watch...: Ir a ver...
 Sort: Ordenar
 View: Ver
+From: De
+To: Hasta
+Status: Estado
 
 business_profile.seoTitle: name | company
 business_profile.seoDescription.main: name en location
@@ -434,6 +438,9 @@ business_profile.video_count_limit: Solo se puede subir un vídeo a la vez
 business_profile.max_length: Por favor, use max {{ limit }} símbolos
 business_profile.logo.image_count_limit: Error: sólo se permite un solo logotipo
 business_profile.background.image_count_limit: Error: sólo se permite un fondo único
+business_profile.lang.es: en espanol
+business_profile.lang.en: en ingles
+
 Updated By: Actualizado por
 Back to Business Profile: Volver al perfil del negocio
 Create Profile: Crear perfil
@@ -452,10 +459,11 @@ Show on Map: Ir al Mapa
 Successfully saved profile data: Datos de perfil guardados correctamente
 Successfully updated password: Contraseña actualizada correctamente
 Validation failure: Error de validación
-business_profile.message.created: El perfil de negocio se creó correctamente (los cambios se aplicarán después de la confirmación del administrador)
+business_profile.message.created: Gracias por crear el perfil. Nuestro equipo revisará la información en los próximos 7 días. Recibirá un correo electrónico una vez que se apruebe el perfil y se cargue en el directorio.
 business_profile.message.updated: El perfil de la empresa se actualizó correctamente (los cambios se aplicarán después de la confirmación del administrador)
 business_profile.message.closed: El perfil de la empresa se actualizó correctamente (los cambios se aplicarán después de la confirmación del administrador)
 business_profile.message.welcome: Bienvenido
+business_profile.message.upgrade: ¡Gracias! Nuestro equipo se comunicará con usted pronto.
 user.reset_password_request.email.not_found: El usuario {-email-} no existe
 business_profile.seoDescription.search: Encuentra el mejor {-categories-} en {-locality-}
 business_profile.seoTitle.search: categories en locality
@@ -696,3 +704,21 @@ emergency.catalog_search.empty: No hay negocios aquí todavía
 emergency.menu.link: Horarios María
 
 slider.title: Considera estos negocios similares
+
+user_profile:
+  label:
+    last_month_statistics: Las estadísticas del mes pasado
+    edit_business: Editar negocio
+    delete_business: Eliminar negocio
+    upgrade_now: Solicitar ahora
+    upgrade_now!: ¡Solicitar ahora!
+    when_call: ¿Cuándo podemos llamaros?
+    your_phone: Vuestro telefono
+  tooltip:
+    status: Estado actual de su negocio
+    impression: Cuántas veces se ha visto el perfil comercial
+    call_mob_button: Cuantas veces el usuario ha intentado llamar a su empresa
+    direction_button: Cuántas veces los usuarios han buscado la ubicación de su empresa
+  text:
+    to_make_more_popular: ¿Quieres hacer tu negocio más popular?
+    give_phone: Por favor denos su número de teléfono para que podamos contactarlo con una oferta única

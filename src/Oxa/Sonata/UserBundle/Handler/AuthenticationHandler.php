@@ -62,15 +62,6 @@ class AuthenticationHandler implements AuthenticationSuccessHandlerInterface, Au
 
         if ($this->security->isGranted($adminRoles)) {
             $redirect = $this->router->generate('sonata_admin_dashboard');
-        } else {
-            $session = $request->getSession();
-
-            if ($session) {
-                $session->getFlashBag()->add(
-                    BusinessFormHandlerInterface::MESSAGE_BUSINESS_PROFILE_FLASH_GROUP,
-                    $this->translator->trans(BusinessFormHandlerInterface::MESSAGE_BUSINESS_PROFILE_WELCOME)
-                );
-            }
         }
 
         return new JsonResponse([

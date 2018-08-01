@@ -3,44 +3,31 @@
 namespace Domain\BusinessBundle\Form\Type;
 
 use Domain\BusinessBundle\Entity\BusinessProfile;
-use Domain\BusinessBundle\Entity\Category;
-use Domain\BusinessBundle\Entity\Media\BusinessGallery;
-use Domain\BusinessBundle\Entity\PaymentMethod;
 use Domain\BusinessBundle\Entity\SubscriptionPlan;
 use Domain\BusinessBundle\Model\SubscriptionPlanInterface;
 use Domain\BusinessBundle\Repository\AreaRepository;
-use Domain\BusinessBundle\Repository\CategoryRepository;
 use Domain\BusinessBundle\Repository\LocalityRepository;
 use Domain\BusinessBundle\Repository\NeighborhoodRepository;
 use Domain\BusinessBundle\Repository\PaymentMethodRepository;
+use Domain\BusinessBundle\Validator\Constraints\BusinessProfilePhoneTypeValidator;
 use Domain\BusinessBundle\Validator\Constraints\BusinessProfileWorkingHourTypeValidator;
 use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
-use Domain\BusinessBundle\Validator\Constraints\BusinessProfilePhoneTypeValidator;
-use Domain\SiteBundle\Validator\Constraints\ConstraintUrlExpanded;
 use Ivory\CKEditorBundle\Form\Type\CKEditorType;
-use Oxa\Sonata\MediaBundle\Model\OxaMediaInterface;
-use Oxa\Sonata\MediaBundle\Entity\Media as SonataMedia;
 use Oxa\VideoBundle\Form\Type\VideoMediaType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
-use Symfony\Component\Form\Extension\Core\Type\IntegerType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
-use Symfony\Component\Security\Core\SecurityContext;
 use Symfony\Component\Validator\Constraints\Count;
-use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Type;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -53,6 +40,11 @@ class BusinessProfileFormType extends AbstractType
 {
     protected $isUserSectionRequired = false;
 
+    /**
+     * BusinessProfileFormType constructor.
+     *
+     * @param bool $isUserSectionRequired
+     */
     public function __construct($isUserSectionRequired = false)
     {
         $this->isUserSectionRequired = $isUserSectionRequired;
@@ -76,12 +68,6 @@ class BusinessProfileFormType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        if ($this->isUserSectionRequired) {
-            $emailConstraints = [new NotBlank()];
-        } else {
-            $emailConstraints = [];
-        }
-
         $builder
             ->add('name', TextType::class, [
                 'label'    => 'Name',
@@ -100,7 +86,7 @@ class BusinessProfileFormType extends AbstractType
                 'allow_delete' => true,
                 'entry_type'   => BusinessProfilePhoneType::class,
                 'label' => 'Phone number',
-                'required' => false,
+                'required' => true,
             ])
             ->add(BusinessProfilePhoneTypeValidator::ERROR_BLOCK_PATH, TextType::class, [
                 'mapped'   => false,
@@ -114,7 +100,7 @@ class BusinessProfileFormType extends AbstractType
                 'allow_delete' => true,
                 'entry_type'   => BusinessProfileWorkingHourType::class,
                 'label' => 'Working Hours',
-                'required' => false,
+                'required' => true,
             ])
             ->add(BusinessProfileWorkingHourTypeValidator::ERROR_BLOCK_PATH, TextType::class, [
                 'mapped' => false,
@@ -129,7 +115,9 @@ class BusinessProfileFormType extends AbstractType
                     'placeholder' => 'email.example.placeholder',
                 ],
                 'label' => 'Email',
-                'constraints' => $emailConstraints,
+                'constraints' =>  [
+                    new NotBlank(),
+                ],
             ])
             ->add('paymentMethods', EntityType::class, [
                 'attr' => [
@@ -140,7 +128,7 @@ class BusinessProfileFormType extends AbstractType
                 'class' => 'Domain\BusinessBundle\Entity\PaymentMethod',
                 'label' => 'Payment methods',
                 'label_attr' => [
-                    'class' => 'title-label'
+                    'class' => 'title-label',
                 ],
                 'multiple' => true,
                 'query_builder' => function (PaymentMethodRepository $repository) {
@@ -158,36 +146,36 @@ class BusinessProfileFormType extends AbstractType
             ])
             ->add('streetAddress', TextType::class, [
                 'attr' => [
-                    'class' => 'form-control',
+                    'class'       => 'form-control',
                     'placeholder' => 'business.add.streetAddress.placeholder',
                 ],
                 'label' => 'Street address',
             ])
             ->add('map', GoogleMapFrontType::class, [
-                'mapped' => false,
-                'label'  => 'Map',
+                'mapped'     => false,
+                'label'      => 'Map',
                 'label_attr' => [
-                    'class' => 'title-label'
+                    'class' => 'title-label',
                 ],
             ])
             ->add('latitude', NumberType::class, [
-                'attr' => [
-                    'class' => 'form-control',
+                'attr'        => [
+                    'class'       => 'form-control',
                     'placeholder' => 'latitude.example.placeholder',
                 ],
-                'label' => 'Latitude',
-                'required' => false,
+                'label'       => 'Latitude',
+                'required'    => false,
                 'constraints' => [
                     new Type('float'),
                 ],
             ])
             ->add('longitude', NumberType::class, [
-                'attr' => [
-                    'class' => 'form-control',
+                'attr'        => [
+                    'class'       => 'form-control',
                     'placeholder' => 'longitude.example.placeholder',
                 ],
-                'label' => 'Longitude',
-                'required' => false,
+                'label'       => 'Longitude',
+                'required'    => false,
                 'constraints' => [
                     new Type('float'),
                 ],
@@ -200,7 +188,7 @@ class BusinessProfileFormType extends AbstractType
                 'class' => 'Domain\BusinessBundle\Entity\Locality',
                 'label' => 'Catalog Locality',
                 'label_attr' => [
-                    'class' => 'title-label'
+                    'class' => 'title-label',
                 ],
                 'query_builder' => function (LocalityRepository $repository) {
                     return $repository->getAvailableLocalitiesQb();
@@ -228,76 +216,6 @@ class BusinessProfileFormType extends AbstractType
             ])
             ->add('hideAddress', CheckboxType::class, [
                 'label' => 'Hide Address',
-                'required' => false,
-            ])
-            ->add('hideMap', CheckboxType::class, [
-                'label' => 'Hide Map',
-                'required' => false,
-            ])
-            ->add('twitterURL', TextType::class, [
-                'attr' => [
-                    'class' => 'form-control',
-                    'placeholder' => 'twitter.example.email.placeholder',
-                ],
-                'constraints' => [
-                    new ConstraintUrlExpanded(),
-                ],
-                'label' => 'Twitter',
-                'required' => false,
-            ])
-            ->add('facebookURL', TextType::class, [
-                'attr' => [
-                    'class' => 'form-control',
-                    'placeholder' => 'facebook.example.email.placeholder',
-                ],
-                'constraints' => [
-                    new ConstraintUrlExpanded(),
-                ],
-                'label' => 'Facebook',
-                'required' => false,
-            ])
-            ->add('googleURL', TextType::class, [
-                'attr' => [
-                    'class' => 'form-control',
-                    'placeholder' => 'plus.google.example.email.placeholder',
-                ],
-                'constraints' => [
-                    new ConstraintUrlExpanded(),
-                ],
-                'label' => 'Google Plus',
-                'required' => false,
-            ])
-            ->add('youtubeURL', TextType::class, [
-                'attr' => [
-                    'class' => 'form-control',
-                    'placeholder' => 'youtube.example.email.placeholder',
-                ],
-                'constraints' => [
-                    new ConstraintUrlExpanded(),
-                ],
-                'label' => 'Youtube',
-                'required' => false,
-            ])
-            ->add('instagramURL', TextType::class, [
-                'attr' => [
-                    'class' => 'form-control',
-                    'placeholder' => 'instagram.example.email.placeholder',
-                ],
-                'constraints' => [
-                    new ConstraintUrlExpanded(),
-                ],
-                'label' => 'Instagram',
-                'required' => false,
-            ])
-            ->add('tripAdvisorURL', TextType::class, [
-                'attr' => [
-                    'class' => 'form-control',
-                    'placeholder' => 'tripAdvisor.example.email.placeholder',
-                ],
-                'constraints' => [
-                    new ConstraintUrlExpanded(),
-                ],
-                'label' => 'TripAdvisor',
                 'required' => false,
             ])
         ;
@@ -372,14 +290,38 @@ class BusinessProfileFormType extends AbstractType
      * @param BusinessProfile $businessProfile
      * @param FormInterface $form
      */
+    private function setupPremiumPlatinumPlanFormFields(BusinessProfile $businessProfile, FormInterface $form)
+    {
+        $this->setupPremiumGoldPlanFormFields($businessProfile, $form);
+
+        $form->add('videoFile', FileType::class, [
+            'attr' => [
+                'style' => 'display:none',
+                'accept' => 'mov, avi, mp4, wmv, flv, video/quicktime, application/x-troff-msvideo, video/avi,
+                    video/msvideo, video/x-msvideo, video/mp4, video/x-ms-wmv, video/x-flv',
+            ],
+            'data_class' => null,
+            'mapped' => false,
+        ]);
+
+        $form->add('video', VideoMediaType::class, [
+            'data_class' => 'Oxa\VideoBundle\Entity\VideoMedia',
+            'by_reference' => false,
+        ]);
+    }
+
+    /**
+     * @param BusinessProfile $businessProfile
+     * @param FormInterface $form
+     */
     private function setupServiceAreasFormFields(BusinessProfile $businessProfile, FormInterface $form)
     {
         $milesOfMyBusinessFieldOptions = [
-            'attr' => [
-                'class' => 'form-control',
+            'attr'     => [
+                'class'       => 'form-control',
                 'placeholder' => '100',
             ],
-            'label' => 'Within miles of my business',
+            'label'    => 'Within miles of my business',
             'required' => true,
         ];
 
@@ -402,15 +344,15 @@ class BusinessProfileFormType extends AbstractType
         ];
 
         $localitiesFieldOptions = [
-            'attr' => [
-                'class' => 'form-control selectize-control',
+            'attr'          => [
+                'class'       => 'form-control selectize-control',
                 'placeholder' => 'Select Localities',
-                'multiple' => true,
+                'multiple'    => true,
             ],
-            'class' => 'Domain\BusinessBundle\Entity\Locality',
-            'label' => 'Localities',
-            'label_attr' => [
-                'class' => 'title-label'
+            'class'         => 'Domain\BusinessBundle\Entity\Locality',
+            'label'         => 'Localities',
+            'label_attr'    => [
+                'class' => 'title-label',
             ],
             'multiple'      => true,
             'required'      => true,
@@ -460,30 +402,6 @@ class BusinessProfileFormType extends AbstractType
      * @param BusinessProfile $businessProfile
      * @param FormInterface $form
      */
-    private function setupPremiumPlatinumPlanFormFields(BusinessProfile $businessProfile, FormInterface $form)
-    {
-        $this->setupPremiumGoldPlanFormFields($businessProfile, $form);
-
-        $form->add('videoFile', FileType::class, [
-            'attr' => [
-                'style' => 'display:none',
-                'accept' => 'mov, avi, mp4, wmv, flv, video/quicktime, application/x-troff-msvideo, video/avi,
-                    video/msvideo, video/x-msvideo, video/mp4, video/x-ms-wmv, video/x-flv',
-            ],
-            'data_class' => null,
-            'mapped' => false,
-        ]);
-
-        $form->add('video', VideoMediaType::class, [
-            'data_class' => 'Oxa\VideoBundle\Entity\VideoMedia',
-            'by_reference' => false,
-        ]);
-    }
-
-    /**
-     * @param BusinessProfile $businessProfile
-     * @param FormInterface $form
-     */
     private function setupPremiumGoldPlanFormFields(BusinessProfile $businessProfile, FormInterface $form)
     {
         $this->setupPremiumPlusPlanFormFields($businessProfile, $form);
@@ -512,7 +430,7 @@ class BusinessProfileFormType extends AbstractType
                     'multiple' => true,
                 ]
             )
-            ->add('images', \Symfony\Component\Form\Extension\Core\Type\CollectionType::class, [
+            ->add('images', CollectionType::class, [
                 'entry_type' => BusinessGalleryType::class,
                 'required' => false,
                 'allow_add' => true,
@@ -599,25 +517,7 @@ class BusinessProfileFormType extends AbstractType
                 'attr' => [
                     'class' => 'text-editor',
                 ],
-            ])
-            ->add('product' . $localePostfix, TextareaType::class, [
-                'attr' => [
-                    'rows' => 3,
-                ],
-                'label'    => 'Products',
-                'required' => false,
-                'mapped'   => false,
-                'data'     => $businessProfile->getTranslation('product', $locale),
-            ])
-            ->add('brands' . $localePostfix, TextareaType::class, [
-                'attr' => [
-                    'rows' => 3,
-                ],
-                'label'    => 'Brands',
-                'required' => false,
-                'mapped'   => false,
-                'data'     => $businessProfile->getTranslation('brands', $locale),
-            ])
+            ]);
         ;
     }
 
@@ -645,8 +545,8 @@ class BusinessProfileFormType extends AbstractType
     {
         $resolver->setDefaults([
             'allow_extra_fields' => true,
-            'data_class' => 'Domain\BusinessBundle\Entity\BusinessProfile',
-            'validation_groups' => function (FormInterface $form) {
+            'data_class'         => 'Domain\BusinessBundle\Entity\BusinessProfile',
+            'validation_groups'  => function (FormInterface $form) {
                 /** @var BusinessProfile $profile */
                 $profile = $form->getData();
 
