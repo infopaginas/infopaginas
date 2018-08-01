@@ -255,59 +255,12 @@ class BusinessProfileFormType extends AbstractType
             /** @var BusinessProfile $businessProfile */
             $businessProfile = $event->getData() !== null ? $event->getData() : new BusinessProfile();
 
-            $subscription = (new SubscriptionPlan())->setCode(SubscriptionPlanInterface::CODE_FREE);
-
-            if ($businessProfile !== null && $businessProfile->getSubscriptionPlan() !== null) {
-                $subscription = $businessProfile->getSubscriptionPlan();
-            }
-
             $this->setupServiceAreasFormFields($businessProfile, $event->getForm());
-
-            switch ($subscription->getCode()) {
-                case SubscriptionPlanInterface::CODE_PRIORITY:
-                    $this->setupPriorityPlanFormFields($businessProfile, $event->getForm());
-                    break;
-                case SubscriptionPlanInterface::CODE_PREMIUM_PLUS:
-                    $this->setupPremiumPlusPlanFormFields($businessProfile, $event->getForm());
-                    break;
-                case SubscriptionPlanInterface::CODE_PREMIUM_GOLD:
-                    $this->setupPremiumGoldPlanFormFields($businessProfile, $event->getForm());
-                    break;
-                case SubscriptionPlanInterface::CODE_PREMIUM_PLATINUM:
-                    $this->setupPremiumPlatinumPlanFormFields($businessProfile, $event->getForm());
-                    break;
-                default:
-                    $this->setupFreePlanFormFields($businessProfile, $event->getForm());
-            }
 
             foreach (LocaleHelper::getLocaleList() as $locale => $name) {
                 $this->addTranslationBlock($event->getForm(), $businessProfile, $locale);
             }
         });
-    }
-
-    /**
-     * @param BusinessProfile $businessProfile
-     * @param FormInterface $form
-     */
-    private function setupPremiumPlatinumPlanFormFields(BusinessProfile $businessProfile, FormInterface $form)
-    {
-        $this->setupPremiumGoldPlanFormFields($businessProfile, $form);
-
-        $form->add('videoFile', FileType::class, [
-            'attr' => [
-                'style' => 'display:none',
-                'accept' => 'mov, avi, mp4, wmv, flv, video/quicktime, application/x-troff-msvideo, video/avi,
-                    video/msvideo, video/x-msvideo, video/mp4, video/x-ms-wmv, video/x-flv',
-            ],
-            'data_class' => null,
-            'mapped' => false,
-        ]);
-
-        $form->add('video', VideoMediaType::class, [
-            'data_class' => 'Oxa\VideoBundle\Entity\VideoMedia',
-            'by_reference' => false,
-        ]);
     }
 
     /**
@@ -399,74 +352,6 @@ class BusinessProfileFormType extends AbstractType
     }
 
     /**
-     * @param BusinessProfile $businessProfile
-     * @param FormInterface $form
-     */
-    private function setupPremiumGoldPlanFormFields(BusinessProfile $businessProfile, FormInterface $form)
-    {
-        $this->setupPremiumPlusPlanFormFields($businessProfile, $form);
-    }
-
-    /**
-     * @param BusinessProfile $businessProfile
-     * @param FormInterface $form
-     */
-    private function setupPremiumPlusPlanFormFields(BusinessProfile $businessProfile, FormInterface $form)
-    {
-        $this->setupPriorityPlanFormFields($businessProfile, $form);
-
-        $form
-            ->add(
-                'files',
-                'file',
-                [
-                    'attr' => [
-                        'style' => 'display:none',
-                        'accept' => 'jpg, png, gif, bmp, image/jpeg, image/pjpeg, image/png, image/gif,
-                            image/bmp, image/x-windows-bmp',
-                    ],
-                    'data_class' => null,
-                    'mapped' => false,
-                    'multiple' => true,
-                ]
-            )
-            ->add('images', CollectionType::class, [
-                'entry_type' => BusinessGalleryType::class,
-                'required' => false,
-                'allow_add' => true,
-                'allow_delete' => true,
-                'allow_extra_fields' => true,
-            ])
-            ->add('logo', BusinessLogoType::class, [
-                'data_class' => 'Oxa\Sonata\MediaBundle\Entity\Media',
-                'by_reference' => false,
-            ])
-            ->add('background', BusinessBackgroundType::class, [
-                'data_class' => 'Oxa\Sonata\MediaBundle\Entity\Media',
-                'by_reference' => false,
-            ])
-        ;
-
-        foreach (LocaleHelper::getLocaleList() as $locale => $name) {
-            $this->addSloganTranslationBlock($form, $businessProfile, $locale);
-        }
-    }
-
-    /**
-     * @param BusinessProfile $businessProfile
-     * @param FormInterface $form
-     */
-    private function setupPriorityPlanFormFields(BusinessProfile $businessProfile, FormInterface $form)
-    {
-        $this->setupFreePlanFormFields($businessProfile, $form);
-    }
-
-    private function setupFreePlanFormFields(BusinessProfile $businessProfile, FormInterface $form)
-    {
-
-    }
-
-    /**
      * @param FormBuilderInterface  $builder
      */
     private function addCategoryAutoComplete($builder)
@@ -519,23 +404,6 @@ class BusinessProfileFormType extends AbstractType
                 ],
             ]);
         ;
-    }
-
-    /**
-     * @param BusinessProfile $businessProfile
-     * @param FormInterface $form
-     * @param string $locale
-     */
-    private function addSloganTranslationBlock(FormInterface $form, BusinessProfile $businessProfile, $locale)
-    {
-        $localePostfix = LocaleHelper::getLangPostfix($locale);
-
-        $form->add('slogan' . $localePostfix, TextType::class, [
-            'label' => 'Slogan',
-            'required' => false,
-            'mapped'   => false,
-            'data'     => $businessProfile->getTranslation('slogan', $locale),
-        ]);
     }
 
     /**
