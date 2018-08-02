@@ -113,22 +113,9 @@
                                                     <div class="bps__business">
                                                         {{ business.getName() }}
                                                     </div>
-                                                    {% if business.getIsActive() %}
-                                                        <div class="bps__status active">
-                                                            {{ business.getActiveStatus()|capitalize }}
-                                                        </div>
-                                                    {% else %}
-                                                        {% if not business.getIsClosed() %}
-                                                            <div class="bps__status pending">
-                                                                ({% trans %}Pending{% endtrans %})
-                                                            </div>
-                                                        {% else %}
-                                                            <div class="bps__status closed">
-                                                                ({% trans %}Closed{% endtrans %})
-                                                            </div>
-                                                        {% endif %}
-                                                    {% endif %}
-
+                                                    <div class="bps__status {{ business.getStatusForUser|lower}}">
+                                                        {{ business.getStatusForUser() }}
+                                                    </div>
                                                     {% for action, translation in actions %}
                                                         <div class="bps__mobile">{{ translation|trans }}</div>
                                                         <div>
