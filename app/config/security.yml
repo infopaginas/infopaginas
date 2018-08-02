@@ -83,6 +83,7 @@ security:
         - { path: ^/user/profile$, role: ROLE_CONSUMER }
         - { path: ^/business/profile/view/*, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/business/profile/*, role: ROLE_CONSUMER }
+        - { path: ^/suggest-edits/*, role: ROLE_CONSUMER }
 
         # youtube oauth
         - { path: ^/youtube/oauth/*, role: [ROLE_ADMINISTRATOR] }

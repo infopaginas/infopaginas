@@ -52,9 +52,13 @@ define(
                         $( 'a[href="#' + tabId + '"]' ).click();
                     }
                 } else {
-                    this.errorHandler.enableFieldsHighlight( { 'name': [response.message] } );
+                    this.addFormError( response.message );
                 }
             }
+        };
+
+        form.prototype.addFormError = function ( message ) {
+            this.errorHandler.enableFieldsHighlight( { 'name': [message] } );
         };
 
         //actions on ajax failure

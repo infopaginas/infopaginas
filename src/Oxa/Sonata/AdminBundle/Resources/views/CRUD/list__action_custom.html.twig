@@ -1,0 +1,6 @@
+{% if admin.isCustomGranted(object) %}
+    <a href="{{ admin.getCustomUrl(object) }}" class="btn btn-sm btn-default show_link btn-list-action"
+       title="{{ admin.getCustomTitle()|trans({}, 'SonataAdminBundle') }}">
+        <i class="glyphicon {{ admin.getCustomIconCssClass }}"></i>
+    </a>
+{% endif %}

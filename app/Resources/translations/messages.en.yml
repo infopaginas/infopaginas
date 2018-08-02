@@ -722,3 +722,8 @@ user_profile:
   text:
     to_make_more_popular: Want to make your business more popular?
     give_phone: Please give us your phone number so that we could present to you a unique offer
+
+suggest_edits:
+  title: Suggest Edits for %name%
+  button: Suggest edits
+  validation_message: You have not changed anything, are you sure you want to leave?

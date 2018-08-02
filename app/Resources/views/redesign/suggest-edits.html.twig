@@ -1,0 +1,173 @@
+{% extends "redesign/layout/base.html.twig" %}
+{% import '::widgets/custom_form_label_redesign.html.twig' as custom_form_label %}
+
+{% block breadcrumbs %}
+    {#{% include ':redesign/blocks:breadcrumbs.html.twig' %}#}
+{% endblock %}
+
+{% block bodyClass %}generic-page article-page has-sidebar{% endblock %}
+
+{% block body %}
+    <div class="main__container main__container--centered">
+        <div class="container clearfix">
+            <div class="main main-column">
+                <article class="article">
+                    <h1><strong>{% trans with {'%name%': businessProfile.name|escape} %}suggest_edits.title{% endtrans %}</strong></h1>
+                </article>
+                <section class="page-section">
+                    {{ form_start(form) }}
+                        <div class="form__section">
+                            {{ form_label(form.name) }}
+                            <div class="form-column__container clearfix">
+                                <div class="form__column">
+                                    <div class="form__row">
+                                        {{ businessProfile.name }}
+                                    </div>
+                                </div>
+                                <div class="form__column">
+                                    <div class="form__row">
+                                        {{ form_widget(form.name) }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form__section">
+                            {{ form_label(form.website) }}
+                            <div class="form-column__container clearfix">
+                                <div class="form__column">
+                                    <div class="form__row">
+                                        {{ businessProfile.website }}
+                                    </div>
+                                </div>
+                                <div class="form__column">
+                                    <div class="form__row">
+                                        {{ form_widget(form.website) }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form__section">
+                            {{ form_label(form.phones) }}
+                            <div class="form-column__container clearfix">
+                                <div class="form__column">
+                                    <div class="highlights">
+                                        <div class="highlights__item">
+                                            <ul>
+                                                {% for phone in businessProfile.phones %}
+                                                    <li {% if phone.type == BUSINESS_PROFILE_PHONE.TYPE.MAIN %}class="main-phone"{% endif %} title="{{ ('business_profile.phone.tooltip.' ~ phone.type)|trans }}">
+                                                        <i class="fa {{ get_business_profile_phone_icon(phone) }}"></i>
+                                                        <a href="tel:{{ phone.phone }}" class="hide-desktop phone-call" data-id="{{ businessProfile.id }}" data-type="callMobButton" data-bw-gtm-event-click data-bw-gtm-label="{{ phone.phone }}">{{ phone.phone }}</a>
+                                                        <span class="hide-mobile">{{ phone.phone }}</span>
+                                                    </li>
+                                                {% endfor %}
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form__column">
+                                    <div class="form__row">
+                                        {{ form_widget(form.phones) }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form__section">
+                            {{ form_label(form.workingHours) }}
+                            <div class="form-column__container clearfix">
+                                <div class="form__column">
+                                    <div class="form__row">
+                                        <div class="full-width display-block">
+                                            {% include ':redesign/blocks/workingHours:working_hours_daily_list.html.twig' with { 'businessProfile': businessProfile, 'collapsed': false } %}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form__column">
+                                    <div class="form__row">
+                                        {{ form_widget(form.workingHours) }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form__section">
+                            {{ form_label(form.streetAddress) }}
+                            <div class="form-column__container clearfix">
+                                <div class="form__column">
+                                    <div class="form__row">
+                                        {% if businessProfile.customAddress %}
+                                            {{ businessProfile.customAddress }}
+                                        {% else %}
+                                            <strong>{{ businessProfile.streetAddress }}</strong>,
+                                            {{ businessProfile.city }}, {{ businessProfile.country }} {{ businessProfile.zipCode }}
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="form__column">
+                                    <div class="form__row">
+                                        {{ form_widget(form.streetAddress) }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form__section">
+                            {{ form_label(form.socialLinks) }}
+                            <div class="form-column__container clearfix">
+                                <div class="form__column">
+                                    <div class="form__row">
+                                        <dl>
+                                            {% set socials = ['facebook', 'twitter', 'google', 'youtube', 'instagram', 'tripAdvisor'] %}
+                                            {% for social in socials %}
+                                                {% set socialUrl = attribute(businessProfile, social ~ 'URL') %}
+                                                {% if socialUrl %}
+                                                    <dt>{{ social[:1]|upper ~ social[1:] }}</dt>
+                                                    <dd><a href="{{ socialUrl|escape('html_attr') }}" target="_blank">{{ socialUrl }}</a></dd>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </dl>
+                                    </div>
+                                </div>
+                                <div class="form__column">
+                                    <div class="form__row">
+                                        {{ form_widget(form.socialLinks) }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form__section">
+                            <div class="form-column__container clearfix">
+                                <div class="form__column">
+                                    <div class="form__row vertical__row">
+                                        {{ form_label(form.status) }}
+                                        {{ form_widget(form.status) }}
+                                    </div>
+                                    <div class="form__row vertical__row field--website">
+                                        {{ form_label(form.map) }}
+                                        {{ form_widget(form.map) }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form__actions">
+                            <button type="submit" class="button button--action" id="createSuggestEditsButton" disabled="disabled">{% trans %}Save changes{% endtrans %}</button>
+                        </div>
+                        <div>
+                            {{ form_rest(form) }}
+                        </div>
+                    {{ form_end(form) }}
+                </section>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block scripts %}
+    {{ parent() }}
+
+    <script type="text/javascript">
+        requirejs([
+            '{{ absolute_url(asset("assetic/require_business_profile_suggest_edits_js.js")) }}'
+        ], function(businessProfileSuggestEdits) {
+            var businessProfileSuggestEdits = new businessProfileSuggestEdits();
+        })
+    </script>
+{% endblock%}

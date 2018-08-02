@@ -33,3 +33,12 @@ domain_business_admin_reviews:
 domain_business_api:
     resource: "@DomainBusinessBundle/Resources/config/routing/api.yml"
     prefix: /api
+
+domain_business_suggest_edits:
+    resource: "@DomainBusinessBundle/Resources/config/routing/suggestEdits.yml"
+    prefix: /suggest-edits
+
+
+domain_admin_business_suggest_edits:
+    resource: "@DomainBusinessBundle/Resources/config/routing/adminSuggestEdits.yml"
+    prefix: /admin/suggest-edits

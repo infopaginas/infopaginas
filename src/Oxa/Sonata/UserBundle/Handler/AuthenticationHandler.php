@@ -8,14 +8,12 @@
 
 namespace Oxa\Sonata\UserBundle\Handler;
 
-use Domain\BusinessBundle\Form\Handler\BusinessFormHandlerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
-use Symfony\Component\Routing\Router;
-use Symfony\Component\Security\Core\SecurityContext;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Http\Authentication\AuthenticationFailureHandlerInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationSuccessHandlerInterface;
@@ -29,20 +27,30 @@ class AuthenticationHandler implements AuthenticationSuccessHandlerInterface, Au
 {
     const SUCCESS_LOGIN_MESSAGE = 'Successfully logged in. Please wait...';
 
-    /** @var  TranslatorInterface $translator */
-    protected $translator;
+    const REDIRECTS = [
+        'suggest-edits' => 'domain_business_suggest_edits_index',
+    ];
+
+    /** @var TranslatorInterface $translator */
+    private $translator;
+    private $router;
+    private $authorizationChecker;
 
     /**
      * AuthenticationHandler constructor.
-     * @param TranslatorInterface $translator
-     * @param Router              $router
-     * @param SecurityContext     $security
+     *
+     * @param TranslatorInterface           $translator
+     * @param RouterInterface               $router
+     * @param AuthorizationCheckerInterface $authorizationChecker
      */
-    public function __construct(TranslatorInterface $translator, Router $router, SecurityContext $security)
-    {
-        $this->translator = $translator;
-        $this->router     = $router;
-        $this->security   = $security;
+    public function __construct(
+        TranslatorInterface $translator,
+        RouterInterface $router,
+        AuthorizationCheckerInterface $authorizationChecker
+    ) {
+        $this->translator           = $translator;
+        $this->router               = $router;
+        $this->authorizationChecker = $authorizationChecker;
     }
 
     /**
@@ -60,8 +68,15 @@ class AuthenticationHandler implements AuthenticationSuccessHandlerInterface, Au
             'ROLE_SALES_MANAGER',
         ];
 
-        if ($this->security->isGranted($adminRoles)) {
-            $redirect = $this->router->generate('sonata_admin_dashboard');
+        if ($this->getAuthorizationChecker()->isGranted($adminRoles)) {
+            $redirect = $this->getRouter()->generate('sonata_admin_dashboard');
+        } else {
+            $redirectData = json_decode($request->request->get('_redirect'), true);
+
+            if (isset($redirectData['type']) && array_key_exists($redirectData['type'], self::REDIRECTS)) {
+                $routeName = self::REDIRECTS[$redirectData['type']];
+                $redirect = $this->getRouter()->generate($routeName, $redirectData['params'] ?? []);
+            }
         }
 
         return new JsonResponse([
@@ -90,5 +105,21 @@ class AuthenticationHandler implements AuthenticationSuccessHandlerInterface, Au
     private function getTranslator() : TranslatorInterface
     {
         return $this->translator;
+    }
+
+    /**
+     * @return RouterInterface
+     */
+    private function getRouter() : RouterInterface
+    {
+        return $this->router;
+    }
+
+    /**
+     * @return AuthorizationCheckerInterface
+     */
+    private function getAuthorizationChecker() : AuthorizationCheckerInterface
+    {
+        return $this->authorizationChecker;
     }
 }

@@ -3,6 +3,7 @@
 namespace Domain\SiteBundle\Mailer;
 
 use Domain\BusinessBundle\Entity\BusinessProfile;
+use Domain\BusinessBundle\Entity\BusinessProfileSuggestEdit;
 use Domain\BusinessBundle\Entity\Review\BusinessReview;
 use Domain\BusinessBundle\Entity\Task;
 use Domain\ReportBundle\Entity\ExportReport;
@@ -283,6 +284,39 @@ class Mailer
 
             $this->send($email, $subject, $message, self::CONTENT_TYPE_HTML);
         }
+    }
+
+    /**
+     * @param BusinessProfileSuggestEdit $suggestEdit
+     */
+    public function sendSuggestEditProcessedEmailMessage(BusinessProfileSuggestEdit $suggestEdit)
+    {
+        $message   = $this->getConfigService()->getValue(ConfigInterface::MAIL_SUGGEST_EDITS_PROCESSED_TEMPLATE);
+        $subject = 'Infopaginas – suggested changes ' . $suggestEdit->getStatus();
+        $user = $suggestEdit->getCreatedUser();
+        $businessProfile = $suggestEdit->getBusinessProfile();
+
+        $url = $this->getRouter()->generate(
+            'domain_business_profile_view',
+            [
+                'citySlug' => $businessProfile->getCitySlug(),
+                'slug' => $businessProfile->getSlug(),
+            ],
+            UrlGeneratorInterface::ABSOLUTE_URL
+        );
+
+        $params = [
+            '{NAME}'          => htmlentities($user->getFullName()),
+            '{FIELD}'         => $suggestEdit->getKeyLabel(),
+            '{ACTION}'        => $suggestEdit->getStatus(),
+            '{LINK}'          => $url,
+            '{BUSINESS_NAME}' => $businessProfile->getName(),
+        ];
+
+        $parsedMessage = strtr($message, $params);
+        $email = $user->getEmail();
+
+        $this->send($email, $subject, $parsedMessage, self::CONTENT_TYPE_HTML);
     }
 
     /**

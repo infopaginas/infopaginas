@@ -303,3 +303,11 @@ div.single-media-preview-block img {
     padding-bottom: 10px;
     border-bottom: 4px solid #00c0ef;
 }
+
+.suggest-edits-actions label {
+    margin-right: 2em;
+}
+
+.suggest-edits-actions label.required::after {
+    content: '';
+}

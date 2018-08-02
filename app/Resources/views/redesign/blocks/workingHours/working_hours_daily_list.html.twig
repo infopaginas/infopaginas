@@ -2,12 +2,18 @@
     {% set isCompare = false %}
 {% endif %}
 
+{% if collapsed is not defined %}
+    {% set collapsed = true %}
+{% endif %}
+
 {% set workingHoursCollection = get_business_profile_working_hours_list(businessProfile) %}
 
 {% if workingHoursCollection %}
     <div class="highlights__item highlights__item--hours {% if isCompare %}highlights__item_hours-row highlights__item_fixed-height{% endif %}" data-bw-gtm-component="working-hours">
-        <h3 class="arrow-down" data-bw-gtm-label="{% trans %}Business hours{% endtrans %}" data-bw-gtm-event-click>{% trans %}Business hours{% endtrans %}</h3>
-        <div class="hide-children">
+        {% if collapsed %}
+            <h3 class="arrow-down" data-bw-gtm-label="{% trans %}Business hours{% endtrans %}" data-bw-gtm-event-click>{% trans %}Business hours{% endtrans %}</h3>
+        {% endif %}
+        <div {% if collapsed %} class="hide-children" {% endif %}>
             {% for day, workingHours in workingHoursCollection %}
                 <div class="row day" {% if loop.first %}data-day="{{ day|trans }}" data-text="{{ 'working_hours.placeholder.today'|trans }}"{% endif %}>
                     <div class="col-day">

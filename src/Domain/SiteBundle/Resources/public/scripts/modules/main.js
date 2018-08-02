@@ -354,9 +354,9 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
         });
 
         $('.form input, .form textarea').each(function() {
-            var $this;
-            $this = $(this);
-            if ($this.prop('value').length !== 0){
+            var $this = $(this);
+
+            if (!$this.is('[data-ignore-field-active]') && $this.prop('value').length !== 0){
                 $this.parent().addClass('field-active');
             }
         });
@@ -371,7 +371,7 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
 
         singleSelects.select2();
 
-        $( '#domain_page_bundle_feedback_form_type_subject' ).select2({
+        $( '#domain_page_bundle_feedback_form_type_subject, [data-select2-init]' ).select2({
             minimumResultsForSearch: -1
         });
 
@@ -425,11 +425,16 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
         };
 
         $(document).on('click', '[data-show-modal-id]', function() {
-            var $this, modal_id;
-            $this = $(this);
-            modal_id = $this.data('show-modal-id');
+            var $this = $(this),
+                modal_id = $this.data('show-modal-id'),
+                $modal = $('#' + modal_id + '.modal'),
+                $redirect = $modal.find('[name="_redirect"]');
 
-            $("#" + modal_id + ".modal").modalFunc();
+            if ($redirect.length) {
+                $redirect.val(JSON.stringify($this.data('redirect')));
+            }
+
+            $modal.modalFunc();
             $this.siblings().removeClass('modal--opened');
 
             if ( modal_id == 'writeReviewModal' ) {

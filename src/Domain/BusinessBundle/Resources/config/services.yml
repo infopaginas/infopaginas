@@ -139,6 +139,19 @@ services:
         tags:
             - { name: form.type, alias: domain_business_bundle_business_claim_request_type }
 
+    domain_business.form.type.suggest_edits:
+        class: Domain\BusinessBundle\Form\Type\BusinessSuggestEditsType
+        arguments: [null]
+        tags:
+            - { name: form.type, alias: domain_business_bundle_business_suggest_edits_type }
+
+    domain_business.form.type.admin_suggest_edits:
+        class: Domain\BusinessBundle\Form\Type\AdminBusinessSuggestEditsType
+        arguments:
+            - '@service_container'
+        tags:
+            - { name: form.type, alias: domain_business_bundle_admin_business_suggest_edits_type }
+
     #forms section
     domain_business.form.business_profile:
         factory_method: createNamed
@@ -179,6 +192,20 @@ services:
         arguments:
             - 'domain_business_bundle_business_upgrade_request_type'
             - 'domain_business_bundle_business_upgrade_request_type'
+
+    domain_business.form.business_suggest_edits:
+        factory: form.factory:createNamed
+        class: Symfony\Component\Form\Form
+        arguments:
+            - 'domain_business_bundle_business_suggest_edits_type'
+            - 'domain_business_bundle_business_suggest_edits_type'
+
+    domain_business.form.admin_business_suggest_edits:
+        factory: form.factory:createNamed
+        class: Symfony\Component\Form\Form
+        arguments:
+            - 'domain_business_bundle_admin_business_suggest_edits_type'
+            - 'domain_business_bundle_admin_business_suggest_edits_type'
 
     #form handlers section
     domain_business.form.handler.business_profile:
@@ -227,6 +254,24 @@ services:
             - '@domain_site.mailer'
             - '@security.token_storage'
             - '@translator'
+
+    domain_business.form.handler.business_suggest_edits:
+        class: Domain\BusinessBundle\Form\Handler\BusinessProfileSuggestEditsFormHandler
+        scope: request
+        arguments:
+            - '@domain_business.form.business_suggest_edits'
+            - '@request'
+            - '@doctrine.orm.entity_manager'
+
+    domain_business.form.handler.admin_business_suggest_edits:
+        class: Domain\BusinessBundle\Form\Handler\AdminBusinessProfileSuggestEditsFormHandler
+        scope: request
+        arguments:
+            - '@domain_business.form.admin_business_suggest_edits'
+            - '@request'
+            - '@doctrine.orm.entity_manager'
+            - '@router'
+            - '@domain_site.mailer'
 
     #event listeners section
     domain_business.listener.datetime_period_status_subscriber:

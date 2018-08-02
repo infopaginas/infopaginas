@@ -1,0 +1,7 @@
+domain_admin_business_suggest_edits_business:
+    path:     /business/{id}
+    defaults: { _controller: DomainBusinessBundle:AdminSuggestEdits:business }
+
+domain_admin_business_suggest_edits_business_key:
+    path:     /business/{id}/{key}
+    defaults: { _controller: DomainBusinessBundle:AdminSuggestEdits:businessKey }

@@ -91,6 +91,11 @@ assetic:
                 - '@DomainBusinessBundle/Resources/public/scripts/modules/businessProfileView.js'
             filters:
                 - jsqueeze
+        require_business_profile_suggest_edits_js:
+            inputs:
+                - '@DomainBusinessBundle/Resources/public/scripts/modules/businessProfileSuggestEdits.js'
+            filters:
+                - jsqueeze
         require_compare_search_page_js:
             inputs:
                 - '@DomainSiteBundle/Resources/public/scripts/modules/comparesearchpage.js'

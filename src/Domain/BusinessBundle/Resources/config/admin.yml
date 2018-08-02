@@ -147,3 +147,9 @@ services:
         arguments: [~, Domain\BusinessBundle\Entity\BusinessProfileExtraSearch, OxaSonataAdminBundle:CRUD]
         tags:
             - {name: sonata.admin, manager_type: orm, group: admin, label: Business Profile Extra Search}
+
+    domain_business.admin.suggest_edits:
+        class: Domain\BusinessBundle\Admin\SuggestEditsAdmin
+        arguments: [~, ~, OxaSonataAdminBundle:CRUD]
+        tags:
+            - {name: sonata.admin, manager_type: orm, group: admin, label: Suggest Edits}

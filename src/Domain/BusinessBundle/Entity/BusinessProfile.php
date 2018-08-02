@@ -4,13 +4,13 @@ namespace Domain\BusinessBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Criteria;
+use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Mapping as ORM;
 use Domain\BusinessBundle\DBAL\Types\TaskStatusType;
 use Domain\BusinessBundle\DBAL\Types\TaskType;
 use Domain\BusinessBundle\Entity\Address\Country;
 use Domain\BusinessBundle\Entity\Media\BusinessGallery;
 use Domain\BusinessBundle\Entity\Review\BusinessReview;
-use Domain\BusinessBundle\Entity\Task;
 use Domain\BusinessBundle\Model\StatusInterface;
 use Domain\BusinessBundle\Model\SubscriptionPlanInterface;
 use Domain\BusinessBundle\Util\ZipFormatterUtil;
@@ -818,6 +818,16 @@ class BusinessProfile implements
      */
     protected $extraSearches;
 
+    /**
+     * @var BusinessProfileSuggestEdit[]
+     * @ORM\OneToMany(targetEntity="Domain\BusinessBundle\Entity\BusinessProfileSuggestEdit",
+     *     mappedBy="businessProfile",
+     *     cascade={"all"},
+     *     orphanRemoval=true
+     *     )
+     */
+    protected $suggestEdits;
+
     /* @var string */
     private $statusForUser;
 
@@ -952,6 +962,7 @@ class BusinessProfile implements
         $this->keywords                 = new ArrayCollection();
         $this->aliases                  = new ArrayCollection();
         $this->tasks                    = new ArrayCollection();
+        $this->suggestEdits             = new ArrayCollection();
 
         $this->isClosed  = false;
         $this->isUpdated = true;
@@ -3312,5 +3323,27 @@ class BusinessProfile implements
         }
 
         return false;
+    }
+
+    /**
+     * @return ArrayCollection|BusinessProfileSuggestEdit[]
+     */
+    public function getSuggestEdits()
+    {
+        return $this->suggestEdits;
+    }
+
+    /**
+     * @return null
+     */
+    public function getLastSuggestEditDate()
+    {
+        $criteria = Criteria::create()
+            ->orderBy(['id' => Criteria::DESC])
+            ->setMaxResults(1);
+
+        $lastSuggestEdit = $this->getSuggestEdits()->matching($criteria)->last();
+
+        return $lastSuggestEdit ? $lastSuggestEdit->getCreatedAt() : null;
     }
 }

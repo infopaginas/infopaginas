@@ -2815,6 +2815,30 @@ $thumb-width-mb: 60px;
   }
 }
 
+.section--suggest-edits {
+  .button {
+    background: transparent;
+    border: solid 1px $blue;
+    color: $orange;
+    display: block;
+    margin-right: 0;
+    text-align: center;
+    text-transform: none;
+
+    i {
+      margin-right: .5em;
+    }
+  }
+}
+
+.center-blue-label {
+  color: $blue;
+  display: block;
+  margin-bottom: 1em;
+  text-align: center;
+  text-transform: uppercase;
+}
+
 .news__item {
   background: $white;
   border-radius: 3px;
@@ -5840,6 +5864,13 @@ input[type='radio'], input[type='checkbox'] {
   display:none;
 }
 
+.display-block {
+  display: block;
+}
+
+.full-width {
+  width: 100%;
+}
 
 .dropdown-call {
   flex: 1 1 100%;

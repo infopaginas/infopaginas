@@ -1,0 +1,39 @@
+{% extends base_template %}
+
+{% block sonata_breadcrumb %}
+    {% include "@DomainReport/Admin/report_breadcrumbs.html.twig" %}
+{% endblock %}
+
+{% block navbar_title %}
+    {{ businessProfile.name }}
+{% endblock %}
+
+{% block tab_menu %}
+    {{ knp_menu_render(admin.sidemenu(action), {'currentClass' : 'active', 'template': admin_pool.getTemplate('tab_menu_template')}, 'twig') }}
+{% endblock %}
+
+{% block sonata_admin_content %}
+    {% block notice %}
+        {% include 'SonataCoreBundle:FlashMessage:render.html.twig' %}
+    {% endblock notice %}
+
+    <div class="sonata-ba-form">
+        {{ form_start(form) }}
+            {% for child in form.suggestEdits.children %}
+                <div class="row">
+                    <div class="col-md-2">
+                        {{ form_label(child) }}
+                    </div>
+                    <div class="col-md-10">
+                        <div class="form-group suggest-edits-actions">
+                            {{ form_widget(child) }}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+            <div class="well well-small form-actions">
+                <button type="submit" class="btn btn-success"><i class="fa fa-save"></i>{% trans %}Save{% endtrans %}</button>
+            </div>
+        {{ form_end(form) }}
+    </div>
+{% endblock %}

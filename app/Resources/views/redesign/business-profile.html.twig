@@ -111,6 +111,25 @@
 
                                 {% include ':redesign/blocks/workingHours:working_hours_daily_list.html.twig' with { 'businessProfile': businessProfile } %}
 
+                                <div class="highlights__item hide-desktop">
+                                    <ul>
+                                        <li>
+                                            <i class="fa fa-pencil"></i>
+                                            <a
+                                                {% if app.user %}
+                                                    href="{{ path('domain_business_suggest_edits_index', {'slug': businessProfile.slug}) }}"
+                                                {% else %}
+                                                    data-show-modal-id="loginModal"
+                                                    data-redirect='{"type": "suggest-edits", "params": {"slug": "{{ businessProfile.slug }}" }}'
+                                                    href="javascript:void(0)"
+                                                {% endif %}
+                                            >
+                                                {% trans %}suggest_edits.button{% endtrans %}
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div><!-- highlights__item -->
+
                                 {% if businessProfile.getBrands() %}
                                     <div class="highlights__item">
                                         <h3>{% trans %}Brands{% endtrans %}</h3>
@@ -311,6 +330,25 @@
                                 </div>
                             </div><!-- sidebar__section -->
                         {% endif %}
+
+                        <div class="sidebar__section section--suggest-edits hide-mobile">
+                            <ul>
+                                <li>
+                                    <a class="button"
+                                        {% if app.user %}
+                                            href="{{ path('domain_business_suggest_edits_index', {'slug': businessProfile.slug}) }}"
+                                        {% else %}
+                                            data-show-modal-id="loginModal"
+                                            data-redirect='{"type": "suggest-edits", "params": {"slug": "{{ businessProfile.slug }}" }}'
+                                            href="javascript:void(0)"
+                                        {% endif %}
+                                    >
+                                        <i class="fa fa-pencil"></i>
+                                        <span>{% trans %}suggest_edits.button{% endtrans %}</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
 
                         {% if showClaimButton %}
                             <div class="sidebar__section section--social">

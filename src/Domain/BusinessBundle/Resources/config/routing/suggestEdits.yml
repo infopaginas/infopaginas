@@ -1,0 +1,9 @@
+domain_business_suggest_edits_index:
+    path:     /{slug}
+    defaults: { _controller: DomainBusinessBundle:SuggestEdits:index }
+
+domain_business_suggest_edits_save:
+    path:     /{slug}/save
+    defaults: { _controller: DomainBusinessBundle:SuggestEdits:save }
+    options:
+        expose: true
