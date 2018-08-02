@@ -3123,9 +3123,6 @@ class BusinessProfile implements
 //            don't track field via business owner task
 //            self::BUSINESS_PROFILE_FIELD_PANORAMA_ID,
 
-            self::BUSINESS_PROFILE_FIELD_PRODUCT,
-            self::BUSINESS_PROFILE_FIELD_BRANDS,
-
             self::BUSINESS_PROFILE_FIELD_WEBSITE,
             self::BUSINESS_PROFILE_FIELD_EMAIL,
 
@@ -3135,21 +3132,10 @@ class BusinessProfile implements
             self::BUSINESS_PROFILE_FIELD_STREET_ADDRESS,
             self::BUSINESS_PROFILE_FIELD_STREET_NUMBER,
             self::BUSINESS_PROFILE_FIELD_EXTENDED_ADDRESS,
-            self::BUSINESS_PROFILE_FIELD_CROSS_STREET,
-            self::BUSINESS_PROFILE_FIELD_GOOGLE_ADDRESS,
             self::BUSINESS_PROFILE_FIELD_CITY,
             self::BUSINESS_PROFILE_FIELD_ZIP_CODE,
             self::BUSINESS_PROFILE_FIELD_CUSTOM_ADDRESS,
             self::BUSINESS_PROFILE_FIELD_USE_MAP_ADDRESS,
-            self::BUSINESS_PROFILE_FIELD_HIDE_ADDRESS,
-            self::BUSINESS_PROFILE_FIELD_HIDE_MAP,
-
-            self::BUSINESS_PROFILE_FIELD_TWITTER_URL,
-            self::BUSINESS_PROFILE_FIELD_FACEBOOK_URL,
-            self::BUSINESS_PROFILE_FIELD_GOOGLE_URL,
-            self::BUSINESS_PROFILE_FIELD_YOUTUBE_URL,
-            self::BUSINESS_PROFILE_FIELD_INSTAGRAM_URL,
-            self::BUSINESS_PROFILE_FIELD_TRIP_ADVISOR_URL,
 
             // geo
             self::BUSINESS_PROFILE_FIELD_LATITUDE,
@@ -3186,7 +3172,6 @@ class BusinessProfile implements
         return [
             self::BUSINESS_PROFILE_RELATION_CATEGORIES,
             self::BUSINESS_PROFILE_RELATION_AREAS,
-            self::BUSINESS_PROFILE_RELATION_PAYMENT_METHODS,
             self::BUSINESS_PROFILE_RELATION_LOCALITIES,
             self::BUSINESS_PROFILE_RELATION_NEIGHBORHOODS,
         ];
@@ -3197,11 +3182,7 @@ class BusinessProfile implements
      */
     public static function getTaskMediaManyToOneRelations()
     {
-        return [
-            self::BUSINESS_PROFILE_RELATION_VIDEO,
-            self::BUSINESS_PROFILE_RELATION_LOGO,
-            self::BUSINESS_PROFILE_RELATION_BACKGROUND,
-        ];
+        return [];
     }
 
     /**
@@ -3209,9 +3190,7 @@ class BusinessProfile implements
      */
     public static function getTaskMediaOneToManyRelations()
     {
-        return [
-            self::BUSINESS_PROFILE_RELATION_IMAGES,
-        ];
+        return [];
     }
 
     /**
