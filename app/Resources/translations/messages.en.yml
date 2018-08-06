@@ -117,7 +117,7 @@ Phone number: Phone number
 Phone: Phone
 Add: Add
 email.example.placeholder: sonsnotebook@info.com
-Date of registration: Date of registration
+Date of registration: Registration date
 Business Description: Business Description
 Description: Description
 business.add.description.placeholder: At the time of study, all parents, teachers, students we welcome ideas that foster greater productivity and end of the day, produce better academic achievement
@@ -153,11 +153,19 @@ longitude.example.placeholder: 23° 27′ 30″ E
 
 name: name
 Categories: Categories
+Categories (max 3): Categories (max 3)
 Areas: Areas
-Website: Website
+Website: Website link
 Geocode: Geocode
 yes: yes
+
 Pending: Pending
+Accepted: Accepted
+Rejected: Rejected
+Deactivated: Deactivated
+
+Calls: Calls
+
 business.add.streetAddress.placeholder: Enter your address
 
 Menu: Menu
@@ -546,7 +554,7 @@ business.working.hours.open_all_time: Open 24 hours
 business.working.hours.open_until: Open until {-TIME-}
 business.working.hours.closed_now: Now closed
 business.working.hours.closed: Closed
-business.working.hours.edit_note: First select a day (or group of days) and then opening and closing time for those days
+business.working.hours.edit_note: First select a day (or a group of days) and then the opening and closing hours of those days
 
 #business profile phone
 business_profile_phone.type.main: Main
@@ -629,7 +637,7 @@ no_js.warning.message: Your browser's Javascript functionality is turned off. Pl
 
 working_hours.label.comment_en: Comment Eng
 working_hours.label.comment_es: Comment Esp
-working_hours.placeholder.days: Please choose days
+working_hours.placeholder.days: Choose day
 working_hours.placeholder.today: Today
 
 contact:
@@ -708,12 +716,12 @@ slider.title: Consider the following similar businesses
 user_profile:
   label:
     last_month_statistics: Last month statistics
-    edit_business: Edit bussines
-    delete_business: Delete bussines
+    edit_business: Edit
+    delete_business: Delete
     upgrade_now: Upgrade Now
     upgrade_now!: Upgrade Now!
-    when_call: When can we call you?
-    your_phone: Your phone
+    when_call: Which is the best time to call you?
+    your_phone: Please confirm your phone number
   tooltip:
     status: Current status of your business
     impression: How many times the business profile has been viewed
