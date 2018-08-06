@@ -70,7 +70,7 @@ class BusinessProfileFormType extends AbstractType
     {
         $builder
             ->add('name', TextType::class, [
-                'label'    => 'Name',
+                'label'    => 'Name of Business',
                 'required' => true,
             ])
             ->add('website', TextType::class, [
@@ -363,7 +363,7 @@ class BusinessProfileFormType extends AbstractType
                     'placeholder' => 'Select categories',
                     'multiple' => true,
                 ],
-                'label' => 'Categories',
+                'label' => 'Categories (max 3)',
                 'label_attr' => [
                     'class' => 'title-label'
                 ],

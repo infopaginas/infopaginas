@@ -114,7 +114,7 @@
                                                         {{ business.getName() }}
                                                     </div>
                                                     <div class="bps__status {{ business.getStatusForUser|lower}}">
-                                                        {{ business.getStatusForUser() }}
+                                                        {{ business.getStatusForUser()|trans }}
                                                     </div>
                                                     {% for action, translation in actions %}
                                                         <div class="bps__mobile">{{ translation|trans }}</div>
