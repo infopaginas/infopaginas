@@ -1487,7 +1487,7 @@ class BusinessProfile implements
     public function getStatusForUser()
     {
         if ($this->statusForUser === null) {
-            if ($this->getIsClosed()) {
+            if (!$this->getIsActive()) {
                 $this->statusForUser = self::USER_STATUS_DEACTIVATED;
             } else {
                 $statuses = [
@@ -1501,8 +1501,14 @@ class BusinessProfile implements
                     ->setMaxResults(1)
                     ->orderBy(['id' => Criteria::DESC]);
 
-                $task = $this->getTasks()->matching($criteria)[0];
-                $this->statusForUser = $statuses[$task->getStatus()];
+                $tasks = $this->getTasks()->matching($criteria);
+
+                if (isset($tasks[0])) {
+                    $this->statusForUser = $statuses[$tasks[0]->getStatus()];
+                } else {
+                    // business has been added by admin
+                    $this->statusForUser = self::USER_STATUS_ACCEPTED;
+                }
             }
         }
 
