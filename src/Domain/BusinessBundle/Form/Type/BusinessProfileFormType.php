@@ -363,7 +363,7 @@ class BusinessProfileFormType extends AbstractType
                     'placeholder' => 'Select categories',
                     'multiple' => true,
                 ],
-                'label' => 'Categories (max 3)',
+                'label' => 'Categories',
                 'label_attr' => [
                     'class' => 'title-label'
                 ],
