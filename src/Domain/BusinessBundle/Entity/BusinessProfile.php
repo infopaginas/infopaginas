@@ -1487,27 +1487,36 @@ class BusinessProfile implements
     public function getStatusForUser()
     {
         if ($this->statusForUser === null) {
-            if (!$this->getIsActive()) {
-                $this->statusForUser = self::USER_STATUS_DEACTIVATED;
-            } else {
-                $statuses = [
-                    TaskStatusType::TASK_STATUS_OPEN     => self::USER_STATUS_PENDING,
-                    TaskStatusType::TASK_STATUS_CLOSED   => self::USER_STATUS_ACCEPTED,
-                    TaskStatusType::TASK_STATUS_REJECTED => self::USER_STATUS_REJECTED,
-                ];
+            $statuses = [
+                TaskStatusType::TASK_STATUS_OPEN     => self::USER_STATUS_PENDING,
+                TaskStatusType::TASK_STATUS_CLOSED   => self::USER_STATUS_ACCEPTED,
+                TaskStatusType::TASK_STATUS_REJECTED => self::USER_STATUS_REJECTED,
+            ];
 
-                $criteria = Criteria::create()
-                    ->where(Criteria::expr()->neq('type', TaskType::TASK_PROFILE_CLAIM))
-                    ->setMaxResults(1)
-                    ->orderBy(['id' => Criteria::DESC]);
+            $criteria = Criteria::create()
+                ->where(Criteria::expr()->neq('type', TaskType::TASK_PROFILE_CLAIM))
+                ->setMaxResults(1)
+                ->orderBy(['id' => Criteria::DESC]);
 
-                $tasks = $this->getTasks()->matching($criteria);
+            $tasks = $this->getTasks()->matching($criteria);
+            /* @var Task|null $task */
+            $task = $tasks[0] ?? null;
 
-                if (isset($tasks[0])) {
-                    $this->statusForUser = $statuses[$tasks[0]->getStatus()];
+            if ($this->getIsActive()) {
+                if ($task) {
+                    $this->statusForUser = $statuses[$task->getStatus()];
                 } else {
                     // business has been added by admin
                     $this->statusForUser = self::USER_STATUS_ACCEPTED;
+                }
+            } else {
+                if ($task
+                    && $task->getType() === TaskType::TASK_PROFILE_CREATE
+                    && $task->getStatus() === TaskStatusType::TASK_STATUS_OPEN
+                ) {
+                    $this->statusForUser = self::USER_STATUS_PENDING;
+                } else {
+                    $this->statusForUser = self::USER_STATUS_DEACTIVATED;
                 }
             }
         }
