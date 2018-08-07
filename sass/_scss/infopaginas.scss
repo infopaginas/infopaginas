@@ -1203,8 +1203,12 @@ $bps-border: 1px dotted #bcbcbc;
         font-weight: bold;
       }
 
-      .active {
+      .active, .accepted {
         color: #008000;
+      }
+
+      .rejected {
+        color: #dd4b39
       }
 
       .pending {
@@ -1218,6 +1222,7 @@ $bps-border: 1px dotted #bcbcbc;
       .bps__business,
       .bps__status {
         background: #fff;
+        font-weight: bold;
         display: block;
         position: relative;
       }
@@ -6181,6 +6186,11 @@ div.pagination a[data-page] {
 a.disabledLink {
   pointer-events: none;
   cursor: default;
+}
+
+.disabled-text {
+  color: #7F7F7F;
+  cursor: not-allowed;
 }
 
 .hide-before {

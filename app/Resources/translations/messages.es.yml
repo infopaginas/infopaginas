@@ -82,7 +82,7 @@ Catalá: Catalá
 Joyeros: Joyeros
 Advertiser Id: ID del Anunciante
 11111111: 11111111
-Change Password: Cambiar contraseña
+Change Password: Cambiar la contraseña
 Puerto Rico: Puerto Rico
 Phone Number: Teléfono
 (787) 594-7273: (787) 594-7273
@@ -118,7 +118,7 @@ Phone: Teléfono
 Add: Añadir
 email.example.placeholder: sonsnotebook@info.com
 Date of registration: Fecha de registro
-Business Description: Descripción de negocio o empresa
+Business Description: Descripción del negocio
 Description: Descripción
 business.add.description.placeholder: En el momento del estudio, todos los padres, maestros, estudiantes damos la bienvenida a las ideas que promuevan una mayor productividad y al final del día, producen un mejor rendimiento académico
 Products: Productos
@@ -154,10 +154,17 @@ longitude.example.placeholder: 23° 27′ 30″ E
 name: nombre
 Categories: Categorías
 Areas: Áreas
-Website: Página Web
+Website: Enlace de página web
 Geocode: Geocode
 yes: sí
+
 Pending: Pendiente
+Accepted: Aceptado
+Rejected: Rechazado
+Deactivated: Desactivado
+
+Calls: Llamadas
+
 business.add.streetAddress.placeholder: Introduzca su dirección de
 
 Menu: Menú
@@ -205,7 +212,7 @@ Doctors: Doctores
 
 #new translations
 Products or Services: Productos o Servicios
-Working hours: Las horas de trabajo
+Working hours: Horas laborales
 Photos: Fotos
 Video: Vídeo
 Sorry, no results were found.: Lo sentimos, no se encontraron resultados.
@@ -309,7 +316,7 @@ next: siguiente
 Subcategories: Subcategorías
 Select category: Selecciona una categoría
 Select subcategories: Seleccionar subcategorías
-Catalog Locality: Localidad del catálogo
+Catalog Locality: Localidad de catálogo
 Select catalog locality: Seleccionar localidad del catálogo
 Parent Category: Categoría de Padres
 
@@ -408,7 +415,7 @@ Name: Nombre
 Maximum 255 characters: Máximo 255 caracteres
 Spanish: Español
 Common for english and spanish: Común para Inglés y Español
-Remove phone: Quite el teléfono
+Remove phone: Quitar el teléfono
 Add phone: Añadir teléfono
 Images upload: Subida de imágenes
 Select and upload images to show on your business profile: Selecciona y sube imágenes para mostrarlas en tu perfil comercial
@@ -546,7 +553,7 @@ business.working.hours.open_all_time: Abierto 24 horas
 business.working.hours.open_until: Abierto hasta {-TIME-}
 business.working.hours.closed_now: Ahora cerrado
 business.working.hours.closed: Cerrado
-business.working.hours.edit_note: Primero seleccione un día (o grupo de días) y luego el horario de apertura y cierre de esos días
+business.working.hours.edit_note: Primero seleccione un día (o un grupo de días) y luego las horas de apertura y cierre de esos días
 
 #business profile phone
 business_profile_phone.type.main: Principal
@@ -573,7 +580,7 @@ Sunday: Domingo
 
 Open All Time: Abierto 24 horas
 Remove working hours: Eliminar horas de trabajo
-Add working hours: Añadir horas de trabajo
+Add working hours: Agregar horas de trabajo
 Now: Ahora
 
 form.collectionWorkingHours.overlap: Las horas de trabajo no deben superponerse
@@ -629,7 +636,7 @@ no_js.warning.message: La funcionalidad Javascript de tu navegador está desacti
 
 working_hours.label.comment_en: Comentario Eng
 working_hours.label.comment_es: Comentario Esp
-working_hours.placeholder.days: Por favor, elija los días
+working_hours.placeholder.days: Elegir día
 working_hours.placeholder.today: Hoy
 
 contact:
@@ -707,17 +714,17 @@ slider.title: Considera estos negocios similares
 
 user_profile:
   label:
-    last_month_statistics: Las estadísticas del mes pasado
-    edit_business: Editar negocio
-    delete_business: Eliminar negocio
-    upgrade_now: Solicitar ahora
-    upgrade_now!: ¡Solicitar ahora!
-    when_call: ¿Cuándo podemos llamaros?
-    your_phone: Vuestro telefono
+    last_month_statistics: Estadísticas del mes pasado
+    edit_business: Editar
+    delete_business: Borrar
+    upgrade_now: Hacer upgrade ahora
+    upgrade_now!: ¡Hacer upgrade ahora!
+    when_call: ¿Cuál es el mejor momento para llamarte?
+    your_phone: Por favor confirme su número de teléfono
   tooltip:
     status: Estado actual de su negocio
-    impression: Cuántas veces se ha visto el perfil comercial
-    call_mob_button: Cuantas veces el usuario ha intentado llamar a su empresa
+    impression: Cuántas veces los usuarios han buscado la ubicación de su empresa
+    call_mob_button: Cuántas veces el usuario ha intentado llamar a su negocio
     direction_button: Cuántas veces los usuarios han buscado la ubicación de su empresa
   text:
     to_make_more_popular: ¿Quieres hacer tu negocio más popular?

@@ -70,7 +70,7 @@ class BusinessProfileFormType extends AbstractType
     {
         $builder
             ->add('name', TextType::class, [
-                'label'    => 'Name',
+                'label'    => 'Name of Business',
                 'required' => true,
             ])
             ->add('website', TextType::class, [

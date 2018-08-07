@@ -111,64 +111,39 @@ class Mailer
 
     /**
      * @param BusinessProfile $businessProfile
-     * @param string $reason
+     * @param string          $status
+     * @param string          $reason
      */
-    public function sendBusinessProfileCreateRejectEmailMessage(BusinessProfile $businessProfile, string $reason)
+    public function sendStatusWasChangedEmailMessage(BusinessProfile $businessProfile, $status, $reason = '')
     {
-        $message = $this->getConfigService()->getValue(ConfigInterface::MAIL_CHANGE_WAS_REJECTED);
-        $message = str_replace('{REASON}', $reason, $message);
+        $message = $this->getConfigService()->getValue(ConfigInterface::STATUS_WAS_CHANGED_EMAIL_TEMPLATE);
+        $subject = 'Infopaginas - Your business just acquired a new status!';
 
-        $contentType = 'text/html';
+        $user = $businessProfile->getUser();
 
-        $subject = 'BUSINESS PROFILE CREATE [' . $businessProfile->getName() . '] - Rejected';
-
-        $email = $businessProfile->getUser() !== null ? $businessProfile->getUser()->getEmail()
-            : $businessProfile->getEmail();
-
-        if ($email !== null) {
-            $this->send($email, $subject, $message, $contentType);
+        if (strlen($reason) > 0) {
+            $reason = 'Reason: ' . htmlentities($reason);
         }
-    }
 
-    /**
-     * @param BusinessProfile $businessProfile
-     * @param string $reason
-     */
-    public function sendBusinessProfileUpdateRejectEmailMessage(BusinessProfile $businessProfile, string $reason)
-    {
-        $message = $this->getConfigService()->getValue(ConfigInterface::MAIL_CHANGE_WAS_REJECTED);
-        $message = str_replace('{REASON}', $reason, $message);
+        $link = $this->getRouter()->generate(
+            'domain_business_profile_edit',
+            ['id' => $businessProfile->getId()],
+            UrlGeneratorInterface::ABSOLUTE_URL
+        );
 
-        $contentType = 'text/html';
+        $params = [
+            '{NAME}'   => ($user !== null) ? htmlentities($user->getFullName()) : 'User',
+            '{REASON}' => $reason,
+            '{STATUS}' => $status,
+            '{LINK}'   => $link,
+        ];
 
-        $subject = 'BUSINESS PROFILE UPDATE [' . $businessProfile->getName() . '] - Rejected';
+        $parsedMessage = strtr($message, $params);
 
-        $email = $businessProfile->getUser() !== null ? $businessProfile->getUser()->getEmail()
-            : $businessProfile->getEmail();
-
-        if ($email !== null) {
-            $this->send($email, $subject, $message, $contentType);
-        }
-    }
-
-    /**
-     * @param BusinessProfile $businessProfile
-     * @param string $reason
-     */
-    public function sendBusinessProfileCloseRejectEmailMessage(BusinessProfile $businessProfile, string $reason)
-    {
-        $message = $this->getConfigService()->getValue(ConfigInterface::MAIL_CHANGE_WAS_REJECTED);
-        $message = str_replace('{REASON}', $reason, $message);
-
-        $contentType = 'text/html';
-
-        $subject = 'BUSINESS PROFILE CLOSE [' . $businessProfile->getName() . '] - Rejected';
-
-        $email = $businessProfile->getUser() !== null ? $businessProfile->getUser()->getEmail()
-            : $businessProfile->getEmail();
+        $email = ($user !== null) ? $user->getEmail() : $businessProfile->getEmail();
 
         if ($email !== null) {
-            $this->send($email, $subject, $message, $contentType);
+            $this->send($email, $subject, $parsedMessage, 'text/html');
         }
     }
 

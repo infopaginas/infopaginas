@@ -233,6 +233,7 @@ class TasksManager
         $task->setStatus(TaskStatusType::TASK_STATUS_CLOSED);
 
         $businessProfile = $task->getBusinessProfile();
+        $mailer = $this->getMailer();
 
         if ($task->getType() == TaskType::TASK_PROFILE_CREATE) {
             $this->getBusinessProfileManager()->activate($businessProfile);
@@ -244,12 +245,15 @@ class TasksManager
                     Group::CODE_CONSUMER
                 );
             }
+            $mailer->sendStatusWasChangedEmailMessage($businessProfile, BusinessProfile::USER_STATUS_ACCEPTED);
         } elseif ($task->getType() == TaskType::TASK_PROFILE_UPDATE) {
             $this->getBusinessProfileManager()->publish($task->getBusinessProfile(), $task->getChangeSet());
+            $mailer->sendStatusWasChangedEmailMessage($businessProfile, BusinessProfile::USER_STATUS_ACCEPTED);
         } elseif ($task->getType() == TaskType::TASK_REVIEW_APPROVE) {
             $this->getBusinessReviewsManager()->publish($task->getReview());
         } elseif ($task->getType() == TaskType::TASK_PROFILE_CLOSE) {
             $this->getBusinessProfileManager()->deactivate($task->getBusinessProfile());
+            $mailer->sendStatusWasChangedEmailMessage($businessProfile, BusinessProfile::USER_STATUS_DEACTIVATED);
         } elseif ($task->getType() == TaskType::TASK_PROFILE_CLAIM) {
             $this->getBusinessProfileManager()->claim($task->getBusinessProfile(), $task->getCreatedUser());
             $this->rejectOtherClaimRequests($task->getBusinessProfile()->getId(), $task->getId());
@@ -307,13 +311,13 @@ class TasksManager
 
         switch ($task->getType()) {
             case TaskType::TASK_PROFILE_CREATE:
-                $this->getMailer()->sendBusinessProfileCreateRejectEmailMessage($businessProfile, $rejectReason);
-                break;
             case TaskType::TASK_PROFILE_UPDATE:
-                $this->getMailer()->sendBusinessProfileUpdateRejectEmailMessage($businessProfile, $rejectReason);
-                break;
             case TaskType::TASK_PROFILE_CLOSE:
-                $this->getMailer()->sendBusinessProfileCloseRejectEmailMessage($businessProfile, $rejectReason);
+                $this->getMailer()->sendStatusWasChangedEmailMessage(
+                    $businessProfile,
+                    BusinessProfile::USER_STATUS_REJECTED,
+                    $rejectReason
+                );
                 break;
             case TaskType::TASK_REVIEW_APPROVE:
                 $review = $task->getReview();
