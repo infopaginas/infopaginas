@@ -69,7 +69,7 @@ class BusinessProfileWorkingHourType extends AbstractType
 
             $form
                 ->add('timeStart', TextType::class, [
-                    'label' => 'Time Start',
+                    'label' => 'From',
                     'data' => DayOfWeekModel::getFormFormattedTime($timeStart),
                     'attr' => [
                         'class' => 'working-hours-time-start',
@@ -77,7 +77,7 @@ class BusinessProfileWorkingHourType extends AbstractType
                     ],
                 ])
                 ->add('timeEnd', TextType::class, [
-                    'label' => 'Time End',
+                    'label' => 'Until',
                     'data' => DayOfWeekModel::getFormFormattedTime($timeEnd),
                     'attr' => [
                         'class' => 'working-hours-time-start',
