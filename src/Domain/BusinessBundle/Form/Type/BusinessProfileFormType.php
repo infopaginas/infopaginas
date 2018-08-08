@@ -114,7 +114,7 @@ class BusinessProfileFormType extends AbstractType
                     'class' => 'form-control',
                     'placeholder' => 'email.example.placeholder',
                 ],
-                'label' => 'Email',
+                'label' => 'Business Email',
                 'constraints' =>  [
                     new NotBlank(),
                 ],

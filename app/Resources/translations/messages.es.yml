@@ -74,6 +74,7 @@ miles: millas
 Filter: Filtro
 Submit: Enviar
 Confirm: Confirmar
+Business Email: Correo electrónico
 
 Homepage: Página principal
 User profile: Perfil
@@ -164,6 +165,7 @@ Rejected: Rechazado
 Deactivated: Desactivado
 
 Calls: Llamadas
+Direction: Dirección
 
 business.add.streetAddress.placeholder: Introduzca su dirección de
 
@@ -396,6 +398,7 @@ Sort: Ordenar
 View: Ver
 From: De
 To: Hasta
+Until: Hasta
 Status: Estado
 
 business_profile.seoTitle: name | company
@@ -485,7 +488,7 @@ action_delete_physical: Physical delete
 
 # interaction report
 interaction_report.event.view: Vista
-interaction_report.event.impression: Impresión
+interaction_report.event.impression: Impresiones
 interaction_report.button.direction: Direcciones
 interaction_report.button.show_map: Mostrar en el Mapa
 interaction_report.button.marker_map: Marcador en el Mapa
@@ -721,6 +724,7 @@ user_profile:
     upgrade_now!: ¡Hacer upgrade ahora!
     when_call: ¿Cuál es el mejor momento para llamarte?
     your_phone: Por favor confirme su número de teléfono
+    send: Enviar
   tooltip:
     status: Estado actual de su negocio
     impression: Cuántas veces los usuarios han buscado la ubicación de su empresa
