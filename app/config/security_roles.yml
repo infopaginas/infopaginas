@@ -64,7 +64,6 @@ security:
             - ROLE_DOMAIN_EMERGENCY_ADMIN_SERVICE__ALL
             - ROLE_DOMAIN_EMERGENCY_ADMIN_BUSINESS__ALL
             - ROLE_DOMAIN_EMERGENCY_ADMIN_DRAFT_BUSINESS__ALL
-            - ROLE_DOMAIN_BUSINESS_ADMIN_CATEGORY__VIEW
 
         # PROJECT ROLE
         # has limit access to admin panel
@@ -72,6 +71,7 @@ security:
         # able to view data only
         ROLE_SALES_MANAGER:
             - ROLE_MERCHANT
+            - ROLE_DOMAIN_BUSINESS_ADMIN_CATEGORY__VIEW
 
         # PROJECT ROLE
         ROLE_MERCHANT:
