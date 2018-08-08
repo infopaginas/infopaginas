@@ -15,7 +15,7 @@
         ]
     },
     "repositories": {
-        "0": {
+        "doctrine-patch": {
             "type": "git",
             "url": "https://git.oxagile.com/infopaginas/infopaginas_doctrine2.git"
         },
