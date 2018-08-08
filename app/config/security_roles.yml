@@ -72,6 +72,7 @@ security:
         # able to view data only
         ROLE_SALES_MANAGER:
             - ROLE_MERCHANT
+            - ROLE_CATEGORY__VIEW
 
         # PROJECT ROLE
         ROLE_MERCHANT:
@@ -227,6 +228,10 @@ security:
         ROLE_BUSINESS_PROFILE__VIEW:
             - ROLE_DOMAIN_BUSINESS_ADMIN_BUSINESS_PROFILE_VIEW
             - ROLE_DOMAIN_BUSINESS_ADMIN_BUSINESS_PROFILE_LIST
+
+        ROLE_CATEGORY__VIEW:
+            - ROLE_DOMAIN_BUSINESS_ADMIN_CATEGORY_VIEW
+            - ROLE_DOMAIN_BUSINESS_ADMIN_CATEGORY_LIST
 
         # Access to generate reports
         ROLE_REPORT__EXPORT:
