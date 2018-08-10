@@ -44,7 +44,7 @@ use Domain\BusinessBundle\Validator\Constraints\BusinessProfileWorkingHourType a
  * @ORM\Entity(repositoryClass="Domain\BusinessBundle\Repository\BusinessProfileRepository")
  * @ORM\HasLifecycleCallbacks
  * @Gedmo\TranslationEntity(class="Domain\BusinessBundle\Entity\Translation\BusinessProfileTranslation")
- * @ServiceAreaTypeValidator()
+ * @ServiceAreaTypeValidator(groups={"Admin"})
  * @BusinessProfilePhoneTypeValidator()
  * @BusinessProfileWorkingHourTypeValidator()
  */

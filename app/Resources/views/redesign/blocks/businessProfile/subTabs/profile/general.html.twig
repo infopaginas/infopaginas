@@ -152,24 +152,6 @@
         </div>
 
         <div class="form__row vertical__row">
-            {{ custom_form_label.widget(businessProfileForm.areas) }}
-            {{ form_widget(businessProfileForm.areas) }}
-            {% include ':widgets:select_all_options.html.twig' %}
-        </div>
-
-        <div class="form__row vertical__row">
-            {{ custom_form_label.widget(businessProfileForm.localities) }}
-            {{ form_widget(businessProfileForm.localities) }}
-            {% include ':widgets:select_all_options.html.twig' %}
-        </div>
-
-        <div class="form__row vertical__row">
-            {{ form_label(businessProfileForm.neighborhoods) }}
-            {{ form_widget(businessProfileForm.neighborhoods) }}
-            {% include ':widgets:select_all_options.html.twig' %}
-        </div>
-
-        <div class="form__row vertical__row">
             <div class="form__field field--website">
                 {{ custom_form_label.widget(businessProfileForm.streetAddress) }}
                 {{ form_widget(businessProfileForm.streetAddress, {'attr': {'placeholder': ''}}) }}
