@@ -114,8 +114,7 @@
                                 <div class="form__column">
                                     <div class="form__row">
                                         <dl>
-                                            {% set socials = ['facebook', 'twitter', 'google', 'youtube', 'instagram', 'tripAdvisor'] %}
-                                            {% for social in socials %}
+                                            {% for social in SUGGEST_EDITS.SOCIALS %}
                                                 {% set socialUrl = attribute(businessProfile, social ~ 'URL') %}
                                                 {% if socialUrl %}
                                                     <dt>{{ social[:1]|upper ~ social[1:] }}</dt>

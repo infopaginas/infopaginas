@@ -166,3 +166,7 @@ twig:
 
         REPORT_EVENT_TYPE:
             VIDEO_WATCHED: 'videoWatched'
+
+        SUGGEST_EDITS:
+            SOCIALS: ['facebook', 'twitter', 'google', 'youtube', 'instagram', 'tripAdvisor']
+
