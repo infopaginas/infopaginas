@@ -70,7 +70,7 @@ class BusinessProfileFormType extends AbstractType
     {
         $builder
             ->add('name', TextType::class, [
-                'label'    => 'Name',
+                'label'    => 'Name of Business',
                 'required' => true,
             ])
             ->add('website', TextType::class, [
@@ -114,7 +114,7 @@ class BusinessProfileFormType extends AbstractType
                     'class' => 'form-control',
                     'placeholder' => 'email.example.placeholder',
                 ],
-                'label' => 'Email',
+                'label' => 'Business Email',
                 'constraints' =>  [
                     new NotBlank(),
                 ],
@@ -278,77 +278,12 @@ class BusinessProfileFormType extends AbstractType
             'required' => true,
         ];
 
-        $areasFieldOptions = [
-            'attr' => [
-                'class' => 'form-control selectize-control select-multiple',
-                'placeholder' => 'Select areas',
-                'multiple' => 'multiple',
-            ],
-            'class' => 'Domain\BusinessBundle\Entity\Area',
-            'label' => 'Areas',
-            'label_attr' => [
-                'class' => 'title-label',
-            ],
-            'required' => true,
-            'multiple' => true,
-            'query_builder' => function (AreaRepository $repository) {
-                return $repository->getAvailableAreasQb();
-            },
-        ];
-
-        $localitiesFieldOptions = [
-            'attr'          => [
-                'class'       => 'form-control selectize-control',
-                'placeholder' => 'Select Localities',
-                'multiple'    => true,
-            ],
-            'class'         => 'Domain\BusinessBundle\Entity\Locality',
-            'label'         => 'Localities',
-            'label_attr'    => [
-                'class' => 'title-label',
-            ],
-            'multiple'      => true,
-            'required'      => true,
-            'query_builder' => function (LocalityRepository $repository) {
-                return $repository->getAvailableLocalitiesQb();
-            },
-        ];
-
-        $neighborhoodsFieldOptions = [
-            'attr' => [
-                'class' => 'form-control selectize-control',
-                'placeholder' => 'Select Neighborhoods',
-                'multiple' => true,
-            ],
-            'class' => 'Domain\BusinessBundle\Entity\Neighborhood',
-            'label' => 'Neighborhoods',
-            'label_attr' => [
-                'class' => 'title-label'
-            ],
-            'multiple' => true,
-            'query_builder' => function (NeighborhoodRepository $repository) {
-                return $repository->getAvailableNeighborhoodsQb();
-            },
-            'required' => false,
-        ];
-
-        if ($businessProfile->getServiceAreasType() === BusinessProfile::SERVICE_AREAS_AREA_CHOICE_VALUE) {
-            $localitiesFieldOptions['attr']['disabled'] = 'disabled';
-            $localitiesFieldOptions['required'] = false;
-
-            $areasFieldOptions['attr']['disabled'] = 'disabled';
-            $areasFieldOptions['required'] = false;
-
-            $neighborhoodsFieldOptions['attr']['disabled'] = 'disabled';
-        } else {
+        if ($businessProfile->getServiceAreasType() !== BusinessProfile::SERVICE_AREAS_AREA_CHOICE_VALUE) {
             $milesOfMyBusinessFieldOptions['attr']['disabled'] = 'disabled';
             $milesOfMyBusinessFieldOptions['required'] = false;
         }
 
         $form->add('milesOfMyBusiness', TextType::class, $milesOfMyBusinessFieldOptions);
-        $form->add('areas', EntityType::class, $areasFieldOptions);
-        $form->add('localities', EntityType::class, $localitiesFieldOptions);
-        $form->add('neighborhoods', EntityType::class, $neighborhoodsFieldOptions);
     }
 
     /**

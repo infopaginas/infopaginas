@@ -236,8 +236,8 @@ class BusinessOverviewModel implements ReportInterface
     {
         return [
             self::TYPE_CODE_IMPRESSION       => self::EVENT_TYPES[self::TYPE_CODE_IMPRESSION],
-            self::TYPE_CODE_CALL_MOB_BUTTON  => self::EVENT_TYPES[self::TYPE_CODE_CALL_MOB_BUTTON],
-            self::TYPE_CODE_DIRECTION_BUTTON => self::EVENT_TYPES[self::TYPE_CODE_DIRECTION_BUTTON],
+            self::TYPE_CODE_CALL_MOB_BUTTON  => 'Calls',
+            self::TYPE_CODE_DIRECTION_BUTTON => 'Direction',
         ];
     }
 

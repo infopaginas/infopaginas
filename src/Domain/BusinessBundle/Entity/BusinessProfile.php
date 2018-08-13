@@ -44,7 +44,7 @@ use Domain\BusinessBundle\Validator\Constraints\BusinessProfileWorkingHourType a
  * @ORM\Entity(repositoryClass="Domain\BusinessBundle\Repository\BusinessProfileRepository")
  * @ORM\HasLifecycleCallbacks
  * @Gedmo\TranslationEntity(class="Domain\BusinessBundle\Entity\Translation\BusinessProfileTranslation")
- * @ServiceAreaTypeValidator()
+ * @ServiceAreaTypeValidator(groups={"Admin"})
  * @BusinessProfilePhoneTypeValidator()
  * @BusinessProfileWorkingHourTypeValidator()
  */
@@ -1498,22 +1498,37 @@ class BusinessProfile implements
     public function getStatusForUser()
     {
         if ($this->statusForUser === null) {
-            if ($this->getIsClosed()) {
-                $this->statusForUser = self::USER_STATUS_DEACTIVATED;
+            $statuses = [
+                TaskStatusType::TASK_STATUS_OPEN     => self::USER_STATUS_PENDING,
+                TaskStatusType::TASK_STATUS_CLOSED   => self::USER_STATUS_ACCEPTED,
+                TaskStatusType::TASK_STATUS_REJECTED => self::USER_STATUS_REJECTED,
+            ];
+
+            $criteria = Criteria::create()
+                ->where(Criteria::expr()->neq('type', TaskType::TASK_PROFILE_CLAIM))
+                ->setMaxResults(1)
+                ->orderBy(['id' => Criteria::DESC]);
+
+            $tasks = $this->getTasks()->matching($criteria);
+            /* @var Task|null $task */
+            $task = $tasks[0] ?? null;
+
+            if ($this->getIsActive()) {
+                if ($task) {
+                    $this->statusForUser = $statuses[$task->getStatus()];
+                } else {
+                    // business has been added by admin
+                    $this->statusForUser = self::USER_STATUS_ACCEPTED;
+                }
             } else {
-                $statuses = [
-                    TaskStatusType::TASK_STATUS_OPEN     => self::USER_STATUS_PENDING,
-                    TaskStatusType::TASK_STATUS_CLOSED   => self::USER_STATUS_ACCEPTED,
-                    TaskStatusType::TASK_STATUS_REJECTED => self::USER_STATUS_REJECTED,
-                ];
-
-                $criteria = Criteria::create()
-                    ->where(Criteria::expr()->neq('type', TaskType::TASK_PROFILE_CLAIM))
-                    ->setMaxResults(1)
-                    ->orderBy(['id' => Criteria::DESC]);
-
-                $task = $this->getTasks()->matching($criteria)[0];
-                $this->statusForUser = $statuses[$task->getStatus()];
+                if ($task
+                    && $task->getType() === TaskType::TASK_PROFILE_CREATE
+                    && $task->getStatus() === TaskStatusType::TASK_STATUS_OPEN
+                ) {
+                    $this->statusForUser = self::USER_STATUS_PENDING;
+                } else {
+                    $this->statusForUser = self::USER_STATUS_DEACTIVATED;
+                }
             }
         }
 

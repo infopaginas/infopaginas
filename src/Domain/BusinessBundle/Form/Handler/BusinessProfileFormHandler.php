@@ -10,6 +10,7 @@ use Domain\BusinessBundle\Entity\Media\BusinessGallery;
 use Domain\BusinessBundle\Manager\BusinessProfileManager;
 use Domain\BusinessBundle\Manager\TasksManager;
 use Domain\BusinessBundle\Model\DayOfWeekModel;
+use Domain\BusinessBundle\Model\SubscriptionPlanInterface;
 use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
 use FOS\UserBundle\Entity\User;
 use Oxa\ManagerArchitectureBundle\Form\Handler\BaseFormHandler;
@@ -111,7 +112,12 @@ class BusinessProfileFormHandler extends BaseFormHandler implements BusinessForm
             $this->businessProfileNew = $this->form->getData();
             $this->businessProfileNew->setLocale(LocaleHelper::DEFAULT_LOCALE);
 
-            $this->addAreas();
+            $serviceAreasType = $this->businessProfileNew->getServiceAreasType();
+
+            if ($serviceAreasType === BusinessProfile::SERVICE_AREAS_LOCALITY_CHOICE_VALUE) {
+                $this->setupAreasLocalitiesNeighborhoods();
+            }
+
             $this->handleMediaUpdate();
             $this->handleCategoriesUpdate();
 
@@ -355,17 +361,66 @@ class BusinessProfileFormHandler extends BaseFormHandler implements BusinessForm
         ];
     }
 
-    private function addAreas()
+    private function setupAreasLocalitiesNeighborhoods()
     {
-        $areas = $this->businessProfileNew->getAreas();
-        $areas->clear();
+        $areas         = $this->businessProfileNew->getAreas();
+        $localities    = $this->businessProfileNew->getLocalities();
+        $neighborhoods = $this->businessProfileNew->getNeighborhoods();
 
-        foreach ($this->businessProfileNew->getLocalities() as $locality) {
-            $area = $locality->getArea();
+        if ($this->businessProfileOld !== null) {
+            $oldCatalogLocalityId = $this->businessProfileOld->getCatalogLocality()->getId();
+            $isPaid = ($this->businessProfileOld->getSubscriptionPlanCode() > SubscriptionPlanInterface::CODE_FREE);
+        } else {
+            $oldCatalogLocalityId = null;
+            $isPaid = false;
+        }
 
-            if (!$areas->contains($area)) {
-                $this->businessProfileNew->addArea($area);
+        if ($oldCatalogLocalityId !== $this->businessProfileNew->getCatalogLocality()->getId()) {
+            $newLocality      = $this->businessProfileNew->getCatalogLocality();
+            $newArea          = $newLocality->getArea();
+            $newNeighborhoods = $newLocality->getNeighborhoods();
+
+            if ($isPaid) {
+                $this->copyAreasLocalitiesNeighborhoodsFromOldToNew();
+
+                if (!$areas->contains($newArea)) {
+                    $areas->add($newArea);
+                }
+
+                if (!$localities->contains($newLocality)) {
+                    $localities->add($newLocality);
+                }
+
+                foreach ($newNeighborhoods as $newNeighborhood) {
+                    if (!$neighborhoods->contains($newNeighborhood)) {
+                        $neighborhoods->add($newNeighborhood);
+                    }
+                }
+            } else {
+                $areas->add($newArea);
+                $localities->add($newLocality);
+
+                foreach ($newNeighborhoods as $newNeighborhood) {
+                    $neighborhoods->add($newNeighborhood);
+                }
             }
+        } else {
+            $this->copyAreasLocalitiesNeighborhoodsFromOldToNew();
+        }
+    }
+
+    private function copyAreasLocalitiesNeighborhoodsFromOldToNew()
+    {
+        foreach ($this->businessProfileOld->getAreas() as $area) {
+            $this->businessProfileNew->addArea($area);
+        }
+
+        foreach ($this->businessProfileOld->getLocalities() as $locality) {
+            $this->businessProfileNew->addLocality($locality);
+        }
+
+        foreach ($this->businessProfileOld->getNeighborhoods() as $neighborhood) {
+            $this->businessProfileNew->addNeighborhood($neighborhood);
         }
     }
 }

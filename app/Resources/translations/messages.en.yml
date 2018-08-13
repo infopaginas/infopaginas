@@ -19,7 +19,7 @@ Log In: Log In
 or: or
 Log In with: Log In with
 New to Infopaginas?: New to Infopaginas?
-Create account: Create account
+Create account: Create Profile
 By joining Infopaginas you agree to our: By joining Infopaginas you agree to our
 Terms of Service: Terms of Service
 and: and
@@ -74,6 +74,7 @@ miles: miles
 Filter: Filter
 Submit: Submit
 Confirm: Confirm
+Business Email: Email
 
 Homepage: Homepage
 User profile: User profile
@@ -84,7 +85,7 @@ Advertiser Id: Advertiser Id
 11111111: 11111111
 Change Password: Change Password
 Puerto Rico: Puerto Rico
-Phone Number: Phone Number
+Phone Number: Phone
 (787) 594-7273: (787) 594-7273
 Logout: Logout
 Twitter: Twitter
@@ -96,7 +97,7 @@ plus.google.example.email.placeholder: https://plus.google.com/user
 Youtube: Youtube
 youtube.example.email.placeholder: https://www.youtube.com/user
 No reviews found.: No reviews found.
-My Business Profiles: My Business Profiles
+My Business Profiles: My Profiles
 No business profiles found.: No business profiles found.
 Request Business Profile: Request Business Profile
 Cancel: Cancel
@@ -113,11 +114,11 @@ Sons Notebook: Sons Notebook
 Subscription: Subscription
 Free: Free
 website.example.placeholder: http://sonsnotebook.com
-Phone number: Phone number
+Phone number: Phone
 Phone: Phone
 Add: Add
 email.example.placeholder: sonsnotebook@info.com
-Date of registration: Date of registration
+Date of registration: Registration date
 Business Description: Business Description
 Description: Description
 business.add.description.placeholder: At the time of study, all parents, teachers, students we welcome ideas that foster greater productivity and end of the day, produce better academic achievement
@@ -134,7 +135,7 @@ Social Links: Social Links
 Within miles of my business: Within miles of my business
 100: 100
 Localities: Localities
-Street address: Street address
+Street address: Address
 Country: Country
 State: State
 City: City
@@ -154,10 +155,18 @@ longitude.example.placeholder: 23° 27′ 30″ E
 name: name
 Categories: Categories
 Areas: Areas
-Website: Website
+Website: Website link
 Geocode: Geocode
 yes: yes
+
 Pending: Pending
+Accepted: Accepted
+Rejected: Rejected
+Deactivated: Deactivated
+
+Calls: Calls
+Direction: Direction
+
 business.add.streetAddress.placeholder: Enter your address
 
 Menu: Menu
@@ -389,6 +398,7 @@ Sort: Sort
 View: View
 From: From
 To: To
+Until: Until
 Status: Status
 
 business_profile.seoTitle: name | company
@@ -546,7 +556,7 @@ business.working.hours.open_all_time: Open 24 hours
 business.working.hours.open_until: Open until {-TIME-}
 business.working.hours.closed_now: Now closed
 business.working.hours.closed: Closed
-business.working.hours.edit_note: First select a day (or group of days) and then opening and closing time for those days
+business.working.hours.edit_note: First select a day (or a group of days) and then the opening and closing hours of those days
 
 #business profile phone
 business_profile_phone.type.main: Main
@@ -629,7 +639,7 @@ no_js.warning.message: Your browser's Javascript functionality is turned off. Pl
 
 working_hours.label.comment_en: Comment Eng
 working_hours.label.comment_es: Comment Esp
-working_hours.placeholder.days: Please choose days
+working_hours.placeholder.days: Choose day
 working_hours.placeholder.today: Today
 
 contact:
@@ -638,7 +648,7 @@ contact:
     submit_button: Send
     user_full_name: Full Name
     business_name: Business Name
-    phone: Phone number
+    phone: Phone
     email: E-mail
     message: Message
     subject: Subject
@@ -708,12 +718,13 @@ slider.title: Consider the following similar businesses
 user_profile:
   label:
     last_month_statistics: Last month statistics
-    edit_business: Edit bussines
-    delete_business: Delete bussines
+    edit_business: Edit
+    delete_business: Delete
     upgrade_now: Upgrade Now
     upgrade_now!: Upgrade Now!
-    when_call: When can we call you?
-    your_phone: Your phone
+    when_call: Which is the best time to call you?
+    your_phone: Please confirm your phone number
+    send: Send
   tooltip:
     status: Current status of your business
     impression: How many times the business profile has been viewed
