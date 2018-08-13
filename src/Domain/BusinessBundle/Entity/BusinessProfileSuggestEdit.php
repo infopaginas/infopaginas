@@ -23,6 +23,8 @@ class BusinessProfileSuggestEdit implements DefaultEntityInterface
     const STATUS_ACCEPTED = 'accepted';
     const STATUS_REJECTED = 'rejected';
 
+    const KEY_MAP = 'map';
+
     const KEY_LABELS = [
         'name'          => 'Name',
         'website'       => 'Website',

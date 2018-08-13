@@ -62,7 +62,7 @@ class BusinessProfileSuggestEditsFormHandler extends BaseFormHandler implements 
     {
         foreach ($formData as $key => $value) {
             if ($value || $value === 0) {
-                if ($key === 'map') {
+                if ($key === BusinessProfileSuggestEdit::KEY_MAP) {
                     $value = BusinessProfileSuggestEdit::KEY_LABELS[$key];
                 }
 

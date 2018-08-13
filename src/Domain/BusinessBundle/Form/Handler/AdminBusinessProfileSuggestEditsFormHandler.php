@@ -84,7 +84,7 @@ class AdminBusinessProfileSuggestEditsFormHandler extends BaseFormHandler implem
 
         if ($this->acceptedSuggestEdits) {
             foreach ($this->acceptedSuggestEdits as $suggestEdit) {
-                if ($suggestEdit->getKey() === 'map') {
+                if ($suggestEdit->getKey() === BusinessProfileSuggestEdit::KEY_MAP) {
                     $message = $suggestEdit->getValue();
                 } else {
                     $message = $suggestEdit->getKeyLabel() . ': ' . $suggestEdit->getValue();

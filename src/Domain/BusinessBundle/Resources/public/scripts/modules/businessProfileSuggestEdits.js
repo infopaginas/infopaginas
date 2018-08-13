@@ -53,7 +53,7 @@ define( ['jquery', 'business/tools/form'], function( $,  FormHandler ) {
             event.preventDefault();
             $( that.html.forms.errorBlockSelector ).remove();
 
-            that.createSuggestEditsFormHandler.doRequest( $(this).attr( 'action' ) );
+            that.createSuggestEditsFormHandler.doRequest( $( this ).attr( 'action' ) );
 
             event.preventDefault();
         });

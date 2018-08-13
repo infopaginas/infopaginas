@@ -2,7 +2,7 @@
 {% import '::widgets/custom_form_label_redesign.html.twig' as custom_form_label %}
 
 {% block breadcrumbs %}
-    {#{% include ':redesign/blocks:breadcrumbs.html.twig' %}#}
+    {% include ':redesign/blocks:breadcrumbs.html.twig' with {'catalogLocality': businessProfile.catalogLocality, 'category': businessProfile.categories|first} %}
 {% endblock %}
 
 {% block bodyClass %}generic-page article-page has-sidebar{% endblock %}

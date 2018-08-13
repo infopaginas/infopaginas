@@ -92,6 +92,7 @@ security:
         # This config requires being logged for the whole site and having the admin role for the admin part.
         # Change these rules to adapt them to your needs
         - { path: ^/admin/, role: [ROLE_ADMIN, ROLE_SONATA_ADMIN, ROLE_SALES_MANAGER] }
+        - { path: ^/admin/suggest-edits/business/*, role: [ROLE_CONTENT_MANAGER] }
         - { path: ^/.*, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/efconnect, role: [ROLE_ADMIN, ROLE_SONATA_ADMIN] }
         - { path: ^/elfinder, role: [ROLE_ADMIN, ROLE_SONATA_ADMIN] }

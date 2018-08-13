@@ -3349,7 +3349,7 @@ class BusinessProfile implements
     }
 
     /**
-     * @return null
+     * @return \DateTime|null
      */
     public function getLastSuggestEditDate()
     {
