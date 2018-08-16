@@ -4,6 +4,7 @@ namespace Domain\BusinessBundle\Manager;
 
 use AntiMattr\GoogleBundle\Analytics;
 use AntiMattr\GoogleBundle\Analytics\Impression;
+use Application\Sonata\ClassificationBundle\Entity\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
@@ -1012,14 +1013,17 @@ class BusinessProfileManager extends Manager
     public function getAreaLocalities($businessProfileId, $areas, $locale)
     {
         $checkedLocalityIds = [];
+        $newAreasIds = [];
 
         if ($businessProfileId) {
             /* @var BusinessProfile $businessProfile */
             $businessProfile    = $this->getRepository()->find($businessProfileId);
             $checkedLocalityIds = $this->getBusinessProfileLocalityIds($businessProfile);
+            $newAreasIds        = $this->getNewAreasIds($businessProfile->getAreas(), $areas);
         }
 
         $localities = $this->getLocalitiesByAreas($areas, $locale);
+        $checkedLocalityIds = $this->addLocalitiesIdsForNewAreas($checkedLocalityIds, $newAreasIds, $localities);
 
         $data = $this->getEntitiesMultiSelectResponseForData($localities, $checkedLocalityIds);
 
@@ -1036,14 +1040,21 @@ class BusinessProfileManager extends Manager
     public function getLocalitiesNeighborhoods($businessProfileId, $localities, $locale)
     {
         $checkedNeighborhoodIds = [];
+        $newLocalitiesIds = [];
 
         if ($businessProfileId) {
             /* @var BusinessProfile $businessProfile */
-            $businessProfile    = $this->getRepository()->find($businessProfileId);
+            $businessProfile        = $this->getRepository()->find($businessProfileId);
             $checkedNeighborhoodIds = $this->getBusinessProfileNeighborhoodIds($businessProfile);
+            $newLocalitiesIds       = $this->getNewLocalitiesIds($businessProfile->getLocalities(), $localities);
         }
 
         $neighborhoods = $this->getNeighborhoodsByLocalities($localities, $locale);
+        $checkedNeighborhoodIds = $this->addNeighbourhoodsIdsForNewLocalities(
+            $checkedNeighborhoodIds,
+            $newLocalitiesIds,
+            $neighborhoods
+        );
 
         $data = $this->getEntitiesMultiSelectResponseForData($neighborhoods, $checkedNeighborhoodIds);
 
@@ -1062,6 +1073,30 @@ class BusinessProfileManager extends Manager
         $data = $this->getEntitiesId($localities);
 
         return $data;
+    }
+
+    /**
+     * @param Area[]|Collection $businessProfileAreas
+     * @param array $newAreas
+     * @return mixed
+     */
+    public function getNewAreasIds($businessProfileAreas, $newAreas)
+    {
+        $businessProfileAreasIds = $this->getEntitiesId($businessProfileAreas);
+
+        return array_diff($newAreas, $businessProfileAreasIds);
+    }
+
+    /**
+     * @param Locality[]|Collection $businessProfileLocalities
+     * @param array $newLocalities
+     * @return mixed
+     */
+    public function getNewLocalitiesIds($businessProfileLocalities, $newLocalities)
+    {
+        $businessProfileLocalitiesIds = $this->getEntitiesId($businessProfileLocalities);
+
+        return array_diff($newLocalities, $businessProfileLocalitiesIds);
     }
 
     /**
@@ -1090,6 +1125,40 @@ class BusinessProfileManager extends Manager
             ->getAvailableLocalitiesByAres($areas, $locale);
 
         return $localities;
+    }
+
+    /**
+     * @param array $checkedLocalityIds
+     * @param array $newAreas
+     * @param Locality[]|Collection $localities
+     * @return array
+     */
+    public function addLocalitiesIdsForNewAreas($checkedLocalityIds, $newAreas, $localities)
+    {
+        foreach ($localities as $locality) {
+            if (in_array($locality->getArea()->getId(), $newAreas)) {
+                $checkedLocalityIds[] = $locality->getId();
+            }
+        }
+
+        return $checkedLocalityIds;
+    }
+
+    /**
+     * @param array $checkedNeighbourhoodsIds
+     * @param array $newLocalities
+     * @param Neighborhood[]|Collection $neighborhoods
+     * @return array
+     */
+    public function addNeighbourhoodsIdsForNewLocalities($checkedNeighbourhoodsIds, $newLocalities, $neighborhoods)
+    {
+        foreach ($neighborhoods as $neighborhood) {
+            if (in_array($neighborhood->getLocality()->getId(), $newLocalities)) {
+                $checkedNeighbourhoodsIds[] = $neighborhood->getId();
+            }
+        }
+
+        return $checkedNeighbourhoodsIds;
     }
 
     /**
