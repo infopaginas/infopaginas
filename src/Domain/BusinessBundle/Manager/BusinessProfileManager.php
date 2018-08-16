@@ -1019,7 +1019,7 @@ class BusinessProfileManager extends Manager
             /* @var BusinessProfile $businessProfile */
             $businessProfile    = $this->getRepository()->find($businessProfileId);
             $checkedLocalityIds = $this->getBusinessProfileLocalityIds($businessProfile);
-            $newAreasIds        = $this->getNewAreasIds($businessProfile->getAreas(), $areas);
+            $newAreasIds        = $this->getNewParameterIds($businessProfile->getAreas(), $areas);
         }
 
         $localities = $this->getLocalitiesByAreas($areas, $locale);
@@ -1046,7 +1046,7 @@ class BusinessProfileManager extends Manager
             /* @var BusinessProfile $businessProfile */
             $businessProfile        = $this->getRepository()->find($businessProfileId);
             $checkedNeighborhoodIds = $this->getBusinessProfileNeighborhoodIds($businessProfile);
-            $newLocalitiesIds       = $this->getNewLocalitiesIds($businessProfile->getLocalities(), $localities);
+            $newLocalitiesIds       = $this->getNewParameterIds($businessProfile->getLocalities(), $localities);
         }
 
         $neighborhoods = $this->getNeighborhoodsByLocalities($localities, $locale);
@@ -1076,27 +1076,15 @@ class BusinessProfileManager extends Manager
     }
 
     /**
-     * @param Area[]|Collection $businessProfileAreas
-     * @param array $newAreas
+     * @param Area[]|Locality[]|Collection $businessProfileParameters
+     * @param array $newParameters
      * @return mixed
      */
-    public function getNewAreasIds($businessProfileAreas, $newAreas)
+    public function getNewParameterIds($businessProfileParameters, $newParameters)
     {
-        $businessProfileAreasIds = $this->getEntitiesId($businessProfileAreas);
+        $businessProfileParameterIds = $this->getEntitiesId($businessProfileParameters);
 
-        return array_diff($newAreas, $businessProfileAreasIds);
-    }
-
-    /**
-     * @param Locality[]|Collection $businessProfileLocalities
-     * @param array $newLocalities
-     * @return mixed
-     */
-    public function getNewLocalitiesIds($businessProfileLocalities, $newLocalities)
-    {
-        $businessProfileLocalitiesIds = $this->getEntitiesId($businessProfileLocalities);
-
-        return array_diff($newLocalities, $businessProfileLocalitiesIds);
+        return array_diff($newParameters, $businessProfileParameterIds);
     }
 
     /**
