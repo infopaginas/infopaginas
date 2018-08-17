@@ -1076,7 +1076,7 @@ class BusinessProfileManager extends Manager
     }
 
     /**
-     * @param Area[]|Locality[]|Collection $businessProfileParameters
+     * @param array|Collection $businessProfileParameters
      * @param array $newParameters
      * @return array
      */
