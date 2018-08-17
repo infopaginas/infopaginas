@@ -3,16 +3,14 @@
 namespace Domain\BusinessBundle\Admin;
 
 use Doctrine\ORM\QueryBuilder;
+use Domain\BusinessBundle\DBAL\Types\TaskType;
 use Domain\BusinessBundle\Entity\BusinessProfile;
-use Domain\BusinessBundle\Entity\Category;
 use Domain\BusinessBundle\Entity\Media\BusinessGallery;
 use Domain\BusinessBundle\Entity\Subscription;
 use Domain\BusinessBundle\Entity\SubscriptionPlan;
 use Domain\BusinessBundle\Form\Type\BusinessGalleryAdminType;
-use Domain\BusinessBundle\Model\DayOfWeekModel;
 use Domain\BusinessBundle\Model\StatusInterface;
 use Domain\BusinessBundle\Model\SubscriptionPlanInterface;
-use Domain\BusinessBundle\Util\BusinessProfileUtil;
 use Domain\BusinessBundle\Validator\Constraints\BusinessProfilePhoneTypeValidator;
 use Domain\BusinessBundle\Validator\Constraints\BusinessProfileWorkingHourTypeValidator;
 use Domain\ReportBundle\Manager\KeywordsReportManager;
@@ -25,21 +23,13 @@ use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
 use Oxa\Sonata\AdminBundle\Util\Helpers\AdminHelper;
 use Oxa\Sonata\MediaBundle\Form\Type\CollectionMediaType;
 use Oxa\Sonata\MediaBundle\Model\OxaMediaInterface;
-use Oxa\VideoBundle\Entity\VideoMedia;
-use Oxa\VideoBundle\Form\Type\VideoMediaType;
-use Oxa\Sonata\UserBundle\Entity\Group;
-use Oxa\Sonata\UserBundle\Entity\User;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Route\RouteCollection;
 use Sonata\AdminBundle\Show\ShowMapper;
 use Sonata\CoreBundle\Validator\ErrorElement;
-use Sonata\CoreBundle\Form\Type\BooleanType;
-use Sonata\CoreBundle\Form\Type\EqualType;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -137,6 +127,35 @@ class BusinessProfileAdmin extends OxaAdmin
     }
 
     /**
+     * @return array
+     */
+    public function getCustomActions()
+    {
+        return [
+            'label_show_leads' => $this->generateUrl(
+                'list',
+                [
+                    'filter' => [
+                        'subscriptions__subscriptionPlan' => [
+                            'value' => SubscriptionPlan::CODE_FREE,
+                        ],
+                        'registrationDate'                => [
+                            'value' => [
+                                'start' => (new \DateTime('-1 month'))->format('d-m-Y H:i:s'),
+                            ],
+                        ],
+                        'tasks__type'                     => [
+                            'value' => true,
+                        ],
+                        '_page'                           => 1,
+                        '_per_page'                       => $this->getFilterParameters()['_per_page'],
+                    ],
+                ]
+            ),
+        ];
+    }
+
+    /**
      * @param DatagridMapper $datagridMapper
      */
     protected function configureDatagridFilters(DatagridMapper $datagridMapper)
@@ -159,12 +178,12 @@ class BusinessProfileAdmin extends OxaAdmin
                 'phones.phone',
                 null,
                 [
-                    'label' => $this->trans('filter.label_phone', [], $this->getTranslationDomain())
+                    'label' => $this->trans('filter.label_phone', [], $this->getTranslationDomain()),
                 ]
             )
             ->add('hasImages')
             ->add('subscriptions.subscriptionPlan', null, [
-                'label' => $this->trans('filter.label_subscription_plan', [], $this->getTranslationDomain())
+                'label' => $this->trans('filter.label_subscription_plan', [], $this->getTranslationDomain()),
             ])
             ->add('registrationDate', 'doctrine_orm_datetime_range', $this->defaultDatagridDatetimeTypeOptions)
             ->add('isActive')
@@ -172,10 +191,24 @@ class BusinessProfileAdmin extends OxaAdmin
                 'label' => 'Scheduled for deletion',
             ])
             ->add('categories.name', null, [
-                'label' => $this->trans('filter.label_categories.en', [], $this->getTranslationDomain())
+                'label' => $this->trans('filter.label_categories.en', [], $this->getTranslationDomain()),
             ])
             ->add('categories.searchTextEs', null, [
-                'label' => $this->trans('filter.label_categories.es', [], $this->getTranslationDomain())
+                'label' => $this->trans('filter.label_categories.es', [], $this->getTranslationDomain()),
+            ])
+            ->add('tasks.type', 'doctrine_orm_callback', [
+                'label'      => $this->trans('filter.label_created_by_user', [], $this->getTranslationDomain()),
+                'callback'   => function($queryBuilder, $alias, $field, $value) {
+                    if (!$value['value']) {
+                        return false;
+                    }
+
+                    $queryBuilder->andWhere(sprintf('%s.type', $alias)  . ' = :profileCreateType');
+                    $queryBuilder->setParameter('profileCreateType', TaskType::TASK_PROFILE_CREATE);
+
+                    return true;
+                },
+                'field_type' => 'checkbox',
             ])
         ;
     }
