@@ -1078,7 +1078,7 @@ class BusinessProfileManager extends Manager
     /**
      * @param Area[]|Locality[]|Collection $businessProfileParameters
      * @param array $newParameters
-     * @return mixed
+     * @return array
      */
     public function getNewParameterIds($businessProfileParameters, $newParameters)
     {
