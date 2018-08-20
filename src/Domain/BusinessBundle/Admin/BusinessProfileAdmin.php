@@ -48,6 +48,7 @@ class BusinessProfileAdmin extends OxaAdmin
 {
     const DATE_PICKER_FORMAT = 'yyyy-MM-dd';
     const DATE_PICKER_REPORT_FORMAT = 'YYYY-MM-DD';
+    const SONATA_FILTER_DATE_FORMAT = 'd-m-Y H:i:s';
 
     /**
      * @var bool
@@ -141,7 +142,7 @@ class BusinessProfileAdmin extends OxaAdmin
                         ],
                         'registrationDate'                => [
                             'value' => [
-                                'start' => (new \DateTime('-1 month'))->format('d-m-Y H:i:s'),
+                                'start' => DatesUtil::getLastMonth()->format(self::SONATA_FILTER_DATE_FORMAT),
                             ],
                         ],
                         'tasks__type'                     => [
@@ -203,7 +204,7 @@ class BusinessProfileAdmin extends OxaAdmin
                         return false;
                     }
 
-                    $queryBuilder->andWhere(sprintf('%s.type', $alias)  . ' = :profileCreateType');
+                    $queryBuilder->andWhere(sprintf('%s.type = :profileCreateType', $alias));
                     $queryBuilder->setParameter('profileCreateType', TaskType::TASK_PROFILE_CREATE);
 
                     return true;
