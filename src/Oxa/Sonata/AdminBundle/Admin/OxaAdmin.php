@@ -358,6 +358,14 @@ class OxaAdmin extends BaseAdmin
     }
 
     /**
+     * @return array
+     */
+    public function getCustomActions()
+    {
+        return [];
+    }
+
+    /**
      * @param string $action
      * @param mixed  $entity
      *
