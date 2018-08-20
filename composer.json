@@ -4,7 +4,9 @@
     "type": "project",
     "description": "Infopaginas project",
     "autoload": {
-        "psr-4": { "": "src/" },
+        "psr-4": {
+            "": "src/"
+        },
         "classmap": [
             "app/AppKernel.php",
             "app/AppCache.php",
@@ -12,12 +14,20 @@
             "vendor/googleads/googleads-php-lib/src/Google/AdsApi/Common"
         ]
     },
-    "repositories": [
-        {
+    "repositories": {
+        "infopaginas-doctrine": {
             "type": "git",
             "url": "https://git.oxagile.com/infopaginas/infopaginas_doctrine2.git"
+        },
+        "google-bundle": {
+            "type": "git",
+            "url": "https://git.oxagile.com/infopaginas/infopaginas_google_bundle.git"
+        },
+        "common-product": {
+            "type": "git",
+            "url": "https://git.oxagile.com/infopaginas/google_antimattr_common_product.git"
         }
-    ],
+    },
     "require": {
         "php": ">=7.0.0",
         "symfony/symfony": "2.8.9",
@@ -53,7 +63,8 @@
         "liuggio/excelbundle": "v2.1.0",
         "guzzlehttp/guzzle": "^6.2",
         "spine/spine-trigonometric-dql-bundle": "^0.1.6",
-        "antimattr/google-bundle": "^2.0",
+        "antimattr/common-product": "dev-master",
+        "antimattr/google-bundle": "dev-master",
         "happyr/google-analytics-bundle": "^4.0",
         "php-http/guzzle6-adapter": "^1.1",
         "php-http/httplug-bundle": "^1.3",
