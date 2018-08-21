@@ -1013,13 +1013,14 @@ class BusinessProfileManager extends Manager
     public function getAreaLocalities($businessProfileId, $areas, $locale)
     {
         $checkedLocalityIds = [];
-        $newAreasIds = [];
 
         if ($businessProfileId) {
             /* @var BusinessProfile $businessProfile */
             $businessProfile    = $this->getRepository()->find($businessProfileId);
             $checkedLocalityIds = $this->getBusinessProfileLocalityIds($businessProfile);
             $newAreasIds        = $this->getNewParameterIds($businessProfile->getAreas(), $areas);
+        } else {
+            $newAreasIds = $areas;
         }
 
         $localities = $this->getLocalitiesByAreas($areas, $locale);
@@ -1040,13 +1041,14 @@ class BusinessProfileManager extends Manager
     public function getLocalitiesNeighborhoods($businessProfileId, $localities, $locale)
     {
         $checkedNeighborhoodIds = [];
-        $newLocalitiesIds = [];
 
         if ($businessProfileId) {
             /* @var BusinessProfile $businessProfile */
             $businessProfile        = $this->getRepository()->find($businessProfileId);
             $checkedNeighborhoodIds = $this->getBusinessProfileNeighborhoodIds($businessProfile);
             $newLocalitiesIds       = $this->getNewParameterIds($businessProfile->getLocalities(), $localities);
+        } else {
+            $newLocalitiesIds = $localities;
         }
 
         $neighborhoods = $this->getNeighborhoodsByLocalities($localities, $locale);
