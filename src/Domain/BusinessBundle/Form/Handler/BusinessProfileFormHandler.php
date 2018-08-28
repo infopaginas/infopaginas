@@ -123,6 +123,8 @@ class BusinessProfileFormHandler extends BaseFormHandler implements BusinessForm
 
             $this->checkTranslationBlock($this->requestParams);
 
+            $this->checkCategoryCount($this->requestParams, $businessProfileId);
+
             if ($this->form->isValid()) {
                 //create new user entry for not-logged users
                 $this->handleBusinessOwner();
@@ -421,6 +423,29 @@ class BusinessProfileFormHandler extends BaseFormHandler implements BusinessForm
 
         foreach ($this->businessProfileOld->getNeighborhoods() as $neighborhood) {
             $this->businessProfileNew->addNeighborhood($neighborhood);
+        }
+    }
+
+
+    /**
+     * @param array $post
+     * @param integer $businessProfileId
+     */
+    private function checkCategoryCount($post, $businessProfileId)
+    {
+        if (isset($post['categoryIds'])) {
+            $maxCategoriesNumber = BusinessProfile::BUSINESS_PROFILE_FREE_MAX_CATEGORIES_COUNT;
+            $categoriesCount = count($post['categoryIds']);
+
+            if ($businessProfileId) {
+                if ($this->businessProfileOld->getSubscriptionPlanCode() > SubscriptionPlanInterface::CODE_FREE) {
+                    $maxCategoriesNumber = false;
+                }
+            }
+
+            if ($categoriesCount > $maxCategoriesNumber && $maxCategoriesNumber) {
+                $this->form->get('categoryIds')->addError(new FormError($this->translator->trans('business_profile.category.max')));
+            }
         }
     }
 }

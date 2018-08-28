@@ -590,6 +590,7 @@ form.collectionWorkingHours.overlap: Working Hours should not overlap
 form.collectionWorkingHours.duration: Time start should be more then time end
 form.collectionWorkingHours.blank: Time should not be blank
 business_profile.category.required: This field is required
+business_profile.category.max: This field should contain 3 elements or less
 
 # reset password form
 user:

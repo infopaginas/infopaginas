@@ -20,6 +20,7 @@ use Domain\ReportBundle\Util\DatesUtil;
 use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
 use Oxa\ConfigBundle\Model\ConfigInterface;
 use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
+use Oxa\Sonata\AdminBundle\Form\Type\ModelAutocompleteType;
 use Oxa\Sonata\AdminBundle\Util\Helpers\AdminHelper;
 use Oxa\Sonata\MediaBundle\Form\Type\CollectionMediaType;
 use Oxa\Sonata\MediaBundle\Model\OxaMediaInterface;
@@ -573,14 +574,23 @@ class BusinessProfileAdmin extends OxaAdmin
             $milesOfMyBusinessFieldOptions['required'] = false;
         }
 
+        if ($businessProfile->getId() && $subscriptionPlanCode > SubscriptionPlanInterface::CODE_FREE) {
+            $maximumSelectionSize = 0;
+        } else {
+            $maximumSelectionSize = BusinessProfile::BUSINESS_PROFILE_FREE_MAX_CATEGORIES_COUNT;
+        }
+
         $formMapper
             ->tab('Main')
                 ->with('Category')
-                    ->add('categories', 'sonata_type_model_autocomplete', [
+                    ->add('categories', ModelAutocompleteType::class, [
+                        'class' => Category::class,
                         'property' => [
                             'name',
                             'searchTextEs',
                         ],
+                        'model_manager' => $this->modelManager,
+                        'maximum_selection_size' => $maximumSelectionSize,
                         'multiple' => true,
                         'required' => true,
                     ])
