@@ -327,7 +327,6 @@ class BusinessProfileFormType extends AbstractType
             $event->getForm()->add(
                 'categoryIds',
                 $config->getType()->getName(),
-
                 array_replace(
                     $options,
                     [
