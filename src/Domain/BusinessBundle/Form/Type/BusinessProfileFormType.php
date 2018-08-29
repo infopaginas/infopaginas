@@ -255,6 +255,8 @@ class BusinessProfileFormType extends AbstractType
             /** @var BusinessProfile $businessProfile */
             $businessProfile = $event->getData() !== null ? $event->getData() : new BusinessProfile();
 
+            $this->changeCategoryLabel($event, $businessProfile);
+
             $this->setupServiceAreasFormFields($businessProfile, $event->getForm());
 
             foreach (LocaleHelper::getLocaleList() as $locale => $name) {
@@ -313,6 +315,26 @@ class BusinessProfileFormType extends AbstractType
         ;
 
         $builder->get('categoryIds')->resetViewTransformers();
+    }
+
+    private function changeCategoryLabel(FormEvent $event, BusinessProfile $businessProfile)
+    {
+        $config = $event->getForm()->get('categoryIds')->getConfig();
+        $options = $config->getOptions();
+
+        if ($event->getData() == null ||
+            $businessProfile->getSubscriptionPlanCode() <= SubscriptionPlanInterface::CODE_FREE) {
+            $event->getForm()->add(
+                'categoryIds',
+                $config->getType()->getName(),
+                array_replace(
+                    $options,
+                    [
+                        'label' => 'business_profile.category.free_hint',
+                    ]
+                )
+            );
+        }
     }
 
     /**
