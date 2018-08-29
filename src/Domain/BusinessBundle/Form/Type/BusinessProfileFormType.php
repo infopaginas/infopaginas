@@ -255,6 +255,24 @@ class BusinessProfileFormType extends AbstractType
             /** @var BusinessProfile $businessProfile */
             $businessProfile = $event->getData() !== null ? $event->getData() : new BusinessProfile();
 
+            $config = $event->getForm()->get('categoryIds')->getConfig();
+            $options = $config->getOptions();
+
+            if ($event->getData() == null ||
+                $businessProfile->getSubscriptionPlanCode() <= SubscriptionPlanInterface::CODE_FREE) {
+                $event->getForm()->add(
+                    'categoryIds',
+                    $config->getType()->getName(),
+
+                    array_replace(
+                        $options,
+                        [
+                            'label' => 'business_profile.category.free_hint',
+                        ]
+                    )
+                );
+            }
+
             $this->setupServiceAreasFormFields($businessProfile, $event->getForm());
 
             foreach (LocaleHelper::getLocaleList() as $locale => $name) {
