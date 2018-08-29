@@ -5,6 +5,7 @@ namespace Domain\BusinessBundle\Admin;
 use Doctrine\ORM\QueryBuilder;
 use Domain\BusinessBundle\DBAL\Types\TaskType;
 use Domain\BusinessBundle\Entity\BusinessProfile;
+use Domain\BusinessBundle\Entity\Category;
 use Domain\BusinessBundle\Entity\Media\BusinessGallery;
 use Domain\BusinessBundle\Entity\Subscription;
 use Domain\BusinessBundle\Entity\SubscriptionPlan;
