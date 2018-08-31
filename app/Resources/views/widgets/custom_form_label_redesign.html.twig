@@ -1,8 +1,10 @@
-{% macro widget(field) %}
+{% macro widget(field, customLabel) %}
     {% set label = field.vars.label %}
     {% set required = field.vars.required %}
     {% set translation_domain = field.vars.translation_domain %}
-
+    {% if customLabel is defined and customLabel %}
+        {% set label = customLabel %}
+    {% endif %}
     {% if field.vars.attr.class is defined %}
         {% set class = field.vars.attr.class %}
     {% else %}

@@ -59,3 +59,8 @@ services:
         class: Oxa\Sonata\AdminBundle\Filter\TimeFilter
         tags:
             - { name: sonata.admin.filter.type, alias: doctrine_orm_time }
+
+    oxa.sonata.admin.form.type.model_autocomplete:
+            class: Oxa\Sonata\AdminBundle\Form\Type\ModelAutocompleteType
+            tags:
+                - { name: form.type, alias: sonata_type_model_autocomplete }

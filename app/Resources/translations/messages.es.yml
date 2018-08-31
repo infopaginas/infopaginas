@@ -590,6 +590,8 @@ form.collectionWorkingHours.overlap: Las horas de trabajo no deben superponerse
 form.collectionWorkingHours.duration: Inicio de tiempo debe ser más que tiempo final
 form.collectionWorkingHours.blank: El tiempo no debe estar en blanco
 business_profile.category.required: Este campo es obligatorio
+business_profile.category.max: Este campo debe contener 3 elementos o menos
+business_profile.category.free_hint: Categorías (Máximo 3 categorías)
 
 # reset password form
 user:

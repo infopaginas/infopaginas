@@ -80,6 +80,7 @@ class BusinessProfile implements
 
     const BUSINESS_PROFILE_ZIP_MAX_LENGTH = 10;
     const BUSINESS_PROFILE_URL_MAX_LENGTH = 1000;
+    const BUSINESS_PROFILE_FREE_MAX_CATEGORIES_COUNT = 3;
 
     const DEFAULT_LOCALE = 'en';
 

@@ -20,6 +20,7 @@ flash_delete_error_rel: Can not delete object which is used in: "%fields%"
 batch_delete_error_rel: Can not delete object with id: "record_id", which is used in: "%fields%"
 label_yes: Yes
 label_no: No
+label_show_leads: Show leads
 title_crop: Crop
 export_pdf: Export to PDF
 export_xls: Export to Excel
