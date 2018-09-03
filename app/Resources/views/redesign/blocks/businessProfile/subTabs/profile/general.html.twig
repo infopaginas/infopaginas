@@ -124,7 +124,13 @@
         </div>
 
         <div class="form__row vertical__row category-first-level-user">
-            {{ custom_form_label.widget(businessProfileForm.categoryIds) }}
+            {%  if businessProfile is not defined or businessProfile.getSubscriptionPlanCode() <= SUBSCRIPTION.CODE.FREE  %}
+                {% set categoryIdLabel = 'business_profile.category.free_hint' %}
+            {% else %}
+                {% set categoryIdLabel = '' %}
+            {% endif %}
+
+            {{ custom_form_label.widget(businessProfileForm.categoryIds, categoryIdLabel) }}
             {{ form_widget(businessProfileForm.categoryIds) }}
 
             {% if businessProfile is defined %}
