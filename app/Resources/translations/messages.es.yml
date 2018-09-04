@@ -473,7 +473,7 @@ business_profile.message.created: Gracias por crear el perfil. Nuestro equipo re
 business_profile.message.updated: El perfil de la empresa se actualizó correctamente (los cambios se aplicarán después de la confirmación del administrador)
 business_profile.message.closed: El perfil de la empresa se actualizó correctamente (los cambios se aplicarán después de la confirmación del administrador)
 business_profile.message.welcome: Bienvenido
-business_profile.message.upgrade: ¡Gracias! Nuestro equipo se comunicará con usted pronto.
+business_profile.message.upgrade: Nuestro equipo se comunicará con usted pronto.
 user.reset_password_request.email.not_found: El usuario {-email-} no existe
 business_profile.seoDescription.search: Encuentra el mejor {-categories-} en {-locality-}
 business_profile.seoTitle.search: categories en locality
