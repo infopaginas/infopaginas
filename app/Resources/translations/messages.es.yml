@@ -99,7 +99,7 @@ youtube.example.email.placeholder: https://www.youtube.com/user
 No reviews found.: No se encontraron comentarios.
 My Business Profiles: Mis perfiles
 No business profiles found.: No se encontraron perfiles.
-Request Business Profile: Solicitud de perfil de negocio
+Create Business Profile: Crear perfil de negocio
 Cancel: Cancelar
 Save: Guardar
 Old Password: Contraseña anterior
@@ -433,7 +433,7 @@ You have no videos: No tienes videos
 Background: Fondo
 Reset: Reiniciar
 Reason: Razón
-Remove: Retirar
+Remove: Eliminar
 Video status pending: El vídeo se está convirtiendo. Se enviará para su aprobación a nuestros administradores y se publicará automáticamente.
 Video status error: Error: fallo de la conversión, vuelve a cargar el vídeo con los formatos siguientes: MP4, WMV, FLV, AVI, MPG, MOV
 
