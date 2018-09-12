@@ -129,10 +129,8 @@ class AggregateDataCommand extends ContainerAwareCommand
         $cursor = $businessOverviewReportManager->getSummaryByActionData(
             $businessesIds,
             $actions,
-            [
-                'startDate' => $startDate,
-                'endDate' => $endDate,
-            ]
+            $startDate,
+            $endDate
         );
 
         return $cursor;
