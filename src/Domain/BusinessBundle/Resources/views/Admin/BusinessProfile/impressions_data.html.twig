@@ -1,0 +1,7 @@
+{% extends 'SonataAdminBundle:CRUD:base_list_field.html.twig' %}
+
+{% block field%}
+    {% if object.id is not null %}
+        {{ get_business_profile_impressions(object.id) }}
+    {% endif %}
+{% endblock %}

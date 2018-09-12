@@ -459,11 +459,19 @@ class BusinessOverviewReportManager extends BaseReportManager
     /**
      * @param array $businessIds
      * @param array $actions
+     * @param \DateTime $startDate
+     * @param \DateTime|null $endDate
      * @return mixed
      */
-    protected function getSummaryByAction($businessIds, $actions)
+    protected function getSummaryByAction($businessIds, $actions, \DateTime $startDate, \DateTime $endDate = null)
     {
-        $startDate = $this->mongoDbManager->typeUTCDateTime(DatesUtil::getLastMonth());
+        $dateFilterMongo = [
+            '$gte' => $this->mongoDbManager->typeUTCDateTime($startDate),
+        ];
+
+        if ($endDate) {
+            $dateFilterMongo['$lte'] = $this->mongoDbManager->typeUTCDateTime($endDate);
+        }
 
         $cursor = $this->mongoDbManager->aggregateData(
             self::MONGO_DB_COLLECTION_NAME_AGGREGATE,
@@ -476,9 +484,7 @@ class BusinessOverviewReportManager extends BaseReportManager
                         self::MONGO_DB_FIELD_BUSINESS_ID => [
                             '$in' => $businessIds,
                         ],
-                        self::MONGO_DB_FIELD_DATE_TIME   => [
-                            '$gte' => $startDate,
-                        ],
+                        self::MONGO_DB_FIELD_DATE_TIME => $dateFilterMongo,
                     ],
                 ],
                 [
@@ -501,9 +507,11 @@ class BusinessOverviewReportManager extends BaseReportManager
     /**
      * @param array $businessIds
      * @param array $actions
+     * @param \DateTime $startDate
+     * @param \DateTime|null $endDate
      * @return array
      */
-    public function getSummaryByActionData($businessIds, $actions)
+    public function getSummaryByActionData($businessIds, $actions, \DateTime $startDate, \DateTime $endDate = null)
     {
         $data = [];
 
@@ -511,7 +519,7 @@ class BusinessOverviewReportManager extends BaseReportManager
             return $data;
         }
 
-        $cursor = $this->getSummaryByAction($businessIds, $actions);
+        $cursor = $this->getSummaryByAction($businessIds, $actions, $startDate, $endDate);
 
         foreach ($cursor as $item) {
             $businessId = $item['_id']['_id'];

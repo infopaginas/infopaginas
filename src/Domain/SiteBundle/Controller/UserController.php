@@ -7,6 +7,7 @@ use Domain\BusinessBundle\Form\Type\BusinessUpgradeRequestType;
 use Domain\BusinessBundle\Util\BusinessProfileUtil;
 use Domain\ReportBundle\Manager\BusinessOverviewReportManager;
 use Domain\ReportBundle\Model\BusinessOverviewModel;
+use Domain\ReportBundle\Util\DatesUtil;
 use Domain\SiteBundle\Form\Handler\PasswordUpdateFormHandler;
 use Domain\SiteBundle\Form\Handler\UserProfileFormHandler;
 use FOS\UserBundle\Model\UserInterface;
@@ -49,7 +50,8 @@ class UserController extends Controller
 
         $summaryData = $businessOverviewReportManager->getSummaryByActionData(
             $userBusinessProfilesIds,
-            array_keys($actions)
+            array_keys($actions),
+            DatesUtil::getLastMonth()
         );
 
         $closeBusinessProfileForm = $this->createForm(new BusinessCloseRequestType());

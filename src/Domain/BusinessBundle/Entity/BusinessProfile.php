@@ -180,6 +180,12 @@ class BusinessProfile implements
     const USER_STATUS_REJECTED    = 'Rejected';
     const USER_STATUS_DEACTIVATED = 'Deactivated';
 
+    CONST AGGREGATE_DATA_MONTH_COUNT   = '12';
+
+    CONST FILTER_IMPRESSIONS = 'impressions';
+    CONST FILTER_DIRECTIONS  = 'directions';
+    CONST FILTER_CALL_MOBILE = 'callsMobile';
+
     /**
      * @var int
      *
@@ -745,6 +751,21 @@ class BusinessProfile implements
     protected $video;
 
     /**
+     * @ORM\Column(name="impressions", type="integer", nullable=false, options={"default" = 0})
+     */
+    protected $impressions;
+
+    /**
+     * @ORM\Column(name="directions", type="integer", nullable=false, options={"default" = 0})
+     */
+    protected $directions;
+
+    /**
+     * @ORM\Column(name="calls_mobile", type="integer", nullable=false, options={"default" = 0})
+     */
+    protected $callsMobile;
+
+    /**
      * @Gedmo\Locale
      * Used locale to override Translation listener`s locale
      * this is not a mapped field of entity metadata, just a simple property
@@ -846,6 +867,30 @@ class BusinessProfile implements
     public function setLocale($locale)
     {
         $this->locale = $locale;
+    }
+
+    /**
+     * @param int $impressions
+     */
+    public function setImpressions($impressions)
+    {
+        $this->impressions = $impressions;
+    }
+
+    /**
+     * @param int $directions
+     */
+    public function setDirections($directions)
+    {
+        $this->directions = $directions;
+    }
+
+    /**
+     * @param int $callsMobile
+     */
+    public function setCallsMobile($callsMobile)
+    {
+        $this->callsMobile = $callsMobile;
     }
 
     /**
@@ -3328,5 +3373,17 @@ class BusinessProfile implements
         }
 
         return false;
+    }
+
+    /**
+     * @return array
+     */
+    public static function getOverviewFilters()
+    {
+        return [
+            self::FILTER_IMPRESSIONS,
+            self::FILTER_DIRECTIONS,
+            self::FILTER_CALL_MOBILE,
+        ];
     }
 }

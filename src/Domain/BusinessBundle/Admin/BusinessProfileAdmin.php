@@ -159,6 +159,68 @@ class BusinessProfileAdmin extends OxaAdmin
     }
 
     /**
+     * @param QueryBuilder $queryBuilder
+     * @param $alias
+     * @param $field
+     * @param $value
+     * @return bool
+     */
+    public function overviewFilterQueryBuilder($queryBuilder, $alias, $field, $value)
+    {
+        if (!$value['value']) {
+            return false;
+        }
+
+        $borderValue = $this->getFilterTypeConfig($field);
+
+        $queryBuilder->andWhere("$alias.$field " . $value['value'] . " :borderValue")
+            ->setParameter('borderValue', $borderValue);
+
+        return true;
+    }
+
+    /**
+     * @param string $action
+     * @return string
+     */
+    private function getFilterTypeConfig($action)
+    {
+        $configService = $this->getConfigurationPool()
+            ->getContainer()
+            ->get('oxa_config');
+
+        switch ($action) {
+            case BusinessProfile::FILTER_DIRECTIONS:
+                $searchConfig = ConfigInterface::DIRECTIONS_FILTER_VALUE;
+                break;
+            case BusinessProfile::FILTER_CALL_MOBILE:
+                $searchConfig = ConfigInterface::CALLS_MOBILE_FILTER_VALUE;
+                break;
+            default:
+                $searchConfig = ConfigInterface::IMPRESSIONS_FILTER_VALUE;
+                break;
+        }
+
+        return $configService->getValue($searchConfig);
+    }
+
+    /**
+     * @param string $action
+     * @return array
+     */
+    private function getOverviewFilterOptions($action)
+    {
+        $borderValue = $this->getFilterTypeConfig($action);
+
+        return [
+            'choices' => [
+                '<'  => '< ' . $borderValue,
+                '>=' => '>= ' . $borderValue,
+            ]
+        ];
+    }
+
+    /**
      * @param DatagridMapper $datagridMapper
      */
     protected function configureDatagridFilters(DatagridMapper $datagridMapper)
@@ -168,8 +230,19 @@ class BusinessProfileAdmin extends OxaAdmin
             ->add('name', null, [
                 'show_filter' => true,
             ])
-            ->add('city')
-            ->add('catalogLocality')
+            ->add('city');
+
+        foreach (BusinessProfile::getOverviewFilters() as $overviewFilter) {
+            $datagridMapper->add($overviewFilter, 'doctrine_orm_callback',
+                [
+                    'callback' => [$this, 'overviewFilterQueryBuilder'],
+                ],
+                'choice',
+                $this->getOverviewFilterOptions($overviewFilter)
+            );
+        }
+
+        $datagridMapper->add('catalogLocality')
             ->add(
                 'user',
                 null,
@@ -225,6 +298,9 @@ class BusinessProfileAdmin extends OxaAdmin
             ->add('id')
             ->addIdentifier('name')
             ->add('city')
+            ->add('impressions')
+            ->add('directions')
+            ->add('callsMobile')
             ->add('catalogLocality', null, [
                 'sortable' => true,
                 'sort_field_mapping'=> ['fieldName' => 'name'],
