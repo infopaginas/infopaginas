@@ -18,12 +18,20 @@ class AggregateDataCommand extends ContainerAwareCommand
 {
     const DEFAULT_BATCH_SIZE = 20;
 
+    CONST AGGREGATE_DATA_MONTH_COUNT   = '12';
+
     protected function configure()
     {
         $this
             ->setName('domain:business:aggregate-data')
-            ->setDescription('Aggregate data from MongoDB to PostgreSQL')
-            ->addOption('batchSize', null, InputOption::VALUE_OPTIONAL, '', self::DEFAULT_BATCH_SIZE)
+            ->setDescription('Aggregate impressions, directions, callsMobile from MongoDB to PostgreSQL')
+            ->addOption(
+                'batchSize',
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'Number of persisting objects per iteration',
+                self::DEFAULT_BATCH_SIZE
+            )
         ;
     }
 
@@ -49,9 +57,6 @@ class AggregateDataCommand extends ContainerAwareCommand
      * @param int $batchSize
      *
      * @return int
-     * @throws \Doctrine\Common\Persistence\Mapping\MappingException
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
      */
     private function updateBusinessProfilesData($batchSize)
     {
@@ -70,10 +75,7 @@ class AggregateDataCommand extends ContainerAwareCommand
 
         $businessesIds = BusinessProfileUtil::extractEntitiesId($businesses);
 
-        $cursor = $this->getBusinessesOverviewData(
-            $businessesIds,
-            $actions
-        );
+        $cursor = $this->getBusinessesOverviewData($businessesIds, $actions);
 
         $batchCounter = 0;
 
@@ -123,8 +125,8 @@ class AggregateDataCommand extends ContainerAwareCommand
             ->get('domain_report.manager.business_overview_report_manager');
 
         $endDate = new \DateTime();
-        $startDate = clone $endDate;
-        $startDate->modify('-' . BusinessProfile::AGGREGATE_DATA_MONTH_COUNT . ' month');
+        $startDate = new \DateTime();
+        $startDate->modify('-' . self::AGGREGATE_DATA_MONTH_COUNT . ' month');
 
         $cursor = $businessOverviewReportManager->getSummaryByActionData(
             $businessesIds,

@@ -52,6 +52,10 @@ class BusinessProfileAdmin extends OxaAdmin
     const DATE_PICKER_REPORT_FORMAT = 'YYYY-MM-DD';
     const SONATA_FILTER_DATE_FORMAT = 'd-m-Y H:i:s';
 
+    CONST FILTER_IMPRESSIONS = 'impressions';
+    CONST FILTER_DIRECTIONS  = 'directions';
+    CONST FILTER_CALL_MOBILE = 'callsMobile';
+
     /**
      * @var bool
      */
@@ -173,7 +177,9 @@ class BusinessProfileAdmin extends OxaAdmin
 
         $borderValue = $this->getFilterTypeConfig($field);
 
-        $queryBuilder->andWhere("$alias.$field " . $value['value'] . " :borderValue")
+        $operator = $value['value'];
+
+        $queryBuilder->andWhere($alias . '.' . $field . ' ' . $operator . ' :borderValue')
             ->setParameter('borderValue', $borderValue);
 
         return true;
@@ -190,14 +196,17 @@ class BusinessProfileAdmin extends OxaAdmin
             ->get('oxa_config');
 
         switch ($action) {
-            case BusinessProfile::FILTER_DIRECTIONS:
+            case self::FILTER_DIRECTIONS:
                 $searchConfig = ConfigInterface::DIRECTIONS_FILTER_VALUE;
                 break;
-            case BusinessProfile::FILTER_CALL_MOBILE:
+            case self::FILTER_CALL_MOBILE:
                 $searchConfig = ConfigInterface::CALLS_MOBILE_FILTER_VALUE;
                 break;
-            default:
+            case self::FILTER_IMPRESSIONS:
                 $searchConfig = ConfigInterface::IMPRESSIONS_FILTER_VALUE;
+                break;
+            default:
+                throw new \LogicException('This code must not be reached');
                 break;
         }
 
@@ -232,7 +241,7 @@ class BusinessProfileAdmin extends OxaAdmin
             ])
             ->add('city');
 
-        foreach (BusinessProfile::getOverviewFilters() as $overviewFilter) {
+        foreach ($this->getOverviewFilters() as $overviewFilter) {
             $datagridMapper->add($overviewFilter, 'doctrine_orm_callback',
                 [
                     'callback' => [$this, 'overviewFilterQueryBuilder'],
@@ -1641,5 +1650,17 @@ class BusinessProfileAdmin extends OxaAdmin
         }
 
         return $entity;
+    }
+
+    /**
+     * @return array
+     */
+    public function getOverviewFilters()
+    {
+        return [
+            self::FILTER_IMPRESSIONS,
+            self::FILTER_DIRECTIONS,
+            self::FILTER_CALL_MOBILE,
+        ];
     }
 }

@@ -180,12 +180,6 @@ class BusinessProfile implements
     const USER_STATUS_REJECTED    = 'Rejected';
     const USER_STATUS_DEACTIVATED = 'Deactivated';
 
-    CONST AGGREGATE_DATA_MONTH_COUNT   = '12';
-
-    CONST FILTER_IMPRESSIONS = 'impressions';
-    CONST FILTER_DIRECTIONS  = 'directions';
-    CONST FILTER_CALL_MOBILE = 'callsMobile';
-
     /**
      * @var int
      *
@@ -871,26 +865,59 @@ class BusinessProfile implements
 
     /**
      * @param int $impressions
+     * @return BusinessProfile
      */
     public function setImpressions($impressions)
     {
         $this->impressions = $impressions;
+
+        return $this;
     }
 
     /**
      * @param int $directions
+     * @return BusinessProfile
      */
     public function setDirections($directions)
     {
         $this->directions = $directions;
+
+        return $this;
     }
 
     /**
      * @param int $callsMobile
+     * @return BusinessProfile
      */
     public function setCallsMobile($callsMobile)
     {
         $this->callsMobile = $callsMobile;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getImpressions()
+    {
+        return $this->impressions;
+    }
+
+    /**
+     * @return int
+     */
+    public function getDirections()
+    {
+        return $this->directions;
+    }
+
+    /**
+     * @return int
+     */
+    public function getCallsMobile()
+    {
+        return $this->callsMobile;
     }
 
     /**
@@ -3373,17 +3400,5 @@ class BusinessProfile implements
         }
 
         return false;
-    }
-
-    /**
-     * @return array
-     */
-    public static function getOverviewFilters()
-    {
-        return [
-            self::FILTER_IMPRESSIONS,
-            self::FILTER_DIRECTIONS,
-            self::FILTER_CALL_MOBILE,
-        ];
     }
 }

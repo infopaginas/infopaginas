@@ -40,7 +40,6 @@ class Version20180912132952 extends AbstractMigration implements ContainerAwareI
      */
     public function down(Schema $schema)
     {
-
     }
 
     protected function checkNewConfigValue($key)
