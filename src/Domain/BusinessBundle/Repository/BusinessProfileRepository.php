@@ -513,7 +513,6 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
             ->orderBy('bp.id');
 
         return $qb->getQuery()
-            ->setHint(Query::HINT_FORCE_PARTIAL_LOAD, 1)
             ->getResult();
     }
 }

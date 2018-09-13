@@ -6,6 +6,7 @@ use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Util\BusinessProfileUtil;
 use Domain\ReportBundle\Model\BusinessOverviewModel;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -44,7 +45,7 @@ class AggregateDataCommand extends ContainerAwareCommand
         $logger = $this->getContainer()->get('domain_site.cron.logger');
         $logger->addInfo($logger::AGGREGATE_DATA_COMMAND, $logger::STATUS_START, 'execute:start');
 
-        $amountOfUpdatedBusiness = $this->updateBusinessProfilesData($input->getOption('batchSize'));
+        $amountOfUpdatedBusiness = $this->updateBusinessProfilesData($input->getOption('batchSize'), $output);
 
         $logger->addInfo(
             $logger::AGGREGATE_DATA_COMMAND,
@@ -55,10 +56,10 @@ class AggregateDataCommand extends ContainerAwareCommand
 
     /**
      * @param int $batchSize
-     *
+     * @param $output
      * @return int
      */
-    private function updateBusinessProfilesData($batchSize)
+    private function updateBusinessProfilesData($batchSize, OutputInterface $output)
     {
         $actions = [
             BusinessOverviewModel::TYPE_CODE_CALL_MOB_BUTTON,
@@ -75,15 +76,20 @@ class AggregateDataCommand extends ContainerAwareCommand
 
         $businessesIds = BusinessProfileUtil::extractEntitiesId($businesses);
 
-        $cursor = $this->getBusinessesOverviewData($businessesIds, $actions);
+        $data = $this->getBusinessesOverviewData($businessesIds, $actions);
 
         $batchCounter = 0;
 
+        $progressBar = new ProgressBar($output, count($businesses));
+
+        $progressBar->start();
+
         foreach ($businesses as $business) {
             $businessId = $business->getId();
+            $progressBar->advance();
 
-            if (isset($cursor[$businessId])) {
-                $businessCursor = $cursor[$businessId];
+            if (isset($data[$businessId])) {
+                $businessCursor = $data[$businessId];
 
                 if (isset($businessCursor[BusinessOverviewModel::TYPE_CODE_IMPRESSION])) {
                     $business->setImpressions($businessCursor[BusinessOverviewModel::TYPE_CODE_IMPRESSION]);
@@ -110,6 +116,8 @@ class AggregateDataCommand extends ContainerAwareCommand
         $entityManager->flush();
         $entityManager->clear();
 
+        $progressBar->finish();
+
         return $batchCounter;
     }
 
@@ -128,13 +136,13 @@ class AggregateDataCommand extends ContainerAwareCommand
         $startDate = new \DateTime();
         $startDate->modify('-' . self::AGGREGATE_DATA_MONTH_COUNT . ' month');
 
-        $cursor = $businessOverviewReportManager->getSummaryByActionData(
+        $data = $businessOverviewReportManager->getSummaryByActionData(
             $businessesIds,
             $actions,
             $startDate,
             $endDate
         );
 
-        return $cursor;
+        return $data;
     }
 }
