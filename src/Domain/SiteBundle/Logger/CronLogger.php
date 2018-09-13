@@ -25,6 +25,7 @@ class CronLogger
     const BUSINESS_UPDATE_STATUS    = 'domain:business:update-status';
     const SUBSCRIPTION_TRACK        = 'ipgn:subscriptions:track';
     const CATALOG_ITEM_UPDATE       = 'domain:business:catalog-item-update';
+    const AGGREGATE_DATA_COMMAND    = 'domain:business:aggregate-data';
     const ARTICLE_UPDATE            = 'domain:article:update';
     const MONGO_AGGREGATE           = 'domain:report-mongo-db:aggregate';
     const MONGO_POPULAR_CATEGORIES  = 'domain:popular-category:update';
