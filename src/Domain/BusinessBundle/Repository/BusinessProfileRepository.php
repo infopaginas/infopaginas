@@ -490,7 +490,6 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
     public function getBusinessesWithTextWorkingHoursIterator()
     {
         $qb = $this->createQueryBuilder('bp')
-            ->select('bp')
             ->where('bp.workingHours IS NOT NULL')
             ->andWhere('bp.workingHours != \'\'')
             ->orderBy('bp.id')
