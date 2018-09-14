@@ -507,7 +507,7 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
     public function getActiveBusinessesPartial()
     {
         $qb = $this->createQueryBuilder('bp')
-            ->select('partial bp.{id, impressions, directions, callsMobile}')
+            ->select('bp')
             ->where('bp.isActive = :true')
             ->setParameter('true', true)
             ->orderBy('bp.id');
