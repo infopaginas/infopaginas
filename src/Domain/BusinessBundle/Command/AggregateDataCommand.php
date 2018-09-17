@@ -103,7 +103,7 @@ class AggregateDataCommand extends ContainerAwareCommand
                     $business->setCallsMobile($businessCursor[BusinessOverviewModel::TYPE_CODE_CALL_MOB_BUTTON]);
                 }
 
-                $entityManager->persist($business);
+                $entityManager->merge($business);
                 $batchCounter++;
 
                 if (($batchCounter % $batchSize) === 0) {
