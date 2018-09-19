@@ -1364,15 +1364,6 @@ $bps-border: 1px dotted #bcbcbc;
     border-radius: 0;
     padding: 0;
 
-    h2 {
-      background: #1e4b82;
-      color: #fff;
-      justify-content: left;
-      margin: 0;
-      padding: 1em;
-      text-transform: initial;
-    }
-
     .modal__section {
       .account-form {
         @media only screen and (min-width: 805px) {
@@ -1436,6 +1427,14 @@ $bps-border: 1px dotted #bcbcbc;
     }
 
     @media only screen and (min-width: 805px) {
+      width: 75%;
+    }
+
+    @media only screen and (min-width: 1080px) {
+      width: 50%;
+    }
+
+    @media only screen and (min-width: 1600px) {
       width: 35%;
     }
   }
@@ -3710,7 +3709,7 @@ a.tag {
   background: $grey--light;
   border-radius: 6px;
   box-shadow: 0 8px 20px transparentize($black, .5);
-  min-height: 300px;
+  min-height: 100px;
   max-height: 90%;
   overflow-y: auto;
   padding: 20px;
