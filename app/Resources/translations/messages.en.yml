@@ -99,7 +99,7 @@ youtube.example.email.placeholder: https://www.youtube.com/user
 No reviews found.: No reviews found.
 My Business Profiles: My Profiles
 No business profiles found.: No business profiles found.
-Request Business Profile: Request Business Profile
+Create Business Profile: Create Business Profile
 Cancel: Cancel
 Save: Save
 Old Password: Old Password
@@ -473,7 +473,7 @@ business_profile.message.created: Thanks for creating the profile. Our team will
 business_profile.message.updated: Business profile was successfully updated (changes will be applied after admin confirmation)
 business_profile.message.closed: Business profile was successfully updated (changes will be applied after admin confirmation)
 business_profile.message.welcome: Welcome
-business_profile.message.upgrade: Thank you! Our team will contact you soon.
+business_profile.message.upgrade: Our team will contact you soon.
 user.reset_password_request.email.not_found: User {-email-} doesn't exists
 business_profile.seoDescription.search: Find best {-categories-} in {-locality-}
 business_profile.seoTitle.search: categories in locality

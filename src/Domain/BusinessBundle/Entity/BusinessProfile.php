@@ -745,6 +745,21 @@ class BusinessProfile implements
     protected $video;
 
     /**
+     * @ORM\Column(name="impressions", type="integer", nullable=false, options={"default" = 0})
+     */
+    protected $impressions;
+
+    /**
+     * @ORM\Column(name="directions", type="integer", nullable=false, options={"default" = 0})
+     */
+    protected $directions;
+
+    /**
+     * @ORM\Column(name="calls_mobile", type="integer", nullable=false, options={"default" = 0})
+     */
+    protected $callsMobile;
+
+    /**
      * @Gedmo\Locale
      * Used locale to override Translation listener`s locale
      * this is not a mapped field of entity metadata, just a simple property
@@ -846,6 +861,63 @@ class BusinessProfile implements
     public function setLocale($locale)
     {
         $this->locale = $locale;
+    }
+
+    /**
+     * @param int $impressions
+     * @return BusinessProfile
+     */
+    public function setImpressions($impressions)
+    {
+        $this->impressions = $impressions;
+
+        return $this;
+    }
+
+    /**
+     * @param int $directions
+     * @return BusinessProfile
+     */
+    public function setDirections($directions)
+    {
+        $this->directions = $directions;
+
+        return $this;
+    }
+
+    /**
+     * @param int $callsMobile
+     * @return BusinessProfile
+     */
+    public function setCallsMobile($callsMobile)
+    {
+        $this->callsMobile = $callsMobile;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getImpressions()
+    {
+        return $this->impressions;
+    }
+
+    /**
+     * @return int
+     */
+    public function getDirections()
+    {
+        return $this->directions;
+    }
+
+    /**
+     * @return int
+     */
+    public function getCallsMobile()
+    {
+        return $this->callsMobile;
     }
 
     /**

@@ -4,6 +4,7 @@ namespace Domain\BusinessBundle\Repository;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Internal\Hydration\IterableResult;
+use Doctrine\ORM\Query;
 use Doctrine\ORM\Query\Expr;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\Tools\Pagination\Paginator;
@@ -489,7 +490,6 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
     public function getBusinessesWithTextWorkingHoursIterator()
     {
         $qb = $this->createQueryBuilder('bp')
-            ->select('bp')
             ->where('bp.workingHours IS NOT NULL')
             ->andWhere('bp.workingHours != \'\'')
             ->orderBy('bp.id')
@@ -498,5 +498,20 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
         $query = $this->getEntityManager()->createQuery($qb->getDQL());
 
         return $query->iterate();
+    }
+
+    /**
+     * @return array
+     */
+    public function getActiveBusinessesPartial()
+    {
+        $qb = $this->createQueryBuilder('bp')
+            ->select('bp')
+            ->where('bp.isActive = :true')
+            ->setParameter('true', true)
+            ->orderBy('bp.id');
+
+        return $qb->getQuery()
+            ->getResult();
     }
 }

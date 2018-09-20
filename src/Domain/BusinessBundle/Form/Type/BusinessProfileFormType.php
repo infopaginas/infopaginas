@@ -255,35 +255,10 @@ class BusinessProfileFormType extends AbstractType
             /** @var BusinessProfile $businessProfile */
             $businessProfile = $event->getData() !== null ? $event->getData() : new BusinessProfile();
 
-            $this->setupServiceAreasFormFields($businessProfile, $event->getForm());
-
             foreach (LocaleHelper::getLocaleList() as $locale => $name) {
                 $this->addTranslationBlock($event->getForm(), $businessProfile, $locale);
             }
         });
-    }
-
-    /**
-     * @param BusinessProfile $businessProfile
-     * @param FormInterface $form
-     */
-    private function setupServiceAreasFormFields(BusinessProfile $businessProfile, FormInterface $form)
-    {
-        $milesOfMyBusinessFieldOptions = [
-            'attr'     => [
-                'class'       => 'form-control',
-                'placeholder' => '100',
-            ],
-            'label'    => 'Within miles of my business',
-            'required' => true,
-        ];
-
-        if ($businessProfile->getServiceAreasType() !== BusinessProfile::SERVICE_AREAS_AREA_CHOICE_VALUE) {
-            $milesOfMyBusinessFieldOptions['attr']['disabled'] = 'disabled';
-            $milesOfMyBusinessFieldOptions['required'] = false;
-        }
-
-        $form->add('milesOfMyBusiness', TextType::class, $milesOfMyBusinessFieldOptions);
     }
 
     /**
@@ -349,18 +324,6 @@ class BusinessProfileFormType extends AbstractType
         $resolver->setDefaults([
             'allow_extra_fields' => true,
             'data_class'         => 'Domain\BusinessBundle\Entity\BusinessProfile',
-            'validation_groups'  => function (FormInterface $form) {
-                /** @var BusinessProfile $profile */
-                $profile = $form->getData();
-
-                if (BusinessProfile::SERVICE_AREAS_AREA_CHOICE_VALUE == $profile->getServiceAreasType()) {
-                    return ['Default', 'service_area_chosen'];
-                } elseif (BusinessProfile::SERVICE_AREAS_LOCALITY_CHOICE_VALUE == $profile->getServiceAreasType()) {
-                    return ['Default', 'service_locality_chosen'];
-                } else {
-                    return ['Default'];
-                }
-            },
         ]);
     }
 

@@ -52,6 +52,10 @@ class BusinessProfileAdmin extends OxaAdmin
     const DATE_PICKER_REPORT_FORMAT = 'YYYY-MM-DD';
     const SONATA_FILTER_DATE_FORMAT = 'd-m-Y H:i:s';
 
+    CONST FILTER_IMPRESSIONS = 'impressions';
+    CONST FILTER_DIRECTIONS  = 'directions';
+    CONST FILTER_CALL_MOBILE = 'callsMobile';
+
     /**
      * @var bool
      */
@@ -159,6 +163,73 @@ class BusinessProfileAdmin extends OxaAdmin
     }
 
     /**
+     * @param QueryBuilder $queryBuilder
+     * @param $alias
+     * @param $field
+     * @param $value
+     * @return bool
+     */
+    public function overviewFilterQueryBuilder($queryBuilder, $alias, $field, $value)
+    {
+        if (!$value['value']) {
+            return false;
+        }
+
+        $borderValue = $this->getFilterTypeConfig($field);
+
+        $operator = $value['value'];
+
+        $queryBuilder->andWhere($alias . '.' . $field . ' ' . $operator . ' :borderValue')
+            ->setParameter('borderValue', $borderValue);
+
+        return true;
+    }
+
+    /**
+     * @param string $action
+     * @return string
+     */
+    private function getFilterTypeConfig($action)
+    {
+        $configService = $this->getConfigurationPool()
+            ->getContainer()
+            ->get('oxa_config');
+
+        switch ($action) {
+            case self::FILTER_DIRECTIONS:
+                $searchConfig = ConfigInterface::DIRECTIONS_FILTER_VALUE;
+                break;
+            case self::FILTER_CALL_MOBILE:
+                $searchConfig = ConfigInterface::CALLS_MOBILE_FILTER_VALUE;
+                break;
+            case self::FILTER_IMPRESSIONS:
+                $searchConfig = ConfigInterface::IMPRESSIONS_FILTER_VALUE;
+                break;
+            default:
+                throw new \LogicException('This code must not be reached');
+                break;
+        }
+
+        return $configService->getValue($searchConfig);
+    }
+
+    /**
+     * @param string $action
+     * @return array
+     */
+    private function getOverviewFilterOptions($action)
+    {
+        $borderValue = $this->getFilterTypeConfig($action);
+
+        return [
+            'choices' => [
+                '<'  => '< ' . $borderValue,
+                '>=' => '>= ' . $borderValue,
+            ]
+        ];
+    }
+
+    /**
      * @param DatagridMapper $datagridMapper
      */
     protected function configureDatagridFilters(DatagridMapper $datagridMapper)
@@ -168,8 +239,19 @@ class BusinessProfileAdmin extends OxaAdmin
             ->add('name', null, [
                 'show_filter' => true,
             ])
-            ->add('city')
-            ->add('catalogLocality')
+            ->add('city');
+
+        foreach ($this->getOverviewFilters() as $overviewFilter) {
+            $datagridMapper->add($overviewFilter, 'doctrine_orm_callback',
+                [
+                    'callback' => [$this, 'overviewFilterQueryBuilder'],
+                ],
+                'choice',
+                $this->getOverviewFilterOptions($overviewFilter)
+            );
+        }
+
+        $datagridMapper->add('catalogLocality')
             ->add(
                 'user',
                 null,
@@ -225,6 +307,9 @@ class BusinessProfileAdmin extends OxaAdmin
             ->add('id')
             ->addIdentifier('name')
             ->add('city')
+            ->add('impressions')
+            ->add('directions')
+            ->add('callsMobile')
             ->add('catalogLocality', null, [
                 'sortable' => true,
                 'sort_field_mapping'=> ['fieldName' => 'name'],
@@ -1565,5 +1650,17 @@ class BusinessProfileAdmin extends OxaAdmin
         }
 
         return $entity;
+    }
+
+    /**
+     * @return array
+     */
+    public function getOverviewFilters()
+    {
+        return [
+            self::FILTER_IMPRESSIONS,
+            self::FILTER_DIRECTIONS,
+            self::FILTER_CALL_MOBILE,
+        ];
     }
 }

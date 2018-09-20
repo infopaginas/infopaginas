@@ -142,22 +142,6 @@
         </div>
 
         <div class="form__row vertical__row">
-            {% for key, serviceType in businessProfileForm.serviceAreasType.children %}
-                <div class="service-type">
-                    {{ form_widget(serviceType) }}
-                    {{ form_label(serviceType) }}
-                </div>
-            {% endfor %}
-        </div>
-
-        <div class="form__row vertical__row">
-            {{ form_label(businessProfileForm.milesOfMyBusiness) }}
-            <div class="form__field field--website">
-                {{ form_widget(businessProfileForm.milesOfMyBusiness, {'attr': {'placeholder': ''}}) }}
-            </div>
-        </div>
-
-        <div class="form__row vertical__row">
             <div class="form__field field--website">
                 {{ custom_form_label.widget(businessProfileForm.streetAddress) }}
                 {{ form_widget(businessProfileForm.streetAddress, {'attr': {'placeholder': ''}}) }}
