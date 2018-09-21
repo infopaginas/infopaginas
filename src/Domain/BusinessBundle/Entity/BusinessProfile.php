@@ -747,17 +747,17 @@ class BusinessProfile implements
     /**
      * @ORM\Column(name="impressions", type="integer", nullable=false, options={"default" = 0})
      */
-    protected $impressions;
+    protected $impressions = 0;
 
     /**
      * @ORM\Column(name="directions", type="integer", nullable=false, options={"default" = 0})
      */
-    protected $directions;
+    protected $directions = 0;
 
     /**
      * @ORM\Column(name="calls_mobile", type="integer", nullable=false, options={"default" = 0})
      */
-    protected $callsMobile;
+    protected $callsMobile = 0;
 
     /**
      * @Gedmo\Locale
