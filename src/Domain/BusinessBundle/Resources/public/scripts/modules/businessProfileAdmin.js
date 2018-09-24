@@ -290,7 +290,7 @@ $( document ).ready( function() {
     function updateSelect2FieldValues( field, data ) {
         var html = '';
         var previousData = field.val();
-        var previousOptions = $.map(field.find('option') ,function(option) {
+        var previousOptions = $.map(field.find( 'option' ), function( option ) {
             return option.value;
         });
 
