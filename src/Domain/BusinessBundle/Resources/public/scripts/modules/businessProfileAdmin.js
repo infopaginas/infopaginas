@@ -290,6 +290,9 @@ $( document ).ready( function() {
     function updateSelect2FieldValues( field, data ) {
         var html = '';
         var previousData = field.val();
+        var previousOptions = $.map(field.find( 'option' ), function( option ) {
+            return option.value;
+        });
 
         if ( data ) {
             $.each( data, function ( key, value ) {
@@ -313,6 +316,8 @@ $( document ).ready( function() {
             if ( value.selected ) {
                 selectedValues.push( value.id );
             } else if ( previousData && $.inArray( value.id.toString(), previousData ) > -1 ) {
+                selectedValues.push( value.id );
+            } else if ( $.inArray( value.id.toString(), previousOptions ) < 1 ) {
                 selectedValues.push( value.id );
             }
         });
