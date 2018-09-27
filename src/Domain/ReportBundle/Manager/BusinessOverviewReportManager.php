@@ -521,14 +521,16 @@ class BusinessOverviewReportManager extends BaseReportManager
 
         $cursor = $this->getSummaryByAction($businessIds, $actions, $startDate, $endDate);
 
-        foreach ($cursor as $item) {
-            $businessId = $item['_id']['_id'];
-            $action = $item['_id']['action'];
+        if ($cursor) {
+            foreach ($cursor as $item) {
+                $businessId = $item['_id']['_id'];
+                $action = $item['_id']['action'];
 
-            if (isset($data[$businessId][$action])) {
-                $data[$businessId][$action] += $item['count'];
-            } else {
-                $data[$businessId][$action] = $item['count'];
+                if (isset($data[$businessId][$action])) {
+                    $data[$businessId][$action] += $item['count'];
+                } else {
+                    $data[$businessId][$action] = $item['count'];
+                }
             }
         }
 

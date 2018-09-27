@@ -2,6 +2,7 @@
 
 namespace Domain\BusinessBundle\Command;
 
+use Doctrine\ORM\EntityManager;
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Util\BusinessProfileUtil;
 use Domain\ReportBundle\Model\BusinessOverviewModel;
@@ -67,6 +68,7 @@ class AggregateDataCommand extends ContainerAwareCommand
             BusinessOverviewModel::TYPE_CODE_DIRECTION_BUTTON,
         ];
 
+        /** @var EntityManager $entityManager */
         $entityManager = $this->getContainer()
             ->get('doctrine.orm.default_entity_manager');
 
@@ -74,47 +76,55 @@ class AggregateDataCommand extends ContainerAwareCommand
             ->getRepository(BusinessProfile::class)
             ->getActiveBusinessesPartial();
 
-        $businessesIds = BusinessProfileUtil::extractEntitiesId($businesses);
-
-        $data = $this->getBusinessesOverviewData($businessesIds, $actions);
-
-        $batchCounter = 0;
+        $offset = 0;
+        $step = 500;
+        $businessesChunks = array_slice($businesses, $offset, $step);
 
         $progressBar = new ProgressBar($output, count($businesses));
-
         $progressBar->start();
 
-        foreach ($businesses as $business) {
-            $businessId = $business->getId();
-            $progressBar->advance();
+        while (!empty($businessesChunks)) {
+            $businessesIds = BusinessProfileUtil::extractEntitiesId($businessesChunks);
 
-            if (isset($data[$businessId])) {
-                $businessCursor = $data[$businessId];
+            $data = $this->getBusinessesOverviewData($businessesIds, $actions);
+            $batchCounter = 0;
 
-                if (isset($businessCursor[BusinessOverviewModel::TYPE_CODE_IMPRESSION])) {
-                    $business->setImpressions($businessCursor[BusinessOverviewModel::TYPE_CODE_IMPRESSION]);
-                }
+            /** @var BusinessProfile $business */
+            foreach ($businessesChunks as $business) {
+                $businessId = $business->getId();
+                $progressBar->advance();
 
-                if (isset($businessCursor[BusinessOverviewModel::TYPE_CODE_DIRECTION_BUTTON])) {
-                    $business->setDirections($businessCursor[BusinessOverviewModel::TYPE_CODE_DIRECTION_BUTTON]);
-                }
+                if (isset($data[$businessId])) {
+                    $businessCursor = $data[$businessId];
 
-                if (isset($businessCursor[BusinessOverviewModel::TYPE_CODE_CALL_MOB_BUTTON])) {
-                    $business->setCallsMobile($businessCursor[BusinessOverviewModel::TYPE_CODE_CALL_MOB_BUTTON]);
-                }
+                    if (isset($businessCursor[BusinessOverviewModel::TYPE_CODE_IMPRESSION])) {
+                        $business->setImpressions($businessCursor[BusinessOverviewModel::TYPE_CODE_IMPRESSION]);
+                    }
 
-                $entityManager->merge($business);
-                $batchCounter++;
+                    if (isset($businessCursor[BusinessOverviewModel::TYPE_CODE_DIRECTION_BUTTON])) {
+                        $business->setDirections($businessCursor[BusinessOverviewModel::TYPE_CODE_DIRECTION_BUTTON]);
+                    }
 
-                if (($batchCounter % $batchSize) === 0) {
-                    $entityManager->flush();
-                    $entityManager->clear();
+                    if (isset($businessCursor[BusinessOverviewModel::TYPE_CODE_CALL_MOB_BUTTON])) {
+                        $business->setCallsMobile($businessCursor[BusinessOverviewModel::TYPE_CODE_CALL_MOB_BUTTON]);
+                    }
+
+                    $entityManager->merge($business);
+                    $batchCounter++;
+
+                    if (($batchCounter % $batchSize) === 0) {
+                        $entityManager->flush();
+                        $entityManager->clear();
+                    }
                 }
             }
-        }
 
-        $entityManager->flush();
-        $entityManager->clear();
+            $entityManager->flush();
+            $entityManager->clear();
+
+            $offset += $step;
+            $businessesChunks = array_slice($businesses, $offset, $step);
+        }
 
         $progressBar->finish();
 
