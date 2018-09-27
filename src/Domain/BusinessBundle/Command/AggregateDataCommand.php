@@ -3,12 +3,10 @@
 namespace Domain\BusinessBundle\Command;
 
 use Domain\BusinessBundle\Entity\BusinessProfile;
-use Domain\BusinessBundle\Util\BusinessProfileUtil;
 use Domain\ReportBundle\Model\BusinessOverviewModel;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -17,8 +15,6 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class AggregateDataCommand extends ContainerAwareCommand
 {
-    const DEFAULT_BATCH_SIZE = 20;
-
     CONST AGGREGATE_DATA_MONTH_COUNT   = '12';
 
     protected function configure()
