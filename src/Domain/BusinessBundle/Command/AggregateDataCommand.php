@@ -2,7 +2,6 @@
 
 namespace Domain\BusinessBundle\Command;
 
-use Doctrine\ORM\EntityManager;
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Util\BusinessProfileUtil;
 use Domain\ReportBundle\Model\BusinessOverviewModel;
@@ -27,13 +26,6 @@ class AggregateDataCommand extends ContainerAwareCommand
         $this
             ->setName('domain:business:aggregate-data')
             ->setDescription('Aggregate impressions, directions, callsMobile from MongoDB to PostgreSQL')
-            ->addOption(
-                'batchSize',
-                null,
-                InputOption::VALUE_OPTIONAL,
-                'Number of persisting objects per iteration',
-                self::DEFAULT_BATCH_SIZE
-            )
         ;
     }
 
@@ -46,7 +38,7 @@ class AggregateDataCommand extends ContainerAwareCommand
         $logger = $this->getContainer()->get('domain_site.cron.logger');
         $logger->addInfo($logger::AGGREGATE_DATA_COMMAND, $logger::STATUS_START, 'execute:start');
 
-        $amountOfUpdatedBusiness = $this->updateBusinessProfilesData($input->getOption('batchSize'), $output);
+        $amountOfUpdatedBusiness = $this->updateBusinessProfilesData($output);
 
         $logger->addInfo(
             $logger::AGGREGATE_DATA_COMMAND,
@@ -60,7 +52,7 @@ class AggregateDataCommand extends ContainerAwareCommand
      * @param $output
      * @return int
      */
-    private function updateBusinessProfilesData($batchSize, OutputInterface $output)
+    private function updateBusinessProfilesData(OutputInterface $output)
     {
         $actions = [
             BusinessOverviewModel::TYPE_CODE_CALL_MOB_BUTTON,
@@ -68,62 +60,44 @@ class AggregateDataCommand extends ContainerAwareCommand
             BusinessOverviewModel::TYPE_CODE_DIRECTION_BUTTON,
         ];
 
-        /** @var EntityManager $entityManager */
         $entityManager = $this->getContainer()
             ->get('doctrine.orm.default_entity_manager');
 
         $businesses = $entityManager
             ->getRepository(BusinessProfile::class)
-            ->getActiveBusinessesPartial();
+            ->getActiveBusinessProfilesIterator();
 
-        $offset = 0;
-        $step = 500;
-        $businessesChunks = array_slice($businesses, $offset, $step);
-
+        $batchCounter = 0;
         $progressBar = new ProgressBar($output, count($businesses));
         $progressBar->start();
 
-        while (!empty($businessesChunks)) {
-            $businessesIds = BusinessProfileUtil::extractEntitiesId($businessesChunks);
-
-            $data = $this->getBusinessesOverviewData($businessesIds, $actions);
-            $batchCounter = 0;
-
+        foreach ($businesses as $row) {
             /** @var BusinessProfile $business */
-            foreach ($businessesChunks as $business) {
-                $businessId = $business->getId();
-                $progressBar->advance();
+            $business = $row[0];
+            $businessId = $business->getId();
+            $progressBar->advance();
+            $data = $this->getBusinessesOverviewData([$businessId], $actions);
 
-                if (isset($data[$businessId])) {
-                    $businessCursor = $data[$businessId];
+            if (isset($data[$businessId])) {
+                $businessCursor = $data[$businessId];
 
-                    if (isset($businessCursor[BusinessOverviewModel::TYPE_CODE_IMPRESSION])) {
-                        $business->setImpressions($businessCursor[BusinessOverviewModel::TYPE_CODE_IMPRESSION]);
-                    }
-
-                    if (isset($businessCursor[BusinessOverviewModel::TYPE_CODE_DIRECTION_BUTTON])) {
-                        $business->setDirections($businessCursor[BusinessOverviewModel::TYPE_CODE_DIRECTION_BUTTON]);
-                    }
-
-                    if (isset($businessCursor[BusinessOverviewModel::TYPE_CODE_CALL_MOB_BUTTON])) {
-                        $business->setCallsMobile($businessCursor[BusinessOverviewModel::TYPE_CODE_CALL_MOB_BUTTON]);
-                    }
-
-                    $entityManager->merge($business);
-                    $batchCounter++;
-
-                    if (($batchCounter % $batchSize) === 0) {
-                        $entityManager->flush();
-                        $entityManager->clear();
-                    }
+                if (isset($businessCursor[BusinessOverviewModel::TYPE_CODE_IMPRESSION])) {
+                    $business->setImpressions($businessCursor[BusinessOverviewModel::TYPE_CODE_IMPRESSION]);
                 }
+
+                if (isset($businessCursor[BusinessOverviewModel::TYPE_CODE_DIRECTION_BUTTON])) {
+                    $business->setDirections($businessCursor[BusinessOverviewModel::TYPE_CODE_DIRECTION_BUTTON]);
+                }
+
+                if (isset($businessCursor[BusinessOverviewModel::TYPE_CODE_CALL_MOB_BUTTON])) {
+                    $business->setCallsMobile($businessCursor[BusinessOverviewModel::TYPE_CODE_CALL_MOB_BUTTON]);
+                }
+
+                $batchCounter++;
+
+                $entityManager->flush();
+                $entityManager->clear();
             }
-
-            $entityManager->flush();
-            $entityManager->clear();
-
-            $offset += $step;
-            $businessesChunks = array_slice($businesses, $offset, $step);
         }
 
         $progressBar->finish();
