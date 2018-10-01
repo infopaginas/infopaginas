@@ -3,12 +3,10 @@
 namespace Domain\BusinessBundle\Command;
 
 use Domain\BusinessBundle\Entity\BusinessProfile;
-use Domain\BusinessBundle\Util\BusinessProfileUtil;
 use Domain\ReportBundle\Model\BusinessOverviewModel;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -17,8 +15,6 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class AggregateDataCommand extends ContainerAwareCommand
 {
-    const DEFAULT_BATCH_SIZE = 20;
-
     CONST AGGREGATE_DATA_MONTH_COUNT   = '12';
 
     protected function configure()
@@ -26,13 +22,6 @@ class AggregateDataCommand extends ContainerAwareCommand
         $this
             ->setName('domain:business:aggregate-data')
             ->setDescription('Aggregate impressions, directions, callsMobile from MongoDB to PostgreSQL')
-            ->addOption(
-                'batchSize',
-                null,
-                InputOption::VALUE_OPTIONAL,
-                'Number of persisting objects per iteration',
-                self::DEFAULT_BATCH_SIZE
-            )
         ;
     }
 
@@ -45,7 +34,7 @@ class AggregateDataCommand extends ContainerAwareCommand
         $logger = $this->getContainer()->get('domain_site.cron.logger');
         $logger->addInfo($logger::AGGREGATE_DATA_COMMAND, $logger::STATUS_START, 'execute:start');
 
-        $amountOfUpdatedBusiness = $this->updateBusinessProfilesData($input->getOption('batchSize'), $output);
+        $amountOfUpdatedBusiness = $this->updateBusinessProfilesData($output);
 
         $logger->addInfo(
             $logger::AGGREGATE_DATA_COMMAND,
@@ -59,7 +48,7 @@ class AggregateDataCommand extends ContainerAwareCommand
      * @param $output
      * @return int
      */
-    private function updateBusinessProfilesData($batchSize, OutputInterface $output)
+    private function updateBusinessProfilesData(OutputInterface $output)
     {
         $actions = [
             BusinessOverviewModel::TYPE_CODE_CALL_MOB_BUTTON,
@@ -72,21 +61,18 @@ class AggregateDataCommand extends ContainerAwareCommand
 
         $businesses = $entityManager
             ->getRepository(BusinessProfile::class)
-            ->getActiveBusinessesPartial();
-
-        $businessesIds = BusinessProfileUtil::extractEntitiesId($businesses);
-
-        $data = $this->getBusinessesOverviewData($businessesIds, $actions);
+            ->getActiveBusinessProfilesIterator();
 
         $batchCounter = 0;
-
         $progressBar = new ProgressBar($output, count($businesses));
-
         $progressBar->start();
 
-        foreach ($businesses as $business) {
+        foreach ($businesses as $row) {
+            /** @var BusinessProfile $business */
+            $business = $row[0];
             $businessId = $business->getId();
             $progressBar->advance();
+            $data = $this->getBusinessesOverviewData([$businessId], $actions);
 
             if (isset($data[$businessId])) {
                 $businessCursor = $data[$businessId];
@@ -103,18 +89,12 @@ class AggregateDataCommand extends ContainerAwareCommand
                     $business->setCallsMobile($businessCursor[BusinessOverviewModel::TYPE_CODE_CALL_MOB_BUTTON]);
                 }
 
-                $entityManager->merge($business);
                 $batchCounter++;
 
-                if (($batchCounter % $batchSize) === 0) {
-                    $entityManager->flush();
-                    $entityManager->clear();
-                }
+                $entityManager->flush();
+                $entityManager->clear();
             }
         }
-
-        $entityManager->flush();
-        $entityManager->clear();
 
         $progressBar->finish();
 
