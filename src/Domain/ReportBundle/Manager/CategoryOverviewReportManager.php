@@ -31,7 +31,6 @@ class CategoryOverviewReportManager extends BaseReportManager
         $this->mongoDbManager = $mongoDbManager;
     }
 
-
     /**
      * @param string $type
      * @param array $categoriesIds
