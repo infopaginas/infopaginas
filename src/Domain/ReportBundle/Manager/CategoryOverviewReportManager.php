@@ -8,7 +8,6 @@ use Domain\ReportBundle\Model\DataType\ReportDatesRangeVO;
 use Domain\ReportBundle\Util\DatesUtil;
 use Oxa\MongoDbBundle\Manager\MongoDbManager;
 use Oxa\Sonata\AdminBundle\Util\Helpers\AdminHelper;
-use phpDocumentor\Reflection\Types\Self_;
 
 class CategoryOverviewReportManager extends BaseReportManager
 {
@@ -50,9 +49,11 @@ class CategoryOverviewReportManager extends BaseReportManager
     {
         $data = $this->buildCategoriesInteractions($categoriesIds, $type);
 
-        $this->insertCategoriesInteractions($data);
+        if ($this->insertCategoriesInteractions($data)) {
+            return true;
+        }
 
-        return true;
+        return false;
     }
 
 
@@ -75,20 +76,6 @@ class CategoryOverviewReportManager extends BaseReportManager
     }
 
     /**
-     * @param string $businessSlug
-     * @param string $format
-     * @return string
-     */
-    public function getBusinessOverviewReportName($businessSlug, $format)
-    {
-        $this->reportName = $businessSlug;
-
-        $filename = $this->generateReportName($format);
-
-        return $filename;
-    }
-
-    /**
      * @param array $categoriesIds
      * @param string $action
      *
@@ -102,8 +89,6 @@ class CategoryOverviewReportManager extends BaseReportManager
         foreach ($categoriesIds as $categoryId) {
             $data[] = $this->buildSingleCategoryInteraction($categoryId, $action, $date);
         }
-
-        $data[] = $this->buildSingleCategoryInteraction(0, $action, $date);
 
         return $data;
     }
@@ -216,131 +201,9 @@ class CategoryOverviewReportManager extends BaseReportManager
 
     /**
      * @param array $params
-     *
+     * @param array $categoryIds
      * @return array
      */
-    public function getThisYearSearchParams($params)
-    {
-        return $this->getYearSearchParam($params, DatesUtil::RANGE_THIS_YEAR);
-    }
-
-    /**
-     * @param array $params
-     *
-     * @return array
-     */
-    public function getThisLastSearchParams($params)
-    {
-        return $this->getYearSearchParam($params, DatesUtil::RANGE_LAST_YEAR);
-    }
-
-    /**
-     * @param array     $params
-     * @param string    $range
-     *
-     * @return array
-     */
-    protected function getYearSearchParam($params, $range)
-    {
-        $dates = DatesUtil::getDateRangeValueObjectFromRangeType($range);
-
-        $params['date']['start'] = $dates->getStartDate()->format(DatesUtil::START_END_DATE_ARRAY_FORMAT);
-        $params['date']['end']   = $dates->getEndDate()->format(DatesUtil::START_END_DATE_ARRAY_FORMAT);
-
-        $params['periodOption'] = AdminHelper::PERIOD_OPTION_CODE_PER_MONTH;
-
-        return $params;
-    }
-
-    /**
-     * @return BusinessProfileManager
-     */
-    protected function getBusinessProfileManager() : BusinessProfileManager
-    {
-        return $this->businessProfileManager;
-    }
-
-    /**
-     * @param array $categoriesIds
-     * @param array $actions
-     * @param \DateTime $startDate
-     * @param \DateTime|null $endDate
-     * @return mixed
-     */
-    protected function getSummaryByAction($categoriesIds, $actions, \DateTime $startDate, \DateTime $endDate = null)
-    {
-        $dateFilterMongo = [
-            '$gte' => $this->mongoDbManager->typeUTCDateTime($startDate),
-        ];
-
-        if ($endDate) {
-            $dateFilterMongo['$lte'] = $this->mongoDbManager->typeUTCDateTime($endDate);
-        }
-
-        $cursor = $this->mongoDbManager->aggregateData(
-            self::MONGO_DB_COLLECTION_NAME_AGGREGATE,
-            [
-                [
-                    '$match' => [
-                        self::MONGO_DB_FIELD_ACTION      => [
-                            '$in' => $actions,
-                        ],
-                        self::MONGO_DB_FIELD_CATEGORY_ID => [
-                            '$in' => $categoriesIds,
-                        ],
-                        self::MONGO_DB_FIELD_DATE_TIME => $dateFilterMongo,
-                    ],
-                ],
-                [
-                    '$group' => [
-                        '_id' => [
-                            '_id' => '$' . self::MONGO_DB_FIELD_CATEGORY_ID,
-                            self::MONGO_DB_FIELD_ACTION => '$' . self::MONGO_DB_FIELD_ACTION,
-                        ],
-                        self::MONGO_DB_FIELD_COUNT => [
-                            '$sum' => '$' . self::MONGO_DB_FIELD_COUNT,
-                        ],
-                    ],
-                ],
-            ]
-        );
-
-        return $cursor;
-    }
-
-    /**
-     * @param array $categoriesIds
-     * @param array $actions
-     * @param \DateTime $startDate
-     * @param \DateTime|null $endDate
-     * @return array
-     */
-    public function getSummaryByActionData($categoriesIds, $actions, \DateTime $startDate, \DateTime $endDate = null)
-    {
-        $data = [];
-
-        if (!$categoriesIds || !$actions) {
-            return $data;
-        }
-
-        $cursor = $this->getSummaryByAction($categoriesIds, $actions, $startDate, $endDate);
-
-        if ($cursor) {
-            foreach ($cursor as $item) {
-                $categoryId = $item['_id']['_id'];
-                $action = $item['_id']['action'];
-
-                if (isset($data[$categoryId][$action])) {
-                    $data[$categoryId][$action] += $item['count'];
-                } else {
-                    $data[$categoryId][$action] = $item['count'];
-                }
-            }
-        }
-
-        return $data;
-    }
-
     public function getCategoriesOverviewData($params, $categoryIds)
     {
         $cursor = $this->mongoDbManager->aggregateData(
@@ -371,16 +234,14 @@ class CategoryOverviewReportManager extends BaseReportManager
             ]
         );
 
-        $exampleArray = [
-            CategoryOverviewModel::TYPE_CODE_IMPRESSION => 0,
-            CategoryOverviewModel::TYPE_CODE_CALL_MOB_BUTTON => 0,
-            CategoryOverviewModel::TYPE_CODE_DIRECTION_BUTTON => 0,
-        ];
-
         $data = [];
 
         foreach ($categoryIds as $id) {
-            $data[$id] = $exampleArray;
+            $data[$id] = [
+                CategoryOverviewModel::TYPE_CODE_IMPRESSION => 0,
+                CategoryOverviewModel::TYPE_CODE_CALL_MOB_BUTTON => 0,
+                CategoryOverviewModel::TYPE_CODE_DIRECTION_BUTTON => 0,
+            ];
         }
 
         if ($cursor) {

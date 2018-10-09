@@ -67,10 +67,6 @@ class ReportAggregationCommand extends ContainerAwareCommand
         $this->getKeywordsReportManager()->aggregateBusinessKeywords($period);
         $logger->addInfo($logger::MONGO_AGGREGATE, $logger::STATUS_IN_PROGRESS, 'execute:Process keyword report');
 
-        $output->writeln('Process category report');
-        $this->getCategoryReportManager()->aggregateBusinessCategories($period);
-        $logger->addInfo($logger::MONGO_AGGREGATE, $logger::STATUS_IN_PROGRESS, 'execute:Process category report');
-
         $output->writeln('Process category overview report');
         $this->getCategoryOverviewReportReportManager()->aggregateCategoriesInteractions($period);
         $logger->addInfo(

@@ -187,9 +187,7 @@ class BusinessOverviewReportManager extends BaseReportManager
                 );
 
                 if (in_array($type, CategoryOverviewModel::getTypes())) {
-                    $categoryOverviewReportManager = $this
-                        ->getContainer()
-                        ->get('domain_report.manager.category_overview_report_manager');
+                    $categoryOverviewReportManager = $this->getCategoryOverviewReportManager();
 
                     $businessProfileCategoriesIds = BusinessProfileUtil::extractEntitiesId(
                         $businessProfile->getCategories()->toArray()
@@ -200,9 +198,7 @@ class BusinessOverviewReportManager extends BaseReportManager
                         $businessProfileCategoriesIds
                     );
 
-                    if(!$categoriesResult){
-                        $result = false;
-                    }
+                    $result == $result && $categoriesResult;
                 }
 
                 return $result;
@@ -475,6 +471,16 @@ class BusinessOverviewReportManager extends BaseReportManager
     protected function getBusinessProfileManager() : BusinessProfileManager
     {
         return $this->businessProfileManager;
+    }
+
+    /**
+     * @return CategoryOverviewReportManager
+     */
+    protected function getCategoryOverviewReportManager(): CategoryOverviewReportManager
+    {
+        return $this
+            ->getContainer()
+            ->get('domain_report.manager.category_overview_report_manager');
     }
 
     /**

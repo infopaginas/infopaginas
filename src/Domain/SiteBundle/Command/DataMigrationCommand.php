@@ -16,8 +16,6 @@ use Oxa\MongoDbBundle\Manager\MongoDbManager;
 
 class DataMigrationCommand extends ContainerAwareCommand
 {
-    const DIRECTORY = '/../web/uploads/legacyLogs/';
-
     /** @var MongoDbManager $mongoDbManager */
     protected $mongoDbManager;
 
@@ -26,17 +24,6 @@ class DataMigrationCommand extends ContainerAwareCommand
 
     /* @var OutputInterface $output */
     protected $output;
-
-    /* @var bool $withDebug */
-    protected $withDebug;
-
-    /* @var string $allowedFileType */
-    protected $allowedFileType = 'file';
-
-    /* @var array $allowedFileExtensions */
-    protected $allowedFileExtensions = [
-        'csv',
-    ];
 
     protected function configure()
     {
@@ -64,13 +51,11 @@ class DataMigrationCommand extends ContainerAwareCommand
 
     private function getMongoDBDataFromBusinesses($output)
     {
-        $businessProfileRepository = $this
-            ->getContainer()
-            ->get('domain_business.manager.business_profile')
-            ->getRepository();
+        $businessProfileRepository = $this->em
+            ->getRepository(BusinessProfile::class);
 
         $cursor = $this->mongoDbManager->aggregateData(
-            BusinessOverviewReportManager::MONGO_DB_COLLECTION_NAME_RAW,
+            BusinessOverviewReportManager::MONGO_DB_COLLECTION_NAME_AGGREGATE,
             [
                 [
                     '$match' => [
@@ -82,20 +67,13 @@ class DataMigrationCommand extends ContainerAwareCommand
                 [
                     '$project' => [
                         'query' => [
+                            'bid' => '$' . BusinessOverviewReportManager::MONGO_DB_FIELD_BUSINESS_ID,
                             'action' => '$' . BusinessOverviewReportManager::MONGO_DB_FIELD_ACTION,
-                            'business_id' => '$' . BusinessOverviewReportManager::MONGO_DB_FIELD_BUSINESS_ID,
                             'datetime' => '$' . BusinessOverviewReportManager::MONGO_DB_FIELD_DATE_TIME,
+                            'count' => '$' . BusinessOverviewReportManager::MONGO_DB_FIELD_COUNT,
                         ],
                     ]
                 ],
-                [
-                    '$group' => [
-                        '_id' => '$query',
-                        CategoryOverviewReportManager::MONGO_DB_FIELD_COUNT => [
-                            '$sum' => 1,
-                        ],
-                    ],
-                ]
             ]
         );
 
@@ -107,10 +85,12 @@ class DataMigrationCommand extends ContainerAwareCommand
         $insert = [];
 
         foreach ($cursor as $document) {
-            $businessProfileId = $document['_id']['business_id'];
-            $businessProfile = false;
+            $document = $document['query'];
 
-            if (isset($document['_id']['action'])) {
+            if (isset($document['action']) && isset($document['bid'])) {
+                $businessProfileId = $document['bid'];
+                $businessProfile = false;
+
                 if (!isset($categoryIdsArray[$businessProfileId])) {
                     /** @var BusinessProfile $businessProfile */
                     $businessProfile = $businessProfileRepository->find($businessProfileId);
@@ -126,11 +106,13 @@ class DataMigrationCommand extends ContainerAwareCommand
                     $businessProfileCategories = $categoryIdsArray[$businessProfileId];
 
                     foreach ($businessProfileCategories as $categoryId) {
-                        $newDocument[CategoryOverviewReportManager::MONGO_DB_FIELD_CATEGORY_ID] = $categoryId;
-                        $newDocument[CategoryOverviewReportManager::MONGO_DB_FIELD_ACTION] = $document['_id']['action'];
-                        $newDocument[CategoryOverviewReportManager::MONGO_DB_FIELD_DATE_TIME] = $document['_id']['datetime'];
-                        $newDocument[CategoryOverviewReportManager::MONGO_DB_FIELD_COUNT] =
-                            (int)$document[CategoryOverviewReportManager::MONGO_DB_FIELD_COUNT];
+                        $newDocument = [
+                            CategoryOverviewReportManager::MONGO_DB_FIELD_CATEGORY_ID => $categoryId,
+                            CategoryOverviewReportManager::MONGO_DB_FIELD_ACTION => $document['action'],
+                            CategoryOverviewReportManager::MONGO_DB_FIELD_DATE_TIME => $document['datetime'],
+                            CategoryOverviewReportManager::MONGO_DB_FIELD_COUNT => (int)$document['count'],
+                        ];
+
                         $insert[] = $newDocument;
                     }
 
@@ -142,6 +124,7 @@ class DataMigrationCommand extends ContainerAwareCommand
                             $insert
                         );
                         $insert = [];
+                        $this->em->clear();
                     }
 
                     $progressBar->advance();
