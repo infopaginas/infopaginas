@@ -67,7 +67,7 @@ class CategoryReportAdmin extends ReportAdmin
                         return;
                     }
                 },
-                'field_options' => []
+                'field_options' => [],
             ])
             ->add('date', 'doctrine_orm_datetime_range', AdminHelper::getReportDateTypeOptions())
             ->add('locality', 'doctrine_orm_model', [
