@@ -217,7 +217,7 @@ class CategoryRepository extends EntityRepository
     /**
      * @param array $name
      *
-     * @return Category|null
+     * @return Category[]|null
      */
     public function getCategoriesByName($name)
     {

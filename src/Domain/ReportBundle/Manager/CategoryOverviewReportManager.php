@@ -124,7 +124,7 @@ class CategoryOverviewReportManager extends BaseReportManager
                             'action' => '$' . self::MONGO_DB_FIELD_ACTION,
                             'cid'    => '$' . self::MONGO_DB_FIELD_CATEGORY_ID,
                         ],
-                    ]
+                    ],
                 ],
                 [
                     '$group' => [
@@ -133,7 +133,7 @@ class CategoryOverviewReportManager extends BaseReportManager
                             '$sum' => 1,
                         ],
                     ],
-                ]
+                ],
             ]
         );
 
