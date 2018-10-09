@@ -15,13 +15,13 @@ services:
         class: Domain\ReportBundle\Manager\BusinessOverviewReportManager
         arguments:
             - '@domain_business.manager.business_profile'
+            - '@domain_report.manager.category_overview_report_manager'
             - '@mongodb.manager'
         calls:
             - [ setContainer, [ '@service_container' ] ]
     domain_report.manager.category_overview_report_manager:
         class: Domain\ReportBundle\Manager\CategoryOverviewReportManager
         arguments:
-            - '@domain_business.manager.business_profile'
             - '@mongodb.manager'
         calls:
             - [ setContainer, [ '@service_container' ] ]

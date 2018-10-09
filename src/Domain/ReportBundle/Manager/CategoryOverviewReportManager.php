@@ -2,12 +2,9 @@
 
 namespace Domain\ReportBundle\Manager;
 
-use Domain\BusinessBundle\Manager\BusinessProfileManager;
 use Domain\ReportBundle\Model\CategoryOverviewModel;
 use Domain\ReportBundle\Model\DataType\ReportDatesRangeVO;
-use Domain\ReportBundle\Util\DatesUtil;
 use Oxa\MongoDbBundle\Manager\MongoDbManager;
-use Oxa\Sonata\AdminBundle\Util\Helpers\AdminHelper;
 
 class CategoryOverviewReportManager extends BaseReportManager
 {
@@ -22,20 +19,16 @@ class CategoryOverviewReportManager extends BaseReportManager
     const MONGO_DB_FIELD_COUNT       = 'count';
     const MONGO_DB_FIELD_DATE_TIME   = 'datetime';
 
-    /** @var  BusinessProfileManager $businessProfileManager */
-    protected $businessProfileManager;
-
     /** @var MongoDbManager $mongoDbManager */
     protected $mongoDbManager;
 
     /**
-     * BusinessOverviewReportManager constructor.
-     * @param BusinessProfileManager $businessProfileManager
+     * CategoryOverviewReportManager constructor.
+     * @param MongoDbManager $mongoDbManager
      */
-    public function __construct(BusinessProfileManager $businessProfileManager, MongoDbManager $mongoDbManager)
+    public function __construct(MongoDbManager $mongoDbManager)
     {
-        $this->businessProfileManager = $businessProfileManager;
-        $this->mongoDbManager         = $mongoDbManager;
+        $this->mongoDbManager = $mongoDbManager;
     }
 
 
@@ -95,13 +88,11 @@ class CategoryOverviewReportManager extends BaseReportManager
 
     /**
      * @param array $data
+     * @return bool
      */
     protected function insertCategoriesInteractions($data)
     {
-        $this->mongoDbManager->insertMany(
-            self::MONGO_DB_COLLECTION_NAME_RAW,
-            $data
-        );
+        return $this->mongoDbManager->insertMany(self::MONGO_DB_COLLECTION_NAME_RAW, $data);
     }
 
     /**

@@ -60,6 +60,15 @@ class CategoryReportManager extends BaseReportManager
     }
 
     /**
+     * @return CategoryOverviewReportManager
+     */
+    private function getCategoryOverviewReportManager()
+    {
+        return $this->getContainer()
+            ->get('domain_report.manager.category_overview_report_manager');
+    }
+
+    /**
      * @param array $params
      * @param bool $paginated
      *
@@ -84,9 +93,7 @@ class CategoryReportManager extends BaseReportManager
 
         $categoryIds = array_keys($stats);
 
-        $categoryOverviewManager = $this
-            ->getContainer()
-            ->get('domain_report.manager.category_overview_report_manager');
+        $categoryOverviewManager = $this->getCategoryOverviewReportManager();
 
         $categoryOverviewResult = $categoryOverviewManager->getCategoriesOverviewData(
             $params,
@@ -428,7 +435,7 @@ class CategoryReportManager extends BaseReportManager
                     ],
                     'results' => [
                         '$push' => '$$ROOT',
-                    ]
+                    ],
                 ],
             ],
         ];
@@ -442,8 +449,8 @@ class CategoryReportManager extends BaseReportManager
                         '$results',
                         (int)(($params['_page'] - 1) * $params['_per_page']),
                         (int)$params['_per_page'],
-                    ]
-                ]
+                    ],
+                ],
             ],
         ];
 
@@ -618,7 +625,7 @@ class CategoryReportManager extends BaseReportManager
         ];
 
         if (!empty($params['locality']['value'])) {
-            $query[self::MONGO_DB_FIELD_LOCALITY_ID] = (int) $params['locality']['value'];
+            $query[self::MONGO_DB_FIELD_LOCALITY_ID] = (int)$params['locality']['value'];
         }
 
         if (!empty($params['type']['value'])) {
@@ -626,7 +633,6 @@ class CategoryReportManager extends BaseReportManager
         }
 
         if (isset($params['categoriesSearch'])) {
-
             $query[self::MONGO_DB_FIELD_CATEGORY_ID] = [
                 '$in' => $params['categoriesSearch'],
             ];

@@ -30,17 +30,27 @@ class BusinessOverviewReportManager extends BaseReportManager
     /** @var  BusinessProfileManager $businessProfileManager */
     protected $businessProfileManager;
 
+    /** @var  CategoryOverviewReportManager $categoryOverviewReportManager */
+    protected $categoryOverviewReportManager;
+
     /** @var MongoDbManager $mongoDbManager */
     protected $mongoDbManager;
 
     /**
      * BusinessOverviewReportManager constructor.
      * @param BusinessProfileManager $businessProfileManager
+     * @param CategoryOverviewReportManager $categoryOverviewReportManager
+     * @param MongoDbManager $mongoDbManager
      */
-    public function __construct(BusinessProfileManager $businessProfileManager, MongoDbManager $mongoDbManager)
+    public function __construct(
+        BusinessProfileManager $businessProfileManager,
+        CategoryOverviewReportManager $categoryOverviewReportManager,
+        MongoDbManager $mongoDbManager
+    )
     {
-        $this->businessProfileManager = $businessProfileManager;
-        $this->mongoDbManager         = $mongoDbManager;
+        $this->categoryOverviewReportManager = $categoryOverviewReportManager;
+        $this->businessProfileManager        = $businessProfileManager;
+        $this->mongoDbManager                = $mongoDbManager;
     }
 
     /**
@@ -478,9 +488,7 @@ class BusinessOverviewReportManager extends BaseReportManager
      */
     protected function getCategoryOverviewReportManager(): CategoryOverviewReportManager
     {
-        return $this
-            ->getContainer()
-            ->get('domain_report.manager.category_overview_report_manager');
+        return $this->categoryOverviewReportManager;
     }
 
     /**

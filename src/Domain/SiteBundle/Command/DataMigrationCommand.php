@@ -54,25 +54,11 @@ class DataMigrationCommand extends ContainerAwareCommand
         $businessProfileRepository = $this->em
             ->getRepository(BusinessProfile::class);
 
-        $cursor = $this->mongoDbManager->aggregateData(
+        $cursor = $this->mongoDbManager->find(
             BusinessOverviewReportManager::MONGO_DB_COLLECTION_NAME_AGGREGATE,
             [
-                [
-                    '$match' => [
-                        BusinessOverviewReportManager::MONGO_DB_FIELD_ACTION => [
-                            '$in' => CategoryOverviewModel::getTypes(),
-                        ],
-                    ],
-                ],
-                [
-                    '$project' => [
-                        'query' => [
-                            'bid' => '$' . BusinessOverviewReportManager::MONGO_DB_FIELD_BUSINESS_ID,
-                            'action' => '$' . BusinessOverviewReportManager::MONGO_DB_FIELD_ACTION,
-                            'datetime' => '$' . BusinessOverviewReportManager::MONGO_DB_FIELD_DATE_TIME,
-                            'count' => '$' . BusinessOverviewReportManager::MONGO_DB_FIELD_COUNT,
-                        ],
-                    ]
+                BusinessOverviewReportManager::MONGO_DB_FIELD_ACTION => [
+                    '$in' => CategoryOverviewModel::getTypes(),
                 ],
             ]
         );
@@ -85,10 +71,8 @@ class DataMigrationCommand extends ContainerAwareCommand
         $insert = [];
 
         foreach ($cursor as $document) {
-            $document = $document['query'];
-
-            if (isset($document['action']) && isset($document['bid'])) {
-                $businessProfileId = $document['bid'];
+            if (isset($document['action']) && isset($document['business_id'])) {
+                $businessProfileId = $document['business_id'];
                 $businessProfile = false;
 
                 if (!isset($categoryIdsArray[$businessProfileId])) {
