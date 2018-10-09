@@ -3,6 +3,7 @@
 namespace Domain\ReportBundle\Command;
 
 use Domain\ReportBundle\Manager\BusinessOverviewReportManager;
+use Domain\ReportBundle\Manager\CategoryOverviewReportManager;
 use Domain\ReportBundle\Manager\CategoryReportManager;
 use Domain\ReportBundle\Manager\KeywordsReportManager;
 use Domain\ReportBundle\Model\DataType\ReportDatesRangeVO;
@@ -70,6 +71,14 @@ class ReportAggregationCommand extends ContainerAwareCommand
         $this->getCategoryReportManager()->aggregateBusinessCategories($period);
         $logger->addInfo($logger::MONGO_AGGREGATE, $logger::STATUS_IN_PROGRESS, 'execute:Process category report');
 
+        $output->writeln('Process category overview report');
+        $this->getCategoryOverviewReportReportManager()->aggregateCategoriesInteractions($period);
+        $logger->addInfo(
+            $logger::MONGO_AGGREGATE,
+            $logger::STATUS_IN_PROGRESS,
+            'execute:Process category overview report'
+        );
+
         $output->writeln('done');
         $logger->addInfo($logger::MONGO_AGGREGATE, $logger::STATUS_END, 'execute:stop');
     }
@@ -96,6 +105,14 @@ class ReportAggregationCommand extends ContainerAwareCommand
     protected function getCategoryReportManager()
     {
         return $this->getContainer()->get('domain_report.manager.category_report_manager');
+    }
+
+    /**
+     * @return CategoryOverviewReportManager
+     */
+    protected function getCategoryOverviewReportReportManager()
+    {
+        return $this->getContainer()->get('domain_report.manager.category_overview_report_manager');
     }
 
     /**

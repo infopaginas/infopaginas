@@ -6,6 +6,7 @@ use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Manager\BusinessProfileManager;
 use Domain\BusinessBundle\Util\BusinessProfileUtil;
 use Domain\ReportBundle\Model\BusinessOverviewModel;
+use Domain\ReportBundle\Model\CategoryOverviewModel;
 use Domain\ReportBundle\Model\DataType\ReportDatesRangeVO;
 use Domain\ReportBundle\Util\DatesUtil;
 use Oxa\MongoDbBundle\Manager\MongoDbManager;
@@ -176,6 +177,7 @@ class BusinessOverviewReportManager extends BaseReportManager
     public function registerBusinessInteraction($businessProfileId, $type)
     {
         if ($businessProfileId and $type) {
+            /** @var BusinessProfile $businessProfile */
             $businessProfile = $this->getBusinessProfileManager()->getRepository()->find($businessProfileId);
 
             if ($businessProfile) {
@@ -183,6 +185,25 @@ class BusinessOverviewReportManager extends BaseReportManager
                     $type,
                     [$businessProfile]
                 );
+
+                if (in_array($type, CategoryOverviewModel::getTypes())) {
+                    $categoryOverviewReportManager = $this
+                        ->getContainer()
+                        ->get('domain_report.manager.category_overview_report_manager');
+
+                    $businessProfileCategoriesIds = BusinessProfileUtil::extractEntitiesId(
+                        $businessProfile->getCategories()->toArray()
+                    );
+
+                    $categoriesResult = $categoryOverviewReportManager->registerCategoriesInteractionEvent(
+                        $type,
+                        $businessProfileCategoriesIds
+                    );
+
+                    if(!$categoriesResult){
+                        $result = false;
+                    }
+                }
 
                 return $result;
             }

@@ -5,13 +5,9 @@ namespace Domain\ReportBundle\Admin;
 use Domain\ReportBundle\Entity\CategoryReport;
 use Domain\ReportBundle\Manager\CategoryReportManager;
 use Domain\ReportBundle\Util\Helpers\ChartHelper;
-use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
 use Oxa\Sonata\AdminBundle\Util\Helpers\AdminHelper;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
-use Sonata\AdminBundle\Form\FormMapper;
-use Sonata\AdminBundle\Route\RouteCollection;
-use Sonata\AdminBundle\Show\ShowMapper;
 
 /**
  * Class CategoryReportAdmin
@@ -63,6 +59,16 @@ class CategoryReportAdmin extends ReportAdmin
     protected function configureDatagridFilters(DatagridMapper $datagridMapper)
     {
         $datagridMapper
+            ->add('name', 'doctrine_orm_callback', [
+                'show_filter' => !empty($this->datagridValues['name']['value']) ?: null,
+                'label'       => 'Category',
+                'callback'    => function ($queryBuilder, $alias, $field, $value) {
+                    if (!$value) {
+                        return;
+                    }
+                },
+                'field_options' => []
+            ])
             ->add('date', 'doctrine_orm_datetime_range', AdminHelper::getReportDateTypeOptions())
             ->add('locality', 'doctrine_orm_model', [
                 'show_filter' => !empty($this->datagridValues['locality']['value']) ?: null,

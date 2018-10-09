@@ -6,8 +6,10 @@ use Domain\BusinessBundle\Entity\Category;
 use Domain\BusinessBundle\Entity\Locality;
 use Domain\BusinessBundle\Repository\CategoryRepository;
 use Domain\BusinessBundle\Repository\LocalityRepository;
+use Domain\BusinessBundle\Util\BusinessProfileUtil;
 use Domain\PageBundle\Entity\Page;
 use Domain\ReportBundle\Model\BusinessOverviewModel;
+use Domain\ReportBundle\Model\CategoryOverviewModel;
 use Domain\ReportBundle\Model\DataType\ReportDatesRangeVO;
 use Domain\ReportBundle\Util\DatesUtil;
 use Oxa\MongoDbBundle\Manager\MongoDbManager;
@@ -46,42 +48,82 @@ class CategoryReportManager extends BaseReportManager
         return $this->getCategoryRepository()->findAll();
     }
 
+    private function getCategoriesIdsByName($searchName)
+    {
+        $categories = $this->getCategoryRepository()->getCategoriesByName($searchName);
+
+        if ($categories) {
+            return BusinessProfileUtil::extractEntitiesId($categories);
+        }
+
+        return [];
+    }
+
     /**
      * @param array $params
+     * @param bool $paginated
+     *
      * @return array
      */
-    public function getCategoryReportData(array $params = [])
+    public function getCategoryReportData(array $params = [], $paginated = true)
     {
         $params['dateObject'] = DatesUtil::getDateRangeVOFromDateString(
             $params['date']['value']['start'],
             $params['date']['value']['end']
         );
 
-        $categoryResult = $this->getCategoryDataFromMongo($params);
+        if (isset($params['name']) && $params['name']['value']) {
+            $categoriesSearch = $this->getCategoriesIdsByName($params['name']['value']);
+            $params['categoriesSearch'] = $categoriesSearch;
+        }
+
+        $categoryResult = $this->getCategoryDataFromMongo($params, $paginated);
 
         $stats = $categoryResult['result'];
         $total = $categoryResult['total'];
 
         $categoryIds = array_keys($stats);
 
+        $categoryOverviewManager = $this
+            ->getContainer()
+            ->get('domain_report.manager.category_overview_report_manager');
+
+        $categoryOverviewResult = $categoryOverviewManager->getCategoriesOverviewData(
+            $params,
+            $categoryIds
+        );
+
         $mapping = $this->getCategoryMapping($categoryIds);
 
         $data   = [];
         $labels = [];
         $counts = [];
+        $impressions = [];
+        $directions  = [];
+        $callsMobile = [];
 
         foreach ($categoryIds as $categoryId) {
             if (!empty($mapping[$categoryId])) {
+                $categoryOverviewData = $categoryOverviewResult[$categoryId];
                 $label = $mapping[$categoryId];
                 $count = $stats[$categoryId];
 
                 // chart data
-                $labels[] = $label;
-                $counts[] = $count;
+                $labels[]      = $label;
+                $impressions[] = $categoryOverviewData[CategoryOverviewModel::TYPE_CODE_IMPRESSION];
+                $callsMobile[] = $categoryOverviewData[CategoryOverviewModel::TYPE_CODE_CALL_MOB_BUTTON];
+                $directions[]  = $categoryOverviewData[CategoryOverviewModel::TYPE_CODE_DIRECTION_BUTTON];
+                $counts[]      = $count;
 
                 // table
                 $data[] = [
                     'name'  => $label,
+                    CategoryOverviewModel::TYPE_CODE_IMPRESSION =>
+                        $categoryOverviewData[CategoryOverviewModel::TYPE_CODE_IMPRESSION],
+                    CategoryOverviewModel::TYPE_CODE_DIRECTION_BUTTON =>
+                        $categoryOverviewData[CategoryOverviewModel::TYPE_CODE_DIRECTION_BUTTON],
+                    CategoryOverviewModel::TYPE_CODE_CALL_MOB_BUTTON =>
+                        $categoryOverviewData[CategoryOverviewModel::TYPE_CODE_CALL_MOB_BUTTON],
                     'count' => $count,
                 ];
             }
@@ -105,6 +147,9 @@ class CategoryReportManager extends BaseReportManager
         $categoryData = [
             'results'      => $data,
             'labels'       => $labels,
+            'impressions'  => $impressions,
+            'directions'   => $directions,
+            'callsMobile'  => $callsMobile,
             'counts'       => $counts,
             'total'        => $total,
             'currentPage'  => $currentPage,
@@ -352,72 +397,83 @@ class CategoryReportManager extends BaseReportManager
 
     /**
      * @param array $params
+     * @param bool $paginated
      *
      * @return array
      */
-    protected function getCategoryDataFromMongo($params)
+    protected function getCategoryDataFromMongo($params, $paginated = true)
     {
+        $aggregationQuery = [
+            [
+                '$match' => $this->getMongoMatchQuery($params),
+            ],
+            [
+                '$group' => [
+                    '_id' => '$' . self::MONGO_DB_FIELD_CATEGORY_ID,
+                    self::MONGO_DB_FIELD_COUNT => [
+                        '$sum' => '$' . self::MONGO_DB_FIELD_COUNT,
+                    ],
+                ],
+            ],
+            [
+                '$sort' => [
+                    self::MONGO_DB_FIELD_COUNT => MongoDbManager::INDEX_TYPE_DESC,
+                ],
+            ],
+            [
+                '$group' => [
+                    '_id' => null,
+                    'total' => [
+                        '$sum' => 1,
+                    ],
+                    'results' => [
+                        '$push' => '$$ROOT',
+                    ]
+                ],
+            ],
+        ];
+
+
+        $pagination = [
+            '$project' => [
+                'total' => 1,
+                'results' => [
+                    '$slice' => [
+                        '$results',
+                        (int)(($params['_page'] - 1) * $params['_per_page']),
+                        (int)$params['_per_page'],
+                    ]
+                ]
+            ],
+        ];
+
+        if ($paginated) {
+            array_push($aggregationQuery, $pagination);
+        }
+
         $cursor = $this->mongoDbManager->aggregateData(
             self::MONGO_DB_COLLECTION_NAME_AGGREGATE,
-            [
-                [
-                    '$match' => $this->getMongoMatchQuery($params),
-                ],
-                [
-                    '$group' => [
-                        '_id' => '$' . self::MONGO_DB_FIELD_CATEGORY_ID,
-                        self::MONGO_DB_FIELD_COUNT => [
-                            '$sum' => '$' . self::MONGO_DB_FIELD_COUNT,
-                        ],
-                    ],
-                ],
-                [
-                    '$sort'  => [
-                        self::MONGO_DB_FIELD_COUNT => MongoDbManager::INDEX_TYPE_DESC,
-                    ],
-                ],
-                [
-                    '$group' => [
-                        '_id'   => null,
-                        'total' => [
-                            '$sum' => 1,
-                        ],
-                        'results' => [
-                            '$push' => '$$ROOT',
-                        ]
-                    ],
-                ],
-                [
-                    '$project' => [
-                        'total' => 1,
-                        'results' => [
-                            '$slice' => [
-                                '$results',
-                                (int)(($params['_page'] - 1) * $params['_per_page']),
-                                (int)$params['_per_page'],
-                            ]
-                        ]
-                    ],
-                ],
-            ]
+            $aggregationQuery
         );
 
         $result = [];
         $total  = 0;
 
-        $data = current($cursor->toArray());
+        if ($cursor) {
+            $data = current($cursor->toArray());
 
-        if ($data) {
-            foreach ($data->results as $document) {
-                $result[$document['_id']] = $document[self::MONGO_DB_FIELD_COUNT];
+            if ($data) {
+                foreach ($data->results as $document) {
+                    $result[$document['_id']] = $document[self::MONGO_DB_FIELD_COUNT];
+                }
+
+                $total = $data->total;
             }
-
-            $total = $data->total;
         }
 
         return [
             'result' => $result,
-            'total'  => $total,
+            'total' => $total,
         ];
     }
 
@@ -567,6 +623,13 @@ class CategoryReportManager extends BaseReportManager
 
         if (!empty($params['type']['value'])) {
             $query[self::MONGO_DB_FIELD_PAGE_TYPE] = $params['type']['value'];
+        }
+
+        if (isset($params['categoriesSearch'])) {
+
+            $query[self::MONGO_DB_FIELD_CATEGORY_ID] = [
+                '$in' => $params['categoriesSearch'],
+            ];
         }
 
         return $query;

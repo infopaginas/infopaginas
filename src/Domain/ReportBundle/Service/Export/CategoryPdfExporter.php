@@ -33,7 +33,7 @@ class CategoryPdfExporter extends PdfExporterModel
     {
         $filename = $this->categoryReportManager->generateReportName(self::FORMAT);
 
-        $categoryData = $this->categoryReportManager->getCategoryReportData($params);
+        $categoryData = $this->categoryReportManager->getCategoryReportData($params, false);
 
         $html = $this->templateEngine->render(
             'DomainReportBundle:Admin/CategoryReport:pdf_report.html.twig',

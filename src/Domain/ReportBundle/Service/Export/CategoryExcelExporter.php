@@ -50,7 +50,7 @@ class CategoryExcelExporter extends ExcelExporterModel
      */
     protected function setData(array $filterParams)
     {
-        $categoryData = $this->categoryReportManager->getCategoryReportData($filterParams);
+        $categoryData = $this->categoryReportManager->getCategoryReportData($filterParams, false);
 
         $this->activeSheet = $this->phpExcelObject->setActiveSheetIndex(0);
 
@@ -74,6 +74,36 @@ class CategoryExcelExporter extends ExcelExporterModel
         $this->activeSheet->setCellValue(
             $col . $row,
             $this->translator->trans('list.label_category', [], 'AdminReportBundle')
+        );
+
+        $this->setFontStyle($col, $row);
+        $this->setBorderStyle($col, $row);
+
+        $col++;
+
+        $this->activeSheet->setCellValue(
+            $col . $row,
+            $this->translator->trans('list.label_impressions', [], 'AdminReportBundle')
+        );
+
+        $this->setFontStyle($col, $row);
+        $this->setBorderStyle($col, $row);
+
+        $col++;
+
+        $this->activeSheet->setCellValue(
+            $col . $row,
+            $this->translator->trans('list.label_directions', [], 'AdminReportBundle')
+        );
+
+        $this->setFontStyle($col, $row);
+        $this->setBorderStyle($col, $row);
+
+        $col++;
+
+        $this->activeSheet->setCellValue(
+            $col . $row,
+            $this->translator->trans('list.label_calls_mobile', [], 'AdminReportBundle')
         );
 
         $this->setFontStyle($col, $row);

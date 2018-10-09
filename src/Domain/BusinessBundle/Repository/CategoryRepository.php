@@ -215,6 +215,26 @@ class CategoryRepository extends EntityRepository
     }
 
     /**
+     * @param array $name
+     *
+     * @return Category|null
+     */
+    public function getCategoriesByName($name)
+    {
+        $queryBuilder = $this->createQueryBuilder('c');
+
+        $result = $queryBuilder
+            ->where(
+                $queryBuilder->expr()->like('c.name', ':name')
+            )
+            ->setParameter('name', '%' . $name . '%')
+            ->getQuery()
+            ->getResult();
+
+        return $result;
+    }
+
+    /**
      * @return IterableResult
      */
     public function getAvailableCategoriesIterator()

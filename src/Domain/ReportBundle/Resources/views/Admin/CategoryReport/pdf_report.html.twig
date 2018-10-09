@@ -69,14 +69,23 @@
 <div class="box box-primary box-pdf">
     <table class="table table-bordered table-striped">
         <thead>
-            <tr class="sonata-ba-list-field-header">
-                <th>
-                    {% trans %}category_report.label{% endtrans %}
-                </th>
-                <th>
-                    {% trans %}category_report.counter{% endtrans %}
-                </th>
-            </tr>
+        <tr class="sonata-ba-list-field-header">
+            <th>
+                {% trans %}category_report.label{% endtrans %}
+            </th>
+            <th>
+                {% trans %}interaction_report.event.impression{% endtrans %}
+            </th>
+            <th>
+                {% trans %}interaction_report.button.call_mob{% endtrans %}
+            </th>
+            <th>
+                {% trans %}interaction_report.button.direction{% endtrans %}
+            </th>
+            <th>
+                {% trans %}category_report.counter{% endtrans %}
+            </th>
+        </tr>
         </thead>
 
         <tbody>
@@ -84,6 +93,15 @@
             <tr>
                 <td class="sonata-ba-list-field sonata-ba-list-field-string">
                     {{ item.name }}
+                </td>
+                <td class="sonata-ba-list-field sonata-ba-list-field-string">
+                    {{ item.impressions }}
+                </td>
+                <td class="sonata-ba-list-field sonata-ba-list-field-string">
+                    {{ item.callMobButton }}
+                </td>
+                <td class="sonata-ba-list-field sonata-ba-list-field-string">
+                    {{ item.directionButton }}
                 </td>
                 <td class="sonata-ba-list-field sonata-ba-list-field-string">
                     {{ item.count }}
