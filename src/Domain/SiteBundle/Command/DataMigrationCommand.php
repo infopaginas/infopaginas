@@ -22,9 +22,6 @@ class DataMigrationCommand extends ContainerAwareCommand
     /* @var EntityManager $em */
     protected $em;
 
-    /* @var OutputInterface $output */
-    protected $output;
-
     protected function configure()
     {
         $this->setName('data:category-overview:migrate-old');
@@ -39,7 +36,6 @@ class DataMigrationCommand extends ContainerAwareCommand
     {
         $this->em = $this->getContainer()->get('doctrine.orm.entity_manager');
         $this->mongoDbManager = $this->getContainer()->get('mongodb.manager');
-        $this->output = $output;
 
         $this->migrateBusinessesData($output);
     }
@@ -73,7 +69,6 @@ class DataMigrationCommand extends ContainerAwareCommand
         foreach ($cursor as $document) {
             if (isset($document['action']) && isset($document['business_id'])) {
                 $businessProfileId = $document['business_id'];
-                $businessProfile = false;
 
                 if (!isset($categoryIdsArray[$businessProfileId])) {
                     /** @var BusinessProfile $businessProfile */
@@ -86,7 +81,7 @@ class DataMigrationCommand extends ContainerAwareCommand
                     }
                 }
 
-                if ($businessProfile) {
+                if (isset($categoryIdsArray[$businessProfileId])) {
                     $businessProfileCategories = $categoryIdsArray[$businessProfileId];
 
                     foreach ($businessProfileCategories as $categoryId) {

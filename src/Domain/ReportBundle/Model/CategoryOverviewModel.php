@@ -14,12 +14,6 @@ class CategoryOverviewModel implements ReportInterface
         self::TYPE_CODE_CALL_MOB_BUTTON       => 'interaction_report.button.call_mob',
     ];
 
-    const EVENT_PRIORITY_MAIN   = 'main';
-    const EVENT_PRIORITY_COMMON = 'common';
-    const EVENT_PRIORITY_HIDDEN = 'hidden';
-
-    const DEFAULT_CHART_TYPE = self::TYPE_CODE_IMPRESSION;
-
     /**
      * @return array
      */

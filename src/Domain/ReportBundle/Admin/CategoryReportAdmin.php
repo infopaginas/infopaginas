@@ -59,15 +59,11 @@ class CategoryReportAdmin extends ReportAdmin
     protected function configureDatagridFilters(DatagridMapper $datagridMapper)
     {
         $datagridMapper
-            ->add('name', 'doctrine_orm_callback', [
+            ->add('name', 'doctrine_orm_string', [
                 'show_filter' => !empty($this->datagridValues['name']['value']) ?: null,
-                'label'       => 'Category',
-                'callback'    => function ($queryBuilder, $alias, $field, $value) {
-                    if (!$value) {
-                        return;
-                    }
-                },
-                'field_options' => [],
+                'field_options' => [
+                    'mapped' => false,
+                ],
             ])
             ->add('date', 'doctrine_orm_datetime_range', AdminHelper::getReportDateTypeOptions())
             ->add('locality', 'doctrine_orm_model', [

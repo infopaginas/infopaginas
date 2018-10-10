@@ -46,11 +46,10 @@ class BusinessOverviewReportManager extends BaseReportManager
         BusinessProfileManager $businessProfileManager,
         CategoryOverviewReportManager $categoryOverviewReportManager,
         MongoDbManager $mongoDbManager
-    )
-    {
+    ) {
         $this->categoryOverviewReportManager = $categoryOverviewReportManager;
-        $this->businessProfileManager        = $businessProfileManager;
-        $this->mongoDbManager                = $mongoDbManager;
+        $this->businessProfileManager = $businessProfileManager;
+        $this->mongoDbManager = $mongoDbManager;
     }
 
     /**
