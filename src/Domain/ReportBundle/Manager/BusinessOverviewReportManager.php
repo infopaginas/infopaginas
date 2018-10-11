@@ -195,20 +195,28 @@ class BusinessOverviewReportManager extends BaseReportManager
                     [$businessProfile]
                 );
 
-                if (in_array($type, CategoryOverviewModel::getTypes())) {
-                    $categoryOverviewReportManager = $this->getCategoryOverviewReportManager();
+                $categoryOverviewReportManager = $this->getCategoryOverviewReportManager();
 
-                    $businessProfileCategoriesIds = BusinessProfileUtil::extractEntitiesId(
-                        $businessProfile->getCategories()->toArray()
-                    );
+                $businessProfileCategoriesIds = BusinessProfileUtil::extractEntitiesId(
+                    $businessProfile->getCategories()->toArray()
+                );
+
+                $categoriesResult = false;
+
+                $businessProfileLocality = $businessProfile->getCatalogLocality();
+
+                if ($businessProfileLocality) {
+
+                    $businessProfileLocality = $businessProfileLocality->getId();
 
                     $categoriesResult = $categoryOverviewReportManager->registerCategoriesInteractionEvent(
                         $type,
-                        $businessProfileCategoriesIds
+                        $businessProfileCategoriesIds,
+                        $businessProfileLocality
                     );
-
-                    $result == $result && $categoriesResult;
                 }
+
+                $result == $result && $categoriesResult;
 
                 return $result;
             }

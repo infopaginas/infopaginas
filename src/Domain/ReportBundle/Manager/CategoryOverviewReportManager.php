@@ -2,6 +2,7 @@
 
 namespace Domain\ReportBundle\Manager;
 
+use Domain\ReportBundle\Model\BusinessOverviewModel;
 use Domain\ReportBundle\Model\CategoryOverviewModel;
 use Domain\ReportBundle\Model\DataType\ReportDatesRangeVO;
 use Oxa\MongoDbBundle\Manager\MongoDbManager;
@@ -14,10 +15,14 @@ class CategoryOverviewReportManager extends BaseReportManager
     const MONGO_DB_COLLECTION_NAME_ARCHIVE_RAW       = 'category_overview_archive_raw';
     const MONGO_DB_COLLECTION_NAME_ARCHIVE_AGGREGATE = 'category_overview_archive_aggregate';
 
-    const MONGO_DB_FIELD_ACTION      = 'action';
-    const MONGO_DB_FIELD_CATEGORY_ID = 'category_id';
-    const MONGO_DB_FIELD_COUNT       = 'count';
-    const MONGO_DB_FIELD_DATE_TIME   = 'datetime';
+    const MONGO_DB_FIELD_ACTION                  = 'action';
+    const MONGO_DB_FIELD_CATEGORY_ID             = 'category_id';
+    const MONGO_DB_FIELD_COUNT                   = 'count';
+    const MONGO_DB_FIELD_DATE_TIME               = 'datetime';
+    const MONGO_DB_FIELD_TYPE                    = 'type';
+    const MONGO_DB_FIELD_CATALOG_LOCALITY        = 'catalog_locality';
+
+    const VISITORS = 'visitors';
 
     /** @var MongoDbManager $mongoDbManager */
     protected $mongoDbManager;
@@ -34,12 +39,13 @@ class CategoryOverviewReportManager extends BaseReportManager
     /**
      * @param string $type
      * @param array $categoriesIds
+     * @param integer $localityId
      *
      * @return bool
      */
-    public function registerCategoriesInteractionEvent($type, array $categoriesIds)
+    public function registerCategoriesInteractionEvent($type, array $categoriesIds, $localityId)
     {
-        $data = $this->buildCategoriesInteractions($categoriesIds, $type);
+        $data = $this->buildCategoriesInteractions($categoriesIds, $type, $localityId);
 
         if ($this->insertCategoriesInteractions($data)) {
             return true;
@@ -53,15 +59,18 @@ class CategoryOverviewReportManager extends BaseReportManager
      * @param int       $categoryId
      * @param string    $action
      * @param MongoDB\BSON\UTCDateTime $date
+     * @param integer $localityId
      *
      * @return array
      */
-    protected function buildSingleCategoryInteraction($categoryId, $action, $date)
+    protected function buildSingleCategoryInteraction($categoryId, $action, $date, $localityId)
     {
         $data = [
-            self::MONGO_DB_FIELD_CATEGORY_ID => (int) $categoryId,
-            self::MONGO_DB_FIELD_ACTION      => $action,
-            self::MONGO_DB_FIELD_DATE_TIME   => $date,
+            self::MONGO_DB_FIELD_CATEGORY_ID      => (int) $categoryId,
+            self::MONGO_DB_FIELD_ACTION           => $action,
+            self::MONGO_DB_FIELD_CATALOG_LOCALITY => $localityId,
+            self::MONGO_DB_FIELD_DATE_TIME        => $date,
+            self::MONGO_DB_FIELD_TYPE             => BusinessOverviewModel::TYPE_CODE_CATEGORY_BUSINESS,
         ];
 
         return $data;
@@ -70,16 +79,17 @@ class CategoryOverviewReportManager extends BaseReportManager
     /**
      * @param array $categoriesIds
      * @param string $action
+     * @param integer $localityId
      *
      * @return array
      */
-    protected function buildCategoriesInteractions($categoriesIds, $action)
+    protected function buildCategoriesInteractions($categoriesIds, $action, $localityId)
     {
         $data = [];
         $date = $this->mongoDbManager->typeUTCDateTime(new \DateTime());
 
         foreach ($categoriesIds as $categoryId) {
-            $data[] = $this->buildSingleCategoryInteraction($categoryId, $action, $date);
+            $data[] = $this->buildSingleCategoryInteraction($categoryId, $action, $date, $localityId);
         }
 
         return $data;
@@ -191,62 +201,206 @@ class CategoryOverviewReportManager extends BaseReportManager
 
     /**
      * @param array $params
-     * @param array $categoryIds
+     * @param bool $paginated
+     *
      * @return array
      */
-    public function getCategoriesOverviewData($params, $categoryIds)
+    public function getCategoryDataFromMongo($params, $paginated = true)
     {
+        $aggregationQuery = [
+            [
+                '$match' => $this->getMongoMatchQuery($params),
+            ],
+            [
+                '$group' => [
+                    '_id' => [
+                        self::MONGO_DB_FIELD_CATEGORY_ID => '$' . self::MONGO_DB_FIELD_CATEGORY_ID,
+                        self::MONGO_DB_FIELD_ACTION => '$' . self::MONGO_DB_FIELD_ACTION,
+                        self::MONGO_DB_FIELD_CATALOG_LOCALITY => '$' . self::MONGO_DB_FIELD_CATALOG_LOCALITY,
+                        self::MONGO_DB_FIELD_TYPE => '$' . self::MONGO_DB_FIELD_TYPE,
+                    ],
+                    self::MONGO_DB_FIELD_COUNT => [
+                        '$sum' => '$' . self::MONGO_DB_FIELD_COUNT,
+                    ],
+                ],
+            ],
+            [
+                '$sort' => [
+                    self::MONGO_DB_FIELD_COUNT => MongoDbManager::INDEX_TYPE_DESC,
+                    '_id' => MongoDbManager::INDEX_TYPE_ASC,
+                ],
+            ],
+        ];
+
         $cursor = $this->mongoDbManager->aggregateData(
             self::MONGO_DB_COLLECTION_NAME_AGGREGATE,
-            [
-                [
-                    '$match' => [
-                        self::MONGO_DB_FIELD_CATEGORY_ID => [
-                            '$in' => $categoryIds,
-                        ],
-                        self::MONGO_DB_FIELD_DATE_TIME => [
-                            '$gte' => $this->mongoDbManager->typeUTCDateTime($params['dateObject']->getStartDate()),
-                            '$lte' => $this->mongoDbManager->typeUTCDateTime($params['dateObject']->getEndDate()),
-                        ],
-                    ],
-                ],
-                [
-                    '$group' => [
-                        '_id' => [
-                            '_id' => '$' . self::MONGO_DB_FIELD_CATEGORY_ID,
-                            self::MONGO_DB_FIELD_ACTION => '$' . self::MONGO_DB_FIELD_ACTION,
-                        ],
-                        self::MONGO_DB_FIELD_COUNT => [
-                            '$sum' => '$' . self::MONGO_DB_FIELD_COUNT,
-                        ],
-                    ],
-                ],
-            ]
+            $aggregationQuery
         );
 
-        $data = [];
+        $result = [];
 
-        foreach ($categoryIds as $id) {
-            $data[$id] = [
-                CategoryOverviewModel::TYPE_CODE_IMPRESSION => 0,
-                CategoryOverviewModel::TYPE_CODE_CALL_MOB_BUTTON => 0,
-                CategoryOverviewModel::TYPE_CODE_DIRECTION_BUTTON => 0,
+        if ($cursor) {
+            foreach($cursor as $document){
+                $count = $document[self::MONGO_DB_FIELD_COUNT];
+                $document = $document['_id'];
+
+                if (!isset($result[$document[self::MONGO_DB_FIELD_CATEGORY_ID]])) {
+                    $result[$document[self::MONGO_DB_FIELD_CATEGORY_ID]] = [
+                        CategoryOverviewModel::TYPE_CODE_IMPRESSION => 0,
+                        CategoryOverviewModel::TYPE_CODE_CALL_MOB_BUTTON => 0,
+                        CategoryOverviewModel::TYPE_CODE_DIRECTION_BUTTON => 0,
+                        self::VISITORS => 0,
+                    ];
+                }
+
+                if ($document[self::MONGO_DB_FIELD_TYPE] == BusinessOverviewModel::TYPE_CODE_CATEGORY_CATALOG) {
+                    $result[$document[self::MONGO_DB_FIELD_CATEGORY_ID]]['visitors'] += 1;
+                } else {
+                    $result[$document[self::MONGO_DB_FIELD_CATEGORY_ID]][$document[self::MONGO_DB_FIELD_ACTION]] =
+                        $count;
+                    $result[$document[self::MONGO_DB_FIELD_CATEGORY_ID]]['visitors'] += 1;
+                }
+            }
+
+        }
+
+        if ($paginated) {
+            $result = array_slice(
+                $result,
+                (int)(($params['_page'] - 1) * $params['_per_page']),
+                (int)$params['_per_page'],
+                true
+            );
+        }
+
+        return [
+            'result' => $result,
+            'total' => count($result),
+        ];
+    }
+
+    /**
+     * @param array $params
+     *
+     * @return array
+     */
+    protected function getMongoMatchQuery($params)
+    {
+        $query = [];
+
+        $query[self::MONGO_DB_FIELD_DATE_TIME] = [
+            '$gte' => $this->mongoDbManager->typeUTCDateTime($params['dateObject']->getStartDate()),
+            '$lte' => $this->mongoDbManager->typeUTCDateTime($params['dateObject']->getEndDate()),
+        ];
+
+        if (!empty($params['locality']['value'])) {
+            $query[self::MONGO_DB_FIELD_CATALOG_LOCALITY] = (int)$params['locality']['value'];
+        }
+
+        if (!empty($params['type']['value'])) {
+            $query[self::MONGO_DB_FIELD_TYPE] = $params['type']['value'];
+        }
+
+        if (isset($params['categoriesSearch'])) {
+            $query[self::MONGO_DB_FIELD_CATEGORY_ID] = [
+                '$in' => $params['categoriesSearch'],
             ];
         }
 
-        if ($cursor) {
-            foreach ($cursor as $item) {
-                $categoryId = $item['_id']['_id'];
-                $action = $item['_id']['action'];
+        $query[self::MONGO_DB_FIELD_ACTION] = [
+            '$in' => CategoryOverviewModel::getTypes(),
+        ];
 
-                if (isset($data[$categoryId][$action])) {
-                    $data[$categoryId][$action] += $item['count'];
-                } else {
-                    $data[$categoryId][$action] = $item['count'];
-                }
-            }
+        return $query;
+    }
+
+    /**
+     * @param string $type
+     * @param array  $data
+     * @param string $action
+     *
+     * @return bool
+     */
+    public function registerCategoryEvent($type, $data, $action)
+    {
+        foreach ($data as $items) {
+            $this->saveCategoryEvent($type, $items, $action);
+        }
+
+        return true;
+    }
+
+    /**
+     * @param string $type
+     * @param array  $items
+     * @param string $action
+     */
+    public function saveCategoryEvent($type, $items, $action)
+    {
+        foreach ($items as $localityId => $categoryIds) {
+            $data = $this->buildCatalogCategories($type, $categoryIds, $localityId, $action);
+
+            $this->insertBusinessCategories($data);
+        }
+    }
+
+    /**
+     * @param string $type
+     * @param array  $categoryIds
+     * @param int    $localityId
+     * @param string $action
+     *
+     * @return array
+     */
+    protected function buildCatalogCategories($type, $categoryIds, $localityId, $action)
+    {
+        $data = [];
+        $date = $this->mongoDbManager->typeUTCDateTime(new \DateTime());
+
+        foreach ($categoryIds as $categoryId) {
+            $data[] = $this->buildSingleBusinessCategory(
+                $categoryId,
+                $localityId,
+                $type,
+                $date,
+                $action
+            );
         }
 
         return $data;
+    }
+
+    /**
+     * @param int $categoryId
+     * @param int $localityId
+     * @param string $type
+     * @param MongoDB\BSON\UTCDateTime $date
+     *
+     * @return array
+     */
+    protected function buildSingleBusinessCategory($categoryId, $localityId, $type, $date, $action)
+    {
+        $data = [
+            self::MONGO_DB_FIELD_CATEGORY_ID => (int)$categoryId,
+            self::MONGO_DB_FIELD_CATALOG_LOCALITY => (int)$localityId,
+            self::MONGO_DB_FIELD_TYPE   => $type,
+            self::MONGO_DB_FIELD_DATE_TIME   => $date,
+            self::MONGO_DB_FIELD_ACTION => $action,
+        ];
+
+        return $data;
+    }
+
+    /**
+     * @param array $data
+     *
+     * @return array
+     */
+    protected function insertBusinessCategories($data)
+    {
+        $this->mongoDbManager->insertMany(
+            self::MONGO_DB_COLLECTION_NAME_RAW,
+            $data
+        );
     }
 }

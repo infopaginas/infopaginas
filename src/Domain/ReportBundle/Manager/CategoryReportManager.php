@@ -86,20 +86,16 @@ class CategoryReportManager extends BaseReportManager
             $params['categoriesSearch'] = $categoriesSearch;
         }
 
-        $categoryResult = $this->getCategoryDataFromMongo($params, $paginated);
-
-        $stats = $categoryResult['result'];
-        $total = $categoryResult['total'];
-
-        $categoryIds = array_keys($stats);
-
         $categoryOverviewManager = $this->getCategoryOverviewReportManager();
 
-        $categoryOverviewResult = $categoryOverviewManager->getCategoriesOverviewData(
+        $categoryOverviewResult = $categoryOverviewManager->getCategoryDataFromMongo(
             $params,
-            $categoryIds
+            $paginated
         );
 
+        $stats = $categoryOverviewResult['result'];
+        $total = $categoryOverviewResult['total'];
+        $categoryIds = array_keys($stats);
         $mapping = $this->getCategoryMapping($categoryIds);
 
         $data   = [];
@@ -111,16 +107,15 @@ class CategoryReportManager extends BaseReportManager
 
         foreach ($categoryIds as $categoryId) {
             if (!empty($mapping[$categoryId])) {
-                $categoryOverviewData = $categoryOverviewResult[$categoryId];
+                $categoryOverviewData = $stats[$categoryId];
                 $label = $mapping[$categoryId];
-                $count = $stats[$categoryId];
 
                 // chart data
                 $labels[]      = $label;
                 $impressions[] = $categoryOverviewData[CategoryOverviewModel::TYPE_CODE_IMPRESSION];
                 $callsMobile[] = $categoryOverviewData[CategoryOverviewModel::TYPE_CODE_CALL_MOB_BUTTON];
                 $directions[]  = $categoryOverviewData[CategoryOverviewModel::TYPE_CODE_DIRECTION_BUTTON];
-                $counts[]      = $count;
+                $counts[]      = $categoryOverviewData[CategoryOverviewReportManager::VISITORS];
 
                 // table
                 $data[] = [
@@ -131,7 +126,7 @@ class CategoryReportManager extends BaseReportManager
                         $categoryOverviewData[CategoryOverviewModel::TYPE_CODE_DIRECTION_BUTTON],
                     CategoryOverviewModel::TYPE_CODE_CALL_MOB_BUTTON =>
                         $categoryOverviewData[CategoryOverviewModel::TYPE_CODE_CALL_MOB_BUTTON],
-                    'count' => $count,
+                    'count' => $categoryOverviewData[CategoryOverviewReportManager::VISITORS],
                 ];
             }
         }

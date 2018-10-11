@@ -4,9 +4,12 @@ namespace Domain\SiteBundle\Command;
 
 use Doctrine\ORM\EntityManager;
 use Domain\BusinessBundle\Entity\BusinessProfile;
+use Domain\BusinessBundle\Manager\BusinessProfileManager;
 use Domain\BusinessBundle\Util\BusinessProfileUtil;
 use Domain\ReportBundle\Manager\BusinessOverviewReportManager;
 use Domain\ReportBundle\Manager\CategoryOverviewReportManager;
+use Domain\ReportBundle\Manager\CategoryReportManager;
+use Domain\ReportBundle\Model\BusinessOverviewModel;
 use Domain\ReportBundle\Model\CategoryOverviewModel;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Helper\ProgressBar;
@@ -21,6 +24,9 @@ class DataMigrationCommand extends ContainerAwareCommand
 
     /* @var EntityManager $em */
     protected $em;
+
+    const CATEGORIES = 'categories';
+    const CATALOG_LOCALITY = 'catalogLocality';
 
     protected function configure()
     {
@@ -43,6 +49,7 @@ class DataMigrationCommand extends ContainerAwareCommand
     protected function migrateBusinessesData($output)
     {
         $this->getMongoDBDataFromBusinesses($output);
+        $this->getMongoDBDataFromCategories($output);
     }
 
     private function getMongoDBDataFromBusinesses($output)
@@ -54,7 +61,10 @@ class DataMigrationCommand extends ContainerAwareCommand
             BusinessOverviewReportManager::MONGO_DB_COLLECTION_NAME_AGGREGATE,
             [
                 BusinessOverviewReportManager::MONGO_DB_FIELD_ACTION => [
-                    '$in' => CategoryOverviewModel::getTypes(),
+                    '$nin' => [
+                        BusinessOverviewModel::TYPE_CODE_VIEW,
+                        BusinessOverviewModel::TYPE_CODE_IMPRESSION,
+                    ],
                 ],
             ]
         );
@@ -75,26 +85,36 @@ class DataMigrationCommand extends ContainerAwareCommand
                     $businessProfile = $businessProfileRepository->find($businessProfileId);
 
                     if ($businessProfile) {
-                        $categoryIdsArray[$businessProfileId] = BusinessProfileUtil::extractEntitiesId(
+                        $businessProfileCategories = BusinessProfileUtil::extractEntitiesId(
                             $businessProfile->getCategories()->toArray()
                         );
+
+                        $catalogLocality = $businessProfile->getCatalogLocality();
+
+                        if ($catalogLocality && $businessProfileCategories) {
+                            $categoryIdsArray[$businessProfileId][self::CATEGORIES] = $businessProfileCategories;
+                            $categoryIdsArray[$businessProfileId][self::CATALOG_LOCALITY] = $catalogLocality->getId();
+                        }
                     }
                 }
 
                 if (isset($categoryIdsArray[$businessProfileId])) {
-                    $businessProfileCategories = $categoryIdsArray[$businessProfileId];
+                    $businessProfileData = $categoryIdsArray[$businessProfileId];
 
-                    foreach ($businessProfileCategories as $categoryId) {
+                    foreach ($businessProfileData[self::CATEGORIES] as $categoryId) {
                         $newDocument = [
                             CategoryOverviewReportManager::MONGO_DB_FIELD_CATEGORY_ID => $categoryId,
                             CategoryOverviewReportManager::MONGO_DB_FIELD_ACTION => $document['action'],
-                            CategoryOverviewReportManager::MONGO_DB_FIELD_DATE_TIME => $document['datetime'],
+                            CategoryOverviewReportManager::MONGO_DB_FIELD_CATALOG_LOCALITY =>
+                                $businessProfileData[self::CATALOG_LOCALITY],
+                            CategoryOverviewReportManager::MONGO_DB_FIELD_TYPE =>
+                                BusinessOverviewModel::TYPE_CODE_CATEGORY_BUSINESS,
                             CategoryOverviewReportManager::MONGO_DB_FIELD_COUNT => (int)$document['count'],
+                            CategoryOverviewReportManager::MONGO_DB_FIELD_DATE_TIME => $document['datetime'],
                         ];
 
                         $insert[] = $newDocument;
                     }
-
                     $i++;
 
                     if (($i % MongoDbManager::DEFAULT_BATCH_SIZE) === 0) {
@@ -109,6 +129,59 @@ class DataMigrationCommand extends ContainerAwareCommand
                     $progressBar->advance();
                 }
             }
+        }
+
+        if ($insert) {
+            $this->mongoDbManager->insertMany(
+                CategoryOverviewReportManager::MONGO_DB_COLLECTION_NAME_AGGREGATE,
+                $insert
+            );
+        }
+
+        $progressBar->finish();
+    }
+
+    private function getMongoDBDataFromCategories($output)
+    {
+        $cursor = $this->mongoDbManager->find(
+            CategoryReportManager::MONGO_DB_COLLECTION_NAME_AGGREGATE,
+            [
+            ]
+        );
+
+        $progressBar = new ProgressBar($output, count($cursor));
+        $progressBar->start();
+
+        $i = 0;
+        $insert = [];
+
+        foreach ($cursor as $document) {
+            if (isset($document['locality_id']) && isset($document['type'])) {
+
+                $newDocument = [
+                    CategoryOverviewReportManager::MONGO_DB_FIELD_CATEGORY_ID => $document['category_id'],
+                    CategoryOverviewReportManager::MONGO_DB_FIELD_ACTION => BusinessOverviewModel::TYPE_CODE_IMPRESSION,
+                    CategoryOverviewReportManager::MONGO_DB_FIELD_CATALOG_LOCALITY => $document['locality_id'],
+                    CategoryOverviewReportManager::MONGO_DB_FIELD_TYPE => $document['type'],
+                    CategoryOverviewReportManager::MONGO_DB_FIELD_COUNT => (int)$document['count'],
+                    CategoryOverviewReportManager::MONGO_DB_FIELD_DATE_TIME => $document['datetime'],
+                ];
+
+                $insert[] = $newDocument;
+            }
+
+            $i++;
+
+            if (($i % MongoDbManager::DEFAULT_BATCH_SIZE) === 0) {
+                $this->mongoDbManager->insertMany(
+                    CategoryOverviewReportManager::MONGO_DB_COLLECTION_NAME_AGGREGATE,
+                    $insert
+                );
+                $insert = [];
+                $this->em->clear();
+            }
+
+            $progressBar->advance();
         }
 
         if ($insert) {
