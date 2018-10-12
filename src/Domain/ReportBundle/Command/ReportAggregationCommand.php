@@ -4,7 +4,6 @@ namespace Domain\ReportBundle\Command;
 
 use Domain\ReportBundle\Manager\BusinessOverviewReportManager;
 use Domain\ReportBundle\Manager\CategoryOverviewReportManager;
-use Domain\ReportBundle\Manager\CategoryReportManager;
 use Domain\ReportBundle\Manager\KeywordsReportManager;
 use Domain\ReportBundle\Model\DataType\ReportDatesRangeVO;
 use Domain\ReportBundle\Util\DatesUtil;
@@ -93,14 +92,6 @@ class ReportAggregationCommand extends ContainerAwareCommand
     protected function getKeywordsReportManager()
     {
         return $this->getContainer()->get('domain_report.manager.keywords_report_manager');
-    }
-
-    /**
-     * @return CategoryReportManager
-     */
-    protected function getCategoryReportManager()
-    {
-        return $this->getContainer()->get('domain_report.manager.category_report_manager');
     }
 
     /**

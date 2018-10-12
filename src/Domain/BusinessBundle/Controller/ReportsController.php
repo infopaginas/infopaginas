@@ -10,7 +10,6 @@ use Domain\BusinessBundle\Form\Type\BusinessCloseRequestType;
 use Domain\BusinessBundle\Form\Type\BusinessReportFilterType;
 use Domain\BusinessBundle\Manager\BusinessProfileManager;
 use Domain\ReportBundle\Manager\CategoryOverviewReportManager;
-use Domain\ReportBundle\Manager\CategoryReportManager;
 use Domain\ReportBundle\Model\BusinessOverviewModel;
 use Domain\ReportBundle\Google\Analytics\DataFetcher;
 use Domain\ReportBundle\Manager\AdUsageReportManager;
@@ -205,10 +204,9 @@ class ReportsController extends Controller
                     break;
                 case BusinessOverviewModel::TYPE_CODE_CATEGORY_BUSINESS:
                 case BusinessOverviewModel::TYPE_CODE_CATEGORY_CATALOG:
-                    $result = $this->getCategoryReportManager()->registerCategoryEvent(
+                    $result = $this->getCategoryOverviewReportManager()->registerCategoryEvent(
                         $key,
-                        $value,
-                        BusinessOverviewModel::TYPE_CODE_IMPRESSION
+                        $value
                     );
                     break;
             }
@@ -570,7 +568,7 @@ class ReportsController extends Controller
     /**
      * @return CategoryOverviewReportManager
      */
-    protected function getCategoryReportManager() : CategoryOverviewReportManager
+    protected function getCategoryOverviewReportManager() : CategoryOverviewReportManager
     {
         return $this->get('domain_report.manager.category_overview_report_manager');
     }

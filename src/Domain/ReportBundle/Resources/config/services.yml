@@ -52,12 +52,12 @@ services:
         calls:
             - [ setTemplateEngine, [ '@templating' ]]
             - [ setPdfGenerator, [ '@knp_snappy.pdf' ]]
-            - [ setCategoryReportManager, [ '@domain_report.manager.category_report_manager' ]]
+            - [ setCategoryOverviewReportManager, [ '@domain_report.manager.category_overview_report_manager' ]]
     domain_report.exporter.category_excel_exporter:
         class: Domain\ReportBundle\Service\Export\CategoryExcelExporter
         calls:
             - [ setPhpExcel, [ '@phpexcel' ]]
-            - [ setCategoryReportManager, [ '@domain_report.manager.category_report_manager' ]]
+            - [ setCategoryOverviewReportManager, [ '@domain_report.manager.category_overview_report_manager' ]]
             - [ setTranslator, [ '@translator.default' ]]
     domain_report.exporter.business_overview_pdf_exporter:
         class: Domain\ReportBundle\Service\Export\BusinessOverviewPdfExporter

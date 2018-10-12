@@ -10,7 +10,7 @@ use Domain\BusinessBundle\Form\Type\BusinessClaimRequestType;
 use Domain\BusinessBundle\Model\DayOfWeekModel;
 use Domain\BusinessBundle\Model\SubscriptionPlanInterface;
 use Domain\BusinessBundle\Util\BusinessProfileUtil;
-use Domain\ReportBundle\Manager\CategoryReportManager;
+use Domain\ReportBundle\Manager\CategoryOverviewReportManager;
 use Domain\ReportBundle\Model\BusinessOverviewModel;
 use Domain\SearchBundle\Model\Manager\SearchManager;
 use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
@@ -354,11 +354,11 @@ class ProfileController extends Controller
     }
 
     /**
-     * @return CategoryReportManager
+     * @return CategoryOverviewReportManager
      */
-    protected function getCategoryReportManager() : CategoryReportManager
+    protected function gerCategoryOverviewReportManager() : CategoryOverviewReportManager
     {
-        return $this->get('domain_report.manager.category_report_manager');
+        return $this->get('domain_report.manager.category_overview_report_manager');
     }
 
     /**

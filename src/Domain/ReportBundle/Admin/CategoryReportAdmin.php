@@ -3,7 +3,7 @@
 namespace Domain\ReportBundle\Admin;
 
 use Domain\ReportBundle\Entity\CategoryReport;
-use Domain\ReportBundle\Manager\CategoryReportManager;
+use Domain\ReportBundle\Manager\CategoryOverviewReportManager;
 use Domain\ReportBundle\Util\Helpers\ChartHelper;
 use Oxa\Sonata\AdminBundle\Util\Helpers\AdminHelper;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
@@ -78,7 +78,7 @@ class CategoryReportAdmin extends ReportAdmin
                 'show_filter' => !empty($this->datagridValues['type']['value']) ?: null,
                 'field_options' => [
                     'mapped'    => false,
-                    'choices' => CategoryReportManager::getCategoryPageType(),
+                    'choices' => CategoryOverviewReportManager::getCategoryPageType(),
                     'choice_translation_domain' => 'AdminReportBundle',
                 ],
                 'field_type' => 'choice'
@@ -93,7 +93,7 @@ class CategoryReportAdmin extends ReportAdmin
     {
         $filterParam = $this->getFilterParameters();
 
-        $this->categoryData = $this->getCategoryReportManager()->getCategoryReportData($filterParam);
+        $this->categoryData = $this->getCategoryOverviewReportManager()->getCategoryReportData($filterParam);
 
         $this->colors = ChartHelper::getColors();
     }
@@ -134,10 +134,12 @@ class CategoryReportAdmin extends ReportAdmin
     }
 
     /**
-     * @return CategoryReportManager
+     * @return CategoryOverviewReportManager
      */
-    protected function getCategoryReportManager() : CategoryReportManager
+    protected function getCategoryOverviewReportManager() : CategoryOverviewReportManager
     {
-        return $this->getConfigurationPool()->getContainer()->get('domain_report.manager.category_report_manager');
+        return $this->getConfigurationPool()
+            ->getContainer()
+            ->get('domain_report.manager.category_overview_report_manager');
     }
 }

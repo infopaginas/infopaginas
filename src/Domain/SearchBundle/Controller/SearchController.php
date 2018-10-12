@@ -9,7 +9,7 @@ use Domain\BusinessBundle\Manager\CategoryManager;
 use Domain\BusinessBundle\Manager\LocalityManager;
 use Domain\BusinessBundle\Util\BusinessProfileUtil;
 use Domain\BusinessBundle\Util\SlugUtil;
-use Domain\ReportBundle\Manager\CategoryReportManager;
+use Domain\ReportBundle\Manager\CategoryOverviewReportManager;
 use Domain\ReportBundle\Manager\KeywordsReportManager;
 use Domain\ReportBundle\Model\BusinessOverviewModel;
 use Domain\SearchBundle\Util\SearchDataUtil;
@@ -163,11 +163,11 @@ class SearchController extends Controller
     }
 
     /**
-     * @return CategoryReportManager
+     * @return CategoryOverviewReportManager
      */
-    protected function getCategoryReportManager() : CategoryReportManager
+    protected function getCategoryOverviewReportManager() : CategoryOverviewReportManager
     {
-        return $this->get('domain_report.manager.category_report_manager');
+        return $this->get('domain_report.manager.category_overview_report_manager');
     }
 
     /**
