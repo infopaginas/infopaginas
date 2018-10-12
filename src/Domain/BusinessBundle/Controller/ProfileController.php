@@ -354,14 +354,6 @@ class ProfileController extends Controller
     }
 
     /**
-     * @return CategoryOverviewReportManager
-     */
-    protected function gerCategoryOverviewReportManager() : CategoryOverviewReportManager
-    {
-        return $this->get('domain_report.manager.category_overview_report_manager');
-    }
-
-    /**
      * @return BusinessProfileManager
      */
     private function getBusinessProfilesManager() : BusinessProfileManager
