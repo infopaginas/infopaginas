@@ -10,7 +10,6 @@ use Domain\BusinessBundle\Form\Type\BusinessClaimRequestType;
 use Domain\BusinessBundle\Model\DayOfWeekModel;
 use Domain\BusinessBundle\Model\SubscriptionPlanInterface;
 use Domain\BusinessBundle\Util\BusinessProfileUtil;
-use Domain\ReportBundle\Manager\CategoryOverviewReportManager;
 use Domain\ReportBundle\Model\BusinessOverviewModel;
 use Domain\SearchBundle\Model\Manager\SearchManager;
 use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
