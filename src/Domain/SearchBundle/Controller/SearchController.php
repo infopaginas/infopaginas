@@ -163,14 +163,6 @@ class SearchController extends Controller
     }
 
     /**
-     * @return CategoryOverviewReportManager
-     */
-    protected function getCategoryOverviewReportManager() : CategoryOverviewReportManager
-    {
-        return $this->get('domain_report.manager.category_overview_report_manager');
-    }
-
-    /**
      * Source endpoint for jQuery UI Autocomplete plugin in search widget
      *
      * @param Request $request

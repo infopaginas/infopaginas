@@ -65,7 +65,6 @@ class CategoryOverviewReportManager extends BaseReportManager
         return $this->getEntityManager()->getRepository(Category::class);
     }
 
-
     /**
      * @param string $type
      * @param array $categoriesIds
