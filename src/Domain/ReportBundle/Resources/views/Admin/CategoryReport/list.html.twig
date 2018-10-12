@@ -35,6 +35,69 @@
                         pointRadius: 1,
                         pointHitRadius: 10,
                         data: {{ admin.categoryData.counts|json_encode|raw }}
+                    },
+                    {% set lineColor = admin.colors[2] %}
+                    {
+                        label: "Impressions",
+                        fill: false,
+                        lineTension: 0.1,
+                        backgroundColor: "{{ lineColor }}",
+                        borderColor: "{{ lineColor }}",
+                        borderCapStyle: 'butt',
+                        borderDashOffset: 0.0,
+                        borderJoinStyle: 'miter',
+                        pointBorderColor: "{{ lineColor }}",
+                        pointBackgroundColor: "{{ lineColor }}",
+                        pointBorderWidth: 1,
+                        pointHoverRadius: 3,
+                        pointHoverBackgroundColor: "{{ lineColor }}",
+                        pointHoverBorderColor: "{{ lineColor }}",
+                        pointHoverBorderWidth: 2,
+                        pointRadius: 1,
+                        pointHitRadius: 10,
+                        data: {{ admin.categoryData.impressions|json_encode|raw }}
+                    },
+                    {% set lineColor = admin.colors[3] %}
+                    {
+                        label: "Calls Mobile",
+                        fill: false,
+                        lineTension: 0.1,
+                        backgroundColor: "{{ lineColor }}",
+                        borderColor: "{{ lineColor }}",
+                        borderCapStyle: 'butt',
+                        borderDashOffset: 0.0,
+                        borderJoinStyle: 'miter',
+                        pointBorderColor: "{{ lineColor }}",
+                        pointBackgroundColor: "{{ lineColor }}",
+                        pointBorderWidth: 1,
+                        pointHoverRadius: 3,
+                        pointHoverBackgroundColor: "{{ lineColor }}",
+                        pointHoverBorderColor: "{{ lineColor }}",
+                        pointHoverBorderWidth: 2,
+                        pointRadius: 1,
+                        pointHitRadius: 10,
+                        data: {{ admin.categoryData.callsMobile|json_encode|raw }}
+                    },
+                    {% set lineColor = admin.colors[4] %}
+                    {
+                        label: "Directions",
+                        fill: false,
+                        lineTension: 0.1,
+                        backgroundColor: "{{ lineColor }}",
+                        borderColor: "{{ lineColor }}",
+                        borderCapStyle: 'butt',
+                        borderDashOffset: 0.0,
+                        borderJoinStyle: 'miter',
+                        pointBorderColor: "{{ lineColor }}",
+                        pointBackgroundColor: "{{ lineColor }}",
+                        pointBorderWidth: 1,
+                        pointHoverRadius: 3,
+                        pointHoverBackgroundColor: "{{ lineColor }}",
+                        pointHoverBorderColor: "{{ lineColor }}",
+                        pointHoverBorderWidth: 2,
+                        pointRadius: 1,
+                        pointHitRadius: 10,
+                        data: {{ admin.categoryData.directions|json_encode|raw }}
                     }
                 ]
             };
@@ -67,6 +130,15 @@
                                         {% trans %}category_report.label{% endtrans %}
                                     </th>
                                     <th class="sonata-ba-list-field-header-text ">
+                                        {% trans %}interaction_report.event.impression{% endtrans %}
+                                    </th>
+                                    <th class="sonata-ba-list-field-header-text ">
+                                        {% trans %}interaction_report.button.call_mob{% endtrans %}
+                                    </th>
+                                    <th class="sonata-ba-list-field-header-text ">
+                                        {% trans %}interaction_report.button.direction{% endtrans %}
+                                    </th>
+                                    <th class="sonata-ba-list-field-header-text ">
                                         {% trans %}category_report.counter{% endtrans %}
                                     </th>
                                 </tr>
@@ -79,6 +151,15 @@
                                 <tr>
                                     <td class="sonata-ba-list-field sonata-ba-list-field-string">
                                         {{ item.name }}
+                                    </td>
+                                    <td class="sonata-ba-list-field sonata-ba-list-field-string">
+                                        {{ item.impressions }}
+                                    </td>
+                                    <td class="sonata-ba-list-field sonata-ba-list-field-string">
+                                        {{ item.callMobButton }}
+                                    </td>
+                                    <td class="sonata-ba-list-field sonata-ba-list-field-string">
+                                        {{ item.directionButton }}
                                     </td>
                                     <td class="sonata-ba-list-field sonata-ba-list-field-string">
                                         {{ item.count }}
@@ -118,7 +199,7 @@
                                 {% block pager_results %}
                                     {{ admin.categoryData.currentPage }} / {{ admin.categoryData.lastPage }}
                                     &nbsp;-&nbsp;
-                                    {% transchoice admin.datagrid.pager.nbresults with {'%count%': admin.categoryData.total} from 'SonataAdminBundle' %}list_results_count{% endtranschoice %}
+                                    {% transchoice admin.datagrid.pager.nbresults with {'%count%': admin.categoryData.impressions|length} from 'SonataAdminBundle' %}list_results_count{% endtranschoice %}
                                     &nbsp;-&nbsp;
                                 {% endblock %}
 

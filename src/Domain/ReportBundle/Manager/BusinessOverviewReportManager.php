@@ -6,6 +6,7 @@ use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Manager\BusinessProfileManager;
 use Domain\BusinessBundle\Util\BusinessProfileUtil;
 use Domain\ReportBundle\Model\BusinessOverviewModel;
+use Domain\ReportBundle\Model\CategoryOverviewModel;
 use Domain\ReportBundle\Model\DataType\ReportDatesRangeVO;
 use Domain\ReportBundle\Util\DatesUtil;
 use Oxa\MongoDbBundle\Manager\MongoDbManager;
@@ -29,17 +30,26 @@ class BusinessOverviewReportManager extends BaseReportManager
     /** @var  BusinessProfileManager $businessProfileManager */
     protected $businessProfileManager;
 
+    /** @var  CategoryOverviewReportManager $categoryOverviewReportManager */
+    protected $categoryOverviewReportManager;
+
     /** @var MongoDbManager $mongoDbManager */
     protected $mongoDbManager;
 
     /**
      * BusinessOverviewReportManager constructor.
      * @param BusinessProfileManager $businessProfileManager
+     * @param CategoryOverviewReportManager $categoryOverviewReportManager
+     * @param MongoDbManager $mongoDbManager
      */
-    public function __construct(BusinessProfileManager $businessProfileManager, MongoDbManager $mongoDbManager)
-    {
+    public function __construct(
+        BusinessProfileManager $businessProfileManager,
+        CategoryOverviewReportManager $categoryOverviewReportManager,
+        MongoDbManager $mongoDbManager
+    ) {
+        $this->categoryOverviewReportManager = $categoryOverviewReportManager;
         $this->businessProfileManager = $businessProfileManager;
-        $this->mongoDbManager         = $mongoDbManager;
+        $this->mongoDbManager = $mongoDbManager;
     }
 
     /**
@@ -176,6 +186,7 @@ class BusinessOverviewReportManager extends BaseReportManager
     public function registerBusinessInteraction($businessProfileId, $type)
     {
         if ($businessProfileId and $type) {
+            /** @var BusinessProfile $businessProfile */
             $businessProfile = $this->getBusinessProfileManager()->getRepository()->find($businessProfileId);
 
             if ($businessProfile) {
@@ -183,6 +194,29 @@ class BusinessOverviewReportManager extends BaseReportManager
                     $type,
                     [$businessProfile]
                 );
+
+                $categoryOverviewReportManager = $this->getCategoryOverviewReportManager();
+
+                $businessProfileCategoriesIds = BusinessProfileUtil::extractEntitiesId(
+                    $businessProfile->getCategories()->toArray()
+                );
+
+                $categoriesResult = false;
+
+                $businessProfileLocality = $businessProfile->getCatalogLocality();
+
+                if ($businessProfileLocality) {
+
+                    $businessProfileLocality = $businessProfileLocality->getId();
+
+                    $categoriesResult = $categoryOverviewReportManager->registerCategoriesInteractionEvent(
+                        $type,
+                        $businessProfileCategoriesIds,
+                        $businessProfileLocality
+                    );
+                }
+
+                $result == $result && $categoriesResult;
 
                 return $result;
             }
@@ -454,6 +488,14 @@ class BusinessOverviewReportManager extends BaseReportManager
     protected function getBusinessProfileManager() : BusinessProfileManager
     {
         return $this->businessProfileManager;
+    }
+
+    /**
+     * @return CategoryOverviewReportManager
+     */
+    protected function getCategoryOverviewReportManager(): CategoryOverviewReportManager
+    {
+        return $this->categoryOverviewReportManager;
     }
 
     /**

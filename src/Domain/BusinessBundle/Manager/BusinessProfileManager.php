@@ -1581,8 +1581,9 @@ class BusinessProfileManager extends Manager
             } else {
                 $pageCode = Page::CODE_CATALOG_LOCALITY;
 
-                $categoryReportManager = $this->container->get('domain_report.manager.category_report_manager');
-                $popularCategoryIds = $categoryReportManager->getPopularCategoryData($locality->getId());
+                $categoryOverviewReportManager = $this->container
+                    ->get('domain_report.manager.category_overview_report_manager');
+                $popularCategoryIds = $categoryOverviewReportManager->getPopularCategoryData($locality->getId());
                 $popularCategories  = $this->categoryManager->getAvailableCategoriesByIds($popularCategoryIds);
 
                 foreach ($popularCategories as $key => $popularCategory) {

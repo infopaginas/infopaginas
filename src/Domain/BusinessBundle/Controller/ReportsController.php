@@ -9,7 +9,7 @@ use Domain\BusinessBundle\Form\Type\BusinessChartFilterType;
 use Domain\BusinessBundle\Form\Type\BusinessCloseRequestType;
 use Domain\BusinessBundle\Form\Type\BusinessReportFilterType;
 use Domain\BusinessBundle\Manager\BusinessProfileManager;
-use Domain\ReportBundle\Manager\CategoryReportManager;
+use Domain\ReportBundle\Manager\CategoryOverviewReportManager;
 use Domain\ReportBundle\Model\BusinessOverviewModel;
 use Domain\ReportBundle\Google\Analytics\DataFetcher;
 use Domain\ReportBundle\Manager\AdUsageReportManager;
@@ -204,7 +204,10 @@ class ReportsController extends Controller
                     break;
                 case BusinessOverviewModel::TYPE_CODE_CATEGORY_BUSINESS:
                 case BusinessOverviewModel::TYPE_CODE_CATEGORY_CATALOG:
-                    $result = $this->getCategoryReportManager()->registerCategoryEvent($key, $value);
+                    $result = $this->getCategoryOverviewReportManager()->registerCategoryEvent(
+                        $key,
+                        $value
+                    );
                     break;
             }
         }
@@ -563,11 +566,11 @@ class ReportsController extends Controller
     }
 
     /**
-     * @return CategoryReportManager
+     * @return CategoryOverviewReportManager
      */
-    protected function getCategoryReportManager() : CategoryReportManager
+    protected function getCategoryOverviewReportManager() : CategoryOverviewReportManager
     {
-        return $this->get('domain_report.manager.category_report_manager');
+        return $this->get('domain_report.manager.category_overview_report_manager');
     }
 
     /**
