@@ -75,58 +75,59 @@ class DataMigrationCommand extends ContainerAwareCommand
 
         $i = 0;
         $insert = [];
+        if ($cursor) {
+            foreach ($cursor as $document) {
+                if (isset($document['action']) && isset($document['business_id'])) {
+                    $businessProfileId = $document['business_id'];
 
-        foreach ($cursor as $document) {
-            if (isset($document['action']) && isset($document['business_id'])) {
-                $businessProfileId = $document['business_id'];
+                    if (!isset($categoryIdsArray[$businessProfileId])) {
+                        /** @var BusinessProfile $businessProfile */
+                        $businessProfile = $businessProfileRepository->find($businessProfileId);
 
-                if (!isset($categoryIdsArray[$businessProfileId])) {
-                    /** @var BusinessProfile $businessProfile */
-                    $businessProfile = $businessProfileRepository->find($businessProfileId);
+                        if ($businessProfile) {
+                            $businessProfileCategories = BusinessProfileUtil::extractEntitiesId(
+                                $businessProfile->getCategories()->toArray()
+                            );
 
-                    if ($businessProfile) {
-                        $businessProfileCategories = BusinessProfileUtil::extractEntitiesId(
-                            $businessProfile->getCategories()->toArray()
-                        );
+                            $catalogLocality = $businessProfile->getCatalogLocality();
 
-                        $catalogLocality = $businessProfile->getCatalogLocality();
-
-                        if ($catalogLocality && $businessProfileCategories) {
-                            $categoryIdsArray[$businessProfileId][self::CATEGORIES] = $businessProfileCategories;
-                            $categoryIdsArray[$businessProfileId][self::CATALOG_LOCALITY] = $catalogLocality->getId();
+                            if ($catalogLocality && $businessProfileCategories) {
+                                $categoryIdsArray[$businessProfileId][self::CATEGORIES] = $businessProfileCategories;
+                                $categoryIdsArray[$businessProfileId][self::CATALOG_LOCALITY] = $catalogLocality->getId();
+                            }
                         }
                     }
-                }
 
-                if (isset($categoryIdsArray[$businessProfileId])) {
-                    $businessProfileData = $categoryIdsArray[$businessProfileId];
+                    if (isset($categoryIdsArray[$businessProfileId])) {
+                        $businessProfileData = $categoryIdsArray[$businessProfileId];
 
-                    foreach ($businessProfileData[self::CATEGORIES] as $categoryId) {
-                        $newDocument = [
-                            CategoryOverviewReportManager::MONGO_DB_FIELD_CATEGORY_ID => $categoryId,
-                            CategoryOverviewReportManager::MONGO_DB_FIELD_ACTION => $document['action'],
-                            CategoryOverviewReportManager::MONGO_DB_FIELD_CATALOG_LOCALITY =>
-                                $businessProfileData[self::CATALOG_LOCALITY],
-                            CategoryOverviewReportManager::MONGO_DB_FIELD_TYPE =>
-                                BusinessOverviewModel::TYPE_CODE_CATEGORY_BUSINESS,
-                            CategoryOverviewReportManager::MONGO_DB_FIELD_COUNT => (int)$document['count'],
-                            CategoryOverviewReportManager::MONGO_DB_FIELD_DATE_TIME => $document['datetime'],
-                        ];
+                        foreach ($businessProfileData[self::CATEGORIES] as $categoryId) {
+                            $newDocument = [
+                                CategoryOverviewReportManager::MONGO_DB_FIELD_CATEGORY_ID => $categoryId,
+                                CategoryOverviewReportManager::MONGO_DB_FIELD_ACTION => $document['action'],
+                                CategoryOverviewReportManager::MONGO_DB_FIELD_CATALOG_LOCALITY =>
+                                    $businessProfileData[self::CATALOG_LOCALITY],
+                                CategoryOverviewReportManager::MONGO_DB_FIELD_TYPE =>
+                                    BusinessOverviewModel::TYPE_CODE_CATEGORY_BUSINESS,
+                                CategoryOverviewReportManager::MONGO_DB_FIELD_COUNT => (int)$document['count'],
+                                CategoryOverviewReportManager::MONGO_DB_FIELD_DATE_TIME => $document['datetime'],
+                            ];
 
-                        $insert[] = $newDocument;
+                            $insert[] = $newDocument;
+                        }
+                        $i++;
+
+                        if (($i % MongoDbManager::DEFAULT_BATCH_SIZE) === 0) {
+                            $this->mongoDbManager->insertMany(
+                                CategoryOverviewReportManager::MONGO_DB_COLLECTION_NAME_AGGREGATE,
+                                $insert
+                            );
+                            $insert = [];
+                            $this->em->clear();
+                        }
+
+                        $progressBar->advance();
                     }
-                    $i++;
-
-                    if (($i % MongoDbManager::DEFAULT_BATCH_SIZE) === 0) {
-                        $this->mongoDbManager->insertMany(
-                            CategoryOverviewReportManager::MONGO_DB_COLLECTION_NAME_AGGREGATE,
-                            $insert
-                        );
-                        $insert = [];
-                        $this->em->clear();
-                    }
-
-                    $progressBar->advance();
                 }
             }
         }
@@ -155,33 +156,35 @@ class DataMigrationCommand extends ContainerAwareCommand
         $i = 0;
         $insert = [];
 
-        foreach ($cursor as $document) {
-            if (isset($document['locality_id']) && isset($document['type'])) {
+        if ($cursor) {
+            foreach ($cursor as $document) {
+                if (isset($document['locality_id']) && isset($document['type'])) {
 
-                $newDocument = [
-                    CategoryOverviewReportManager::MONGO_DB_FIELD_CATEGORY_ID => $document['category_id'],
-                    CategoryOverviewReportManager::MONGO_DB_FIELD_ACTION => BusinessOverviewModel::TYPE_CODE_IMPRESSION,
-                    CategoryOverviewReportManager::MONGO_DB_FIELD_CATALOG_LOCALITY => $document['locality_id'],
-                    CategoryOverviewReportManager::MONGO_DB_FIELD_TYPE => $document['type'],
-                    CategoryOverviewReportManager::MONGO_DB_FIELD_COUNT => (int)$document['count'],
-                    CategoryOverviewReportManager::MONGO_DB_FIELD_DATE_TIME => $document['datetime'],
-                ];
+                    $newDocument = [
+                        CategoryOverviewReportManager::MONGO_DB_FIELD_CATEGORY_ID => $document['category_id'],
+                        CategoryOverviewReportManager::MONGO_DB_FIELD_ACTION => BusinessOverviewModel::TYPE_CODE_IMPRESSION,
+                        CategoryOverviewReportManager::MONGO_DB_FIELD_CATALOG_LOCALITY => $document['locality_id'],
+                        CategoryOverviewReportManager::MONGO_DB_FIELD_TYPE => $document['type'],
+                        CategoryOverviewReportManager::MONGO_DB_FIELD_COUNT => (int)$document['count'],
+                        CategoryOverviewReportManager::MONGO_DB_FIELD_DATE_TIME => $document['datetime'],
+                    ];
 
-                $insert[] = $newDocument;
+                    $insert[] = $newDocument;
+                }
+
+                $i++;
+
+                if (($i % MongoDbManager::DEFAULT_BATCH_SIZE) === 0) {
+                    $this->mongoDbManager->insertMany(
+                        CategoryOverviewReportManager::MONGO_DB_COLLECTION_NAME_AGGREGATE,
+                        $insert
+                    );
+                    $insert = [];
+                    $this->em->clear();
+                }
+
+                $progressBar->advance();
             }
-
-            $i++;
-
-            if (($i % MongoDbManager::DEFAULT_BATCH_SIZE) === 0) {
-                $this->mongoDbManager->insertMany(
-                    CategoryOverviewReportManager::MONGO_DB_COLLECTION_NAME_AGGREGATE,
-                    $insert
-                );
-                $insert = [];
-                $this->em->clear();
-            }
-
-            $progressBar->advance();
         }
 
         if ($insert) {
