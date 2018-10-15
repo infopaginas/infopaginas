@@ -13,6 +13,7 @@ use Domain\ReportBundle\Model\DataType\ReportDatesRangeVO;
 use Domain\ReportBundle\Util\DatesUtil;
 use Oxa\MongoDbBundle\Manager\MongoDbManager;
 use Oxa\Sonata\AdminBundle\Util\Helpers\AdminHelper;
+use Domain\BusinessBundle\Entity\Category;
 
 class CategoryOverviewReportManager extends BaseReportManager
 {
