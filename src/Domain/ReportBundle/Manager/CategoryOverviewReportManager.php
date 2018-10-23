@@ -291,6 +291,8 @@ class CategoryOverviewReportManager extends BaseReportManager
             }
         }
 
+        $total = count($result);
+
         if ($paginated) {
             $result = array_slice(
                 $result,
@@ -302,7 +304,7 @@ class CategoryOverviewReportManager extends BaseReportManager
 
         return [
             'result' => $result,
-            'total' => count($result),
+            'total' => $total,
         ];
     }
 
