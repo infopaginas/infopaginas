@@ -162,6 +162,7 @@ class CategoryOverviewReportManager extends BaseReportManager
                         'query' => [
                             'action' => '$' . self::MONGO_DB_FIELD_ACTION,
                             'cid' => '$' . self::MONGO_DB_FIELD_CATEGORY_ID,
+                            'type' => '$' . self::MONGO_DB_FIELD_TYPE,
                         ],
                     ],
                 ],
@@ -181,6 +182,7 @@ class CategoryOverviewReportManager extends BaseReportManager
 
         foreach ($cursor as $document) {
             $document[self::MONGO_DB_FIELD_ACTION] = $document['_id']['action'];
+            $document[self::MONGO_DB_FIELD_TYPE] = $document['_id']['type'];
             $document[self::MONGO_DB_FIELD_CATEGORY_ID] = $document['_id']['cid'];
             $document[self::MONGO_DB_FIELD_COUNT] = (int)$document[self::MONGO_DB_FIELD_COUNT];
             $document[self::MONGO_DB_FIELD_DATE_TIME] = $aggregateStartDate;
