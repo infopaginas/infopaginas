@@ -214,29 +214,30 @@
                             </div>
                         </div>
                         <hr>
+
                         <div class="text-center">
                             <ul class="pagination">
-                                {% if admin.datagrid.pager.page > 2  %}
+                                {% if admin.categoryData.currentPage > 2  %}
                                     <li><a href="{{ admin.generateUrl('list', admin.modelmanager.paginationparameters(admin.datagrid, 1)) }}" title="{{ 'link_first_pager'|trans({}, 'SonataAdminBundle') }}">&laquo;</a></li>
                                 {% endif %}
 
-                                {% if admin.datagrid.pager.page != admin.categoryData.previousPage %}
+                                {% if admin.categoryData.currentPage != admin.categoryData.previousPage %}
                                     <li><a href="{{ admin.generateUrl('list', admin.modelmanager.paginationparameters(admin.datagrid, admin.categoryData.previousPage)) }}" title="{{ 'link_previous_pager'|trans({}, 'SonataAdminBundle') }}">&lsaquo;</a></li>
                                 {% endif %}
 
                                 {% for page in admin.categoryData.rangePage %}
-                                    {% if page == admin.datagrid.pager.page %}
+                                    {% if page == admin.categoryData.currentPage %}
                                         <li class="active"><a href="{{ admin.generateUrl('list', admin.modelmanager.paginationparameters(admin.datagrid, page)) }}">{{ page }}</a></li>
                                     {% else %}
                                         <li><a href="{{ admin.generateUrl('list', admin.modelmanager.paginationparameters(admin.datagrid, page)) }}">{{ page }}</a></li>
                                     {% endif %}
                                 {% endfor %}
 
-                                {% if admin.datagrid.pager.page != admin.categoryData.nextPage %}
+                                {% if admin.categoryData.currentPage != admin.categoryData.nextPage %}
                                     <li><a href="{{ admin.generateUrl('list', admin.modelmanager.paginationparameters(admin.datagrid, admin.categoryData.nextPage)) }}" title="{{ 'link_next_pager'|trans({}, 'SonataAdminBundle') }}">&rsaquo;</a></li>
                                 {% endif %}
 
-                                {% if admin.datagrid.pager.page != admin.categoryData.lastPage and admin.categoryData.lastPage != admin.categoryData.nextPage %}
+                                {% if admin.categoryData.currentPage != admin.categoryData.lastPage and admin.categoryData.lastPage != admin.categoryData.nextPage %}
                                     <li><a href="{{ admin.generateUrl('list', admin.modelmanager.paginationparameters(admin.datagrid, admin.categoryData.lastPage)) }}" title="{{ 'link_last_pager'|trans({}, 'SonataAdminBundle') }}">&raquo;</a></li>
                                 {% endif %}
                             </ul>
