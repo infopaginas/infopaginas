@@ -299,7 +299,7 @@ class CategoryOverviewReportManager extends BaseReportManager
             $result = array_slice(
                 $result,
                 (int)(($params['_page'] - 1) * $params['_per_page']),
-                (int)$params['_per_page'],
+                (int)$params['_per_page'] + 2,
                 true
             );
         }
