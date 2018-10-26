@@ -232,11 +232,10 @@ class CategoryOverviewReportManager extends BaseReportManager
 
     /**
      * @param array $params
-     * @param bool $paginated
      *
      * @return array
      */
-    public function getCategoryDataFromMongo($params, $paginated = true)
+    public function getCategoryDataFromMongo($params)
     {
         $aggregationQuery = [
             [
@@ -563,8 +562,7 @@ class CategoryOverviewReportManager extends BaseReportManager
         }
 
         $categoryOverviewResult = $this->getCategoryDataFromMongo(
-            $params,
-            $paginated
+            $params
         );
 
         $stats = $categoryOverviewResult['result'];
