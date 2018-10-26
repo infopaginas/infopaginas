@@ -293,20 +293,8 @@ class CategoryOverviewReportManager extends BaseReportManager
             }
         }
 
-        $total = count($result);
-
-        if ($paginated) {
-            $result = array_slice(
-                $result,
-                (int)(($params['_page'] - 1) * $params['_per_page']),
-                (int)$params['_per_page'] + 2,
-                true
-            );
-        }
-
         return [
             'result' => $result,
-            'total' => $total,
         ];
     }
 
@@ -580,7 +568,6 @@ class CategoryOverviewReportManager extends BaseReportManager
         );
 
         $stats = $categoryOverviewResult['result'];
-        $total = $categoryOverviewResult['total'];
         $categoryIds = array_keys($stats);
         $mapping = $this->getCategoryMapping($categoryIds);
 
@@ -615,6 +602,17 @@ class CategoryOverviewReportManager extends BaseReportManager
                     'count' => $categoryOverviewData[CategoryOverviewReportManager::VISITORS],
                 ];
             }
+        }
+
+        $total = count($data);
+
+        if ($paginated) {
+            $data = array_slice(
+                $data,
+                (int)(($params['_page'] - 1) * $params['_per_page']),
+                (int)$params['_per_page'],
+                true
+            );
         }
 
         $currentPage = $params['_page'];
