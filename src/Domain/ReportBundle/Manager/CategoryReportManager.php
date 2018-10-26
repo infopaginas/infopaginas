@@ -89,8 +89,7 @@ class CategoryReportManager extends BaseReportManager
         $categoryOverviewManager = $this->getCategoryOverviewReportManager();
 
         $categoryOverviewResult = $categoryOverviewManager->getCategoryDataFromMongo(
-            $params,
-            $paginated
+            $params
         );
 
         $stats = $categoryOverviewResult['result'];
