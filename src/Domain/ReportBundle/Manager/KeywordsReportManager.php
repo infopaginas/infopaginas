@@ -297,4 +297,16 @@ class KeywordsReportManager
             $date
         );
     }
+
+    /**
+     * @param \Datetime $date
+     */
+    public function deleteArchivedRawKeywordData($date)
+    {
+        $this->mongoDbManager->deleteOldData(
+            self::MONGO_DB_COLLECTION_NAME_ARCHIVE_RAW,
+            self::MONGO_DB_FIELD_DATE_TIME,
+            $date
+        );
+    }
 }

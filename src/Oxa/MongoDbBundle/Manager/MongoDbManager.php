@@ -254,4 +254,25 @@ class MongoDbManager
             );
         }
     }
+
+    /**
+     * @param string $collectionName
+     * @param string $dateField
+     * @param \DateTime $date
+     *
+     * @return mixed
+     */
+    public function deleteOldData($collectionName, $dateField, $date)
+    {
+        $result = $this->deleteMany(
+            $collectionName,
+            [
+                $dateField => [
+                    '$lt' => $this->typeUTCDateTime($date),
+                ],
+            ]
+        );
+
+        return $result;
+    }
 }
