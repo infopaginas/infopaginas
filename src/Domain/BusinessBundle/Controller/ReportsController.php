@@ -367,6 +367,7 @@ class ReportsController extends Controller
         $params['charts'] = $request->request->get('chart', []);
         $params['dates'] = $request->request->get('date', []);
         $params['statisticsTableData'] = $request->request->get('statisticsTableData', []);
+        $params['print'] = $request->request->get('print', false);
         $businessProfile = $this->getBusinessProfileManager()->find($request->request->get('businessId'));
 
         $this->checkBusinessProfileOrAdminAccess($businessProfile);
