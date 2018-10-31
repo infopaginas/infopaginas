@@ -112,6 +112,8 @@ $( document ).ready( function() {
 
         if ( data.chartType === chartType.keywords ) {
             url = reportUrls.keywordsDataAction;
+        } else if ( data.chartType === chartType.ads ) {
+            url = reportUrls.adUsageDataAction;
         } else {
             url = reportUrls.businessOverviewDataAction;
         }
@@ -138,6 +140,8 @@ $( document ).ready( function() {
                 if ( data.chartType === chartType.keywords ) {
                     chartBlock.parent().find( html.containers.statBlock ).html( response.stats );
                     loadKeywordsChart( chartBlock, response.keywords, response.searches );
+                } else if ( data.chartType === chartType.ads ) {
+                    loadAdUsageChart( chartBlock, response.dates, response.clicks, response.impressions );
                 } else {
                     loadBusinessOverviewChart( chartBlock, response.dates, response.chart, response.chartTitle );
                 }
@@ -214,6 +218,44 @@ $( document ).ready( function() {
                 name: 'Keywords',
                 data: searches
             }]
+        });
+    }
+
+    function loadAdUsageChart( chartBlock, dates, clicks, impressions ) {
+        chartBlock.highcharts({
+            title: {
+                text: 'Ad Usage Statistics',
+                x: -20 //center
+            },
+            xAxis: {
+                categories: dates
+            },
+            yAxis: {
+                title: {
+                    text: 'Count'
+                },
+                plotLines: [{
+                    value: 0,
+                    width: 1,
+                    color: '#808080'
+                }]
+            },
+            legend: {
+                layout: 'vertical',
+                align: 'right',
+                verticalAlign: 'middle',
+                borderWidth: 0
+            },
+            series: [
+                {
+                    name: 'Clicks',
+                    data: clicks
+                },
+                {
+                    name: 'Impressions',
+                    data: impressions
+                }
+            ]
         });
     }
 
