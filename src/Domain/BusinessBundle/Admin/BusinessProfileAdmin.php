@@ -1247,6 +1247,20 @@ class BusinessProfileAdmin extends OxaAdmin
                     ->end()
                 ->end()
             ;
+
+            if ($this->getSubject()->getDcOrderId()) {
+                $showMapper
+                    ->tab('Reports')
+                        ->with('Preview')
+                            ->add('adUsageReport', null, [
+                                'label'     => 'Ad Usage Report',
+                                'eventType' => BusinessOverviewModel::TYPE_CODE_ADS,
+                                'template'  => 'DomainBusinessBundle:Admin:BusinessProfile/report_data.html.twig',
+                            ])
+                        ->end()
+                    ->end()
+                ;
+            }
         }
     }
 
