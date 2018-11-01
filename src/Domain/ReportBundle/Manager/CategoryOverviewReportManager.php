@@ -29,7 +29,6 @@ class CategoryOverviewReportManager extends BaseReportManager
     const MONGO_DB_FIELD_COUNT = 'count';
     const MONGO_DB_FIELD_DATE_TIME = 'datetime';
     const MONGO_DB_FIELD_TYPE = 'type';
-    const MONGO_DB_FIELD_CATALOG_LOCALITY = 'catalog_locality';
 
     const MONGO_DB_FIELD_LOCALITY_ID = 'locality_id';
 
@@ -97,7 +96,7 @@ class CategoryOverviewReportManager extends BaseReportManager
         $data = [
             self::MONGO_DB_FIELD_CATEGORY_ID => (int)$categoryId,
             self::MONGO_DB_FIELD_ACTION => $action,
-            self::MONGO_DB_FIELD_CATALOG_LOCALITY => $localityId,
+            self::MONGO_DB_FIELD_LOCALITY_ID => $localityId,
             self::MONGO_DB_FIELD_DATE_TIME => $date,
             self::MONGO_DB_FIELD_TYPE => BusinessOverviewModel::TYPE_CODE_CATEGORY_BUSINESS,
         ];
@@ -139,7 +138,6 @@ class CategoryOverviewReportManager extends BaseReportManager
     public function aggregateCategoriesInteractions($period)
     {
         $this->mongoDbManager->createIndex(self::MONGO_DB_COLLECTION_NAME_AGGREGATE, [
-            self::MONGO_DB_FIELD_CATEGORY_ID => MongoDbManager::INDEX_TYPE_ASC,
             self::MONGO_DB_FIELD_DATE_TIME => MongoDbManager::INDEX_TYPE_DESC,
         ]);
 
@@ -246,7 +244,7 @@ class CategoryOverviewReportManager extends BaseReportManager
                     '_id' => [
                         self::MONGO_DB_FIELD_CATEGORY_ID => '$' . self::MONGO_DB_FIELD_CATEGORY_ID,
                         self::MONGO_DB_FIELD_ACTION => '$' . self::MONGO_DB_FIELD_ACTION,
-                        self::MONGO_DB_FIELD_CATALOG_LOCALITY => '$' . self::MONGO_DB_FIELD_CATALOG_LOCALITY,
+                        self::MONGO_DB_FIELD_LOCALITY_ID => '$' . self::MONGO_DB_FIELD_LOCALITY_ID,
                         self::MONGO_DB_FIELD_TYPE => '$' . self::MONGO_DB_FIELD_TYPE,
                     ],
                     self::MONGO_DB_FIELD_COUNT => [
@@ -312,7 +310,7 @@ class CategoryOverviewReportManager extends BaseReportManager
         ];
 
         if (!empty($params['locality']['value'])) {
-            $query[self::MONGO_DB_FIELD_CATALOG_LOCALITY] = (int)$params['locality']['value'];
+            $query[self::MONGO_DB_FIELD_LOCALITY_ID] = (int)$params['locality']['value'];
         }
 
         if (!empty($params['type']['value'])) {
@@ -396,7 +394,7 @@ class CategoryOverviewReportManager extends BaseReportManager
     {
         $data = [
             self::MONGO_DB_FIELD_CATEGORY_ID => (int)$categoryId,
-            self::MONGO_DB_FIELD_CATALOG_LOCALITY => (int)$localityId,
+            self::MONGO_DB_FIELD_LOCALITY_ID => (int)$localityId,
             self::MONGO_DB_FIELD_TYPE => $type,
             self::MONGO_DB_FIELD_DATE_TIME => $date,
             self::MONGO_DB_FIELD_ACTION => BusinessOverviewModel::TYPE_CODE_IMPRESSION,
