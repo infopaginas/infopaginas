@@ -105,7 +105,7 @@ class DataMigrationCommand extends ContainerAwareCommand
                             $newDocument = [
                                 CategoryOverviewReportManager::MONGO_DB_FIELD_CATEGORY_ID => $categoryId,
                                 CategoryOverviewReportManager::MONGO_DB_FIELD_ACTION => $document['action'],
-                                CategoryOverviewReportManager::MONGO_DB_FIELD_CATALOG_LOCALITY =>
+                                CategoryOverviewReportManager::MONGO_DB_FIELD_LOCALITY_ID =>
                                     $businessProfileData[self::CATALOG_LOCALITY],
                                 CategoryOverviewReportManager::MONGO_DB_FIELD_TYPE =>
                                     BusinessOverviewModel::TYPE_CODE_CATEGORY_BUSINESS,
@@ -163,7 +163,7 @@ class DataMigrationCommand extends ContainerAwareCommand
                     $newDocument = [
                         CategoryOverviewReportManager::MONGO_DB_FIELD_CATEGORY_ID => $document['category_id'],
                         CategoryOverviewReportManager::MONGO_DB_FIELD_ACTION => BusinessOverviewModel::TYPE_CODE_IMPRESSION,
-                        CategoryOverviewReportManager::MONGO_DB_FIELD_CATALOG_LOCALITY => $document['locality_id'],
+                        CategoryOverviewReportManager::MONGO_DB_FIELD_LOCALITY_ID => $document['locality_id'],
                         CategoryOverviewReportManager::MONGO_DB_FIELD_TYPE => $document['type'],
                         CategoryOverviewReportManager::MONGO_DB_FIELD_COUNT => (int)$document['count'],
                         CategoryOverviewReportManager::MONGO_DB_FIELD_DATE_TIME => $document['datetime'],
