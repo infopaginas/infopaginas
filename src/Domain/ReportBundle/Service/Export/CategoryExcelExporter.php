@@ -50,8 +50,7 @@ class CategoryExcelExporter extends ExcelExporterModel
      */
     protected function setData(array $filterParams)
     {
-        // todo pagination
-        $categoryData = $this->categoryOverviewReportManager->getCategoryReportData($filterParams);
+        $categoryData = $this->categoryOverviewReportManager->getCategoryReportData($filterParams, false);
 
         $this->activeSheet = $this->phpExcelObject->setActiveSheetIndex(0);
 

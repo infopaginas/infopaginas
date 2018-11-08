@@ -708,7 +708,7 @@ class CategoryOverviewReportManager extends BaseReportManager
 
             // chart data
             $labels[]      = $label;
-            $impressions[] = $impressions;
+            $impressions[] = $impression;
             $callsMobile[] = $callMobile;
             $directions[]  = $direction;
             $counts[]      = $visitor;
@@ -769,10 +769,10 @@ class CategoryOverviewReportManager extends BaseReportManager
     {
         $data = [];
 
-        $categories = $this->getCategoryRepository()->getAvailableCategoriesByIds($categoryIds);
+        $categories = $this->getCategoryRepository()->getAvailableCategoryNameByIds($categoryIds);
 
         foreach ($categories as $category) {
-            $data[$category->getId()] = $category->getName();
+            $data[$category['id']] = $category['name'];
         }
 
         return $data;

@@ -184,13 +184,13 @@
                                         </button>
                                         <ul class="dropdown-menu">
                                             {% for format in admin.getExportFormats() %}
-                                            <li>
-                                                <a href="{{ admin.generateUrl('export', admin.modelmanager.paginationparameters(admin.datagrid, 0) + {'format' : format, '_page': admin.categoryData.currentPage}) }}">
-                                                    <i class="glyphicon glyphicon-download"></i>
-                                                    {{ format|upper }}
-                                                </a>
-                                            <li>
-                                                {% endfor %}
+                                                <li>
+                                                    <a href="{{ admin.generateUrl('export', admin.modelmanager.paginationparameters(admin.datagrid, 0) + {'format' : format, '_page': admin.categoryData.currentPage}) }}">
+                                                        <i class="glyphicon glyphicon-download"></i>
+                                                        {{ format|upper }}
+                                                    </a>
+                                                <li>
+                                            {% endfor %}
                                         </ul>
                                     </div>
                                 {% endif %}
@@ -199,7 +199,7 @@
                                 {% block pager_results %}
                                     {{ admin.categoryData.currentPage }} / {{ admin.categoryData.lastPage }}
                                     &nbsp;-&nbsp;
-                                    {% transchoice admin.datagrid.pager.nbresults with {'%count%': admin.categoryData.impressions|length} from 'SonataAdminBundle' %}list_results_count{% endtranschoice %}
+                                    {% transchoice admin.datagrid.pager.nbresults with {'%count%': admin.categoryData.total} from 'SonataAdminBundle' %}list_results_count{% endtranschoice %}
                                     &nbsp;-&nbsp;
                                 {% endblock %}
 
