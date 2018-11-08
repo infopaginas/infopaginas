@@ -162,7 +162,9 @@ class MongoDbManager
     public function aggregateData($collectionName, array $options)
     {
         try {
-            $result = $this->client->$collectionName->aggregate($options);
+            $result = $this->client->$collectionName->aggregate($options, [
+                'allowDiskUse' =>  true,
+            ]);
         } catch (\Exception $e) {
             $result = false;
         }

@@ -230,11 +230,34 @@ class CategoryOverviewReportManager extends BaseReportManager
 
     /**
      * @param array $params
+     * @param bool $paginated
      *
      * @return array
      */
-    public function getCategoryDataFromMongo($params)
+    public function getCategoryDataFromMongo($params, $paginated = true)
     {
+        if ($paginated) {
+            $resultPagination = [
+                [
+                    '$skip' => (int)(($params['_page'] - 1) * $params['_per_page']),
+                ],
+                [
+                    '$limit' => (int)$params['_per_page'],
+                ],
+            ];
+        } else {
+            $resultPagination = [
+                [
+                    '$skip' => 0,
+                ],
+            ];
+        }
+
+        $impressionQuery = $this->getBusinessCategoryEventSubQuery(CategoryOverviewModel::TYPE_CODE_IMPRESSION);
+        $callMobQuery = $this->getBusinessCategoryEventSubQuery(CategoryOverviewModel::TYPE_CODE_CALL_MOB_BUTTON);
+        $directionQuery = $this->getBusinessCategoryEventSubQuery(CategoryOverviewModel::TYPE_CODE_DIRECTION_BUTTON);
+        $visitorsQuery = $this->getCatalogCategoryEventSubQuery(CategoryOverviewModel::TYPE_CODE_IMPRESSION);
+
         $aggregationQuery = [
             [
                 '$match' => $this->getMongoMatchQuery($params),
@@ -243,19 +266,27 @@ class CategoryOverviewReportManager extends BaseReportManager
                 '$group' => [
                     '_id' => [
                         self::MONGO_DB_FIELD_CATEGORY_ID => '$' . self::MONGO_DB_FIELD_CATEGORY_ID,
-                        self::MONGO_DB_FIELD_ACTION => '$' . self::MONGO_DB_FIELD_ACTION,
-                        self::MONGO_DB_FIELD_LOCALITY_ID => '$' . self::MONGO_DB_FIELD_LOCALITY_ID,
-                        self::MONGO_DB_FIELD_TYPE => '$' . self::MONGO_DB_FIELD_TYPE,
                     ],
-                    self::MONGO_DB_FIELD_COUNT => [
-                        '$sum' => '$' . self::MONGO_DB_FIELD_COUNT,
-                    ],
+                    CategoryOverviewModel::TYPE_CODE_IMPRESSION => $impressionQuery,
+                    CategoryOverviewModel::TYPE_CODE_CALL_MOB_BUTTON => $callMobQuery,
+                    CategoryOverviewModel::TYPE_CODE_DIRECTION_BUTTON => $directionQuery,
+                    self::VISITORS => $visitorsQuery,
                 ],
             ],
             [
                 '$sort' => [
-                    self::MONGO_DB_FIELD_COUNT => MongoDbManager::INDEX_TYPE_DESC,
+                    self::VISITORS => MongoDbManager::INDEX_TYPE_DESC,
                     '_id' => MongoDbManager::INDEX_TYPE_ASC,
+                ],
+            ],
+            [
+                '$facet' => [
+                    'metadata' => [
+                        [
+                            '$count' => 'total',
+                        ]
+                    ],
+                    'results' => $resultPagination,
                 ],
             ],
         ];
@@ -266,32 +297,48 @@ class CategoryOverviewReportManager extends BaseReportManager
         );
 
         $result = [];
+        $total = 0;
 
         if ($cursor) {
-            foreach ($cursor as $document) {
-                $count = $document[self::MONGO_DB_FIELD_COUNT];
-                $document = $document['_id'];
+            $data = current($cursor->toArray());
 
-                if (!isset($result[$document[self::MONGO_DB_FIELD_CATEGORY_ID]])) {
-                    $result[$document[self::MONGO_DB_FIELD_CATEGORY_ID]] = [
-                        CategoryOverviewModel::TYPE_CODE_IMPRESSION => 0,
-                        CategoryOverviewModel::TYPE_CODE_CALL_MOB_BUTTON => 0,
-                        CategoryOverviewModel::TYPE_CODE_DIRECTION_BUTTON => 0,
-                        self::VISITORS => 0,
-                    ];
+            if ($data && $data->results) {
+                foreach ($data->results as $document) {
+                    $categoryId = $document['_id'][self::MONGO_DB_FIELD_CATEGORY_ID];
+
+                    $impressions = $document[CategoryOverviewModel::TYPE_CODE_IMPRESSION];
+                    $callMob = $document[CategoryOverviewModel::TYPE_CODE_CALL_MOB_BUTTON];
+                    $direction = $document[CategoryOverviewModel::TYPE_CODE_DIRECTION_BUTTON];
+                    $visitors = $document[self::VISITORS];
+
+                    if (!isset($result[$categoryId])) {
+                        $result[$categoryId] = [
+                            CategoryOverviewModel::TYPE_CODE_IMPRESSION => $impressions,
+                            CategoryOverviewModel::TYPE_CODE_CALL_MOB_BUTTON => $callMob,
+                            CategoryOverviewModel::TYPE_CODE_DIRECTION_BUTTON => $direction,
+                            self::VISITORS => $visitors,
+                        ];
+                    } else {
+                        $result[$categoryId][CategoryOverviewModel::TYPE_CODE_IMPRESSION] += $impressions;
+                        $result[$categoryId][CategoryOverviewModel::TYPE_CODE_CALL_MOB_BUTTON] += $callMob;
+                        $result[$categoryId][CategoryOverviewModel::TYPE_CODE_DIRECTION_BUTTON] += $direction;
+                        $result[$categoryId][self::VISITORS] += $visitors;
+                    }
                 }
+            }
 
-                if ($document[self::MONGO_DB_FIELD_TYPE] != BusinessOverviewModel::TYPE_CODE_CATEGORY_CATALOG) {
-                    $result[$document[self::MONGO_DB_FIELD_CATEGORY_ID]][$document[self::MONGO_DB_FIELD_ACTION]] =
-                        $count;
+            if ($data && $data->metadata) {
+                $metadata = current($data->metadata);
+
+                if ($metadata) {
+                    $total = $metadata['total'];
                 }
-
-                $result[$document[self::MONGO_DB_FIELD_CATEGORY_ID]][self::VISITORS] += 1;
             }
         }
 
         return [
             'result' => $result,
+            'total' => $total,
         ];
     }
 
@@ -328,6 +375,62 @@ class CategoryOverviewReportManager extends BaseReportManager
         ];
 
         return $query;
+    }
+
+    /**
+     * @var string $event
+     *
+     * @return array
+     */
+    protected function getBusinessCategoryEventSubQuery($event)
+    {
+        return $this->getCategoryEventSubQuery($event, BusinessOverviewModel::TYPE_CODE_CATEGORY_BUSINESS);
+    }
+
+    /**
+     * @var string $event
+     *
+     * @return array
+     */
+    protected function getCatalogCategoryEventSubQuery($event)
+    {
+        return $this->getCategoryEventSubQuery($event, BusinessOverviewModel::TYPE_CODE_CATEGORY_CATALOG);
+    }
+
+    /**
+     * @var string $event
+     * @var string $type
+     *
+     * @return array
+     */
+    protected function getCategoryEventSubQuery($event, $type)
+    {
+        $subQuery = [
+            '$sum' => [
+                '$cond' => [
+                    [
+                        '$and' => [
+                            [
+                                '$eq' => [
+                                    '$' . self::MONGO_DB_FIELD_TYPE,
+                                    $type
+                                ],
+                            ],
+                            [
+                                '$eq' => [
+                                    '$' . self::MONGO_DB_FIELD_ACTION,
+                                    $event
+                                ],
+                            ],
+                        ],
+                    ],
+                    '$' . self::MONGO_DB_FIELD_COUNT,
+                    0
+                ],
+            ],
+        ];
+
+        return $subQuery;
     }
 
     /**
@@ -430,7 +533,9 @@ class CategoryOverviewReportManager extends BaseReportManager
             $categories = $this->getPopularCategoryRawData($params);
 
             if ($categories) {
-                foreach ($categories as $categoryId => $count) {
+                foreach ($categories as $categoryId => $stats) {
+                    $count = $stats[self::VISITORS];
+
                     $data[] = $this->buildSinglePopularCategory(
                         $categoryId,
                         $locality->getId(),
@@ -572,7 +677,8 @@ class CategoryOverviewReportManager extends BaseReportManager
         }
 
         $categoryOverviewResult = $this->getCategoryDataFromMongo(
-            $params
+            $params,
+            $paginated
         );
 
         $stats = $categoryOverviewResult['result'];
@@ -588,40 +694,36 @@ class CategoryOverviewReportManager extends BaseReportManager
 
         foreach ($categoryIds as $categoryId) {
             if (!empty($mapping[$categoryId])) {
-                $categoryOverviewData = $stats[$categoryId];
                 $label = $mapping[$categoryId];
-
-                // chart data
-                $labels[]      = $label;
-                $impressions[] = $categoryOverviewData[CategoryOverviewModel::TYPE_CODE_IMPRESSION];
-                $callsMobile[] = $categoryOverviewData[CategoryOverviewModel::TYPE_CODE_CALL_MOB_BUTTON];
-                $directions[]  = $categoryOverviewData[CategoryOverviewModel::TYPE_CODE_DIRECTION_BUTTON];
-                $counts[]      = $categoryOverviewData[CategoryOverviewReportManager::VISITORS];
-
-                // table
-                $data[] = [
-                    'name'  => $label,
-                    CategoryOverviewModel::TYPE_CODE_IMPRESSION =>
-                        $categoryOverviewData[CategoryOverviewModel::TYPE_CODE_IMPRESSION],
-                    CategoryOverviewModel::TYPE_CODE_DIRECTION_BUTTON =>
-                        $categoryOverviewData[CategoryOverviewModel::TYPE_CODE_DIRECTION_BUTTON],
-                    CategoryOverviewModel::TYPE_CODE_CALL_MOB_BUTTON =>
-                        $categoryOverviewData[CategoryOverviewModel::TYPE_CODE_CALL_MOB_BUTTON],
-                    'count' => $categoryOverviewData[CategoryOverviewReportManager::VISITORS],
-                ];
+            } else {
+                $label = $categoryId . ' - item was deleted';
             }
+
+            $categoryOverviewData = $stats[$categoryId];
+
+            $impression = $categoryOverviewData[CategoryOverviewModel::TYPE_CODE_IMPRESSION];
+            $callMobile = $categoryOverviewData[CategoryOverviewModel::TYPE_CODE_CALL_MOB_BUTTON];
+            $direction  = $categoryOverviewData[CategoryOverviewModel::TYPE_CODE_DIRECTION_BUTTON];
+            $visitor    = $categoryOverviewData[self::VISITORS];
+
+            // chart data
+            $labels[]      = $label;
+            $impressions[] = $impressions;
+            $callsMobile[] = $callMobile;
+            $directions[]  = $direction;
+            $counts[]      = $visitor;
+
+            // table
+            $data[] = [
+                'name' => $label,
+                CategoryOverviewModel::TYPE_CODE_IMPRESSION => $impression,
+                CategoryOverviewModel::TYPE_CODE_DIRECTION_BUTTON => $direction,
+                CategoryOverviewModel::TYPE_CODE_CALL_MOB_BUTTON => $callMobile,
+                'count' => $visitor,
+            ];
         }
 
-        $total = count($data);
-
-        if ($paginated) {
-            $data = array_slice(
-                $data,
-                (int)(($params['_page'] - 1) * $params['_per_page']),
-                (int)$params['_per_page'],
-                true
-            );
-        }
+        $total = $categoryOverviewResult['total'];
 
         $currentPage = $params['_page'];
         $lastPage = ceil($total / $params['_per_page']);
@@ -677,7 +779,7 @@ class CategoryOverviewReportManager extends BaseReportManager
     }
 
     /**
-     * @param array $searchName
+     * @param string $searchName
      * @return array
      */
     private function getCategoriesIdsByName($searchName)
@@ -697,8 +799,8 @@ class CategoryOverviewReportManager extends BaseReportManager
     public static function getCategoryPageType()
     {
         return [
-            self::CATEGORY_TYPE_BUSINESS => 'category_report.page_type.business',
-            self::CATEGORY_TYPE_CATALOG  => 'category_report.page_type.catalog',
+            BusinessOverviewModel::TYPE_CODE_CATEGORY_BUSINESS => 'category_report.page_type.business',
+            BusinessOverviewModel::TYPE_CODE_CATEGORY_CATALOG  => 'category_report.page_type.catalog',
         ];
     }
 
