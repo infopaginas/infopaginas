@@ -215,7 +215,7 @@ class CategoryRepository extends EntityRepository
     }
 
     /**
-     * @param array $name
+     * @param string $name
      *
      * @return Category[]|null
      */
@@ -225,9 +225,9 @@ class CategoryRepository extends EntityRepository
 
         $result = $queryBuilder
             ->where(
-                $queryBuilder->expr()->like('c.name', ':name')
+                $queryBuilder->expr()->like('lower(c.name)', ':name')
             )
-            ->setParameter('name', '%' . $name . '%')
+            ->setParameter('name', '%' . strtolower($name) . '%')
             ->getQuery()
             ->getResult();
 
