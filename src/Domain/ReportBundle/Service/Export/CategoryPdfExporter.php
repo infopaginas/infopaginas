@@ -32,8 +32,7 @@ class CategoryPdfExporter extends PdfExporterModel
     {
         $filename = $this->categoryOverviewReportManager->generateReportName(self::FORMAT);
 
-        // todo pagination
-        $categoryData = $this->categoryOverviewReportManager->getCategoryReportData($params);
+        $categoryData = $this->categoryOverviewReportManager->getCategoryReportData($params, false);
 
         $html = $this->templateEngine->render(
             'DomainReportBundle:Admin/CategoryReport:pdf_report.html.twig',
