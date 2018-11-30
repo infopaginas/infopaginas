@@ -1,6 +1,13 @@
 {% block field %}
     {% if object.id is not null %}
         <div class="row {% if selector is defined %}{{ selector }}{% endif %}">
+            <div class="col-sm-3">
+                <div class="form-group">
+                    <div class="sonata-ba-field sonata-ba-field-standard-natural">
+                        <label for="{{ admin.uniqid }}_{{ field_description.name }}">{{ field_description.options.label }}</label>
+                    </div>
+                </div>
+            </div>
             <div class="col-sm-6">
                 <div class="form-group">
                     <div class="sonata-ba-field sonata-ba-field-standard-natural">
@@ -12,7 +19,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-sm-6">
+            <div class="col-sm-3">
                 <div class="form-group">
                     <button id="{{ admin.uniqid }}_{{ field_description.name }}Filter" type="button" class="btn btn-primary" data-report-filter>
                         <i class="fa fa-filter" aria-hidden="true"></i>
