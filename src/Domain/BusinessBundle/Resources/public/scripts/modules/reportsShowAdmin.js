@@ -3,7 +3,7 @@ $( document ).ready( function() {
         containers: {
             chartBlock:   'div[id$="ChartContainer"]',
             hintBlock:    'div[id$="ChartHintContainer"]',
-            statBlock:    'div[id$="ChartHintContainer"]',
+            statBlock:    'div[id$="ChartStatContainer"]',
             keywordBlock: '#' + uniqueId + '_keywordChartContainer'
         },
         inputs: {
@@ -45,8 +45,9 @@ $( document ).ready( function() {
     };
 
     var chartType = {
-        keywords: 'keyword',
-        ads:      'ads'
+        keywords:    'keyword',
+        ads:         'ads',
+        impressions: 'impressions'
     };
 
     var reportUrls = {
@@ -144,6 +145,10 @@ $( document ).ready( function() {
                     loadAdUsageChart( chartBlock, response.dates, response.clicks, response.impressions );
                 } else {
                     loadBusinessOverviewChart( chartBlock, response.dates, response.chart, response.chartTitle );
+
+                    if ( data.chartType === chartType.impressions  ) {
+                        chartBlock.parent().find( html.containers.statBlock ).html( response.stats );
+                    }
                 }
             },
             complete: function () {
