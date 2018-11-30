@@ -139,7 +139,7 @@ $( document ).ready( function() {
                 chartBlock.parent().find( html.containers.hintBlock ).html( response.chartHint );
 
                 if ( data.chartType === chartType.keywords ) {
-                    chartBlock.parent().find( html.containers.statBlock ).html( response.stats );
+                    chartBlock.parent().find( html.containers.hintBlock ).html( response.stats );
                     loadKeywordsChart( chartBlock, response.keywords, response.searches );
                 } else if ( data.chartType === chartType.ads ) {
                     loadAdUsageChart( chartBlock, response.dates, response.clicks, response.impressions );
