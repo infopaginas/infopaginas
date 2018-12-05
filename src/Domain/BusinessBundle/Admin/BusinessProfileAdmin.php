@@ -1176,7 +1176,7 @@ class BusinessProfileAdmin extends OxaAdmin
 
             $showMapper
                 ->tab('Reports')
-                    ->with('Interactions Report')
+                    ->with('Report Filters')
                         ->add('mainReportFilters', null, [
                             'label'     => 'Filters',
                             'template'  => 'DomainBusinessBundle:Admin:BusinessProfile/main_report_controls.html.twig',
@@ -1186,32 +1186,53 @@ class BusinessProfileAdmin extends OxaAdmin
                             'periodChoices' => DatesUtil::getReportAdminDataRanges(),
                             'periodData' => DatesUtil::RANGE_LAST_MONTH,
                         ])
-                        ->add('actionType', null, [
-                            'label'     => 'Event Type',
-                            'template'  => 'DomainBusinessBundle:Admin:BusinessProfile/report_choice.html.twig',
-                            'choices'   => BusinessOverviewModel::getChartEventTypesWithTranslation(),
-                            'data'      => BusinessOverviewModel::DEFAULT_CHART_TYPE,
-                        ])
                         ->add('periodOption', null, [
                             'label'     => 'Period',
                             'template'  => 'DomainBusinessBundle:Admin:BusinessProfile/report_choice.html.twig',
                             'choices'   => AdminHelper::getPeriodOptionValues(),
                             'data'      => AdminHelper::PERIOD_OPTION_CODE_PER_MONTH,
                         ])
-                        ->add('interactionReport', null, [
-                            'label'    => 'Interaction Report',
-                            'template' => 'DomainBusinessBundle:Admin:BusinessProfile/action_report_data.html.twig',
-                        ])
-                    ->end()
-                    ->with('Keywords Report')
                         ->add('keywordReportLimit', null, [
                             'label'     => 'Keyword Limit',
                             'template'  => 'DomainBusinessBundle:Admin:BusinessProfile/report_choice.html.twig',
                             'choices'   => KeywordsReportManager::KEYWORDS_PER_PAGE_COUNT,
                             'data'      => KeywordsReportManager::DEFAULT_KEYWORDS_COUNT,
                         ])
-                        ->add('keywordReport', null, [
-                            'label'     => 'Keyword Report',
+                    ->end()
+                    ->with('Preview')
+                        ->add('views', null, [
+                            'label'     => 'Views',
+                            'eventType'     => BusinessOverviewModel::TYPE_CODE_IMPRESSION,
+                            'template' => 'DomainBusinessBundle:Admin:BusinessProfile/report_data.html.twig',
+                        ])
+                        ->add('impressions', null, [
+                            'label'     => 'Impressions',
+                            'eventType'     => BusinessOverviewModel::TYPE_CODE_VIEW,
+                            'template' => 'DomainBusinessBundle:Admin:BusinessProfile/report_data.html.twig',
+                        ])
+                        ->add('directions', null, [
+                            'label'     => 'Directions',
+                            'eventType'     => BusinessOverviewModel::TYPE_CODE_DIRECTION_BUTTON,
+                            'template' => 'DomainBusinessBundle:Admin:BusinessProfile/report_data.html.twig',
+                        ])
+                        ->add('callMob', null, [
+                            'label'     => 'Call (mob)',
+                            'eventType'     => BusinessOverviewModel::TYPE_CODE_CALL_MOB_BUTTON,
+                            'template' => 'DomainBusinessBundle:Admin:BusinessProfile/report_data.html.twig',
+                        ])
+                        ->add('callDesk', null, [
+                            'label'     => 'Call (desktop)',
+                            'eventType'     => BusinessOverviewModel::TYPE_CODE_CALL_DESK_BUTTON,
+                            'template' => 'DomainBusinessBundle:Admin:BusinessProfile/report_data.html.twig',
+                        ])
+                        ->add('video', null, [
+                            'label'     => 'Video',
+                            'eventType'     => BusinessOverviewModel::TYPE_CODE_VIDEO_WATCHED,
+                            'template' => 'DomainBusinessBundle:Admin:BusinessProfile/report_data.html.twig',
+                        ])
+                        ->add('keyword', null, [
+                            'label'     => 'Keywords',
+                            'eventType'     => BusinessOverviewModel::TYPE_CODE_KEYWORD,
                             'template' => 'DomainBusinessBundle:Admin:BusinessProfile/report_data.html.twig',
                         ])
                     ->end()
@@ -1228,27 +1249,13 @@ class BusinessProfileAdmin extends OxaAdmin
             ;
 
             if ($this->getSubject()->getDcOrderId()) {
-                $showReportExportButtons = 'DomainBusinessBundle:Admin:BusinessProfile/report_export_buttons.html.twig';
-
                 $showMapper
-                    ->tab('Ad Usage Report')
-                        ->with('Ad Usage Report')
-                            ->add('adUsageReportFilters', null, [
-                                'label'     => 'Ad Usage Filters',
-                                'template'  => 'DomainBusinessBundle:Admin:BusinessProfile/report_controls.html.twig',
-                                'dateStart' => $dateRange->getStartDate()->format(DatesUtil::DATE_DB_FORMAT),
-                                'dateEnd'   => $dateRange->getEndDate()->format(DatesUtil::DATE_DB_FORMAT),
-                                'format'    => self::DATE_PICKER_REPORT_FORMAT,
-                            ])
+                    ->tab('Reports')
+                        ->with('Preview')
                             ->add('adUsageReport', null, [
                                 'label'     => 'Ad Usage Report',
-                                'template' => 'DomainBusinessBundle:Admin:BusinessProfile/report_data.html.twig',
-                            ])
-                            ->add('adUsageExport', null, [
-                                'template'   => $showReportExportButtons,
-                                'exportRoute' => 'domain_business_admin_ads_reports_export',
-                                'exportPdf'   => ReportInterface::FORMAT_PDF,
-                                'exportExcel' => ReportInterface::FORMAT_EXCEL,
+                                'eventType' => BusinessOverviewModel::TYPE_CODE_ADS,
+                                'template'  => 'DomainBusinessBundle:Admin:BusinessProfile/report_data.html.twig',
                             ])
                         ->end()
                     ->end()

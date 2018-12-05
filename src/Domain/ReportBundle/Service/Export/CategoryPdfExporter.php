@@ -2,8 +2,7 @@
 
 namespace Domain\ReportBundle\Service\Export;
 
-use Domain\ReportBundle\Manager\CategoryReportManager;
-use Domain\ReportBundle\Model\Exporter\PdfExporterModel;
+use Domain\ReportBundle\Manager\CategoryOverviewReportManager;use Domain\ReportBundle\Model\Exporter\PdfExporterModel;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -13,16 +12,16 @@ use Symfony\Component\HttpFoundation\Response;
 class CategoryPdfExporter extends PdfExporterModel
 {
     /**
-     * @var CategoryReportManager $categoryReportManager
+     * @var CategoryOverviewReportManager $categoryOverviewReportManager
      */
-    protected $categoryReportManager;
+    protected $categoryOverviewReportManager;
 
     /**
-     * @param CategoryReportManager $service
+     * @param CategoryOverviewReportManager $service
      */
-    public function setCategoryReportManager(CategoryReportManager $service)
+    public function setCategoryOverviewReportManager(CategoryOverviewReportManager $service)
     {
-        $this->categoryReportManager = $service;
+        $this->categoryOverviewReportManager = $service;
     }
 
     /**
@@ -31,9 +30,9 @@ class CategoryPdfExporter extends PdfExporterModel
      */
     public function getResponse($params = [])
     {
-        $filename = $this->categoryReportManager->generateReportName(self::FORMAT);
+        $filename = $this->categoryOverviewReportManager->generateReportName(self::FORMAT);
 
-        $categoryData = $this->categoryReportManager->getCategoryReportData($params);
+        $categoryData = $this->categoryOverviewReportManager->getCategoryReportData($params, false);
 
         $html = $this->templateEngine->render(
             'DomainReportBundle:Admin/CategoryReport:pdf_report.html.twig',

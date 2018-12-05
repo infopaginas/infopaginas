@@ -2,9 +2,6 @@
 
 namespace Domain\ReportBundle\Command;
 
-use Domain\ReportBundle\Manager\BusinessOverviewReportManager;
-use Domain\ReportBundle\Manager\CategoryReportManager;
-use Domain\ReportBundle\Manager\KeywordsReportManager;
 use Domain\ReportBundle\Util\DatesUtil;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
@@ -60,9 +57,9 @@ class ReportArchiveDataCommand extends ContainerAwareCommand
         $logger->addInfo($logger::MONGO_ARCHIVE, $logger::STATUS_IN_PROGRESS, 'execute:Process keyword report');
 
         $output->writeln('Process category report');
-        $categoryReportManager = $container->get('domain_report.manager.category_report_manager');
-        $categoryReportManager->archiveRawBusinessCategories($rawDataArchivingDate);
-        $categoryReportManager->archiveAggregatedBusinessCategories($aggregatedDataArchivingDate);
+        $categoryOverviewReportManager = $container->get('domain_report.manager.category_overview_report_manager');
+        $categoryOverviewReportManager->archiveRawBusinessCategories($rawDataArchivingDate);
+        $categoryOverviewReportManager->archiveAggregatedBusinessCategories($aggregatedDataArchivingDate);
         $logger->addInfo($logger::MONGO_ARCHIVE, $logger::STATUS_IN_PROGRESS, 'execute:Process category report');
 
         $output->writeln('Process user action report');

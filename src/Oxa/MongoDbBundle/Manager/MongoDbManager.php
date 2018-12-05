@@ -162,7 +162,9 @@ class MongoDbManager
     public function aggregateData($collectionName, array $options)
     {
         try {
-            $result = $this->client->$collectionName->aggregate($options);
+            $result = $this->client->$collectionName->aggregate($options, [
+                'allowDiskUse' =>  true,
+            ]);
         } catch (\Exception $e) {
             $result = false;
         }
@@ -253,5 +255,26 @@ class MongoDbManager
                 ]
             );
         }
+    }
+
+    /**
+     * @param string $collectionName
+     * @param string $dateField
+     * @param \DateTime $date
+     *
+     * @return mixed
+     */
+    public function deleteOldData($collectionName, $dateField, $date)
+    {
+        $result = $this->deleteMany(
+            $collectionName,
+            [
+                $dateField => [
+                    '$lt' => $this->typeUTCDateTime($date),
+                ],
+            ]
+        );
+
+        return $result;
     }
 }

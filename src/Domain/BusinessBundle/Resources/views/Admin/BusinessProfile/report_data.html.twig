@@ -2,7 +2,13 @@
 
 {% block field %}
     {% if object.id is not null %}
-        <div class="chart-container" id="{{ admin.uniqid }}_{{ field_description.name }}ChartContainer"></div>
-        <div class="form__section scrollable-table" id="{{ admin.uniqid }}_{{ field_description.name }}StatisticsContainer"></div>
+        <div class="chart-block">
+            <div class="stat-block" id="{{ admin.uniqid }}_{{ field_description.name }}ChartStatContainer"></div>
+            <div class="chart-container" id="{{ admin.uniqid }}_{{ field_description.name }}ChartContainer" data-chart-type="{{ field_description.options.eventType }}"></div>
+            <div class="hint-block">
+                <div id="{{ admin.uniqid }}_{{ field_description.name }}ChartHintContainer"></div>
+            </div>
+            <div class="form__section scrollable-table" id="{{ admin.uniqid }}_{{ field_description.name }}StatisticsContainer"></div>
+        </div>
     {% endif %}
 {% endblock %}

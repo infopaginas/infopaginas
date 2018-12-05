@@ -89,6 +89,22 @@ class CategoryRepository extends EntityRepository
     }
 
     /**
+     * @param array $ids
+     *
+     * @return array
+     */
+    public function getAvailableCategoryNameByIds($ids)
+    {
+        $qb = $this->getAvailableCategoriesQb()
+            ->select('c.name, c.id')
+            ->andWhere('c.id IN (:ids)')
+            ->setParameter('ids', $ids)
+        ;
+
+        return $qb->getQuery()->getArrayResult();
+    }
+
+    /**
      * @return QueryBuilder
      */
     protected function getCategoryQueryBuilder()
@@ -212,6 +228,26 @@ class CategoryRepository extends EntityRepository
         ;
 
         return $query->getQuery()->getOneOrNullResult();
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return Category[]|null
+     */
+    public function getCategoriesByName($name)
+    {
+        $queryBuilder = $this->createQueryBuilder('c');
+
+        $result = $queryBuilder
+            ->where(
+                $queryBuilder->expr()->like('lower(c.name)', ':name')
+            )
+            ->setParameter('name', '%' . strtolower($name) . '%')
+            ->getQuery()
+            ->getResult();
+
+        return $result;
     }
 
     /**

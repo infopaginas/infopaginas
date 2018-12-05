@@ -1,41 +1,53 @@
 $( document ).ready( function() {
     var html = {
         containers: {
-            businessOverviewChartContainerId: '#' + uniqueId + '_interactionReportChartContainer',
-            businessOverviewStatsContainerId: '#' + uniqueId + '_interactionReportStatisticsContainer',
-            businessOverviewHintContainerId: '#' + uniqueId + '_interactionReportChartHintContainer',
-            keywordChartContainerId: '#' + uniqueId + '_keywordReportChartContainer',
-            keywordStatsContainerId: '#' + uniqueId + '_keywordReportStatisticsContainer',
-            adUsageChartContainerId: '#' + uniqueId + '_adUsageReportChartContainer',
-            adUsageStatsContainerId: '#' + uniqueId + '_adUsageReportStatisticsContainer'
+            chartBlock:   'div[id$="ChartContainer"]',
+            hintBlock:    'div[id$="ChartHintContainer"]',
+            statBlock:    'div[id$="ChartStatContainer"]',
+            keywordBlock: '#' + uniqueId + '_keywordChartContainer'
         },
         inputs: {
-            mainDateStart:    '#' + uniqueId + '_mainReportFiltersDateStart',
-            mainDateEnd:      '#' + uniqueId + '_mainReportFiltersDateEnd',
-            actionType:       '#' + uniqueId + '_actionType',
-            periodOption:     '#' + uniqueId + '_periodOption',
-            keywordLimit:     '#' + uniqueId + '_keywordReportLimit',
-            adUsageDateStart: '#' + uniqueId + '_adUsageReportFiltersDateStart',
-            adUsageDateEnd:   '#' + uniqueId + '_adUsageReportFiltersDateEnd',
-            mainPeriods:      'input[name="' + uniqueId + '_mainReportFilters[period]"]'
+            mainDateStart: '#' + uniqueId + '_mainReportFiltersDateStart',
+            mainDateEnd:   '#' + uniqueId + '_mainReportFiltersDateEnd',
+            periodOption:  '#' + uniqueId + '_periodOption',
+            keywordLimit:  '#' + uniqueId + '_keywordReportLimit',
+            mainPeriods:   'input[name="' + uniqueId + '_mainReportFilters[period]"]',
+            datePicker:    '[data-date-format]'
         },
         buttons: {
-            mainFilter:         '#' + uniqueId + '_mainReportFiltersFilter',
-            actionTypeFilter:   '#' + uniqueId + '_actionTypeFilter',
-            periodOptionFilter: '#' + uniqueId + '_periodOptionFilter',
-            keywordFilter:      '#' + uniqueId + '_keywordReportLimitFilter',
-            adUsageFilter:      '#' + uniqueId + '_adUsageReportFiltersFilter',
-            export:             '[data-export-type]',
-            exportExcel:        '[data-export-type = "export-excel"]',
-            exportPdf:          '[data-export-type = "export-pdf"]',
-            print:              '[data-export-type = "print"]'
+            exportExcel: '[data-export-type = "export-excel"]',
+            exportPdf:   '[data-format = "pdf"]',
+            print:       '[data-export-type = "print"]',
+            filter:      'button[id$="Filter"]'
         },
         tabs: {
-            mainReportTab:      'a[href="#tab_' + uniqueId + '_6"]',
-            adUsageTab:         'a[href="#tab_' + uniqueId + '_7"]',
-            mainReportTabId:    '#tab_' + uniqueId + '_6',
-            adUsageTabId:       '#tab_' + uniqueId + '_7'
+            mainReportTab: 'a[href="#tab_' + uniqueId + '_6"]'
+        },
+        data: {
+            chartType: 'chart-type'
+        },
+        forms: {
+            exportFrom: '#exportForm'
         }
+    };
+
+    var chartData  = {};
+    var chartAjaxCall = {};
+
+    var events = {
+        chartConverted: 'chartConverted'
+    };
+
+    var defaultValue = {
+        datesRange:    'custom',
+        limit:         10,
+        exportTimeout: 1000
+    };
+
+    var chartType = {
+        keywords:    'keyword',
+        ads:         'ads',
+        impressions: 'impressions'
     };
 
     var reportUrls = {
@@ -45,64 +57,110 @@ $( document ).ready( function() {
     };
 
     initDatetimePickers();
+    initAjaxRequestTracker();
 
-    function loadBusinessOverviewReport() {
+    function initAjaxRequestTracker() {
+        var chartBlocks = $( html.containers.chartBlock );
+
+        chartBlocks.each(function () {
+            var type  = getChartType( $( this ) );
+
+            chartAjaxCall[ type ] = false;
+        });
+    }
+
+    function checkAjaxCalls() {
+        var chartBlocks = $( html.containers.chartBlock );
+        var result = true;
+
+        chartBlocks.each(function () {
+            var type  = getChartType( $( this ) );
+
+            if ( !chartAjaxCall.hasOwnProperty( type ) || chartAjaxCall[ type ] ) {
+                result = false;
+                return false;
+            }
+        });
+
+        return result;
+    }
+
+    function getMainFilterValues( chartBlock ) {
+        var dateStart    = $( html.inputs.mainDateStart ).val();
+        var dateEnd      = $( html.inputs.mainDateEnd ).val();
+        var keywordLimit = $( html.inputs.keywordLimit ).val();
+        var period       = $( html.inputs.periodOption ).val();
+        var chartType    = '';
+
+        if (chartBlock) {
+            chartType = getChartType( chartBlock );
+        }
+
+        return {
+            'businessProfileId': businessProfileId,
+            'start': dateStart,
+            'end':   dateEnd,
+            'datesRange': defaultValue.datesRange,
+            'limit': keywordLimit,
+            'chartType': chartType,
+            'periodOption': period
+        };
+    }
+
+    function loadBusinessReport( chartBlock ) {
+        var data = getMainFilterValues( chartBlock );
+        var url;
+
+        if ( data.chartType === chartType.keywords ) {
+            url = reportUrls.keywordsDataAction;
+        } else if ( data.chartType === chartType.ads ) {
+            url = reportUrls.adUsageDataAction;
+        } else {
+            url = reportUrls.businessOverviewDataAction;
+        }
+
+        if ( chartAjaxCall[ data.chartType ] ) {
+            return false;
+        }
+
         $.ajax({
-            url: reportUrls.businessOverviewDataAction,
-            data: getMainFilterValues(),
+            url:      url,
+            data:     data,
             dataType: 'JSON',
-            type: 'POST',
+            type:     'POST',
             beforeSend: function() {
-                $( html.containers.businessOverviewChartContainerId ).html( '' );
-                $( html.containers.businessOverviewStatsContainerId ).html( '' );
-                $( html.containers.businessOverviewHintContainerId ).html( '' );
+                chartBlock.html( '' );
+                chartBlock.parent().find( html.containers.hintBlock ).html( '' );
+                chartBlock.parent().find( html.containers.statBlock ).html( '' );
+
+                chartAjaxCall[ data.chartType ] = true;
             },
-            success: function(response) {
-                $( html.containers.businessOverviewStatsContainerId ).html( response.stats );
-                $( html.containers.businessOverviewHintContainerId ).html( response.chartHint );
-                loadBusinessOverviewChart( response.dates, response.chart, response.chartTitle );
+            success: function( response ) {
+                chartBlock.parent().find( html.containers.hintBlock ).html( response.chartHint );
+
+                if ( data.chartType === chartType.keywords ) {
+                    chartBlock.parent().find( html.containers.hintBlock ).html( response.stats );
+                    loadKeywordsChart( chartBlock, response.keywords, response.searches );
+                } else if ( data.chartType === chartType.ads ) {
+                    loadAdUsageChart( chartBlock, response.dates, response.clicks, response.impressions );
+                } else {
+                    loadBusinessOverviewChart( chartBlock, response.dates, response.chart, response.chartTitle );
+
+                    if ( data.chartType === chartType.impressions  ) {
+                        chartBlock.parent().find( html.containers.statBlock ).html( response.stats );
+                    }
+                }
+            },
+            complete: function () {
+                chartAjaxCall[ data.chartType ] = false;
             }
         });
     }
 
-    function loadKeywordsReport() {
-        $.ajax({
-            url: reportUrls.keywordsDataAction,
-            data: getMainFilterValues(),
-            dataType: 'JSON',
-            type: 'POST',
-            beforeSend: function() {
-                $( html.containers.keywordChartContainerId ).html( '' );
-                $( html.containers.keywordStatsContainerId ).html( '' );
-            },
-            success: function(response) {
-                $( html.containers.keywordStatsContainerId ).html( response.stats );
-                loadKeywordsChart( response.keywords, response.searches );
-            }
-        });
-    }
-
-    function loadAdUsageReport() {
-        $.ajax({
-            url: reportUrls.adUsageDataAction,
-            data: getAdUsageFilterValues(),
-            dataType: 'JSON',
-            type: 'POST',
-            beforeSend: function() {
-                $( html.containers.adUsageChartContainerId ).html( '' );
-                $( html.containers.adUsageStatsContainerId ).html( '' );
-            },
-            success: function(response) {
-                $( html.containers.adUsageStatsContainerId ).html( response.stats );
-                loadAdUsageChart( response.dates, response.clicks, response.impressions );
-            }
-        });
-    }
-
-    function loadBusinessOverviewChart(dates, chartData, title) {
-        $( html.containers.businessOverviewChartContainerId ).highcharts({
+    function loadBusinessOverviewChart( chartBlock, dates, chartData, title ) {
+        chartBlock.highcharts({
             title: {
-                text: 'Interactions',
+                text: title,
                 x: -20 //center
             },
             xAxis: {
@@ -133,8 +191,8 @@ $( document ).ready( function() {
         });
     }
 
-    function loadKeywordsChart(keywords, searches) {
-        $(html.containers.keywordChartContainerId).highcharts({
+    function loadKeywordsChart( chartBlock, keywords, searches ) {
+        chartBlock.highcharts({
             chart: {
                 type: 'column'
             },
@@ -168,8 +226,8 @@ $( document ).ready( function() {
         });
     }
 
-    function loadAdUsageChart( dates, clicks, impressions ) {
-        $( html.containers.adUsageChartContainerId ).highcharts({
+    function loadAdUsageChart( chartBlock, dates, clicks, impressions ) {
+        chartBlock.highcharts({
             title: {
                 text: 'Ad Usage Statistics',
                 x: -20 //center
@@ -206,105 +264,127 @@ $( document ).ready( function() {
         });
     }
 
-    function getMainFilterValues() {
-        var dateStart    = $( html.inputs.mainDateStart ).val();
-        var dateEnd      = $( html.inputs.mainDateEnd ).val();
-        var keywordLimit = $( html.inputs.keywordLimit ).val();
-        var chartType    = $( html.inputs.actionType ).val();
-        var period       = $( html.inputs.periodOption ).val();
-
-        return {
-            'businessProfileId': businessProfileId,
-            'start': dateStart,
-            'end':   dateEnd,
-            'datesRange': 'custom',
-            'limit': keywordLimit,
-            'chartType': chartType,
-            'periodOption': period
-        };
-    }
-
-    function getAdUsageFilterValues() {
-        var adUsageDateStart = $( html.inputs.adUsageDateStart ).val();
-        var adUsageDateEnd   = $( html.inputs.adUsageDateEnd ).val();
-
-        return {
-            'businessProfileId': businessProfileId,
-            'start': adUsageDateStart,
-            'end': adUsageDateEnd,
-            'datesRange': 'custom',
-            'limit': 10
-        };
-    }
-
     handleReportUpdate();
 
     function handleReportUpdate() {
-        $( html.buttons.mainFilter ).on( 'click', function() {
-            loadBusinessOverviewReport();
-            loadKeywordsReport();
+        $( html.buttons.filter ).on( 'click', function() {
+            initAllCharts();
         });
-
         $( html.tabs.mainReportTab ).on( 'click', function() {
-            loadBusinessOverviewReport();
-            loadKeywordsReport();
+            initAllCharts();
         });
+    }
 
-        $( html.buttons.actionTypeFilter ).on( 'click', function() {
-            loadBusinessOverviewReport();
-        });
+    function initAllCharts() {
+        var chartBlocks = $( html.containers.chartBlock );
 
-        $( html.buttons.periodOptionFilter ).on( 'click', function() {
-            loadBusinessOverviewReport();
-        });
-
-        $( html.buttons.keywordFilter ).on( 'click', function() {
-            loadKeywordsReport();
-        });
-
-        $( html.buttons.adUsageFilter ).on( 'click', function() {
-            loadAdUsageReport();
-        });
-
-        $( html.tabs.adUsageTab ).on( 'click', function() {
-            loadAdUsageReport();
+        chartBlocks.each(function () {
+            loadBusinessReport( $( this ) );
         });
     }
 
     handleExport();
 
     function handleExport() {
-        $( document ).on('click', html.buttons.export, function (e) {
-            var filterParams = getFilterParams();
+        $( document ).on( 'click', html.buttons.exportPdf, function () {
+            var print = $( this ).data( 'export-type' );
+            var chartBlocks = $( html.containers.chartBlock );
+
+            if ( checkAjaxCalls() ) {
+                $.each( chartBlocks, function() {
+                    var chart = $( this );
+                    var type  = getChartType( $( this ) );
+
+                    html2canvas( chart[ 0 ] ).then(function( canvas ) {
+                        chartData[ type ] = canvas.toDataURL();
+                        $( document ).trigger( events.chartConverted, [print] );
+                    });
+                });
+            }
+        });
+
+
+        $( document ).on('click', html.buttons.exportExcel, function () {
+            var filterParams = getMainFilterValues();
             var exportRoute  = $( this ).data( 'route' );
 
             filterParams.format = $( this ).data( 'format' );
 
-            if ( $( this ).data( 'export-type' ) == 'print' ) {
-                filterParams.print = true;
-            }
-
             window.open( Routing.generate( exportRoute, filterParams ) );
+        });
+
+        $( document ).on( events.chartConverted, function ( e, print ) {
+            var chartBlocks = $( html.containers.chartBlock );
+            var result = true;
+
+            $.each( chartBlocks, function() {
+                var type  = getChartType( $( this ) );
+
+                if ( !( chartData.hasOwnProperty( type ) && chartData[ type ] ) ) {
+                    result = false;
+                    return false;
+                }
+            });
+
+            if ( result ) {
+                setTimeout(function() {
+                    sendChartExportData( print );
+                }, defaultValue.exportTimeout);
+            }
         });
     }
 
-    function getFilterParams() {
-        var filterParams;
+    function sendChartExportData( print ) {
+        var filters = getMainFilterValues();
 
-        if ( $( html.tabs.mainReportTabId ).hasClass( 'active' ) ) {
-            filterParams = getMainFilterValues();
-        } else {
-            filterParams = getAdUsageFilterValues();
+        $( html.forms.exportFrom ).html( '' );
+
+        $.each( chartData, function( key, value ) {
+            $( '<input />' ).attr( 'type', 'hidden' )
+                .attr( 'name' , 'chart[' + key + ']' )
+                .attr( 'value', value )
+                .appendTo( html.forms.exportFrom );
+
+            $( '<input />' ).attr( 'type', 'hidden' )
+                .attr( 'name' , 'date[' + key + '][startDate]' )
+                .attr( 'value', filters.start )
+                .appendTo( html.forms.exportFrom );
+
+            $( '<input />' ).attr( 'type', 'hidden' )
+                .attr( 'name' , 'date[' + key + '][endDate]' )
+                .attr( 'value', filters.end )
+                .appendTo( html.forms.exportFrom );
+
+            $( '<input />' ).attr( 'type', 'hidden' )
+                .attr( 'name' , 'businessId' )
+                .attr( 'value', businessProfileId )
+                .appendTo( html.forms.exportFrom );
+
+            if ( key === chartType.keywords ) {
+                var keywordStatBlock = $( html.containers.keywordBlock ).parent().find( html.containers.statBlock );
+
+                $( '<input />' ).attr( 'type', 'hidden' )
+                    .attr( 'name' , 'statisticsTableData[keyword]' )
+                    .attr( 'value', keywordStatBlock.html() )
+                    .appendTo( html.forms.exportFrom );
+            }
+        });
+
+        if ( print ) {
+            $( '<input />' ).attr( 'type', 'hidden' )
+                .attr( 'name' , 'print' )
+                .attr( 'value', 1 )
+                .appendTo( html.forms.exportFrom );
         }
 
-        return filterParams;
+        $( html.forms.exportFrom ).submit();
     }
 
     handlePeriodChoicesUpdate();
 
     function handlePeriodChoicesUpdate()
     {
-        $( document ).on( 'ifChecked ifUnchecked', html.inputs.mainPeriods, function ( e ) {
+        $( document ).on( 'ifChecked ifUnchecked', html.inputs.mainPeriods, function () {
             if ( $( this ).prop( 'checked' ) ) {
                 handlePeriodChoicesCalendar( this );
             }
@@ -324,26 +404,30 @@ $( document ).ready( function() {
     }
 
     function initDatetimePickers() {
-        $( '[data-date-format]' ).datetimepicker({
-            "pickTime":false,
-            "useCurrent":true,
-            "minDate":"1\/1\/1900",
-            "maxDate":null,
-            "showToday":true,
-            "language":"en",
-            "defaultDate":"",
-            "disabledDates":[],
-            "enabledDates":[],
-            "icons":{
-                "time":"fa fa-clock-o",
-                "date":"fa fa-calendar",
-                "up":"fa fa-chevron-up",
-                "down":"fa fa-chevron-down"
+        $( html.inputs.datePicker ).datetimepicker({
+            'pickTime': false,
+            'useCurrent' :true,
+            'minDate': '1\/1\/1900',
+            'maxDate': null,
+            'showToday': true,
+            'language': 'en',
+            'defaultDate': '',
+            'disabledDates': [],
+            'enabledDates': [],
+            'icons': {
+                'time': 'fa fa-clock-o',
+                'date': 'fa fa-calendar',
+                'up': 'fa fa-chevron-up',
+                'down': 'fa fa-chevron-down'
             },
-            "useStrict":false,
-            "sideBySide":false,
-            "daysOfWeekDisabled":[],
-            "useSeconds":false
+            'useStrict': false,
+            'sideBySide': false,
+            'daysOfWeekDisabled': [],
+            'useSeconds': false
         });
+    }
+
+    function getChartType( chartBlock ) {
+        return chartBlock.data( html.data.chartType );
     }
 });

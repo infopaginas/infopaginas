@@ -7,6 +7,7 @@ use Domain\BusinessBundle\Util\SlugUtil;
 use Domain\ReportBundle\Model\Exporter\PdfExporterModel;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 class BusinessChartReportPdfExporter extends PdfExporterModel
 {
@@ -37,9 +38,17 @@ class BusinessChartReportPdfExporter extends PdfExporterModel
             ]
         );
 
+        if ($params['print']) {
+            $dispositionType = ResponseHeaderBag::DISPOSITION_INLINE;
+        } else {
+            $dispositionType = ResponseHeaderBag::DISPOSITION_ATTACHMENT;
+        }
+
         return new PdfResponse(
             $this->pdfGenerator->getOutputFromHtml($html),
-            $filename
+            $filename,
+            'application/pdf',
+            $dispositionType
         );
     }
 }

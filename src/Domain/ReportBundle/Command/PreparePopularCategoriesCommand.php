@@ -2,7 +2,7 @@
 
 namespace Domain\ReportBundle\Command;
 
-use Domain\ReportBundle\Manager\CategoryReportManager;
+use Domain\ReportBundle\Manager\CategoryOverviewReportManager;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputDefinition;
@@ -37,7 +37,7 @@ class PreparePopularCategoriesCommand extends ContainerAwareCommand
 
         $output->writeln('Process popular categories');
 
-        $this->getCategoryReportManager()->updatePopularCategories();
+        $this->getCategoryOverviewReportManager()->updatePopularCategories();
 
         $logger->addInfo(
             $logger::MONGO_POPULAR_CATEGORIES,
@@ -50,10 +50,10 @@ class PreparePopularCategoriesCommand extends ContainerAwareCommand
     }
 
     /**
-     * @return CategoryReportManager
+     * @return CategoryOverviewReportManager
      */
-    protected function getCategoryReportManager()
+    protected function getCategoryOverviewReportManager()
     {
-        return $this->getContainer()->get('domain_report.manager.category_report_manager');
+        return $this->getContainer()->get('domain_report.manager.category_overview_report_manager');
     }
 }

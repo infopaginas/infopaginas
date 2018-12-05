@@ -2,7 +2,7 @@
 
 namespace Domain\ReportBundle\Service\Export;
 
-use Domain\ReportBundle\Manager\CategoryReportManager;
+use Domain\ReportBundle\Manager\CategoryOverviewReportManager;
 use Domain\ReportBundle\Model\Exporter\ExcelExporterModel;
 use Oxa\Sonata\AdminBundle\Util\Helpers\AdminHelper;
 use Symfony\Component\HttpFoundation\Response;
@@ -14,19 +14,19 @@ use Symfony\Component\HttpFoundation\Response;
 class CategoryExcelExporter extends ExcelExporterModel
 {
     /**
-     * @var CategoryReportManager $categoryReportManager
+     * @var CategoryOverviewReportManager $categoryOverviewReportManager
      */
-    protected $categoryReportManager;
+    protected $categoryOverviewReportManager;
 
     protected $mainTableInitRow = 9;
     protected $mainTableInitCol = 'B';
 
     /**
-     * @param CategoryReportManager $service
+     * @param CategoryOverviewReportManager $service
      */
-    public function setCategoryReportManager(CategoryReportManager $service)
+    public function setCategoryOverviewReportManager(CategoryOverviewReportManager $service)
     {
-        $this->categoryReportManager = $service;
+        $this->categoryOverviewReportManager = $service;
     }
 
     /**
@@ -36,7 +36,7 @@ class CategoryExcelExporter extends ExcelExporterModel
      */
     public function getResponse($params = [])
     {
-        $filename = $this->categoryReportManager->generateReportName(self::FORMAT);
+        $filename = $this->categoryOverviewReportManager->generateReportName(self::FORMAT);
 
         $title = $this->translator->trans('export.title.category_report', [], 'AdminReportBundle');
 
@@ -50,7 +50,7 @@ class CategoryExcelExporter extends ExcelExporterModel
      */
     protected function setData(array $filterParams)
     {
-        $categoryData = $this->categoryReportManager->getCategoryReportData($filterParams);
+        $categoryData = $this->categoryOverviewReportManager->getCategoryReportData($filterParams, false);
 
         $this->activeSheet = $this->phpExcelObject->setActiveSheetIndex(0);
 
@@ -74,6 +74,36 @@ class CategoryExcelExporter extends ExcelExporterModel
         $this->activeSheet->setCellValue(
             $col . $row,
             $this->translator->trans('list.label_category', [], 'AdminReportBundle')
+        );
+
+        $this->setFontStyle($col, $row);
+        $this->setBorderStyle($col, $row);
+
+        $col++;
+
+        $this->activeSheet->setCellValue(
+            $col . $row,
+            $this->translator->trans('list.label_impressions', [], 'AdminReportBundle')
+        );
+
+        $this->setFontStyle($col, $row);
+        $this->setBorderStyle($col, $row);
+
+        $col++;
+
+        $this->activeSheet->setCellValue(
+            $col . $row,
+            $this->translator->trans('list.label_directions', [], 'AdminReportBundle')
+        );
+
+        $this->setFontStyle($col, $row);
+        $this->setBorderStyle($col, $row);
+
+        $col++;
+
+        $this->activeSheet->setCellValue(
+            $col . $row,
+            $this->translator->trans('list.label_calls_mobile', [], 'AdminReportBundle')
         );
 
         $this->setFontStyle($col, $row);
