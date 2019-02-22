@@ -90,11 +90,11 @@
                 <script src="https://apis.google.com/js/platform.js" async defer></script>
                 <div class="g-partnersbadge" data-agency-id="{{ google_badge_partner_id }}"></div>
             </div>
-        </div>
+        </div
         <div class="about-infopaginas">
             <div class="about__item copyright">
                 <span>
-                  © 2017 <a href="{{ absolute_url(path('domain_site_home_index')) }}" target="_blank" title="Go to Infopaginas site" data-bw-gtm-event-click data-bw-gtm-label="Infopáginas::{{ absolute_url(path('domain_site_home_index')) }}">{% trans %}Infopáginas{% endtrans %}</a>
+                  © {{ 'now'|date(year_date_format) }} <a href="{{ absolute_url(path('domain_site_home_index')) }}" target="_blank" title="Go to Infopaginas site" data-bw-gtm-event-click data-bw-gtm-label="Infopáginas::{{ absolute_url(path('domain_site_home_index')) }}">{% trans %}Infopáginas{% endtrans %}</a>
                 </span>
             </div>
             <div class="about__item address">
