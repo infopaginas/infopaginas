@@ -11,7 +11,7 @@ define(['jquery', 'abstract/view', 'js-cookie'],
     directions.prototype.init = function ( options ) {
         this.options = {
             detDirectionsLink : 'https://www.google.com/maps/dir/?api=1&origin={userLoc}&destination={companyLoc}',
-            destionationLink  : 'https://www.google.com/maps/search/?api=1&query={companyLoc}'
+            destinationLink   : 'https://www.google.com/maps/search/?api=1&query={companyLoc}'
         };
         $.extend( this.options, options );
     }
@@ -44,7 +44,7 @@ define(['jquery', 'abstract/view', 'js-cookie'],
             var userLatLng = position.coords.latitude + ',' + position.coords.longitude;
             var directionLink = this.options.detDirectionsLink.replace( '{companyLoc}', latlng ).replace( '{userLoc}', userLatLng );
         } else {
-            var directionLink = this.options.destionationLink.replace( '{companyLoc}', latlng );
+            var directionLink = this.options.destinationLink.replace( '{companyLoc}', latlng );
         }
 
         return directionLink;
