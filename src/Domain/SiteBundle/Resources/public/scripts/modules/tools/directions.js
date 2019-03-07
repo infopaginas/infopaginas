@@ -10,7 +10,8 @@ define(['jquery', 'abstract/view', 'js-cookie'],
 
     directions.prototype.init = function ( options ) {
         this.options = {
-            detDirectionsLink : 'https://www.google.by/maps/dir/{userLoc}/{companyLoc}'
+            detDirectionsLink : 'https://www.google.com/maps/dir/?api=1&origin={userLoc}&destination={companyLoc}',
+            destinationLink   : 'https://www.google.com/maps/search/?api=1&query={companyLoc}'
         };
         $.extend( this.options, options );
     }
@@ -41,11 +42,10 @@ define(['jquery', 'abstract/view', 'js-cookie'],
             var position = JSON.parse( cookieString );
 
             var userLatLng = position.coords.latitude + ',' + position.coords.longitude;
+            var directionLink = this.options.detDirectionsLink.replace( '{companyLoc}', latlng ).replace( '{userLoc}', userLatLng );
         } else {
-            var userLatLng = ',';
+            var directionLink = this.options.destinationLink.replace( '{companyLoc}', latlng );
         }
-
-        var directionLink = this.options.detDirectionsLink.replace( '{companyLoc}', latlng ).replace( '{userLoc}', userLatLng );
 
         return directionLink;
     }
