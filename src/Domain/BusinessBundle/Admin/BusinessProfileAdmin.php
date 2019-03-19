@@ -597,14 +597,12 @@ class BusinessProfileAdmin extends OxaAdmin
         $formMapper
             ->tab('Main')
                 ->with('Map')
-                ->add('useMapAddress', null, [
-                    'label' => $this->trans('form.label_useMapAddress', [], $this->getTranslationDomain())
-                ])
                 ->add('latitude')
                 ->add('longitude')
-                ->add('googleAddress', 'google_map', [
+                ->add('map', 'google_map', [
                     'latitude'  => $latitude,
                     'longitude' => $longitude,
+                    'mapped'    => false,
                 ])
                 ->end()
             ->end()
@@ -1281,55 +1279,14 @@ class BusinessProfileAdmin extends OxaAdmin
      */
     public function validate(ErrorElement $errorElement, $object)
     {
-        /** @var BusinessProfile $object */
-
-        if ($object->getUseMapAddress()) {
-            if (!$object->getGoogleAddress()) {
-                $errorElement->with('googleAddress')
-                    ->addViolation($this->getTranslator()->trans(
-                        'form.google_address.required',
-                        [],
-                        $this->getTranslationDomain()
-                    ))
-                    ->end()
-                ;
-                return null;
-            }
-
-            $addressManager = $this->configurationPool
-                ->getContainer()
-                ->get('domain_business.manager.address_manager');
-
-            $addressResult = $addressManager->validateCoordinates($object->getLatitude(), $object->getLongitude());
-
-            if (!empty($addressResult['error'])) {
-                $errorMessage = $this->getTranslator()->trans(
-                    'form.google_address.invalid',
-                    [],
-                    $this->getTranslationDomain()
-                );
-
-                $errorElement
-                    ->with('latitude')
-                        ->addViolation($errorMessage)
-                    ->end()
-                    ->with('longitude')
-                        ->addViolation($errorMessage)
-                    ->end()
-                ;
-            } else {
-                $addressManager->setGoogleAddress($addressResult['result'], $object);
-            }
-        } else {
-            $errorElement
-                ->with('streetAddress')
-                ->end()
-                ->with('city')
-                ->end()
-                ->with('zipCode')
-                ->end()
-            ;
-        }
+        $errorElement
+            ->with('streetAddress')
+            ->end()
+            ->with('city')
+            ->end()
+            ->with('zipCode')
+            ->end()
+        ;
 
         // check if user try to upload images more, that allowed
         if (count($object->getImages()) > BusinessGallery::MAX_IMAGES_PER_BUSINESS) {

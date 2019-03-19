@@ -1,0 +1,59 @@
+{% extends "redesign/layout/base.html.twig" %}
+
+{% block styles %}
+    <link rel="stylesheet" href="{{ absolute_url(asset('assetic/app_common_css.css')) }}" />
+    <link href='https://api.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.css' rel='stylesheet' />
+    <link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.0.0/mapbox-gl-directions.css' type='text/css' />
+{% endblock %}
+{% block bodyClass %}results-list{% endblock %}
+
+{% block body %}
+    <span data-target-coordinates={{ targetCoordinates }}></span>
+    <span data-current-coordinates={{ currentCoordinates }}></span>
+    {% include ':redesign/blocks/mapbox:mapMenu.html.twig' %}
+    <div id="map" class="map">
+        {% include ':redesign/blocks/mapbox:mapLogo.html.twig' %}
+    </div>
+    <div>
+        <div id="profile">
+            <input id='driving-traffic' type='radio' name='rtoggle' value='driving-traffic' checked='checked' data-project>
+            <label for='driving-traffic'>Driving-traffic</label>
+            <br>
+            <span>For automotive routing. This profile factors in current and historic traffic conditions to avoid slowdowns</span>
+            <br>
+            <input id='cycling' type='radio' name='rtoggle' value='cycling' data-project>
+            <label for='cycling'>Cycling</label>
+            <br>
+            <span>For automotive routing. This profile shows the fastest routes by preferring high-speed roads like highways.</span>
+            <br>
+            <input id='walking' type='radio' name='rtoggle' value='walking' data-project>
+            <label for='walking'>Walking</label>
+            <br>
+            <span>For pedestrian and hiking routing. This profile shows the shortest path by using sidewalks and trails.</span>
+            <br>
+            <input id='driving' type='radio' name='rtoggle' value='driving' data-project>
+            <label for='driving'>Driving</label>
+            <br>
+            <span>For bicycle routing. This profile shows routes that are short and safer for cyclists by avoiding highways and preferring streets with bike lanes.</span>
+            <br>
+            <h3>Click on map to change current position point</h3>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.js'></script>
+    <script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.0.0/mapbox-gl-directions.js'></script>
+
+    {{ parent() }}
+
+    {% include ':widgets:mapbox_script.html.twig' %}
+
+    <script type="text/javascript">
+        requirejs(['{{ absolute_url(asset("assetic/require_common_js.js")) }}'], function(common) {
+            require(['{{ absolute_url(asset("assetic/js/modules/tools/mapSpin.min.js")) }}'], function(spin) {
+                var spin = new spin('map');
+            });
+        });
+    </script>
+{% endblock%}

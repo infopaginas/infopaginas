@@ -254,8 +254,8 @@ class BusinessProfileManager extends Manager
      */
     public function getDefaultLocationMarkers($isEncoded = true)
     {
-        $defaultCenterCoordinates = $this->container->getParameter('google_map_default_center');
-        $defaultCenterName        = $this->container->getParameter('google_map_default_center_name');
+        $defaultCenterCoordinates = $this->container->getParameter('map_default_center');
+        $defaultCenterName        = $this->container->getParameter('map_default_center_name');
         $coordinates = explode(',', $defaultCenterCoordinates);
 
         $profilesArray = [
@@ -1694,7 +1694,7 @@ class BusinessProfileManager extends Manager
     {
         $search['data'] = array_map(function ($item) use ($latitude, $longitude) {
             /** @var $item EmergencyBusiness */
-            if ($item->getUseMapAddress() and $item->getLatitude() and $item->getLongitude()) {
+            if ($item->getLatitude() and $item->getLongitude()) {
                 $distance = GeolocationUtils::getDistanceForPoint(
                     $latitude,
                     $longitude,

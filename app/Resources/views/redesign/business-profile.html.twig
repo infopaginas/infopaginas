@@ -8,6 +8,11 @@
     {% include ':redesign/blocks:breadcrumbs.html.twig' with {'catalogLocality': businessProfile.catalogLocality, 'category': businessProfile.categories|first} %}
 {% endblock %}
 
+{% block styles %}
+    <link rel="stylesheet" href="{{ absolute_url(asset('assetic/app_common_css.css')) }}" />
+    <link href='https://api.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.css' rel='stylesheet' />
+{% endblock %}
+
 {% block bodyClass %}profile{% endblock %}
 
 {% block body %}
@@ -286,10 +291,11 @@
 
                         {% if not businessProfile.hideMap %}
                             <section class="page-section profile-map">
+                                {% include ':redesign/blocks/mapbox:mapMenu.html.twig' %}
                                 <div id="map" class="business-map">
-                                    {% include ':redesign/blocks/googleMap:google_map_placeholder.html.twig' %}
+                                    {% include ':redesign/blocks/mapbox:mapLogo.html.twig' %}
                                 </div>
-                                <span id="map-markers" hidden data-google-markers="{{ markers }}"></span>
+                                <span id="map-markers" hidden data-mapbox-markers="{{ markers }}"></span>
                             </section>
                         {% endif %}
 
@@ -336,17 +342,14 @@
 {% endblock %}
 
 {% block scripts %}
-    {{ parent() }}
+    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.js'></script>
 
-    {% include ':widgets:google_map_script.html.twig' with {hideMap: businessProfile.hideMap} %}
+    {{ parent() }}
 
     <script type="text/javascript">
         var map;
 
         requirejs(['{{ absolute_url(asset("assetic/require_common_js.js")) }}'], function(common) {
-            require(['{{ absolute_url(asset("assetic/require_map_search_page_js.js")) }}'], function(mapSearchPage) {
-                var mapSearchPage = new mapSearchPage();
-            });
             requirejs([
                 '{{ absolute_url(asset("assetic/require_business_profile_view_js.js")) }}'
             ], function(businessProfileView, interactionsReport) {
@@ -354,4 +357,6 @@
             })
         });
     </script>
+
+    {% include ':widgets:mapbox_script.html.twig' %}
 {% endblock%}

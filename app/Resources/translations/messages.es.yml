@@ -629,13 +629,12 @@ Instagram: Instagram
 TripAdvisor: TripAdvisor
 
 popular_searches.title: Búsquedas populares
-google_maps.current_user_position.label: Ubicación actual
+mapbox.current_user_position.label: Ubicación actual
 business_profile.image.description.required: Este campo es requerido
 business_profile.video.description.required: Este campo es requerido
 business_profile.panorama.title: Se trata de un panorama 360, arrastre la imagen para mirar alrededor
 
 search_results.count.total: Hemos encontrado {-count-} resultados
-google_map.empty_block.message: Por favor espere, cargando...
 
 no_js.warning.message: La funcionalidad Javascript de tu navegador está desactivada. Por favor, enciéndala para que pueda experimentar todas las capacidades de este sitio.
 

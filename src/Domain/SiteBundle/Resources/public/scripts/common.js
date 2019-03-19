@@ -34,6 +34,9 @@ requirejs.config({
         'tool-star-rating' : {
             deps: ['jquery']
         },
+        'mapboxgl' : {
+            deps: ['jquery']
+        },
         'js-cookie' : {
             exports: 'Cookies'
         },
@@ -96,9 +99,9 @@ requirejs.config({
         'velocity-ui': 'domainsite/scripts/vendors/min/velocity-ui-min',
         'profile-redesign': '/assetic/js/modules/profile.min',
         'main-redesign': '/assetic/js/modules/main.min',
-        'maps-redesign': '/assetic/js/modules/mapSearchPage.min',
         'tools/resetPassword': '/assetic/js/modules/tools/resetPassword.min',
         'tools/starRating': '/assetic/js/modules/tools/starRating.min',
+        'tools/mapboxgl': '/assetic/js/modules/tools/mapboxgl.min',
         'tools/search': '/assetic/js/modules/tools/search.min',
         'tools/geolocation': '/assetic/js/modules/tools/geolocation.min',
         'tools/searchMenu': '/assetic/js/modules/tools/searchMenu.min',

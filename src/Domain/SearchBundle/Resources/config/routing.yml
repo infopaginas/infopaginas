@@ -33,3 +33,9 @@ domain_search_compare:
 domain_search_catalog:
     path:   /c/{localitySlug}/{categorySlug}
     defaults: { _controller: DomainSearchBundle:Search:catalog, localitySlug: '', categorySlug: '' }
+
+domain_search_show_directions:
+    path:   /show-directions/{targetCoordinates}/{currentCoordinates}
+    defaults: { _controller: DomainSearchBundle:Search:showDirections }
+    options:
+        expose: true
