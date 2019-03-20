@@ -9,8 +9,8 @@
 {% endblock %}
 
 {% block styles %}
-    <link rel="stylesheet" href="{{ absolute_url(asset('assetic/app_common_css.css')) }}" />
-    <link href='https://api.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.css' rel='stylesheet' />
+    {{ parent() }}
+    <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.css" />
 {% endblock %}
 
 {% block bodyClass %}results-list{% endblock %}

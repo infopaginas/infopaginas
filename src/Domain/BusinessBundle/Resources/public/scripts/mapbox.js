@@ -22,7 +22,8 @@ document.addEventListener('jQueryLoaded', function() {
             toggleFilters: '#filter-toggle',
             toggleSorting: '#sort-toggle',
             filterCategory: '#filter-category',
-            filterNeighborhood: '#filter-Neighborhood'
+            filterNeighborhood: '#filter-Neighborhood',
+            checkedProfile: 'input[name=rtoggle]:checked'
         },
         links: {
             sortMatch: '#sort-match-link',
@@ -51,7 +52,7 @@ document.addEventListener('jQueryLoaded', function() {
     init();
     bindFilterEvents();
 
-    if ($('[data-target-coordinates]').data('targetCoordinates')) {
+    if ( $( '[data-target-coordinates]' ).data( 'targetCoordinates' ) ) {
         getDirections();
     }
 
@@ -66,10 +67,10 @@ document.addEventListener('jQueryLoaded', function() {
     function getDirections() {
         var canvas = map.getCanvasContainer();
 
-        var targetCoordinates = [$('[data-target-coordinates]').data('targetCoordinates')];
-        var currentCoordinates = [$('[data-current-coordinates]').data('currentCoordinates')];
-        var targetCoordinatesArray = targetCoordinates[0].split(',');
-        var currentCoordinatesArray = currentCoordinates[0].split(',');
+        var targetCoordinates = [$ ( '[data-target-coordinates]' ).data( 'targetCoordinates' )];
+        var currentCoordinates = [$ ( '[data-current-coordinates]' ).data( 'currentCoordinates' )];
+        var targetCoordinatesArray = targetCoordinates[0].split( ',' );
+        var currentCoordinatesArray = currentCoordinates[0].split( ',' );
 
         var starter = [];
         var ender = [];
@@ -92,7 +93,7 @@ document.addEventListener('jQueryLoaded', function() {
 
         function getRoute(start, end, style) {
             var url = 'https://api.mapbox.com/directions/v5/mapbox/' + style + '/' + start[0] + ',' + start[1] + ';'
-                + end[0] + ',' + end[1] + '?steps=true&geometries=geojson&overview=full&&access_token='
+                + end[0] + ',' + end[1] + '?steps=true&geometries=geojson&overview=full&access_token='
                 + mapboxgl.accessToken;
 
             var req = new XMLHttpRequest();
@@ -250,8 +251,8 @@ document.addEventListener('jQueryLoaded', function() {
                     });
                 }
 
-                getRoute(start, coords, $('input[name=rtoggle]:checked').val());
-                getRoute(start, coords, $('input[name=rtoggle]:checked').val());
+                getRoute(start, coords, $( html.buttons.checkedProfile ).val());
+                getRoute(start, coords, $( html.buttons.checkedProfile ).val());
             });
 
             var profileList = document.getElementById('profile');

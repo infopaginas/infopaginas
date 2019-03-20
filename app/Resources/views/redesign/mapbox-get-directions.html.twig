@@ -1,42 +1,41 @@
 {% extends "redesign/layout/base.html.twig" %}
 
 {% block styles %}
-    <link rel="stylesheet" href="{{ absolute_url(asset('assetic/app_common_css.css')) }}" />
-    <link href='https://api.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.css' rel='stylesheet' />
-    <link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.0.0/mapbox-gl-directions.css' type='text/css' />
+    {{ parent() }}
+    <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.css" />
 {% endblock %}
+
 {% block bodyClass %}results-list{% endblock %}
 
 {% block body %}
-    <span data-target-coordinates={{ targetCoordinates }}></span>
-    <span data-current-coordinates={{ currentCoordinates }}></span>
-    {% include ':redesign/blocks/mapbox:mapMenu.html.twig' %}
+    <span data-target-coordinates="{{ targetCoordinates }}"></span>
+    <span data-current-coordinates="{{ currentCoordinates }}"></span>
     <div id="map" class="map">
         {% include ':redesign/blocks/mapbox:mapLogo.html.twig' %}
     </div>
     <div>
         <div id="profile">
             <input id='driving-traffic' type='radio' name='rtoggle' value='driving-traffic' checked='checked' data-project>
-            <label for='driving-traffic'>Driving-traffic</label>
+            <label for='driving-traffic'>{% trans %}mapbox.profile.driving_traffic{% endtrans %}</label>
             <br>
-            <span>For automotive routing. This profile factors in current and historic traffic conditions to avoid slowdowns</span>
+            <span>{% trans %}mapbox.profile.driving_traffic_info{% endtrans %}</span>
             <br>
             <input id='cycling' type='radio' name='rtoggle' value='cycling' data-project>
-            <label for='cycling'>Cycling</label>
+            <label for='cycling'>{% trans %}mapbox.profile.cycling{% endtrans %}</label>
             <br>
-            <span>For automotive routing. This profile shows the fastest routes by preferring high-speed roads like highways.</span>
+            <span>{% trans %}mapbox.profile.cycling_info{% endtrans %}</span>
             <br>
             <input id='walking' type='radio' name='rtoggle' value='walking' data-project>
-            <label for='walking'>Walking</label>
+            <label for='walking'>{% trans %}mapbox.profile.walking{% endtrans %}</label>
             <br>
-            <span>For pedestrian and hiking routing. This profile shows the shortest path by using sidewalks and trails.</span>
+            <span>{% trans %}mapbox.profile.walking_info{% endtrans %}</span>
             <br>
             <input id='driving' type='radio' name='rtoggle' value='driving' data-project>
-            <label for='driving'>Driving</label>
+            <label for='driving'>{% trans %}mapbox.profile.driving{% endtrans %}</label>
             <br>
-            <span>For bicycle routing. This profile shows routes that are short and safer for cyclists by avoiding highways and preferring streets with bike lanes.</span>
+            <span>{% trans %}mapbox.profile.driving_info{% endtrans %}</span>
             <br>
-            <h3>Click on map to change current position point</h3>
+            <h3>{% trans %}mapbox.profile.info{% endtrans %}</h3>
         </div>
     </div>
 {% endblock %}
