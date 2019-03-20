@@ -914,8 +914,8 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
         }
     });
 
-    $( document ).ready(function() {
-        var event = new CustomEvent('jQueryLoaded');
-        document.dispatchEvent(event);
+    $( document ).ready( function() {
+        var event = new CustomEvent( 'jQueryLoaded' );
+        document.dispatchEvent( event );
     });
 });

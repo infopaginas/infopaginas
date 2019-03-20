@@ -129,13 +129,13 @@ define(['jquery', 'bootstrap', 'business/tools/form', 'tools/spin', 'tools/selec
         }
 
         var map = that.getGoogleMapObject( lat, lng );
-        map.addControl(new mapboxgl.NavigationControl(), 'bottom-right');
-        map.addControl(new mapboxgl.FullscreenControl());
+        map.addControl( new mapboxgl.NavigationControl(), 'bottom-right' );
+        map.addControl( new mapboxgl.FullscreenControl() );
 
         var marker = new mapboxgl.Marker()
-            .setLngLat([lng, lat])
-            .setDraggable(true)
-            .addTo(map);
+            .setLngLat( [lng, lat] )
+            .setDraggable( true )
+            .addTo( map );
 
         this.marker = marker;
         marker.on( 'dragend', $.proxy( that.onMarkerPositionChange, that ) );
@@ -146,7 +146,7 @@ define(['jquery', 'bootstrap', 'business/tools/form', 'tools/spin', 'tools/selec
     businessProfile.prototype.handleGeocodeSearch = function() {
         var that = this;
 
-        $( this.html.buttons.geocodeButtonId ).on('click', function( event ) {
+        $( this.html.buttons.geocodeButtonId ).on( 'click', function( event ) {
             that.initGoogleMap();
             event.preventDefault();
         });

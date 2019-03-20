@@ -1,4 +1,4 @@
-document.addEventListener('jQueryLoaded', function() {
+document.addEventListener( 'jQueryLoaded', function() {
     var width  = 24;
     var height = 34;
 
@@ -84,27 +84,27 @@ document.addEventListener('jQueryLoaded', function() {
         });
 
         var end = [];
-        end.push(ender[1]);
-        end.push(ender[0]);
+        end.push( ender[1] );
+        end.push( ender[0] );
 
         var start = [];
-        start.push(starter[1]);
-        start.push(starter[0]);
+        start.push( starter[1] );
+        start.push( starter[0] );
 
-        function getRoute(start, end, style) {
+        function getRoute( start, end, style ) {
             var url = 'https://api.mapbox.com/directions/v5/mapbox/' + style + '/' + start[0] + ',' + start[1] + ';'
                 + end[0] + ',' + end[1] + '?steps=true&geometries=geojson&overview=full&access_token='
                 + mapboxgl.accessToken;
 
             var req = new XMLHttpRequest();
             req.responseType = 'json';
-            req.open('GET', url, true);
+            req.open( 'GET', url, true );
 
             req.onload = function() {
-                if (req.response.routes && req.status === 200) {
+                if ( req.response.routes && req.status === 200 ) {
                     var data = req.response.routes[0];
 
-                    if (data) {
+                    if ( data ) {
                         var route = data.geometry.coordinates;
                         var geojson = {
                             type: 'Feature',
@@ -115,8 +115,8 @@ document.addEventListener('jQueryLoaded', function() {
                             }
                         };
 
-                        if (map.getSource('route')) {
-                            map.getSource('route').setData(geojson);
+                        if (map.getSource( 'route' )) {
+                            map.getSource( 'route' ).setData( geojson );
                         } else {
                             map.addLayer({
                                 id: 'route',
@@ -150,7 +150,7 @@ document.addEventListener('jQueryLoaded', function() {
             req.send();
         }
 
-        map.on('load', function() {
+        map.on( 'load', function() {
             getRoute( start, end, 'driving-traffic' );
             getRoute( start, end, 'driving-traffic' );
 
@@ -202,15 +202,15 @@ document.addEventListener('jQueryLoaded', function() {
                 }
             });
 
-            map.on('click', function(e) {
+            map.on( 'click', function( e ) {
                 var coordsObj = e.lngLat;
                 canvas.style.cursor = '';
-                var coords = Object.keys(coordsObj).map(function(key) {
+                var coords = Object.keys( coordsObj ).map(function( key ) {
                     return coordsObj[key];
                 });
 
-                map.removeLayer('end');
-                map.removeSource('end');
+                map.removeLayer( 'end' );
+                map.removeSource( 'end' );
 
                 var end = {
                     type: 'FeatureCollection',
@@ -224,8 +224,8 @@ document.addEventListener('jQueryLoaded', function() {
                     }
                     ]
                 };
-                if (map.getLayer('end')) {
-                    map.getSource('end').setData(end);
+                if (map.getLayer( 'end' )) {
+                    map.getSource( 'end' ).setData( end );
                 } else {
                     map.addLayer({
                         id: 'end',
@@ -251,24 +251,24 @@ document.addEventListener('jQueryLoaded', function() {
                     });
                 }
 
-                getRoute(start, coords, $( html.buttons.checkedProfile ).val());
-                getRoute(start, coords, $( html.buttons.checkedProfile ).val());
+                getRoute( start, coords, $( html.buttons.checkedProfile ).val());
+                getRoute( start, coords, $( html.buttons.checkedProfile ).val());
             });
 
-            var profileList = document.getElementById('profile');
+            var profileList = document.getElementById( 'profile' );
 
-            if (profileList) {
-                var inputs = profileList.getElementsByTagName('input');
+            if ( profileList ) {
+                var inputs = profileList.getElementsByTagName( 'input' );
 
-                for (var i = 0; i < inputs.length; i++) {
+                for ( var i = 0; i < inputs.length; i++ ) {
                     inputs[i].onclick = switchProfile;
                 }
             }
 
-            function switchProfile(profile) {
+            function switchProfile( profile ) {
                 inputId = profile.target.id;
                 currentCoordinates = map.getSource('end')['_options']['data']['features'][0]['geometry']['coordinates'];
-                getRoute(start, [currentCoordinates[0], currentCoordinates[1]], inputId);
+                getRoute( start, [currentCoordinates[0], currentCoordinates[1]], inputId );
             }
         });
     }
@@ -290,21 +290,21 @@ document.addEventListener('jQueryLoaded', function() {
             var latlng = getDirection( e, latlngEvent );
             var self = this;
 
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(function(position) {
-                    foundLocation(position, self, latlng);
+            if ( navigator.geolocation ) {
+                navigator.geolocation.getCurrentPosition(function( position ) {
+                    foundLocation( position, self, latlng );
                 }, notAllowedLocation);
 
-                function notAllowedLocation(error) {
-                    redirectOnDirection(latlng, 0);
+                function notAllowedLocation( error ) {
+                    redirectOnDirection( latlng, 0 );
                 }
 
-                function foundLocation(position, self, latlng) {
+                function foundLocation( position, self, latlng ) {
                     currentCoordinates = position.coords.latitude + ',' + position.coords.longitude;
-                    redirectOnDirection(latlng, currentCoordinates);
+                    redirectOnDirection( latlng, currentCoordinates );
                 }
             } else {
-                redirectOnDirection(latlng, 0);
+                redirectOnDirection( latlng, 0 );
             }
         });
     }
@@ -324,7 +324,7 @@ document.addEventListener('jQueryLoaded', function() {
 
         if ( e ) {
             latlng = $( e.currentTarget ).data( 'latlng' );
-            var id = $( e.currentTarget).data( 'id' );
+            var id = $( e.currentTarget ).data( 'id' );
             $( document ).trigger( 'trackingInteractions', ['directionButton', id] );
         } else if ( latlngEvent ) {
             latlng = latlngEvent;
@@ -351,7 +351,7 @@ document.addEventListener('jQueryLoaded', function() {
         mapScriptInit = true;
         mapboxgl.accessToken = apiKey;
 
-        var center = mapDefaultCenter.split(', ');
+        var center = mapDefaultCenter.split( ', ' );
 
         this.options.mapOptions = {
             container: 'map',
@@ -439,7 +439,7 @@ document.addEventListener('jQueryLoaded', function() {
         $( html.links.compareListView ).attr( 'href', response.staticCompareUrl );
         $( html.forms.searchLocationInput ).val( response.location );
 
-        if ( response.trackingParams && !$.isEmptyObject(response.trackingParams) ) {
+        if ( response.trackingParams && !$.isEmptyObject( response.trackingParams ) ) {
             $( document ).trigger( 'trackingMapResult', response.trackingParams );
         }
 
@@ -480,7 +480,7 @@ document.addEventListener('jQueryLoaded', function() {
     }
 
     function setMapOnAll( map ) {
-        this.markers.forEach( function( item ) {
+        this.markers.forEach(function( item ) {
             item.marker.remove();
         });
     }
@@ -526,7 +526,7 @@ document.addEventListener('jQueryLoaded', function() {
     }
 
     function disableButton( button ) {
-        $( button ).attr( 'disabled', 'disabled');
+        $( button ).attr( 'disabled', 'disabled' );
     }
 
     function disableLink( link ) {
@@ -534,42 +534,42 @@ document.addEventListener('jQueryLoaded', function() {
     }
 
     function initMap ( options ) {
-        this.map = new mapboxgl.Map(this.options.mapOptions);
-        this.map.addControl(new mapboxgl.NavigationControl(), 'bottom-right');
+        this.map = new mapboxgl.Map( this.options.mapOptions );
+        this.map.addControl( new mapboxgl.NavigationControl(), 'bottom-right' );
 
         var options = this.options;
 
         //pass map to main.js for resizing event
         map = this.map;
 
-        var layerList = document.getElementById('menu');
+        var layerList = document.getElementById( 'menu' );
 
-        if (layerList) {
-            var inputs = layerList.getElementsByTagName('input');
+        if ( layerList ) {
+            var inputs = layerList.getElementsByTagName( 'input' );
 
-            for (var i = 0; i < inputs.length; i++) {
+            for ( var i = 0; i < inputs.length; i++ ) {
                 inputs[i].onclick = switchLayer;
             }
         }
 
-        var event = new CustomEvent('mapSpin');
-        document.dispatchEvent(event);
+        var event = new CustomEvent( 'mapSpin' );
+        document.dispatchEvent( event );
 
-        if (!_.isEmpty(this.options.markers)) {
-            addMarkers(this.options.markers);
+        if ( !_.isEmpty( this.options.markers ) ) {
+            addMarkers( this.options.markers );
         }
     }
 
     function switchLayer( layer ) {
         var layerId = layer.target.id;
-        map.setStyle('mapbox://styles/mapbox/' + layerId + '-v9');
+        map.setStyle( 'mapbox://styles/mapbox/' + layerId + '-v9' );
     }
 
     function addMarkers( markers, isSearchOnMap ) {
         var self = this;
 
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(function (position) {
+        if ( navigator.geolocation ) {
+            navigator.geolocation.getCurrentPosition(function( position ) {
                 var youPos = {
                     id: 0,
                     latitude: position.coords.latitude,
@@ -578,21 +578,21 @@ document.addEventListener('jQueryLoaded', function() {
                     current: true
                 };
 
-                addMarker(youPos);
+                addMarker( youPos );
             });
         }
 
-        _.each(markers, addMarker.bind(this));
+        _.each( markers, addMarker.bind( this ) );
     }
 
     function addMarker( markerData ) {
         var self = this;
 
-        var infoWindow = new mapboxgl.Popup().setHTML(getInfoHTML(markerData));
+        var infoWindow = new mapboxgl.Popup().setHTML( getInfoHTML( markerData ) );
 
-        var el = document.createElement('div');
+        var el = document.createElement( 'div' );
 
-        if (_.has(markerData, 'current')) {
+        if ( _.has( markerData, 'current' ) ) {
             el.className = 'marker-yellow';
         } else {
             el.className = 'marker';
@@ -602,18 +602,18 @@ document.addEventListener('jQueryLoaded', function() {
         el.style.height = height + 'px';
         el.style.width = width + 'px';
 
-        var marker = new mapboxgl.Marker(el, {offset: [0, -height / 2]}, {interactive: true})
-            .setLngLat([parseFloat(markerData.longitude), parseFloat(markerData.latitude)])
-            .setPopup(infoWindow)
-            .addTo(this.map);
+        var marker = new mapboxgl.Marker( el, { offset: [0, -height / 2] }, { interactive: true } )
+            .setLngLat( [parseFloat(markerData.longitude), parseFloat(markerData.latitude)] )
+            .setPopup( infoWindow )
+            .addTo( this.map );
 
-        el.addEventListener('click', function(event) {
-            $(document).trigger('disableAutoSearchInMap');
+        el.addEventListener('click', function( event ) {
+            $( document ).trigger( 'disableAutoSearchInMap' );
 
             closeAllLables();
-            scrollTo(markerData.id);
+            scrollTo( markerData.id );
 
-            if (!self.mapMarkerTriggered) {
+            if ( !self.mapMarkerTriggered ) {
                 $( document ).trigger( 'trackingInteractions', ['mapMarkerButton', markerData.id] );
             }
 
@@ -621,7 +621,7 @@ document.addEventListener('jQueryLoaded', function() {
         });
 
         if ( document.getElementById( 'show-on-map-' + markerData.id ) ) {
-            document.getElementById( 'show-on-map-' + markerData.id ).addEventListener('click', function (event) {
+            document.getElementById( 'show-on-map-' + markerData.id ).addEventListener('click', function( event ) {
                 closeAllLables();
                 marker.togglePopup();
 
@@ -658,7 +658,7 @@ document.addEventListener('jQueryLoaded', function() {
         var directionButton = item.find( 'a.get-dir' );
 
         if ( itemContent.length ) {
-            var content = $( '<div class="map-info-window">' ).append( itemContent.clone());
+            var content = $( '<div class="map-info-window">' ).append( itemContent.clone() );
 
             if ( directionButton.length ) {
                 content.find( '.item__summary' ).append( directionButton.clone() );
@@ -678,7 +678,7 @@ document.addEventListener('jQueryLoaded', function() {
 
         if ( card.offset() && elementId ) {
             var offset = card.offset().top + $( '#searchResults' ).scrollTop()
-                - $('#searchResults' ).height()/2 + card.height()/2;
+                - $( '#searchResults' ).height()/2 + card.height()/2;
 
             this.$( '#searchResults' ).first()
                 .animate({

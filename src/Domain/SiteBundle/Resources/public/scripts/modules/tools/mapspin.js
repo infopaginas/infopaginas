@@ -58,43 +58,43 @@ define(['jquery', 'spin'], function( $, _spin ) {
         self.autoSearch = false;
         self.show( this.container );
 
-        document.addEventListener('mapSpin', function() {
-            map.on('dragstart', function () {
+        document.addEventListener( 'mapSpin', function() {
+            map.on( 'dragstart', function () {
                 self.mapLoadingStart();
             });
 
-            map.on('dragend', function () {
+            map.on( 'dragend', function () {
                 self.mapReady = true;
                 self.mapLoadingEnd();
             });
 
-            map.on('zoomstart', function () {
+            map.on( 'zoomstart', function () {
                 self.mapLoadingStart();
             });
 
-            map.on('zoomend', function () {
+            map.on( 'zoomend', function () {
                 self.mapReady = true;
                 self.mapLoadingEnd();
             });
 
-            map.on('load', function () {
+            map.on( 'load', function () {
                 self.mapLoadingStart();
             });
 
-            map.on('styledataloading', function () {
+            map.on( 'styledataloading', function () {
                 self.mapLoadingStart();
             });
 
-            map.on('idle', function () {
+            map.on( 'idle', function () {
                 self.mapReady = true;
                 self.mapLoadingEnd();
             });
 
-            map.on('dataloading', function () {
+            map.on( 'dataloading', function () {
                 self.mapLoadingStart();
             });
 
-            map.on('resize', function () {
+            map.on( 'resize', function () {
                 self.mapReady = true;
                 self.mapLoadingEnd();
             });
