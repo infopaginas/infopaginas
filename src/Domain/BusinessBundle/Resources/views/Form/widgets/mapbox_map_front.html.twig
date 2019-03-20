@@ -1,0 +1,12 @@
+<div class="map-wrap">
+    <div id="google-map">
+        {% include ':redesign/blocks/mapbox:mapLogo.html.twig' %}
+    </div>
+</div>
+
+<script>
+    var MAP_LAT  = {{ latitude }};
+    var MAP_LNG  = {{ longitude }};
+    var MAP_ZOOM = {{ zoom }};
+    var API_KEY  = '{{ mapbox_api_key }}';
+</script>
