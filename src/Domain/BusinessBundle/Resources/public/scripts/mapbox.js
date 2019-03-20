@@ -67,20 +67,20 @@ document.addEventListener('jQueryLoaded', function() {
     function getDirections() {
         var canvas = map.getCanvasContainer();
 
-        var targetCoordinates = [$ ( '[data-target-coordinates]' ).data( 'targetCoordinates' )];
-        var currentCoordinates = [$ ( '[data-current-coordinates]' ).data( 'currentCoordinates' )];
+        var targetCoordinates = [$( '[data-target-coordinates]' ).data( 'targetCoordinates' )];
+        var currentCoordinates = [$( '[data-current-coordinates]' ).data( 'currentCoordinates' )];
         var targetCoordinatesArray = targetCoordinates[0].split( ',' );
         var currentCoordinatesArray = currentCoordinates[0].split( ',' );
 
         var starter = [];
         var ender = [];
 
-        currentCoordinatesArray.forEach(function(element) {
-            ender.push(+element);
+        currentCoordinatesArray.forEach(function( element ) {
+            ender.push( +element );
         });
 
-        targetCoordinatesArray.forEach(function(element) {
-            starter.push(+element);
+        targetCoordinatesArray.forEach(function( element ) {
+            starter.push( +element );
         });
 
         var end = [];
@@ -151,8 +151,8 @@ document.addEventListener('jQueryLoaded', function() {
         }
 
         map.on('load', function() {
-            getRoute(start, end, 'driving-traffic');
-            getRoute(start, end, 'driving-traffic');
+            getRoute( start, end, 'driving-traffic' );
+            getRoute( start, end, 'driving-traffic' );
 
             map.addLayer({
                 id: 'start',
