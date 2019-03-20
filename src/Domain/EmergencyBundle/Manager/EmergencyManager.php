@@ -210,13 +210,6 @@ class EmergencyManager
             'service_ids'  => $serviceIds,
         ];
 
-        if ($business->getUseMapAddress()) {
-            $data['location'] = [
-                'lat' => $business->getLatitude(),
-                'lon' => $business->getLongitude(),
-            ];
-        }
-
         return $data;
     }
 

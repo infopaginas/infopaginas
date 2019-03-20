@@ -629,13 +629,27 @@ Instagram: Instagram
 TripAdvisor: TripAdvisor
 
 popular_searches.title: Popular Searches
-google_maps.current_user_position.label : Current location
+mapbox.current_user_position.label : Current location
+mapbox.menu.basic: Basic
+mapbox.menu.streets: Streets
+mapbox.menu.bright: Bright
+mapbox.menu.light: Light
+mapbox.menu.dark: Dark
+mapbox.menu.satellite: Satellite
+mapbox.profile.driving_traffic: Driving-traffic
+mapbox.profile.driving_traffic_info: For automotive routing. This profile factors in current and historic traffic conditions to avoid slowdowns.
+mapbox.profile.cycling: Cycling
+mapbox.profile.cycling_info: For bicycle routing. This profile shows routes that are short and safer for cyclists by avoiding highways and preferring streets with bike lanes.
+mapbox.profile.walking: Walking
+mapbox.profile.walking_info: For pedestrian and hiking routing. This profile shows the shortest path by using sidewalks and trails.
+mapbox.profile.driving: Driving
+mapbox.profile.driving_info: For automotive routing. This profile shows the fastest routes by preferring high-speed roads like highways.
+mapbox.profile.info: Click on map to change current position point
 business_profile.image.description.required: This field is required
 business_profile.video.description.required: This field is required
 business_profile.panorama.title: This is a 360 panorama, drag the image to look around
 
 search_results.count.total: We've found {-count-} results
-google_map.empty_block.message: Please wait, loading...
 
 no_js.warning.message: Your browser's Javascript functionality is turned off. Please turn it on so that you can experience the full capabilities of this site.
 

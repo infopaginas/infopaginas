@@ -139,6 +139,21 @@ class SearchController extends Controller
         );
     }
 
+    public function showDirectionsAction(string $targetCoordinates, string $currentCoordinates)
+    {
+        if (!$currentCoordinates) {
+            $currentCoordinates = $this->getParameter('san_juan_coordinates');
+            $currentCoordinates = str_replace(' ', '', $currentCoordinates);
+        }
+
+        return $this->render(
+            ':redesign:mapbox-get-directions.html.twig',
+            [
+                'targetCoordinates'  => $targetCoordinates,
+                'currentCoordinates' => $currentCoordinates,
+            ]
+        );
+    }
 
     /**
      * @param Request $request

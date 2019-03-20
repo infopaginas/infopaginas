@@ -182,15 +182,12 @@ class EmergencyDraftBusinessAdmin extends OxaAdmin
 
         $formMapper
             ->with('Map')
-                ->add('useMapAddress', CheckboxType::class, [
-                    'required' => false,
-                    'help'     => 'emergency.business_map.help',
-                ])
                 ->add('latitude')
                 ->add('longitude')
-                ->add('googleAddress', 'google_map', [
+                ->add('map', 'google_map', [
                     'latitude'  => $latitude,
                     'longitude' => $longitude,
+                    'mapped'    => false,
                 ])
             ->end()
         ;
@@ -246,10 +243,9 @@ class EmergencyDraftBusinessAdmin extends OxaAdmin
                 ->add('customCategory')
             ->end()
             ->with('Map')
-                ->add('useMapAddress')
                 ->add('latitude')
                 ->add('longitude')
-                ->add('googleAddress')
+                ->add('map')
             ->end()
         ;
     }
@@ -314,8 +310,6 @@ class EmergencyDraftBusinessAdmin extends OxaAdmin
         $business->setCategory($draft->getCategory());
         $business->setArea($draft->getArea());
 
-        $business->setUseMapAddress($draft->getUseMapAddress());
-        $business->setGoogleAddress($draft->getGoogleAddress());
         $business->setLatitude($draft->getLatitude());
         $business->setLongitude($draft->getLongitude());
 

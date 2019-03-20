@@ -71,10 +71,8 @@ class EmergencyBusinessAdmin extends OxaAdmin
         }
 
         if ($parent->getLatitude() and $parent->getLongitude()) {
-            $instance->setUseMapAddress(true);
             $instance->setLatitude($parent->getLatitude());
             $instance->setLongitude($parent->getLongitude());
-            $instance->setGoogleAddress($parent->getGoogleAddress());
         }
 
         return $instance;
@@ -227,15 +225,12 @@ class EmergencyBusinessAdmin extends OxaAdmin
 
         $formMapper
             ->with('Map')
-                ->add('useMapAddress', CheckboxType::class, [
-                    'required' => false,
-                    'help'     => 'emergency.business_map.help',
-                ])
                 ->add('latitude')
                 ->add('longitude')
-                ->add('googleAddress', 'google_map', [
+                ->add('map', 'google_map', [
                     'latitude'  => $latitude,
                     'longitude' => $longitude,
+                    'mapped'    => false,
                 ])
             ->end()
         ;
@@ -278,10 +273,9 @@ class EmergencyBusinessAdmin extends OxaAdmin
                 ])
             ->end()
             ->with('Map')
-                ->add('useMapAddress')
                 ->add('latitude')
                 ->add('longitude')
-                ->add('googleAddress')
+                ->add('map')
             ->end()
         ;
     }

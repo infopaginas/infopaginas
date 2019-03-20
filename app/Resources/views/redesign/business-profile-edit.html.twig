@@ -3,6 +3,7 @@
 {% block styles %}
     {{ parent() }}
     <link rel="stylesheet" href="{{ absolute_url(asset('assets/styles/bootstrap-datetimepicker-standalone.css')) }}" />
+    <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.css"/>
 {% endblock %}
 
 {% block videoJs %}
@@ -95,6 +96,8 @@
 {% endblock %}
 
 {% block scripts %}
+    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.js'></script>
+
     {{ parent() }}
 
     <script type="text/javascript">

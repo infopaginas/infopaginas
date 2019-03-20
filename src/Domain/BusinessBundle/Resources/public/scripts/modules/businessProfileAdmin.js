@@ -179,14 +179,6 @@ $( document ).ready( function() {
         }
     }
 
-    var useMapAddress = $( '#' + formId + '_useMapAddress' );
-
-    $.each( [ useMapAddress.parent().find('ins'), useMapAddress.parent().parent().parent().find('label') ], function( index, fieldId ) {
-        $( fieldId ).on( 'click', function() {
-            setUseMapAddress();
-        } );
-    } );
-
     $( document ).on( 'change', 'select[ id *= "_areas" ]', function() {
         updatedLocalitiesBlock( this );
     });
@@ -275,18 +267,6 @@ $( document ).ready( function() {
         return true;
     }
 
-    function setUseMapAddress() {
-        $.each( [ 'country','state', 'city', 'zipCode', 'streetAddress' ], function( targetIndex, targetFieldId ) {
-            var input = $( '#' + formId + '_' + targetFieldId );
-
-            if ( useMapAddress.prop( 'checked' ) ) {
-                input.attr( 'disabled', 'disabled' );
-            } else {
-                input.removeAttr( 'disabled' );
-            }
-        } );
-    }
-
     function updateSelect2FieldValues( field, data ) {
         var html = '';
         var previousData = field.val();
@@ -347,8 +327,6 @@ $( document ).ready( function() {
             selectField.trigger( 'change' );
         }
     });
-
-    setUseMapAddress();
 
     $( 'body' ).on( 'focus', '.working-hours-time-start', function(){
         $( this ).datetimepicker({
