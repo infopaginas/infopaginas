@@ -42,6 +42,30 @@ define(
             var latlng = getDirection( e, latlngEvent );
             var self = this;
 
+            function getDirection( e, latlngEvent ) {
+                var latlng;
+
+                if ( e ) {
+                    latlng = $( e.currentTarget ).data( 'latlng' );
+                    var id = $( e.currentTarget ).data( 'id' );
+                    $( document ).trigger( 'trackingInteractions', ['directionButton', id] );
+                } else if ( latlngEvent ) {
+                    latlng = latlngEvent;
+                }
+
+                return latlng;
+            }
+
+            function redirectOnDirection( latlng, currentCoordinates ) {
+                window.open(Routing.generate(
+                    'domain_search_show_directions',
+                    {
+                        targetCoordinates:  latlng,
+                        currentCoordinates: currentCoordinates
+                    }
+                ));
+            }
+
             if ( navigator.geolocation ) {
                 navigator.geolocation.getCurrentPosition(function( position ) {
                     foundLocation( position, self, latlng );
@@ -60,30 +84,6 @@ define(
             }
         });
     };
-
-    function getDirection( e, latlngEvent ) {
-        var latlng;
-
-        if ( e ) {
-            latlng = $( e.currentTarget ).data( 'latlng' );
-            var id = $( e.currentTarget ).data( 'id' );
-            $( document ).trigger( 'trackingInteractions', ['directionButton', id] );
-        } else if ( latlngEvent ) {
-            latlng = latlngEvent;
-        }
-
-        return latlng;
-    }
-
-    function redirectOnDirection( latlng, currentCoordinates ) {
-        window.open(Routing.generate(
-            'domain_search_show_directions',
-            {
-                targetCoordinates:  latlng,
-                currentCoordinates: currentCoordinates
-            }
-        ));
-    }
 
     return compareSearchPage;
 });
