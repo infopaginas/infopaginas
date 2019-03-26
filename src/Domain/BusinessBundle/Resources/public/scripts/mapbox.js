@@ -300,7 +300,7 @@ document.addEventListener( 'jQueryLoaded', function() {
                 }
 
                 function foundLocation( position, self, latlng ) {
-                    currentCoordinates = position.coords.latitude + ',' + position.coords.longitude;
+                    var currentCoordinates = position.coords.latitude + ',' + position.coords.longitude;
                     redirectOnDirection( latlng, currentCoordinates );
                 }
             } else {
