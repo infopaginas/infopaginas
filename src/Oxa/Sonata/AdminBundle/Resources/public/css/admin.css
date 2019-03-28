@@ -365,3 +365,14 @@ div.single-media-preview-block img {
     padding: 10px;
     font-family: 'Open Sans', sans-serif;
 }
+
+.help-form-info {
+    color: red;
+    display: inline-block;
+    margin-left: 20%;
+}
+
+.grid-list-info-message {
+    color: red;
+    margin-left: 20%;
+}

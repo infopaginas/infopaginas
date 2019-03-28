@@ -1,0 +1,12 @@
+{% if clickbaitBanner and clickbaitBanner.isActive %}
+    <div class="clickbait-banner-container">
+        <div class="ad clickbait-banner-image">
+            <a href="{{ clickbaitBanner.url }}">
+                <img src="{% path clickbaitBanner.image, 'normal' %}" alt="{{ clickbaitBanner.title }}">
+            </a>
+        </div>
+        <a href="{{ clickbaitBanner.url }}">
+            <div class="clickbait-banner-text">{{ clickbaitBanner.title }}</div>
+        </a>
+    </div>
+{% endif %}

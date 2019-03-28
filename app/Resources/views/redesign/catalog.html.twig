@@ -20,6 +20,7 @@
         <section class="main" id="searchResults" data-bw-gtm-component="search-results">
             <div class="results {% if showResults %}active__toggle{% endif %}">
                 {% if catalogLevelItems and showCatalog %}
+                    {% include ':redesign/blocks/banners:clickbait-banner.html.twig' %}
                     <div class="catalog-list clearfix">
                         {% for key, list in catalogLevelItems %}
                             <div class="catalog-list__section">

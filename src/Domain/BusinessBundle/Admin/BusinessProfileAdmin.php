@@ -56,6 +56,9 @@ class BusinessProfileAdmin extends OxaAdmin
     CONST FILTER_DIRECTIONS  = 'directions';
     CONST FILTER_CALL_MOBILE = 'callsMobile';
 
+    const IMAGE_HELP_MESSAGE = 'Use keyword for the picture names. Use underscores between two keywords.
+        Example: Plantas_Ornamentales.png';
+
     /**
      * @var bool
      */
@@ -77,6 +80,8 @@ class BusinessProfileAdmin extends OxaAdmin
     protected $formOptions = [
         'validation_groups' => ['Default', 'Admin']
     ];
+
+    public $customMessage = 'businessProfileListInfoMessage';
 
     /**
      * @return BusinessProfile
@@ -763,19 +768,20 @@ class BusinessProfileAdmin extends OxaAdmin
             ->tab('Media')
                 ->with('Gallery')
                     ->add('images', CollectionMediaType::class, [
-                        'entry_type' => BusinessGalleryAdminType::class,
-                        'required'      => false,
-                        'allow_add'     => true,
-                        'allow_delete'  => true,
+                        'entry_type'         => BusinessGalleryAdminType::class,
+                        'required'           => false,
+                        'allow_add'          => true,
+                        'allow_delete'       => true,
                         'allow_extra_fields' => true,
-                        'by_reference' => false,
+                        'by_reference'       => false,
+                        'sonata_help'        => self::IMAGE_HELP_MESSAGE,
                     ])
                     ->add('addGalleryImage', FileType::class, [
                         'mapped'   => false,
                         'required' => false,
                         'help'     => 'business_profile.help.gallery',
                         'multiple' => true,
-                        'attr' => [
+                        'attr'     => [
                             'accept' => implode(',', AdminHelper::getFormImageFileAccept()),
                         ],
                     ])

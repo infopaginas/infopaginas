@@ -44,6 +44,14 @@ sonata_media:
             formats:
                 preview:    { width: 150, height: 150, quality: 70}
                 normal:     { width: 500, height: 500, quality: 70}
+        clickbait_banner:
+            download:
+                mode: http
+            providers:
+                - sonata.media.provider.image
+            formats:
+                preview:      { width: 150, height: 150, quality: 70}
+                normal:       { width: 540, height: 90, quality: 70}
         article:
             download:
                 mode: http
