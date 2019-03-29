@@ -23,7 +23,6 @@ class ClickbaitBannerAdmin extends OxaAdmin
             ->add('locality')
             ->add('isActive')
             ->add('title')
-            ->add('url')
         ;
     }
 
