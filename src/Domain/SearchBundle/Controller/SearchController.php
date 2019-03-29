@@ -6,6 +6,7 @@ use Domain\BusinessBundle\Entity\Category;
 use Domain\BusinessBundle\Entity\Locality;
 use Domain\BusinessBundle\Manager\BusinessProfileManager;
 use Domain\BusinessBundle\Manager\CategoryManager;
+use Domain\BusinessBundle\Manager\ClickbaitBannerManager;
 use Domain\BusinessBundle\Manager\LocalityManager;
 use Domain\BusinessBundle\Util\BusinessProfileUtil;
 use Domain\BusinessBundle\Util\SlugUtil;
@@ -431,6 +432,14 @@ class SearchController extends Controller
     }
 
     /**
+     * @return \Domain\BusinessBundle\Manager\ClickbaitBannerManager
+     */
+    protected function getClickbaitBannerManager() : ClickbaitBannerManager
+    {
+        return $this->get('domain_business.manager.clickbait_banner_manager');
+    }
+
+    /**
      * @param Request $request
      * @param string $localitySlug
      * @param string $categorySlug
@@ -577,26 +586,27 @@ class SearchController extends Controller
         return $this->render(
             ':redesign:catalog.html.twig',
             [
-                'search'             => $searchDTO,
-                'results'            => $searchResultsDTO,
-                'seoData'            => $seoData,
-                'seoTags'            => BusinessProfileUtil::getSeoTags($seoType),
-                'banners'            => $banners,
-                'dcDataDTO'          => $dcDataDTO,
-                'searchData'         => $searchData,
-                'pageRouter'         => $pageRouter,
-                'currentLocality'    => $locality,
-                'currentCategory'    => $category,
-                'schemaJsonLD'       => $schema,
-                'markers'            => $locationMarkers,
-                'catalogLevelItems'  => $catalogLevelItems,
-                'showResults'        => $showResults,
-                'showCatalog'        => $showCatalog,
-                'noFollowRelevance'  => SearchDataUtil::ORDER_BY_RELEVANCE != SearchDataUtil::DEFAULT_ORDER_BY_VALUE,
-                'noFollowDistance'   => SearchDataUtil::ORDER_BY_DISTANCE  != SearchDataUtil::DEFAULT_ORDER_BY_VALUE,
-                'searchRelevance'    => SearchDataUtil::ORDER_BY_RELEVANCE,
-                'searchDistance'     => SearchDataUtil::ORDER_BY_DISTANCE,
-                'trackingParams'     => $trackingParams,
+                'search'            => $searchDTO,
+                'results'           => $searchResultsDTO,
+                'seoData'           => $seoData,
+                'seoTags'           => BusinessProfileUtil::getSeoTags($seoType),
+                'banners'           => $banners,
+                'dcDataDTO'         => $dcDataDTO,
+                'searchData'        => $searchData,
+                'pageRouter'        => $pageRouter,
+                'currentLocality'   => $locality,
+                'currentCategory'   => $category,
+                'schemaJsonLD'      => $schema,
+                'markers'           => $locationMarkers,
+                'catalogLevelItems' => $catalogLevelItems,
+                'showResults'       => $showResults,
+                'showCatalog'       => $showCatalog,
+                'noFollowRelevance' => SearchDataUtil::ORDER_BY_RELEVANCE != SearchDataUtil::DEFAULT_ORDER_BY_VALUE,
+                'noFollowDistance'  => SearchDataUtil::ORDER_BY_DISTANCE  != SearchDataUtil::DEFAULT_ORDER_BY_VALUE,
+                'searchRelevance'   => SearchDataUtil::ORDER_BY_RELEVANCE,
+                'searchDistance'    => SearchDataUtil::ORDER_BY_DISTANCE,
+                'trackingParams'    => $trackingParams,
+                'clickbaitBanner'   => $this->getClickbaitBannerManager()->getClickbaitBannerByLocality($locality),
             ]
         );
     }

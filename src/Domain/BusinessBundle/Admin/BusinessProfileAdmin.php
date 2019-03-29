@@ -78,6 +78,9 @@ class BusinessProfileAdmin extends OxaAdmin
         'validation_groups' => ['Default', 'Admin']
     ];
 
+    public $customMessage    = 'businessProfileList.infoMessage';
+    public $imageHelpMessage = 'imageHelpMessage';
+
     /**
      * @return BusinessProfile
      */
@@ -763,19 +766,20 @@ class BusinessProfileAdmin extends OxaAdmin
             ->tab('Media')
                 ->with('Gallery')
                     ->add('images', CollectionMediaType::class, [
-                        'entry_type' => BusinessGalleryAdminType::class,
-                        'required'      => false,
-                        'allow_add'     => true,
-                        'allow_delete'  => true,
+                        'entry_type'         => BusinessGalleryAdminType::class,
+                        'required'           => false,
+                        'allow_add'          => true,
+                        'allow_delete'       => true,
                         'allow_extra_fields' => true,
-                        'by_reference' => false,
+                        'by_reference'       => false,
+                        'sonata_help'        => $this->imageHelpMessage,
                     ])
                     ->add('addGalleryImage', FileType::class, [
                         'mapped'   => false,
                         'required' => false,
                         'help'     => 'business_profile.help.gallery',
                         'multiple' => true,
-                        'attr' => [
+                        'attr'     => [
                             'accept' => implode(',', AdminHelper::getFormImageFileAccept()),
                         ],
                     ])
