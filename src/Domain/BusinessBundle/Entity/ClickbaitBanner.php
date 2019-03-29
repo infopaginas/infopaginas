@@ -36,7 +36,8 @@ class ClickbaitBanner implements DefaultEntityInterface, TranslatableInterface
     /**
      * @var $locality
      * @ORM\ManyToOne(targetEntity="Domain\BusinessBundle\Entity\Locality")
-     * @ORM\JoinColumn(name="locality_id", referencedColumnName="id", onDelete="CASCADE", nullable=true)
+     * @ORM\JoinColumn(name="locality_id", referencedColumnName="id", onDelete="CASCADE", nullable=false)
+     * @Assert\NotBlank()
      */
     protected $locality;
 
@@ -52,6 +53,7 @@ class ClickbaitBanner implements DefaultEntityInterface, TranslatableInterface
      * @ORM\Column(name="url", type="string", nullable=true, length=1000)
      * @Assert\Length(max=1000, maxMessage="business_profile.max_length")
      * @Assert\Url()
+     * @Assert\NotBlank()
      */
     protected $url;
 
@@ -70,7 +72,7 @@ class ClickbaitBanner implements DefaultEntityInterface, TranslatableInterface
      */
     public function __construct()
     {
-        $this->isActive = false;
+        $this->isActive = true;
     }
 
     /**

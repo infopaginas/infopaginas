@@ -187,7 +187,7 @@
             {% endif %}
             </label>
             {% if sonata_help is defined %}
-                <div class="help-form-info">{{ sonata_help|trans({}, sonata_admin.field_description.translationDomain ?: admin.translationDomain) }}</div>
+                <div class="help-form-info">{{ sonata_help|trans({}, 'SonataAdminBundle') }}</div>
             {% endif %}
         {% endif %}
     {% endspaceless %}

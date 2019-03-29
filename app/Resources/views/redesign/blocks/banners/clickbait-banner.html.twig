@@ -1,12 +1,10 @@
 {% if clickbaitBanner and clickbaitBanner.isActive %}
-    <div class="clickbait-banner-container">
+    <div class="clickbait-banner-container" data-bw-gtm-component="clickbait-banner">
         <div class="ad clickbait-banner-image">
-            <a href="{{ clickbaitBanner.url }}">
+            <a href="{{ clickbaitBanner.url }}" target="_blank" data-bw-gtm-event-click data-bw-gtm-label="{% trans %}Clickbait banner{% endtrans %}">
                 <img src="{% path clickbaitBanner.image, 'normal' %}" alt="{{ clickbaitBanner.title }}">
+                <div class="clickbait-banner-text">{{ clickbaitBanner.title }}</div>
             </a>
         </div>
-        <a href="{{ clickbaitBanner.url }}">
-            <div class="clickbait-banner-text">{{ clickbaitBanner.title }}</div>
-        </a>
     </div>
 {% endif %}

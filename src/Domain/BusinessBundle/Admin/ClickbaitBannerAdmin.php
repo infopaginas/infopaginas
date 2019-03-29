@@ -39,7 +39,6 @@ class ClickbaitBannerAdmin extends OxaAdmin
             ])
             ->add('isActive')
             ->add('title')
-            ->add('url')
         ;
 
         $this->addGridActions($listMapper);
@@ -51,32 +50,24 @@ class ClickbaitBannerAdmin extends OxaAdmin
     protected function configureFormFields(FormMapper $formMapper)
     {
         $formMapper
-            ->tab('Clickbait Banner', ['class' => 'col-md-12',])
-            ->with('Locality', ['class' => 'col-md-12'])
-            ->end()
-            ->end()
-        ;
-
-        $formMapper
             ->tab('Clickbait Banner')
-            ->with('Locality')
-            ->add('locality', null, [
-                'required' => true,
-            ])
-            ->add('isActive')
-            ->add('title')
-            ->add('url')
-            ->add(
-                'image',
-                'sonata_type_model_list',
-                ['constraints' => [new NotBlank()]],
-                [
-                    'link_parameters' => [
-                        'context'  => OxaMediaInterface::CONTEXT_CLICKBAIT_BANNER,
-                        'provider' => OxaMediaInterface::PROVIDER_IMAGE,
-                    ]
-                ]
-            )
+                ->with('Locality')
+                    ->add('locality', null, ['required' => true])
+                    ->add('isActive')
+                    ->add('title')
+                    ->add('url', null, ['required' => true])
+                    ->add(
+                        'image',
+                        'sonata_type_model_list',
+                        ['constraints' => [new NotBlank()]],
+                        [
+                            'link_parameters' => [
+                                'context'  => OxaMediaInterface::CONTEXT_CLICKBAIT_BANNER,
+                                'provider' => OxaMediaInterface::PROVIDER_IMAGE,
+                            ]
+                        ]
+                    )
+                ->end()
             ->end()
         ;
     }
@@ -92,9 +83,7 @@ class ClickbaitBannerAdmin extends OxaAdmin
             ->add('isActive')
             ->add('title')
             ->add('url')
-            ->add('image', null, [
-                'template' => 'DomainArticleBundle:Admin:show_image.html.twig'
-            ])
+            ->add('image', null, ['template' => 'DomainArticleBundle:Admin:show_image.html.twig'])
         ;
     }
 }

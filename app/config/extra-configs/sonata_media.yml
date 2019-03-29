@@ -50,7 +50,7 @@ sonata_media:
             providers:
                 - sonata.media.provider.image
             formats:
-                preview:      { width: 150, height: 150, quality: 70}
+                preview:      { width: 150, height: 25, quality: 70}
                 normal:       { width: 540, height: 90, quality: 70}
         article:
             download:
