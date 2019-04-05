@@ -5,7 +5,7 @@
         {% set phoneToCall = item.phones.first.phone %}
     {% endif %}
     <a href="tel:{{ phoneToCall }}" data-bname="{{ item.name }}" class="button button--small button--featured hide-desktop phone-call buttons-width" data-id="{{ item.id }}" data-type="callMobButton" data-bw-gtm-event-click data-bw-gtm-label="{% trans %}ActionButtonCall{% endtrans %}">
-        <i class="fa fa-phone"></i>
+        <i class="fa fa-phone wiggle"></i>
         <span>{% trans %}ActionButtonCall{% endtrans %}</span>
     </a>
 {% endif %}
