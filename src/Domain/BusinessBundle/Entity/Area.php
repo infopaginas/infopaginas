@@ -85,6 +85,8 @@ class Area implements DefaultEntityInterface, CopyableEntityInterface, Translata
      */
     protected $locality;
 
+    protected $changeState;
+
     /**
      * Get id
      *
@@ -270,5 +272,17 @@ class Area implements DefaultEntityInterface, CopyableEntityInterface, Translata
     public function getExtraSearches()
     {
         return $this->extraSearches;
+    }
+
+    public function getChangeState()
+    {
+        return $this->changeState;
+    }
+
+    public function setChangeState(array $changeState) : self
+    {
+        $this->changeState = $changeState;
+
+        return $this;
     }
 }

@@ -157,6 +157,8 @@ class Locality implements GeolocationInterface, DefaultEntityInterface, Translat
      */
     protected $pseudos;
 
+    protected $changeState;
+
     /**
      * Constructor
      */
@@ -480,5 +482,17 @@ class Locality implements GeolocationInterface, DefaultEntityInterface, Translat
     public function removePseudo($pseudo)
     {
         $this->pseudos->removeElement($pseudo);
+    }
+
+    public function getChangeState()
+    {
+        return $this->changeState;
+    }
+
+    public function setChangeState(array $changeState) : self
+    {
+        $this->changeState = $changeState;
+
+        return $this;
     }
 }

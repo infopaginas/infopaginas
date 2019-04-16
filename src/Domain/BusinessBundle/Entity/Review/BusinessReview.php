@@ -92,6 +92,8 @@ class BusinessReview implements DefaultEntityInterface, CopyableEntityInterface,
      */
     protected $translations;
 
+    protected $changeState;
+
     /**
      * Constructor
      */
@@ -270,5 +272,17 @@ class BusinessReview implements DefaultEntityInterface, CopyableEntityInterface,
     public function removeTranslation(BusinessReviewTranslation $translation)
     {
         $this->translations->removeElement($translation);
+    }
+
+    public function getChangeState()
+    {
+        return $this->changeState;
+    }
+
+    public function setChangeState(array $changeState) : self
+    {
+        $this->changeState = $changeState;
+
+        return $this;
     }
 }

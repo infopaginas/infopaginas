@@ -74,6 +74,8 @@ class Coupon implements DefaultEntityInterface, CopyableEntityInterface, Transla
      */
     protected $image;
 
+    protected $changeState;
+
     /**
      * Get id
      *
@@ -188,5 +190,17 @@ class Coupon implements DefaultEntityInterface, CopyableEntityInterface, Transla
     public function getBusinessProfile()
     {
         return $this->businessProfile;
+    }
+
+    public function getChangeState()
+    {
+        return $this->changeState;
+    }
+
+    public function setChangeState(array $changeState) : self
+    {
+        $this->changeState = $changeState;
+
+        return $this;
     }
 }

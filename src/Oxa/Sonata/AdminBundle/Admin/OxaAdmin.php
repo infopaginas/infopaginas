@@ -295,6 +295,27 @@ class OxaAdmin extends BaseAdmin
     /**
      * @param mixed $entity
      */
+    public function preUpdate($entity)
+    {
+        $uow = $this->getConfigurationPool()->getContainer()->get('Doctrine')->getManager()->getUnitOfWork();
+        $uow->computeChangeSets();
+        $changeSet = $uow->getEntityChangeSet($entity);
+
+        foreach ($changeSet as $fieldName => $value) {
+            if (is_object($value[0]) && method_exists($value[0], 'getId')) {
+                $changeSet[$fieldName][0] = $value[0]->getId();
+                $changeSet[$fieldName][1] = $value[1]->getId();
+            }
+        }
+
+        if (method_exists($entity, 'setChangeState')) {
+            $entity->setChangeState($changeSet);
+        }
+    }
+
+    /**
+     * @param mixed $entity
+     */
     public function postUpdate($entity)
     {
         $this->handleActionLog(UserActionModel::TYPE_ACTION_UPDATE, $entity);
@@ -327,7 +348,7 @@ class OxaAdmin extends BaseAdmin
 
         $data = $this->generateUserLogData($action, $entity);
 
-        $actionReportManager->registerUserAction($action, $data);
+        $actionReportManager->registerUserAction($action, $data, $entity);
     }
 
     /**

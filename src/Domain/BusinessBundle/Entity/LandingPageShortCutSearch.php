@@ -65,6 +65,8 @@ class LandingPageShortCutSearch
      */
     protected $landingPageShortCut;
 
+    protected $changeState;
+
     /**
      * @return string
      */
@@ -205,5 +207,17 @@ class LandingPageShortCutSearch
     public function getPosition()
     {
         return $this->position;
+    }
+
+    public function getChangeState()
+    {
+        return $this->changeState;
+    }
+
+    public function setChangeState(array $changeState) : self
+    {
+        $this->changeState = $changeState;
+
+        return $this;
     }
 }

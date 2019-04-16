@@ -78,6 +78,8 @@ class ExportReport
      */
     protected $links;
 
+    protected $changeState;
+
     /**
      * ExportReport constructor.
      */
@@ -262,6 +264,18 @@ class ExportReport
     public function setLinks($links)
     {
         $this->links = $links;
+
+        return $this;
+    }
+
+    public function getChangeState()
+    {
+        return $this->changeState;
+    }
+
+    public function setChangeState(array $changeState) : self
+    {
+        $this->changeState = $changeState;
 
         return $this;
     }

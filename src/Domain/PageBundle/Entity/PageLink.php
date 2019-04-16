@@ -63,6 +63,8 @@ class PageLink
      */
     protected $page;
 
+    protected $changeState;
+
     public function __construct()
     {
         $this->type = self::PAGE_LINK_TYPE_LINK;
@@ -187,5 +189,17 @@ class PageLink
             self::PAGE_LINK_TYPE_LINK   => 'page_link.type.link',
             self::PAGE_LINK_TYPE_OFFER  => 'page_link.type.offer',
         ];
+    }
+
+    public function getChangeState()
+    {
+        return $this->changeState;
+    }
+
+    public function setChangeState(array $changeState) : self
+    {
+        $this->changeState = $changeState;
+
+        return $this;
     }
 }

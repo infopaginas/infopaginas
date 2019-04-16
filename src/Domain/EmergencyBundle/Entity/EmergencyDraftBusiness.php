@@ -109,6 +109,8 @@ class EmergencyDraftBusiness extends EmergencyAbstractBusiness implements Report
      */
     protected $collectionWorkingHours;
 
+    protected $changeState;
+
     /**
      * Constructor
      */
@@ -212,5 +214,17 @@ class EmergencyDraftBusiness extends EmergencyAbstractBusiness implements Report
     public static function getStatusAssert()
     {
         return array_keys(self::getStatuses());
+    }
+
+    public function getChangeState()
+    {
+        return $this->changeState;
+    }
+
+    public function setChangeState(array $changeState) : self
+    {
+        $this->changeState = $changeState;
+
+        return $this;
     }
 }

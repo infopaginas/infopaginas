@@ -72,6 +72,8 @@ class Country implements DefaultEntityInterface, CopyableEntityInterface, Transl
      */
     protected $translations;
 
+    protected $changeState;
+
     /**
      * Get id
      *
@@ -210,5 +212,17 @@ class Country implements DefaultEntityInterface, CopyableEntityInterface, Transl
             self::PUERTO_RICO_SHORT_NAME,
             self::USA_SHORT_NAME,
         ];
+    }
+
+    public function getChangeState()
+    {
+        return $this->changeState;
+    }
+
+    public function setChangeState(array $changeState) : self
+    {
+        $this->changeState = $changeState;
+
+        return $this;
     }
 }

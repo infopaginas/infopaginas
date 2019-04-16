@@ -154,6 +154,8 @@ class VideoMedia implements PostponeRemoveInterface
      */
     protected $poster;
 
+    protected $changeState;
+
     public function __construct(array $videoMediaData = [])
     {
         if (!empty($videoMediaData)) {
@@ -584,5 +586,17 @@ class VideoMedia implements PostponeRemoveInterface
         }
 
         return $title;
+    }
+
+    public function getChangeState()
+    {
+        return $this->changeState;
+    }
+
+    public function setChangeState(array $changeState) : self
+    {
+        $this->changeState = $changeState;
+
+        return $this;
     }
 }

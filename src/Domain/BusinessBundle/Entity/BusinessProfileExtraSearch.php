@@ -92,6 +92,8 @@ class BusinessProfileExtraSearch
      */
     protected $localities;
 
+    protected $changeState;
+
     /**
      * Constructor
      */
@@ -327,5 +329,17 @@ class BusinessProfileExtraSearch
             self::SERVICE_AREAS_AREA_CHOICE_VALUE       => 'Distance',
             self::SERVICE_AREAS_LOCALITY_CHOICE_VALUE   => 'Locality',
         ];
+    }
+
+    public function getChangeState()
+    {
+        return $this->changeState;
+    }
+
+    public function setChangeState(array $changeState) : self
+    {
+        $this->changeState = $changeState;
+
+        return $this;
     }
 }

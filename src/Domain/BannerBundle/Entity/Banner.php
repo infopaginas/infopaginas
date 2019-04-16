@@ -86,6 +86,8 @@ class Banner implements DefaultEntityInterface
      */
     protected $isPublished;
 
+    protected $changeState;
+
     /**
      * Get id
      *
@@ -290,5 +292,17 @@ class Banner implements DefaultEntityInterface
     public function getIsPublished()
     {
         return $this->isPublished;
+    }
+
+    public function getChangeState()
+    {
+        return $this->changeState;
+    }
+
+    public function setChangeState(array $changeState) : self
+    {
+        $this->changeState = $changeState;
+
+        return $this;
     }
 }

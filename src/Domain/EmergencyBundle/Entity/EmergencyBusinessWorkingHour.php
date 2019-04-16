@@ -74,6 +74,8 @@ class EmergencyBusinessWorkingHour
      */
     protected $days;
 
+    protected $changeState;
+
     /**
      * Constructor
      */
@@ -251,6 +253,18 @@ class EmergencyBusinessWorkingHour
     public function setDays($days)
     {
         $this->days = $days;
+
+        return $this;
+    }
+
+    public function getChangeState()
+    {
+        return $this->changeState;
+    }
+
+    public function setChangeState(array $changeState) : self
+    {
+        $this->changeState = $changeState;
 
         return $this;
     }

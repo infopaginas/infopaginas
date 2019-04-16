@@ -58,6 +58,8 @@ class LandingPageShortCut implements DefaultEntityInterface
      */
     protected $useAllLocation;
 
+    protected $changeState;
+
     /**
      * Constructor
      */
@@ -153,6 +155,18 @@ class LandingPageShortCut implements DefaultEntityInterface
     public function setUseAllLocation($useAllLocation)
     {
         $this->useAllLocation = $useAllLocation;
+
+        return $this;
+    }
+
+    public function getChangeState()
+    {
+        return $this->changeState;
+    }
+
+    public function setChangeState(array $changeState) : self
+    {
+        $this->changeState = $changeState;
 
         return $this;
     }

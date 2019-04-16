@@ -175,6 +175,8 @@ class Page implements DefaultEntityInterface, TranslatableInterface, PageInterfa
      */
     protected $useActionLink;
 
+    protected $changeState;
+
     /**
      * Get id
      *
@@ -679,5 +681,17 @@ class Page implements DefaultEntityInterface, TranslatableInterface, PageInterfa
         }
 
         return $links;
+    }
+
+    public function getChangeState()
+    {
+        return $this->changeState;
+    }
+
+    public function setChangeState(array $changeState) : self
+    {
+        $this->changeState = $changeState;
+
+        return $this;
     }
 }

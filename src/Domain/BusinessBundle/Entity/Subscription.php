@@ -70,6 +70,8 @@ class Subscription implements DefaultEntityInterface, TranslatableInterface, Dat
      */
     protected $translations;
 
+    protected $changeState;
+
     /**
      * Get id
      *
@@ -168,5 +170,17 @@ class Subscription implements DefaultEntityInterface, TranslatableInterface, Dat
     public function removeTranslation(\Domain\BusinessBundle\Entity\Translation\SubscriptionTranslation $translation)
     {
         $this->translations->removeElement($translation);
+    }
+
+    public function getChangeState()
+    {
+        return $this->changeState;
+    }
+
+    public function setChangeState(array $changeState) : self
+    {
+        $this->changeState = $changeState;
+
+        return $this;
     }
 }

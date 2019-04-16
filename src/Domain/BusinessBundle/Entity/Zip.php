@@ -46,6 +46,8 @@ class Zip
      */
     protected $neighborhood;
 
+    protected $changeState;
+
     /**
      * Constructor
      */
@@ -117,5 +119,17 @@ class Zip
     public function __toString()
     {
         return $this->getZipCode() ?: '';
+    }
+
+    public function getChangeState()
+    {
+        return $this->changeState;
+    }
+
+    public function setChangeState(array $changeState) : self
+    {
+        $this->changeState = $changeState;
+
+        return $this;
     }
 }

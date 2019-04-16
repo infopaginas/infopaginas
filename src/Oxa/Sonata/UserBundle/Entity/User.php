@@ -128,6 +128,8 @@ class User extends BaseUser implements DefaultEntityInterface, UserRoleInterface
      */
     protected $businessesCount;
 
+    protected $changeState;
+
     /**
      * Constructor
      */
@@ -549,6 +551,18 @@ class User extends BaseUser implements DefaultEntityInterface, UserRoleInterface
     public function setBusinessesCount($businessesCount)
     {
         $this->businessesCount = $businessesCount;
+        return $this;
+    }
+
+    public function getChangeState()
+    {
+        return $this->changeState;
+    }
+
+    public function setChangeState(array $changeState) : self
+    {
+        $this->changeState = $changeState;
+
         return $this;
     }
 }

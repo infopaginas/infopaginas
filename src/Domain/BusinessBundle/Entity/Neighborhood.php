@@ -88,6 +88,8 @@ class Neighborhood implements DefaultEntityInterface, TranslatableInterface
      */
     protected $translations;
 
+    protected $changeState;
+
     /**
      * Constructor
      */
@@ -243,5 +245,17 @@ class Neighborhood implements DefaultEntityInterface, TranslatableInterface
     public function __toString()
     {
         return $this->getName() ?: '';
+    }
+
+    public function getChangeState()
+    {
+        return $this->changeState;
+    }
+
+    public function setChangeState(array $changeState) : self
+    {
+        $this->changeState = $changeState;
+
+        return $this;
     }
 }

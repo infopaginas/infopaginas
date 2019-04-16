@@ -84,6 +84,8 @@ class Group extends BaseGroup implements DefaultEntityInterface, TranslatableInt
      */
     protected $translations;
 
+    protected $changeState;
+
     /**
      * Group constructor.
      * @param $name
@@ -184,5 +186,17 @@ class Group extends BaseGroup implements DefaultEntityInterface, TranslatableInt
     public function removeTranslation(\Oxa\Sonata\UserBundle\Entity\Translation\GroupTranslation $translation)
     {
         $this->translations->removeElement($translation);
+    }
+
+    public function getChangeState()
+    {
+        return $this->changeState;
+    }
+
+    public function setChangeState(array $changeState) : self
+    {
+        $this->changeState = $changeState;
+
+        return $this;
     }
 }

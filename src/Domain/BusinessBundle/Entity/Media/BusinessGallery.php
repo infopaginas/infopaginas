@@ -98,6 +98,8 @@ class BusinessGallery implements DefaultEntityInterface, TranslatableInterface
      */
     protected $position;
 
+    protected $changeState;
+
     /**
      * Get id
      *
@@ -269,5 +271,17 @@ class BusinessGallery implements DefaultEntityInterface, TranslatableInterface
     public function getPosition()
     {
         return $this->position;
+    }
+
+    public function getChangeState()
+    {
+        return $this->changeState;
+    }
+
+    public function setChangeState(array $changeState) : self
+    {
+        $this->changeState = $changeState;
+
+        return $this;
     }
 }

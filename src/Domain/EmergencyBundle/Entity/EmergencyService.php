@@ -64,6 +64,8 @@ class EmergencyService
      */
     protected $useAsFilter;
 
+    protected $changeState;
+
     /**
      * Get id
      *
@@ -230,5 +232,17 @@ class EmergencyService
     public function getUseAsFilter()
     {
         return $this->useAsFilter;
+    }
+
+    public function getChangeState()
+    {
+        return $this->changeState;
+    }
+
+    public function setChangeState(array $changeState) : self
+    {
+        $this->changeState = $changeState;
+
+        return $this;
     }
 }

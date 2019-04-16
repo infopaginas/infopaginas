@@ -80,6 +80,8 @@ class EmergencyArea
      */
     protected $catalogItems;
 
+    protected $changeState;
+
     /**
      * Constructor
      */
@@ -278,6 +280,18 @@ class EmergencyArea
     public function removeCatalogItems(EmergencyCatalogItem $catalogItem)
     {
         $this->catalogItems->removeElement($catalogItem);
+
+        return $this;
+    }
+
+    public function getChangeState()
+    {
+        return $this->changeState;
+    }
+
+    public function setChangeState(array $changeState) : self
+    {
+        $this->changeState = $changeState;
 
         return $this;
     }

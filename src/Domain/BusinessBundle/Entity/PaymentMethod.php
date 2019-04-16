@@ -101,6 +101,8 @@ class PaymentMethod implements DefaultEntityInterface, CopyableEntityInterface, 
      */
     protected $type;
 
+    protected $changeState;
+
     /**
      * Get id
      *
@@ -370,5 +372,17 @@ class PaymentMethod implements DefaultEntityInterface, CopyableEntityInterface, 
                 'type' => self::PAYMENT_METHOD_TYPE_ATH,
             ],
         ];
+    }
+
+    public function getChangeState()
+    {
+        return $this->changeState;
+    }
+
+    public function setChangeState(array $changeState) : self
+    {
+        $this->changeState = $changeState;
+
+        return $this;
     }
 }

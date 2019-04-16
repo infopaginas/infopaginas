@@ -80,6 +80,8 @@ class Config implements DefaultEntityInterface, ConfigInterface, TranslatableInt
      */
     protected $translations;
 
+    protected $changeState;
+
     /**
      * Get id
      *
@@ -230,5 +232,17 @@ class Config implements DefaultEntityInterface, ConfigInterface, TranslatableInt
     public function removeTranslation(\Oxa\ConfigBundle\Entity\Translation\ConfigTranslation $translation)
     {
         $this->translations->removeElement($translation);
+    }
+
+    public function getChangeState()
+    {
+        return $this->changeState;
+    }
+
+    public function setChangeState(array $changeState) : self
+    {
+        $this->changeState = $changeState;
+
+        return $this;
     }
 }

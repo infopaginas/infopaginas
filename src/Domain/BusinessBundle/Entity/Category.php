@@ -178,6 +178,8 @@ class Category implements DefaultEntityInterface, CopyableEntityInterface, Trans
      */
     protected $showSuggestion;
 
+    protected $changeState;
+
     public function setLocale($locale)
     {
         $this->locale = $locale;
@@ -624,5 +626,17 @@ class Category implements DefaultEntityInterface, CopyableEntityInterface, Trans
             self::CATEGORY_ARTICLE_SLUG,
             self::CATEGORY_UNDEFINED_SLUG,
         ];
+    }
+
+    public function getChangeState()
+    {
+        return $this->changeState;
+    }
+
+    public function setChangeState(array $changeState) : self
+    {
+        $this->changeState = $changeState;
+
+        return $this;
     }
 }

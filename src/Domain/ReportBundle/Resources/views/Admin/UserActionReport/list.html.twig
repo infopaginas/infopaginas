@@ -28,7 +28,7 @@
                                     <tr>
                                         {% for key, item in admin.userActions.mapping %}
                                             <td class="sonata-ba-list-field sonata-ba-list-field-string">
-                                                {% if key == USER_ACTION.MAPPING.INFO %}
+                                                {% if key == USER_ACTION.MAPPING.INFO or key == USER_ACTION.MAPPING.DATA_BEFORE or key == USER_ACTION.MAPPING.DATA_AFTER %}
                                                     {% include 'DomainReportBundle:Admin/UserActionReport:data_block.html.twig' with {data: row[key], events: admin.events} %}
                                                 {% elseif key == USER_ACTION.MAPPING.ACTION %}
                                                     {{ admin.events[row[key]]|trans({},'AdminReportBundle') }}

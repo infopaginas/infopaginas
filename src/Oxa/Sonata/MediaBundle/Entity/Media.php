@@ -145,6 +145,8 @@ class Media extends BaseMedia implements OxaMediaInterface, DefaultEntityInterfa
      */
     protected $videoMedia;
 
+    protected $changeState;
+
     /**
      * Get id
      *
@@ -615,5 +617,17 @@ class Media extends BaseMedia implements OxaMediaInterface, DefaultEntityInterfa
         }
 
         return $maxSize;
+    }
+
+    public function getChangeState()
+    {
+        return $this->changeState;
+    }
+
+    public function setChangeState(array $changeState) : self
+    {
+        $this->changeState = $changeState;
+
+        return $this;
     }
 }

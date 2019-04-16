@@ -47,6 +47,8 @@ class LocalityPseudo
      */
     protected $locality;
 
+    protected $changeState;
+
     /**
      * @return string
      */
@@ -127,5 +129,17 @@ class LocalityPseudo
     public function getLocality()
     {
         return $this->locality;
+    }
+
+    public function getChangeState()
+    {
+        return $this->changeState;
+    }
+
+    public function setChangeState(array $changeState) : self
+    {
+        $this->changeState = $changeState;
+
+        return $this;
     }
 }

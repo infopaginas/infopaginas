@@ -67,6 +67,8 @@ class ClickbaitBanner implements DefaultEntityInterface, TranslatableInterface
      */
     protected $image;
 
+    protected $changeState;
+
     /**
      * Constructor
      */
@@ -166,6 +168,18 @@ class ClickbaitBanner implements DefaultEntityInterface, TranslatableInterface
     public function setImage(Media $image = null)
     {
         $this->image = $image;
+
+        return $this;
+    }
+
+    public function getChangeState()
+    {
+        return $this->changeState;
+    }
+
+    public function setChangeState(array $changeState) : self
+    {
+        $this->changeState = $changeState;
 
         return $this;
     }

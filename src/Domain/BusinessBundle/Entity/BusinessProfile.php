@@ -987,6 +987,8 @@ class BusinessProfile implements
      */
     private $keywordText;
 
+    protected $changeState;
+
     /**
      * Constructor
      */
@@ -3333,5 +3335,17 @@ class BusinessProfile implements
         }
 
         return false;
+    }
+
+    public function getChangeState()
+    {
+        return $this->changeState;
+    }
+
+    public function setChangeState(array $changeState) : self
+    {
+        $this->changeState = $changeState;
+
+        return $this;
     }
 }

@@ -80,6 +80,8 @@ class SubscriptionPlan implements DefaultEntityInterface, SubscriptionPlanInterf
      */
     protected $translations;
 
+    protected $changeState;
+
     /**
      * @return array
      */
@@ -280,5 +282,17 @@ class SubscriptionPlan implements DefaultEntityInterface, SubscriptionPlanInterf
     public function getRank()
     {
         return $this->rank;
+    }
+
+    public function getChangeState()
+    {
+        return $this->changeState;
+    }
+
+    public function setChangeState(array $changeState) : self
+    {
+        $this->changeState = $changeState;
+
+        return $this;
     }
 }

@@ -99,6 +99,8 @@ class EmergencyBusiness extends EmergencyAbstractBusiness implements ReportInter
      */
     protected $distance;
 
+    protected $changeState;
+
     /**
      * Constructor
      */
@@ -178,5 +180,17 @@ class EmergencyBusiness extends EmergencyAbstractBusiness implements ReportInter
     public function getDistanceUX()
     {
         return number_format($this->getDistance(), self::DISTANCE_TO_BUSINESS_PRECISION, '.', '');
+    }
+
+    public function getChangeState()
+    {
+        return $this->changeState;
+    }
+
+    public function setChangeState(array $changeState) : self
+    {
+        $this->changeState = $changeState;
+
+        return $this;
     }
 }

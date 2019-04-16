@@ -182,6 +182,8 @@ class Article implements DefaultEntityInterface, TranslatableInterface, Postpone
      */
     protected $images;
 
+    protected $changeState;
+
     /**
      * Get id
      *
@@ -579,5 +581,17 @@ class Article implements DefaultEntityInterface, TranslatableInterface, Postpone
         } else {
             return $this->getCreatedAt();
         }
+    }
+
+    public function getChangeState()
+    {
+        return $this->changeState;
+    }
+
+    public function setChangeState(array $changeState) : self
+    {
+        $this->changeState = $changeState;
+
+        return $this;
     }
 }

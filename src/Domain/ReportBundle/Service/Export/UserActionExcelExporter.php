@@ -80,7 +80,10 @@ class UserActionExcelExporter extends ExcelPostponedExporterModel
         $this->currentRow++;
 
         foreach ($data as $key => $value) {
-            if ($key == UserActionReportManager::MONGO_DB_FIELD_DATA) {
+            if ($key == UserActionReportManager::MONGO_DB_FIELD_DATA
+                || $key == UserActionReportManager::MONGO_DB_FIELD_DATA_BEFORE
+                || $key == UserActionReportManager::MONGO_DB_FIELD_DATA_AFTER
+            ) {
                 $info = implode(PHP_EOL, $value);
                 $this->activeSheet->setCellValue($this->currentCol . $this->currentRow, $info);
                 $this->activeSheet->getRowDimension($this->currentRow)->setRowHeight(self::ROW_AUTO_HEIGHT);

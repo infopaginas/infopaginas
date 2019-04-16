@@ -67,6 +67,8 @@ class Tag implements DefaultEntityInterface, CopyableEntityInterface, Translatab
      */
     protected $translations;
 
+    protected $changeState;
+
     /**
      * Get id
      *
@@ -169,5 +171,17 @@ class Tag implements DefaultEntityInterface, CopyableEntityInterface, Translatab
     public function removeTranslation(\Domain\BusinessBundle\Entity\Translation\TagTranslation $translation)
     {
         $this->translations->removeElement($translation);
+    }
+
+    public function getChangeState()
+    {
+        return $this->changeState;
+    }
+
+    public function setChangeState(array $changeState) : self
+    {
+        $this->changeState = $changeState;
+
+        return $this;
     }
 }

@@ -89,6 +89,8 @@ class BusinessProfileWorkingHour
      */
     private $commentEs;
 
+    protected $changeState;
+
     /**
      * Constructor
      */
@@ -321,5 +323,17 @@ class BusinessProfileWorkingHour
     public function getCommentEs()
     {
         return $this->commentEs;
+    }
+
+    public function getChangeState()
+    {
+        return $this->changeState;
+    }
+
+    public function setChangeState(array $changeState) : self
+    {
+        $this->changeState = $changeState;
+
+        return $this;
     }
 }

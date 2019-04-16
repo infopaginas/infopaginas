@@ -70,6 +70,8 @@ class BusinessProfilePhone
      */
     protected $businessProfile;
 
+    protected $changeState;
+
     public function __construct()
     {
         $this->type     = self::PHONE_TYPE_MAIN;
@@ -258,5 +260,17 @@ class BusinessProfilePhone
     public function setPriorityValue()
     {
         $this->priority = self::getPriorityByType($this->type);
+    }
+
+    public function getChangeState()
+    {
+        return $this->changeState;
+    }
+
+    public function setChangeState(array $changeState) : self
+    {
+        $this->changeState = $changeState;
+
+        return $this;
     }
 }

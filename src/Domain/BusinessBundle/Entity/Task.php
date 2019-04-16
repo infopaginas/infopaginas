@@ -98,6 +98,8 @@ class Task implements DefaultEntityInterface, TaskInterface
      */
     protected $contentDeleted;
 
+    protected $changeState;
+
     /**
      * Task constructor.
      * By default task should be marked as "OPEN"
@@ -353,5 +355,17 @@ class Task implements DefaultEntityInterface, TaskInterface
         }
 
         return $result;
+    }
+
+    public function getChangeState()
+    {
+        return $this->changeState;
+    }
+
+    public function setChangeState(array $changeState) : self
+    {
+        $this->changeState = $changeState;
+
+        return $this;
     }
 }

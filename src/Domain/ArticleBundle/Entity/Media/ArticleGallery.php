@@ -77,7 +77,9 @@ class ArticleGallery implements DefaultEntityInterface, TranslatableInterface
      * )
      */
     protected $translations;
-    
+
+    protected $changeState;
+
     /**
      * @return int
      */
@@ -148,5 +150,17 @@ class ArticleGallery implements DefaultEntityInterface, TranslatableInterface
     public function setTranslations(ArrayCollection $translations)
     {
         $this->translations = $translations;
+    }
+
+    public function getChangeState()
+    {
+        return $this->changeState;
+    }
+
+    public function setChangeState(array $changeState) : self
+    {
+        $this->changeState = $changeState;
+
+        return $this;
     }
 }

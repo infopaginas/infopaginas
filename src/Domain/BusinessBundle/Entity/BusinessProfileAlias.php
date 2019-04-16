@@ -48,6 +48,8 @@ class BusinessProfileAlias
      */
     protected $businessProfile;
 
+    protected $changeState;
+
     /**
      * @return string
      */
@@ -108,5 +110,17 @@ class BusinessProfileAlias
     public function getBusinessProfile()
     {
         return $this->businessProfile;
+    }
+
+    public function getChangeState()
+    {
+        return $this->changeState;
+    }
+
+    public function setChangeState(array $changeState) : self
+    {
+        $this->changeState = $changeState;
+
+        return $this;
     }
 }

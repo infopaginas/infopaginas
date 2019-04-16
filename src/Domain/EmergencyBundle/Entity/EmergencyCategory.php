@@ -90,6 +90,8 @@ class EmergencyCategory
      */
     protected $catalogItems;
 
+    protected $changeState;
+
     /**
      * Constructor
      */
@@ -319,5 +321,17 @@ class EmergencyCategory
     public function updateSearchName()
     {
         $this->searchName = AdminHelper::convertAccentedString($this->name);
+    }
+
+    public function getChangeState()
+    {
+        return $this->changeState;
+    }
+
+    public function setChangeState(array $changeState) : self
+    {
+        $this->changeState = $changeState;
+
+        return $this;
     }
 }
