@@ -309,7 +309,7 @@ class OxaAdmin extends BaseAdmin
             }
         }
 
-        if (method_exists($entity, 'setChangeState')) {
+        if ($entity instanceof ChangeStateInterface) {
             $entity->setChangeState($changeSet);
         }
     }
@@ -347,9 +347,9 @@ class OxaAdmin extends BaseAdmin
         $container = $this->getConfigurationPool()->getContainer();
         $actionReportManager = $container->get('domain_report.manager.user_action_report_manager');
 
-        list($data, $dataSet) = $this->generateUserLogData($action, $entity);
+        $data = $this->generateUserLogData($action, $entity);
 
-        $actionReportManager->registerUserAction($action, $data, $dataSet);
+        $actionReportManager->registerUserAction($action, $data);
     }
 
     /**
@@ -376,16 +376,14 @@ class OxaAdmin extends BaseAdmin
             $data['url'] = $url;
         }
 
-        $dataSet = [];
-
-        if ($entity && $entity instanceof ChangeStateInterface) {
+        if ($entity && $entity instanceof ChangeStateInterface && $entity->getChangeState()) {
             foreach ($entity->getChangeState() as $key => $changeSet) {
-                $dataSet['dataBefore'][$key] = $changeSet[0];
-                $dataSet['dataAfter'][$key]  = $changeSet[1];
+                $data['dataSet']['dataBefore'][$key] = $changeSet[0];
+                $data['dataSet']['dataAfter'][$key]  = $changeSet[1];
             }
         }
 
-        return [$data, $dataSet];
+        return $data;
     }
 
     /**

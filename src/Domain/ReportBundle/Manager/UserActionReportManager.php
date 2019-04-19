@@ -185,13 +185,13 @@ class UserActionReportManager extends BaseReportManager
      *
      * @return bool
      */
-    public function registerUserAction($action, $data = [], $dataSet = [])
+    public function registerUserAction($action, $data = [])
     {
         if (!in_array($action, UserActionModel::getTypes())) {
             return false;
         }
 
-        $data = $this->buildUserAction($action, $data, $dataSet);
+        $data = $this->buildUserAction($action, $data);
         $this->insertUserAction($data);
 
         return true;
@@ -203,7 +203,7 @@ class UserActionReportManager extends BaseReportManager
      *
      * @return array
      */
-    protected function buildUserAction($action, $data = [], $dataSet = [])
+    protected function buildUserAction($action, $data = [])
     {
         $date = $this->mongoDbManager->typeUTCDateTime(new \DateTime());
 
@@ -220,6 +220,14 @@ class UserActionReportManager extends BaseReportManager
             $data['entityName'] = '';
         }
 
+        $dataSet = [];
+
+        if (!empty($data['dataSet'])) {
+            $dataSet = $data['dataSet'];
+        }
+
+        unset($data['dataSet']);
+
         $userAction = [
             self::MONGO_DB_FIELD_USER_NAME      => $userName,
             self::MONGO_DB_FIELD_USER_ID        => $userId,
@@ -230,8 +238,8 @@ class UserActionReportManager extends BaseReportManager
             self::MONGO_DB_FIELD_ENTITY_NAME_SEARCH => AdminHelper::convertAccentedString($data['entityName']),
             self::MONGO_DB_FIELD_ACTION         => $action,
             self::MONGO_DB_FIELD_DATA           => $data,
-            self::MONGO_DB_FIELD_DATA_BEFORE    => !empty($dataSet) ? ($dataSet['dataBefore']) : [],
-            self::MONGO_DB_FIELD_DATA_AFTER     => !empty($dataSet) ? ($dataSet['dataAfter'])  : [],
+            self::MONGO_DB_FIELD_DATA_BEFORE    => $dataSet ? ($dataSet['dataBefore']) : [],
+            self::MONGO_DB_FIELD_DATA_AFTER     => $dataSet ? ($dataSet['dataAfter'])  : [],
         ];
 
         return $userAction;
