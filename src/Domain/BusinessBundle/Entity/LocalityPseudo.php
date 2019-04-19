@@ -4,6 +4,8 @@ namespace Domain\BusinessBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Oxa\Sonata\AdminBundle\Model\ChangeStateInterface;
+use Oxa\Sonata\AdminBundle\Util\Traits\ChangeStateTrait;
 
 /**
  * LocalityPseudo
@@ -11,8 +13,10 @@ use Gedmo\Mapping\Annotation as Gedmo;
  * @ORM\Table(name="locality_pseudo")
  * @ORM\Entity(repositoryClass="Domain\BusinessBundle\Repository\LocalityPseudoRepository")
  */
-class LocalityPseudo
+class LocalityPseudo implements ChangeStateInterface
 {
+    use ChangeStateTrait;
+
     /**
      * @var int
      *

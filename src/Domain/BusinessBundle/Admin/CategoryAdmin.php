@@ -84,6 +84,7 @@ class CategoryAdmin extends OxaAdmin
      */
     public function preUpdate($entity)
     {
+        parent::preUpdate($entity);
         $this->preSave($entity);
     }
 

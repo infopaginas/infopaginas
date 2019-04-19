@@ -5,7 +5,9 @@ namespace Oxa\ConfigBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Oxa\ConfigBundle\Model\ConfigInterface;
+use Oxa\Sonata\AdminBundle\Model\ChangeStateInterface;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
+use Oxa\Sonata\AdminBundle\Util\Traits\ChangeStateTrait;
 use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
 use Sonata\TranslationBundle\Model\Gedmo\TranslatableInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\OxaPersonalTranslatable as PersonalTranslatable;
@@ -20,10 +22,11 @@ use Gedmo\Mapping\Annotation as Gedmo;
  * @UniqueEntity("key")
  * @Gedmo\TranslationEntity(class="Oxa\ConfigBundle\Entity\Translation\ConfigTranslation")
  */
-class Config implements DefaultEntityInterface, ConfigInterface, TranslatableInterface
+class Config implements DefaultEntityInterface, ConfigInterface, TranslatableInterface, ChangeStateInterface
 {
     use DefaultEntityTrait;
     use PersonalTranslatable;
+    use ChangeStateTrait;
 
     /**
      * @var integer

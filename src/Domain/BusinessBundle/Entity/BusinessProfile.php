@@ -16,10 +16,12 @@ use Domain\BusinessBundle\Model\SubscriptionPlanInterface;
 use Domain\BusinessBundle\Util\ZipFormatterUtil;
 use Domain\ReportBundle\Model\PostponeExportInterface;
 use Domain\ReportBundle\Model\ReportInterface;
+use Oxa\Sonata\AdminBundle\Model\ChangeStateInterface;
 use Oxa\Sonata\AdminBundle\Model\CopyableEntityInterface;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
 use Oxa\Sonata\AdminBundle\Model\PostponeRemoveInterface;
 use Oxa\Sonata\AdminBundle\Util\Helpers\AdminHelper;
+use Oxa\Sonata\AdminBundle\Util\Traits\ChangeStateTrait;
 use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
 use Oxa\Sonata\AdminBundle\Util\Traits\PostponeRemoveTrait;
 use Oxa\Sonata\MediaBundle\Entity\Media;
@@ -55,13 +57,15 @@ class BusinessProfile implements
     GeolocationInterface,
     PostponeRemoveInterface,
     ReportInterface,
-    PostponeExportInterface
+    PostponeExportInterface,
+    ChangeStateInterface
 {
     use DefaultEntityTrait;
     use PersonalTranslatable;
     use LocationTrait;
     use SeoTrait;
     use PostponeRemoveTrait;
+    use ChangeStateTrait;
 
     const SERVICE_AREAS_AREA_CHOICE_VALUE = 'area';
     const SERVICE_AREAS_LOCALITY_CHOICE_VALUE = 'locality';

@@ -6,8 +6,10 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Domain\ArticleBundle\Entity\Media\ArticleGallery;
 use Domain\BusinessBundle\Entity\Category;
+use Oxa\Sonata\AdminBundle\Model\ChangeStateInterface;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
 use Oxa\Sonata\AdminBundle\Model\PostponeRemoveInterface;
+use Oxa\Sonata\AdminBundle\Util\Traits\ChangeStateTrait;
 use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
 use Domain\SiteBundle\Utils\Traits\SeoTrait;
 use Oxa\Sonata\AdminBundle\Util\Traits\PostponeRemoveTrait;
@@ -24,12 +26,13 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Entity(repositoryClass="Domain\ArticleBundle\Repository\ArticleRepository")
  * @Gedmo\TranslationEntity(class="Domain\ArticleBundle\Entity\Translation\ArticleTranslation")
  */
-class Article implements DefaultEntityInterface, TranslatableInterface, PostponeRemoveInterface
+class Article implements DefaultEntityInterface, TranslatableInterface, PostponeRemoveInterface, ChangeStateInterface
 {
     use DefaultEntityTrait;
     use PersonalTranslatable;
     use SeoTrait;
     use PostponeRemoveTrait;
+    use ChangeStateTrait;
 
     const ARTICLE_FIELD_TITLE = 'title';
     const ARTICLE_FIELD_BODY  = 'body';

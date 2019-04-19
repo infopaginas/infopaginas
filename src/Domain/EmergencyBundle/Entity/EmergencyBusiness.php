@@ -6,6 +6,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Domain\ReportBundle\Model\ReportInterface;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Oxa\Sonata\AdminBundle\Model\ChangeStateInterface;
+use Oxa\Sonata\AdminBundle\Util\Traits\ChangeStateTrait;
 use Symfony\Component\Validator\Constraints as Assert;
 use Domain\BusinessBundle\Validator\Constraints\BusinessProfileWorkingHourType as BusinessWorkingHourTypeValidator;
 
@@ -17,8 +19,10 @@ use Domain\BusinessBundle\Validator\Constraints\BusinessProfileWorkingHourType a
  * @ORM\HasLifecycleCallbacks
  * @BusinessWorkingHourTypeValidator()
  */
-class EmergencyBusiness extends EmergencyAbstractBusiness implements ReportInterface
+class EmergencyBusiness extends EmergencyAbstractBusiness implements ReportInterface, ChangeStateInterface
 {
+    use ChangeStateTrait;
+
     const ELASTIC_DOCUMENT_TYPE = 'EmergencyBusiness';
     const DISTANCE_TO_BUSINESS_PRECISION = 1;
 

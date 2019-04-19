@@ -62,6 +62,8 @@ user_action_report:
     entity_name: Name
     action: Action
     data: Data
+    data_before: Data Before
+    data_after: Data After
   no_associated_entity: No associated entity
 
 flash_export_report_requested: Report is being generated. To see its status please go to reports page
