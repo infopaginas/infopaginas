@@ -17,7 +17,7 @@ $.getScript( 'https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.js', f
 
         var map = new mapboxgl.Map({
             container: $googleMapContainer,
-            style: 'mapbox://styles/mapbox/basic-v9',
+            style: 'mapbox://styles/mapbox/streets-v9',
             center: {
                 lat: center[0],
                 lng: center[1]

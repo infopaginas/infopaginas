@@ -17,7 +17,6 @@ interface OxaMediaInterface
     const CONTEXT_BUSINESS_PROFILE_BACKGROUND = 'business_profile_background';
     const CONTEXT_COUPON                      = 'coupon';
     const CONTEXT_ARTICLE                     = 'article';
-    const CONTEXT_CLICKBAIT_BANNER            = 'clickbait_banner';
     const CONTEXT_PAGE_BACKGROUND             = 'page_background';
     const CONTEXT_ARTICLE_IMAGES              = 'article_images';
     const CONTEXT_VIDEO_POSTER                = 'video_poster';

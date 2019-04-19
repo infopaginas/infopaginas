@@ -2759,6 +2759,30 @@ $thumb-width-mb: 60px;
   }
 }
 
+.social-medias {
+  position: absolute;
+  display: block;
+  right: 10px;
+  top: 10px;
+  z-index: 99999;
+  overflow: hidden;
+}
+.social-medias .button {
+  width: 36px;
+}
+
+.social-medias .button span {
+  display: none;
+}
+
+.social-medias ul {
+  display:flex;
+}
+
+.social-medias li {
+  margin: 2px;
+}
+
 .section--social {
   font-size: 14px;
 
@@ -2791,7 +2815,24 @@ $thumb-width-mb: 60px;
     }
   }
 
-  a.button-share--twitter[data-href], a.button-share--facebook[data-href], a.button[data-show-modal-id] {
+  .button-share--whatsapp {
+    background: $whatsup;
+    &:hover {
+      background: darken($whatsup, 10%) !important;
+      color: $white !important;
+    }
+  }
+
+  .button-share--email {
+    background: $email;
+    &:hover {
+      background: darken($email, 10%) !important;
+      color: $white !important;
+    }
+  }
+
+  a.button-share--twitter[data-href], a.button-share--facebook[data-href],
+  a.button-share--whatsapp[data-href], a.button-share--email a.button[data-show-modal-id], {
     cursor: pointer;
   }
 }
@@ -6578,22 +6619,9 @@ span.no-js-warning-message {
   text-align: left;
 }
 
-.clickbait-banner-container {
-  position: relative;
-}
-
-.clickbait-banner-text {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 18px;
-}
-
-.clickbait-banner-image > a > img {
+.clickbait-title {
   width: 100%;
-  height: 100%;
-  opacity: 0.5;
+  background: darken($grey--light, 15%);
 }
 
 .wiggle {

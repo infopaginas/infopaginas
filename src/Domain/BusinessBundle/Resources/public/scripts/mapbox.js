@@ -1,6 +1,7 @@
 document.addEventListener( 'jQueryLoaded', function() {
     var width  = 24;
     var height = 34;
+    var mapSpinEvent = new CustomEvent( 'mapSpin' );
 
     var urls = {
         search: Routing.generate( 'domain_search_map' )
@@ -22,8 +23,7 @@ document.addEventListener( 'jQueryLoaded', function() {
             toggleFilters: '#filter-toggle',
             toggleSorting: '#sort-toggle',
             filterCategory: '#filter-category',
-            filterNeighborhood: '#filter-Neighborhood',
-            checkedProfile: 'input[name=rtoggle]:checked'
+            filterNeighborhood: '#filter-Neighborhood'
         },
         links: {
             sortMatch: '#sort-match-link',
@@ -53,7 +53,22 @@ document.addEventListener( 'jQueryLoaded', function() {
     bindFilterEvents();
 
     if ( $( '[data-target-coordinates]' ).data( 'targetCoordinates' ) ) {
-        getDirections();
+        if ( navigator.geolocation ) {
+            navigator.geolocation.getCurrentPosition(function( position ) {
+                foundLocation( position, self );
+            }, notAllowedLocation);
+
+            function notAllowedLocation( error ) {
+                getDirections( [sanJuanCoordinates] );
+            }
+
+            function foundLocation( position, self ) {
+                var currentCoordinates = [position.coords.latitude + ', ' + position.coords.longitude];
+                getDirections( currentCoordinates );
+            }
+        } else {
+            getDirections( [sanJuanCoordinates] );
+        }
     }
 
     function bindFilterEvents() {
@@ -64,13 +79,12 @@ document.addEventListener( 'jQueryLoaded', function() {
         });
     }
 
-    function getDirections() {
+    function getDirections( currentCoordinates ) {
         var canvas = map.getCanvasContainer();
 
         var targetCoordinates = [$( '[data-target-coordinates]' ).data( 'targetCoordinates' )];
-        var currentCoordinates = [$( '[data-current-coordinates]' ).data( 'currentCoordinates' )];
         var targetCoordinatesArray = targetCoordinates[0].split( ',' );
-        var currentCoordinatesArray = currentCoordinates[0].split( ',' );
+        var currentCoordinatesArray = currentCoordinates[0].split( ', ' );
 
         var starter = [];
         var ender = [];
@@ -91,8 +105,8 @@ document.addEventListener( 'jQueryLoaded', function() {
         start.push( starter[1] );
         start.push( starter[0] );
 
-        function getRoute( start, end, style ) {
-            var url = 'https://api.mapbox.com/directions/v5/mapbox/' + style + '/' + start[0] + ',' + start[1] + ';'
+        function getRoute( start, end ) {
+            var url = 'https://api.mapbox.com/directions/v5/mapbox/driving/' + start[0] + ',' + start[1] + ';'
                 + end[0] + ',' + end[1] + '?steps=true&geometries=geojson&overview=full&access_token='
                 + mapboxgl.accessToken;
 
@@ -151,8 +165,8 @@ document.addEventListener( 'jQueryLoaded', function() {
         }
 
         map.on( 'load', function() {
-            getRoute( start, end, 'driving-traffic' );
-            getRoute( start, end, 'driving-traffic' );
+            getRoute( start, end );
+            getRoute( start, end );
 
             map.addLayer({
                 id: 'start',
@@ -251,26 +265,50 @@ document.addEventListener( 'jQueryLoaded', function() {
                     });
                 }
 
-                getRoute( start, coords, $( html.buttons.checkedProfile ).val());
-                getRoute( start, coords, $( html.buttons.checkedProfile ).val());
+                getRoute( start, coords );
+                getRoute( start, coords );
+
+                fitBoundsOnRoute( start );
             });
 
-            var profileList = document.getElementById( 'profile' );
+            fitBoundsOnRoute( start, 0 );
 
-            if ( profileList ) {
-                var inputs = profileList.getElementsByTagName( 'input' );
+            var focusZoom = true;
 
-                for ( var i = 0; i < inputs.length; i++ ) {
-                    inputs[i].onclick = switchProfile;
+            map.on( 'idle', function() {
+                if ( focusZoom ) {
+                    map.flyTo({
+                        zoom: 16,
+                        speed: 0.2
+                    });
+
+                    setTimeout( function() {
+                        map.stop();
+
+                        map.flyTo({
+                            zoom: 9,
+                            speed: 0.2
+                        });
+
+                        setTimeout( function() {
+                            map.stop();
+
+                            $( html.containers.mapContainer ).removeClass( 'blur-effect' );
+                            document.dispatchEvent( mapSpinEvent );
+                        }, 500);
+                    }, 500);
+
+                    focusZoom = false;
                 }
-            }
-
-            function switchProfile( profile ) {
-                inputId = profile.target.id;
-                currentCoordinates = map.getSource('end')['_options']['data']['features'][0]['geometry']['coordinates'];
-                getRoute( start, [currentCoordinates[0], currentCoordinates[1]], inputId );
-            }
+            })
         });
+    }
+
+    function fitBoundsOnRoute( start ) {
+        var end = map.getSource( 'end' )['_options']['data']['features'][0]['geometry']['coordinates'];
+        var bounds = [end, start];
+
+        map.fitBounds( bounds, { padding: 50 } );
     }
 
     function init() {
@@ -286,51 +324,12 @@ document.addEventListener( 'jQueryLoaded', function() {
     }
 
     function bindEventsDirections() {
-        $( document ).on( 'click', '.get-dir', function( e, latlngEvent ) {
-            var latlng = getDirection( e, latlngEvent );
-            var self = this;
-
-            if ( navigator.geolocation ) {
-                navigator.geolocation.getCurrentPosition(function( position ) {
-                    foundLocation( position, self, latlng );
-                }, notAllowedLocation);
-
-                function notAllowedLocation( error ) {
-                    redirectOnDirection( latlng, 0 );
-                }
-
-                function foundLocation( position, self, latlng ) {
-                    var currentCoordinates = position.coords.latitude + ',' + position.coords.longitude;
-                    redirectOnDirection( latlng, currentCoordinates );
-                }
-            } else {
-                redirectOnDirection( latlng, 0 );
-            }
-        });
-    }
-
-    function redirectOnDirection( latlng, currentCoordinates ) {
-        window.open(Routing.generate(
-            'domain_search_show_directions',
-            {
-                targetCoordinates:  latlng,
-                currentCoordinates: currentCoordinates
-            }
-        ));
-    }
-
-    function getDirection( e, latlngEvent ) {
-        var latlng;
-
-        if ( e ) {
-            latlng = $( e.currentTarget ).data( 'latlng' );
-            var id = $( e.currentTarget ).data( 'id' );
+        $('.get-dir').click(function() {
+            var businessSlug = $(this).data('slug');
+            var id = $(this).data('id');
             $( document ).trigger( 'trackingInteractions', ['directionButton', id] );
-        } else if ( latlngEvent ) {
-            latlng = latlngEvent;
-        }
-
-        return latlng;
+            window.open( Routing.generate( 'domain_search_show_directions', { slug: businessSlug } ) );
+        });
     }
 
     function initMapRequestedListener() {
@@ -355,7 +354,7 @@ document.addEventListener( 'jQueryLoaded', function() {
 
         this.options.mapOptions = {
             container: 'map',
-            style: 'mapbox://styles/mapbox/basic-v9',
+            style: 'mapbox://styles/mapbox/streets-v9',
             center: {
                 lat: center[0],
                 lng: center[1]
@@ -552,8 +551,9 @@ document.addEventListener( 'jQueryLoaded', function() {
             }
         }
 
-        var event = new CustomEvent( 'mapSpin' );
-        document.dispatchEvent( event );
+        if ( !$( '[data-target-coordinates]' ).data( 'targetCoordinates' ) ) {
+            document.dispatchEvent(mapSpinEvent);
+        }
 
         if ( !_.isEmpty( this.options.markers ) ) {
             addMarkers( this.options.markers );

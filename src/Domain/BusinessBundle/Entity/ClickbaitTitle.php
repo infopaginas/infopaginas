@@ -13,13 +13,13 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Table(name="clickbait_banner")
- * @ORM\Entity(repositoryClass="Domain\BusinessBundle\Repository\ClickbaitBannerRepository")
+ * @ORM\Table(name="clickbait_title")
+ * @ORM\Entity(repositoryClass="Domain\BusinessBundle\Repository\ClickbaitTitleRepository")
  * @ORM\HasLifecycleCallbacks
  * @Gedmo\TranslationEntity(class="Domain\BusinessBundle\Entity\Translation\ClickbaitTranslation")
  * @UniqueEntity("locality")
  */
-class ClickbaitBanner implements DefaultEntityInterface, TranslatableInterface
+class ClickbaitTitle implements DefaultEntityInterface, TranslatableInterface
 {
     use DefaultEntityTrait;
     use PersonalTranslatable;
@@ -56,16 +56,6 @@ class ClickbaitBanner implements DefaultEntityInterface, TranslatableInterface
      * @Assert\NotBlank()
      */
     protected $url;
-
-    /**
-     * @var Media - Media
-     * @ORM\ManyToOne(targetEntity="Oxa\Sonata\MediaBundle\Entity\Media",
-     *     inversedBy="clickbaitBanners",
-     *     cascade={"persist"}
-     *     )
-     * @ORM\JoinColumn(name="image_id", referencedColumnName="id", nullable=true)
-     */
-    protected $image;
 
     protected $changeState;
 
@@ -104,7 +94,7 @@ class ClickbaitBanner implements DefaultEntityInterface, TranslatableInterface
     /**
      * @param Locality|null $locality
      *
-     * @return ClickbaitBanner
+     * @return ClickbaitTitle
      */
     public function setLocality($locality)
     {
@@ -124,7 +114,7 @@ class ClickbaitBanner implements DefaultEntityInterface, TranslatableInterface
     /**
      * @param string $title
      *
-     * @return ClickbaitBanner
+     * @return ClickbaitTitle
      */
     public function setTitle($title)
     {
@@ -143,31 +133,11 @@ class ClickbaitBanner implements DefaultEntityInterface, TranslatableInterface
 
     /**
      * @param mixed $url
-     * @return ClickbaitBanner
+     * @return ClickbaitTitle
      */
     public function setUrl($url)
     {
         $this->url = $url;
-
-        return $this;
-    }
-
-    /**
-     * @return \Oxa\Sonata\MediaBundle\Entity\Media
-     */
-    public function getImage()
-    {
-        return $this->image;
-    }
-
-    /**
-     * @param \Oxa\Sonata\MediaBundle\Entity\Media $image
-     *
-     * @return ClickbaitBanner
-     */
-    public function setImage(Media $image = null)
-    {
-        $this->image = $image;
 
         return $this;
     }

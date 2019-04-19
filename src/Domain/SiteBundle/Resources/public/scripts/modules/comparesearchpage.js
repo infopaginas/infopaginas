@@ -38,50 +38,11 @@ define(
     };
 
     compareSearchPage.prototype.bindEventsDirections = function () {
-        $( document ).on( 'click', '.get-dir', function( e, latlngEvent ) {
-            var latlng = getDirection( e, latlngEvent );
-            var self = this;
-
-            function getDirection( e, latlngEvent ) {
-                var latlng;
-
-                if ( e ) {
-                    latlng = $( e.currentTarget ).data( 'latlng' );
-                    var id = $( e.currentTarget ).data( 'id' );
-                    $( document ).trigger( 'trackingInteractions', ['directionButton', id] );
-                } else if ( latlngEvent ) {
-                    latlng = latlngEvent;
-                }
-
-                return latlng;
-            }
-
-            function redirectOnDirection( latlng, currentCoordinates ) {
-                window.open(Routing.generate(
-                    'domain_search_show_directions',
-                    {
-                        targetCoordinates:  latlng,
-                        currentCoordinates: currentCoordinates
-                    }
-                ));
-            }
-
-            if ( navigator.geolocation ) {
-                navigator.geolocation.getCurrentPosition(function( position ) {
-                    foundLocation( position, self, latlng );
-                }, notAllowedLocation);
-
-                function notAllowedLocation( error ) {
-                    redirectOnDirection( latlng, 0 );
-                }
-
-                function foundLocation( position, self, latlng ) {
-                    var currentCoordinates = position.coords.latitude + ',' + position.coords.longitude;
-                    redirectOnDirection( latlng, currentCoordinates );
-                }
-            } else {
-                redirectOnDirection( latlng, 0 );
-            }
+        $('.get-dir').click(function() {
+            var businessSlug = $(this).data('slug');
+            var id = $(this).data('id');
+            $( document ).trigger( 'trackingInteractions', ['directionButton', id] );
+            window.open( Routing.generate( 'domain_search_show_directions', { slug: businessSlug } ) );
         });
     };
 

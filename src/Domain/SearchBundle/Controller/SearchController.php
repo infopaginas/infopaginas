@@ -2,11 +2,12 @@
 
 namespace Domain\SearchBundle\Controller;
 
+use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\Category;
 use Domain\BusinessBundle\Entity\Locality;
 use Domain\BusinessBundle\Manager\BusinessProfileManager;
 use Domain\BusinessBundle\Manager\CategoryManager;
-use Domain\BusinessBundle\Manager\ClickbaitBannerManager;
+use Domain\BusinessBundle\Manager\ClickbaitTitleManager;
 use Domain\BusinessBundle\Manager\LocalityManager;
 use Domain\BusinessBundle\Util\BusinessProfileUtil;
 use Domain\BusinessBundle\Util\SlugUtil;
@@ -140,19 +141,37 @@ class SearchController extends Controller
         );
     }
 
-    public function showDirectionsAction(string $targetCoordinates, string $currentCoordinates)
+    public function showDirectionsAction(string $slug)
     {
-        if (!$currentCoordinates) {
+        /** @var BusinessProfile $businessProfile */
+        $businessProfile = $this->getBusinessProfileManager()->findBySlug($slug);
+
+        if (!$businessProfile) {
+            $businessProfileAlias = $this->getBusinessProfileManager()->findByAlias($slug);
+
+            if ($businessProfileAlias) {
+                return $this->redirectToRoute(
+                    'domain_search_show_directions',
+                    ['slug' => $businessProfileAlias->getSlug()],
+                    301
+                );
+            } else {
+                throw new \Symfony\Component\HttpKernel\Exception\GoneHttpException();
+            }
+        } elseif (!$businessProfile->getIsActive()) {
+            throw $this->createNotFoundException();
+        }
+
+        $targetCoordinates = $businessProfile->getLatitude() . ',' . $businessProfile->getLongitude();
+
+/*        if (!$currentCoordinates) {
             $currentCoordinates = $this->getParameter('san_juan_coordinates');
             $currentCoordinates = str_replace(' ', '', $currentCoordinates);
-        }
+        }*/
 
         return $this->render(
             ':redesign:mapbox-get-directions.html.twig',
-            [
-                'targetCoordinates'  => $targetCoordinates,
-                'currentCoordinates' => $currentCoordinates,
-            ]
+            ['targetCoordinates'  => $targetCoordinates]
         );
     }
 
@@ -432,11 +451,11 @@ class SearchController extends Controller
     }
 
     /**
-     * @return \Domain\BusinessBundle\Manager\ClickbaitBannerManager
+     * @return ClickbaitTitleManager
      */
-    protected function getClickbaitBannerManager() : ClickbaitBannerManager
+    protected function getClickbaitTitleManager() : ClickbaitTitleManager
     {
-        return $this->get('domain_business.manager.clickbait_banner_manager');
+        return $this->get('domain_business.manager.clickbait_title_manager');
     }
 
     /**
@@ -606,7 +625,7 @@ class SearchController extends Controller
                 'searchRelevance'   => SearchDataUtil::ORDER_BY_RELEVANCE,
                 'searchDistance'    => SearchDataUtil::ORDER_BY_DISTANCE,
                 'trackingParams'    => $trackingParams,
-                'clickbaitBanner'   => $this->getClickbaitBannerManager()->getClickbaitBannerByLocality($locality),
+                'clickbaitTitle'    => $this->getClickbaitTitleManager()->getClickbaitTitleByLocality($locality),
             ]
         );
     }

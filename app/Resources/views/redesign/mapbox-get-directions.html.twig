@@ -9,35 +9,13 @@
 
 {% block body %}
     <span data-target-coordinates="{{ targetCoordinates }}"></span>
-    <span data-current-coordinates="{{ currentCoordinates }}"></span>
-    <div id="map" class="map">
+    <div id="map" class="map blur-effect">
         {% include ':redesign/blocks/mapbox:mapLogo.html.twig' %}
-    </div>
-    <div>
-        <div id="profile">
-            <input id='driving-traffic' type='radio' name='rtoggle' value='driving-traffic' checked='checked' data-project>
-            <label for='driving-traffic'>{% trans %}mapbox.profile.driving_traffic{% endtrans %}</label>
-            <br>
-            <span>{% trans %}mapbox.profile.driving_traffic_info{% endtrans %}</span>
-            <br>
-            <input id='cycling' type='radio' name='rtoggle' value='cycling' data-project>
-            <label for='cycling'>{% trans %}mapbox.profile.cycling{% endtrans %}</label>
-            <br>
-            <span>{% trans %}mapbox.profile.cycling_info{% endtrans %}</span>
-            <br>
-            <input id='walking' type='radio' name='rtoggle' value='walking' data-project>
-            <label for='walking'>{% trans %}mapbox.profile.walking{% endtrans %}</label>
-            <br>
-            <span>{% trans %}mapbox.profile.walking_info{% endtrans %}</span>
-            <br>
-            <input id='driving' type='radio' name='rtoggle' value='driving' data-project>
-            <label for='driving'>{% trans %}mapbox.profile.driving{% endtrans %}</label>
-            <br>
-            <span>{% trans %}mapbox.profile.driving_info{% endtrans %}</span>
-            <br>
-            <h3>{% trans %}mapbox.profile.info{% endtrans %}</h3>
+        <div class="social-medias">
+            {% include ':redesign/blocks:social-share.html.twig' %}
         </div>
     </div>
+
 {% endblock %}
 
 {% block scripts %}
@@ -55,4 +33,4 @@
             });
         });
     </script>
-{% endblock%}
+{% endblock %}
