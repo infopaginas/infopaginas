@@ -5,7 +5,9 @@ namespace Domain\EmergencyBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Oxa\Sonata\AdminBundle\Model\ChangeStateInterface;
 use Oxa\Sonata\AdminBundle\Util\Helpers\AdminHelper;
+use Oxa\Sonata\AdminBundle\Util\Traits\ChangeStateTrait;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -15,8 +17,10 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Entity(repositoryClass="Domain\EmergencyBundle\Repository\EmergencyCategoryRepository")
  * @ORM\HasLifecycleCallbacks()
  */
-class EmergencyCategory
+class EmergencyCategory implements ChangeStateInterface
 {
+    use ChangeStateTrait;
+
     /**
      * @var int
      *
@@ -89,8 +93,6 @@ class EmergencyCategory
      * )
      */
     protected $catalogItems;
-
-    protected $changeState;
 
     /**
      * Constructor
@@ -321,17 +323,5 @@ class EmergencyCategory
     public function updateSearchName()
     {
         $this->searchName = AdminHelper::convertAccentedString($this->name);
-    }
-
-    public function getChangeState()
-    {
-        return $this->changeState;
-    }
-
-    public function setChangeState(array $changeState) : self
-    {
-        $this->changeState = $changeState;
-
-        return $this;
     }
 }

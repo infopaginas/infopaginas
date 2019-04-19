@@ -6,8 +6,10 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\ReportBundle\Entity\ExportReport;
+use Oxa\Sonata\AdminBundle\Model\ChangeStateInterface;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\AvailableUserEntityTrait;
+use Oxa\Sonata\AdminBundle\Util\Traits\ChangeStateTrait;
 use Oxa\Sonata\AdminBundle\Util\Traits\UserCUableEntityTrait;
 use Doctrine\ORM\Mapping as ORM;
 use Oxa\Sonata\UserBundle\Model\UserRoleInterface;
@@ -22,9 +24,9 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Entity(repositoryClass="Oxa\Sonata\UserBundle\Entity\Repository\UserRepository")
  * @ORM\HasLifecycleCallbacks()
  * */
-class User extends BaseUser implements DefaultEntityInterface, UserRoleInterface
+class User extends BaseUser implements DefaultEntityInterface, UserRoleInterface, ChangeStateInterface
 {
-    use AvailableUserEntityTrait, UserCUableEntityTrait;
+    use AvailableUserEntityTrait, UserCUableEntityTrait, ChangeStateTrait;
 
     /**
      * @ORM\Id
@@ -127,8 +129,6 @@ class User extends BaseUser implements DefaultEntityInterface, UserRoleInterface
      * @ORM\Column(name="businesses_count", type="integer", options={"default" : 0})
      */
     protected $businessesCount;
-
-    protected $changeState;
 
     /**
      * Constructor
@@ -551,18 +551,6 @@ class User extends BaseUser implements DefaultEntityInterface, UserRoleInterface
     public function setBusinessesCount($businessesCount)
     {
         $this->businessesCount = $businessesCount;
-        return $this;
-    }
-
-    public function getChangeState()
-    {
-        return $this->changeState;
-    }
-
-    public function setChangeState(array $changeState) : self
-    {
-        $this->changeState = $changeState;
-
         return $this;
     }
 }

@@ -3,6 +3,8 @@
 namespace Domain\BusinessBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Oxa\Sonata\AdminBundle\Model\ChangeStateInterface;
+use Oxa\Sonata\AdminBundle\Util\Traits\ChangeStateTrait;
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\Common\Collections\ArrayCollection;
 use Domain\BusinessBundle\Entity\Area;
@@ -23,11 +25,12 @@ use Sonata\TranslationBundle\Model\Gedmo\TranslatableInterface;
  * @ORM\HasLifecycleCallbacks
  * @Gedmo\TranslationEntity(class="Domain\BusinessBundle\Entity\Translation\LocalityTranslation")
  */
-class Locality implements GeolocationInterface, DefaultEntityInterface, TranslatableInterface
+class Locality implements GeolocationInterface, DefaultEntityInterface, TranslatableInterface, ChangeStateInterface
 {
     use DefaultEntityTrait;
     use LocationTrait;
     use PersonalTranslatable;
+    use ChangeStateTrait;
 
     const ALL_LOCALITY = 'PR';
     const ALL_LOCALITY_NAME = 'Puerto Rico';
@@ -156,8 +159,6 @@ class Locality implements GeolocationInterface, DefaultEntityInterface, Translat
      *     )
      */
     protected $pseudos;
-
-    protected $changeState;
 
     /**
      * Constructor
@@ -482,17 +483,5 @@ class Locality implements GeolocationInterface, DefaultEntityInterface, Translat
     public function removePseudo($pseudo)
     {
         $this->pseudos->removeElement($pseudo);
-    }
-
-    public function getChangeState()
-    {
-        return $this->changeState;
-    }
-
-    public function setChangeState(array $changeState) : self
-    {
-        $this->changeState = $changeState;
-
-        return $this;
     }
 }

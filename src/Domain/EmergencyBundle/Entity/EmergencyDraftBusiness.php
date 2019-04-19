@@ -6,6 +6,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Domain\ReportBundle\Model\ReportInterface;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Oxa\Sonata\AdminBundle\Model\ChangeStateInterface;
+use Oxa\Sonata\AdminBundle\Util\Traits\ChangeStateTrait;
 use Symfony\Component\Validator\Constraints as Assert;
 use Domain\BusinessBundle\Validator\Constraints\BusinessProfileWorkingHourType as BusinessWorkingHourTypeValidator;
 use Domain\EmergencyBundle\Validator\Constraints\EmergencyDraftBusinessCategoryType as DraftCategoryTypeValidator;
@@ -19,8 +21,10 @@ use Domain\EmergencyBundle\Validator\Constraints\EmergencyDraftBusinessCategoryT
  * @BusinessWorkingHourTypeValidator()
  * @DraftCategoryTypeValidator()
  */
-class EmergencyDraftBusiness extends EmergencyAbstractBusiness implements ReportInterface
+class EmergencyDraftBusiness extends EmergencyAbstractBusiness implements ReportInterface, ChangeStateInterface
 {
+    use ChangeStateTrait;
+
     const STATUS_PENDING  = 'pending';
     const STATUS_APPROVED = 'approved';
     const STATUS_REJECTED = 'rejected';
@@ -108,8 +112,6 @@ class EmergencyDraftBusiness extends EmergencyAbstractBusiness implements Report
      * @Assert\Valid()
      */
     protected $collectionWorkingHours;
-
-    protected $changeState;
 
     /**
      * Constructor
@@ -214,17 +216,5 @@ class EmergencyDraftBusiness extends EmergencyAbstractBusiness implements Report
     public static function getStatusAssert()
     {
         return array_keys(self::getStatuses());
-    }
-
-    public function getChangeState()
-    {
-        return $this->changeState;
-    }
-
-    public function setChangeState(array $changeState) : self
-    {
-        $this->changeState = $changeState;
-
-        return $this;
     }
 }

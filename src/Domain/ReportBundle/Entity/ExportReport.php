@@ -3,6 +3,8 @@
 namespace Domain\ReportBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Oxa\Sonata\AdminBundle\Model\ChangeStateInterface;
+use Oxa\Sonata\AdminBundle\Util\Traits\ChangeStateTrait;
 use Oxa\Sonata\UserBundle\Entity\User;
 
 /**
@@ -11,8 +13,10 @@ use Oxa\Sonata\UserBundle\Entity\User;
  * @ORM\Table(name="export_report")
  * @ORM\Entity(repositoryClass="Domain\ReportBundle\Repository\ExportReportRepository")
  */
-class ExportReport
+class ExportReport implements ChangeStateInterface
 {
+    use ChangeStateTrait;
+
     const STATUS_PENDING = 'pending';
     const STATUS_ERROR   = 'error';
     const STATUS_READY   = 'ready';
@@ -77,8 +81,6 @@ class ExportReport
      * @ORM\Column(name="links", type="json_array", nullable=true)
      */
     protected $links;
-
-    protected $changeState;
 
     /**
      * ExportReport constructor.
@@ -264,18 +266,6 @@ class ExportReport
     public function setLinks($links)
     {
         $this->links = $links;
-
-        return $this;
-    }
-
-    public function getChangeState()
-    {
-        return $this->changeState;
-    }
-
-    public function setChangeState(array $changeState) : self
-    {
-        $this->changeState = $changeState;
 
         return $this;
     }

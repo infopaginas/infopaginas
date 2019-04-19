@@ -3,6 +3,8 @@
 namespace Domain\BusinessBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Oxa\Sonata\AdminBundle\Model\ChangeStateInterface;
+use Oxa\Sonata\AdminBundle\Util\Traits\ChangeStateTrait;
 use Symfony\Component\Validator\Constraints as Assert;
 use Misd\PhoneNumberBundle\Validator\Constraints\PhoneNumber as AssertPhoneNumber;
 
@@ -13,8 +15,10 @@ use Misd\PhoneNumberBundle\Validator\Constraints\PhoneNumber as AssertPhoneNumbe
  * @ORM\Entity(repositoryClass="Domain\BusinessBundle\Repository\BusinessProfilePhoneRepository")
  * @ORM\HasLifecycleCallbacks()
  */
-class BusinessProfilePhone
+class BusinessProfilePhone implements ChangeStateInterface
 {
+    use ChangeStateTrait;
+
     const REGEX_PHONE_PATTERN = '/^\d{3}-\d{3}-\d{4}$/';
     const MAX_PHONE_LENGTH = 15;
 
@@ -69,8 +73,6 @@ class BusinessProfilePhone
      * @ORM\JoinColumn(name="business_profile_id", referencedColumnName="id", onDelete="CASCADE")
      */
     protected $businessProfile;
-
-    protected $changeState;
 
     public function __construct()
     {
@@ -260,17 +262,5 @@ class BusinessProfilePhone
     public function setPriorityValue()
     {
         $this->priority = self::getPriorityByType($this->type);
-    }
-
-    public function getChangeState()
-    {
-        return $this->changeState;
-    }
-
-    public function setChangeState(array $changeState) : self
-    {
-        $this->changeState = $changeState;
-
-        return $this;
     }
 }

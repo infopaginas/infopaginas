@@ -6,8 +6,10 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Domain\ArticleBundle\Entity\Article;
 use Domain\BusinessBundle\Entity\Translation\CategoryTranslation;
+use Oxa\Sonata\AdminBundle\Model\ChangeStateInterface;
 use Oxa\Sonata\AdminBundle\Model\CopyableEntityInterface;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
+use Oxa\Sonata\AdminBundle\Util\Traits\ChangeStateTrait;
 use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Sonata\TranslationBundle\Model\Gedmo\TranslatableInterface;
@@ -22,10 +24,11 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Entity(repositoryClass="Domain\BusinessBundle\Repository\CategoryRepository")
  * @Gedmo\TranslationEntity(class="Domain\BusinessBundle\Entity\Translation\CategoryTranslation")
  */
-class Category implements DefaultEntityInterface, CopyableEntityInterface, TranslatableInterface
+class Category implements DefaultEntityInterface, CopyableEntityInterface, TranslatableInterface, ChangeStateInterface
 {
     use DefaultEntityTrait;
     use PersonalTranslatable;
+    use ChangeStateTrait;
 
     const CATEGORY_FIELD_NAME = 'name';
     const CATEGORY_LOCALE_PROPERTY = 'searchText';
@@ -177,8 +180,6 @@ class Category implements DefaultEntityInterface, CopyableEntityInterface, Trans
      * @ORM\Column(name="show_suggestion", type="boolean", options={"default" : 0})
      */
     protected $showSuggestion;
-
-    protected $changeState;
 
     public function setLocale($locale)
     {
@@ -626,17 +627,5 @@ class Category implements DefaultEntityInterface, CopyableEntityInterface, Trans
             self::CATEGORY_ARTICLE_SLUG,
             self::CATEGORY_UNDEFINED_SLUG,
         ];
-    }
-
-    public function getChangeState()
-    {
-        return $this->changeState;
-    }
-
-    public function setChangeState(array $changeState) : self
-    {
-        $this->changeState = $changeState;
-
-        return $this;
     }
 }

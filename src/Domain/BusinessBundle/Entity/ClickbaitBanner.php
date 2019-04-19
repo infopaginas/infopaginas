@@ -3,7 +3,9 @@
 namespace Domain\BusinessBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Oxa\Sonata\AdminBundle\Model\ChangeStateInterface;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
+use Oxa\Sonata\AdminBundle\Util\Traits\ChangeStateTrait;
 use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Oxa\Sonata\MediaBundle\Entity\Media;
@@ -19,10 +21,11 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @Gedmo\TranslationEntity(class="Domain\BusinessBundle\Entity\Translation\ClickbaitTranslation")
  * @UniqueEntity("locality")
  */
-class ClickbaitBanner implements DefaultEntityInterface, TranslatableInterface
+class ClickbaitBanner implements DefaultEntityInterface, TranslatableInterface, ChangeStateInterface
 {
     use DefaultEntityTrait;
     use PersonalTranslatable;
+    use ChangeStateTrait;
 
     /**
      * @var int
@@ -66,8 +69,6 @@ class ClickbaitBanner implements DefaultEntityInterface, TranslatableInterface
      * @ORM\JoinColumn(name="image_id", referencedColumnName="id", nullable=true)
      */
     protected $image;
-
-    protected $changeState;
 
     /**
      * Constructor
@@ -168,18 +169,6 @@ class ClickbaitBanner implements DefaultEntityInterface, TranslatableInterface
     public function setImage(Media $image = null)
     {
         $this->image = $image;
-
-        return $this;
-    }
-
-    public function getChangeState()
-    {
-        return $this->changeState;
-    }
-
-    public function setChangeState(array $changeState) : self
-    {
-        $this->changeState = $changeState;
 
         return $this;
     }

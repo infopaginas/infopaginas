@@ -4,8 +4,10 @@ namespace Domain\BusinessBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Oxa\Sonata\AdminBundle\Model\ChangeStateInterface;
 use Oxa\Sonata\AdminBundle\Model\CopyableEntityInterface;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
+use Oxa\Sonata\AdminBundle\Util\Traits\ChangeStateTrait;
 use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Sonata\TranslationBundle\Model\Gedmo\TranslatableInterface;
@@ -21,10 +23,11 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @UniqueEntity("name")
  * @Gedmo\TranslationEntity(class="Domain\BusinessBundle\Entity\Translation\TagTranslation")
  */
-class Tag implements DefaultEntityInterface, CopyableEntityInterface, TranslatableInterface
+class Tag implements DefaultEntityInterface, CopyableEntityInterface, TranslatableInterface, ChangeStateInterface
 {
     use DefaultEntityTrait;
     use PersonalTranslatable;
+    use ChangeStateTrait;
 
     const TAG_NAME_MAX_LENGTH = 100;
 
@@ -66,8 +69,6 @@ class Tag implements DefaultEntityInterface, CopyableEntityInterface, Translatab
      * )
      */
     protected $translations;
-
-    protected $changeState;
 
     /**
      * Get id
@@ -171,17 +172,5 @@ class Tag implements DefaultEntityInterface, CopyableEntityInterface, Translatab
     public function removeTranslation(\Domain\BusinessBundle\Entity\Translation\TagTranslation $translation)
     {
         $this->translations->removeElement($translation);
-    }
-
-    public function getChangeState()
-    {
-        return $this->changeState;
-    }
-
-    public function setChangeState(array $changeState) : self
-    {
-        $this->changeState = $changeState;
-
-        return $this;
     }
 }

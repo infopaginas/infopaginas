@@ -4,8 +4,10 @@ namespace Oxa\Sonata\UserBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Gedmo\Translatable\Translatable;
+use Oxa\Sonata\AdminBundle\Model\ChangeStateInterface;
 use Oxa\Sonata\AdminBundle\Model\CopyableEntityInterface;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
+use Oxa\Sonata\AdminBundle\Util\Traits\ChangeStateTrait;
 use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
 use Doctrine\ORM\Mapping as ORM;
 use Sonata\TranslationBundle\Model\Gedmo\TranslatableInterface;
@@ -20,10 +22,11 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  * @Gedmo\TranslationEntity(class="Oxa\Sonata\UserBundle\Entity\Translation\GroupTranslation")
  * @UniqueEntity("code")
  */
-class Group extends BaseGroup implements DefaultEntityInterface, TranslatableInterface
+class Group extends BaseGroup implements DefaultEntityInterface, TranslatableInterface, ChangeStateInterface
 {
     use DefaultEntityTrait;
     use PersonalTranslatable;
+    use ChangeStateTrait;
 
     // codes are also used as priority in admin panel to know if an user is able to edit another user
     const CODE_ADMINISTRATOR    = 1; // Admin portal user
@@ -83,8 +86,6 @@ class Group extends BaseGroup implements DefaultEntityInterface, TranslatableInt
      * )
      */
     protected $translations;
-
-    protected $changeState;
 
     /**
      * Group constructor.
@@ -186,17 +187,5 @@ class Group extends BaseGroup implements DefaultEntityInterface, TranslatableInt
     public function removeTranslation(\Oxa\Sonata\UserBundle\Entity\Translation\GroupTranslation $translation)
     {
         $this->translations->removeElement($translation);
-    }
-
-    public function getChangeState()
-    {
-        return $this->changeState;
-    }
-
-    public function setChangeState(array $changeState) : self
-    {
-        $this->changeState = $changeState;
-
-        return $this;
     }
 }

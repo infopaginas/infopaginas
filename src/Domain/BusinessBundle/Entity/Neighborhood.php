@@ -3,6 +3,8 @@
 namespace Domain\BusinessBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Oxa\Sonata\AdminBundle\Model\ChangeStateInterface;
+use Oxa\Sonata\AdminBundle\Util\Traits\ChangeStateTrait;
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\Common\Collections\ArrayCollection;
 use Domain\BusinessBundle\Entity\Area;
@@ -22,10 +24,11 @@ use Sonata\TranslationBundle\Model\Gedmo\TranslatableInterface;
  * @ORM\HasLifecycleCallbacks
  * @Gedmo\TranslationEntity(class="Domain\BusinessBundle\Entity\Translation\NeighborhoodTranslation")
  */
-class Neighborhood implements DefaultEntityInterface, TranslatableInterface
+class Neighborhood implements DefaultEntityInterface, TranslatableInterface, ChangeStateInterface
 {
     use DefaultEntityTrait;
     use PersonalTranslatable;
+    use ChangeStateTrait;
 
     /**
      * @var int
@@ -87,8 +90,6 @@ class Neighborhood implements DefaultEntityInterface, TranslatableInterface
      * )
      */
     protected $translations;
-
-    protected $changeState;
 
     /**
      * Constructor
@@ -245,17 +246,5 @@ class Neighborhood implements DefaultEntityInterface, TranslatableInterface
     public function __toString()
     {
         return $this->getName() ?: '';
-    }
-
-    public function getChangeState()
-    {
-        return $this->changeState;
-    }
-
-    public function setChangeState(array $changeState) : self
-    {
-        $this->changeState = $changeState;
-
-        return $this;
     }
 }

@@ -3,6 +3,8 @@
 namespace Domain\BusinessBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Oxa\Sonata\AdminBundle\Model\ChangeStateInterface;
+use Oxa\Sonata\AdminBundle\Util\Traits\ChangeStateTrait;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -11,8 +13,10 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Table(name="business_profile_keyword")
  * @ORM\Entity(repositoryClass="Domain\BusinessBundle\Repository\BusinessProfileKeywordRepository")
  */
-class BusinessProfileKeyword
+class BusinessProfileKeyword implements ChangeStateInterface
 {
+    use ChangeStateTrait;
+
     const KEYWORD_MIN_LENGTH = 2;
     const KEYWORD_MAX_LENGTH = 255;
     /**
@@ -61,8 +65,6 @@ class BusinessProfileKeyword
      * @ORM\JoinColumn(name="business_profile_id", referencedColumnName="id", onDelete="CASCADE")
      */
     protected $businessProfile;
-
-    protected $changeState;
 
     /**
      * @return string
@@ -144,17 +146,5 @@ class BusinessProfileKeyword
     public function getBusinessProfile()
     {
         return $this->businessProfile;
-    }
-
-    public function getChangeState()
-    {
-        return $this->changeState;
-    }
-
-    public function setChangeState(array $changeState) : self
-    {
-        $this->changeState = $changeState;
-
-        return $this;
     }
 }

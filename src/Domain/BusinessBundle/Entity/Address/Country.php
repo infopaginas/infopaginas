@@ -4,8 +4,10 @@ namespace Domain\BusinessBundle\Entity\Address;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Oxa\Sonata\AdminBundle\Model\ChangeStateInterface;
 use Oxa\Sonata\AdminBundle\Model\CopyableEntityInterface;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
+use Oxa\Sonata\AdminBundle\Util\Traits\ChangeStateTrait;
 use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Sonata\TranslationBundle\Model\Gedmo\TranslatableInterface;
@@ -19,13 +21,14 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  * @ORM\Entity(repositoryClass="Domain\BusinessBundle\Repository\CountryRepository")
  * @Gedmo\TranslationEntity(class="Domain\BusinessBundle\Entity\Translation\Address\CountryTranslation")
  */
-class Country implements DefaultEntityInterface, CopyableEntityInterface, TranslatableInterface
+class Country implements DefaultEntityInterface, CopyableEntityInterface, TranslatableInterface, ChangeStateInterface
 {
     const PUERTO_RICO_SHORT_NAME = 'pr';
     const USA_SHORT_NAME         = 'us';
 
     use DefaultEntityTrait;
     use PersonalTranslatable;
+    use ChangeStateTrait;
 
     /**
      * @var int
@@ -71,8 +74,6 @@ class Country implements DefaultEntityInterface, CopyableEntityInterface, Transl
      * )
      */
     protected $translations;
-
-    protected $changeState;
 
     /**
      * Get id
@@ -212,17 +213,5 @@ class Country implements DefaultEntityInterface, CopyableEntityInterface, Transl
             self::PUERTO_RICO_SHORT_NAME,
             self::USA_SHORT_NAME,
         ];
-    }
-
-    public function getChangeState()
-    {
-        return $this->changeState;
-    }
-
-    public function setChangeState(array $changeState) : self
-    {
-        $this->changeState = $changeState;
-
-        return $this;
     }
 }

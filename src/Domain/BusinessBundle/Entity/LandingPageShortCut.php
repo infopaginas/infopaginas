@@ -4,7 +4,9 @@ namespace Domain\BusinessBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Oxa\Sonata\AdminBundle\Model\ChangeStateInterface;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
+use Oxa\Sonata\AdminBundle\Util\Traits\ChangeStateTrait;
 use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -16,9 +18,10 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\HasLifecycleCallbacks
  * @UniqueEntity("locality")
  */
-class LandingPageShortCut implements DefaultEntityInterface
+class LandingPageShortCut implements DefaultEntityInterface, ChangeStateInterface
 {
     use DefaultEntityTrait;
+    use ChangeStateTrait;
 
     /**
      * @var int
@@ -57,8 +60,6 @@ class LandingPageShortCut implements DefaultEntityInterface
      * @ORM\Column(name="use_all_location", type="boolean", options={"default" : 0})
      */
     protected $useAllLocation;
-
-    protected $changeState;
 
     /**
      * Constructor
@@ -155,18 +156,6 @@ class LandingPageShortCut implements DefaultEntityInterface
     public function setUseAllLocation($useAllLocation)
     {
         $this->useAllLocation = $useAllLocation;
-
-        return $this;
-    }
-
-    public function getChangeState()
-    {
-        return $this->changeState;
-    }
-
-    public function setChangeState(array $changeState) : self
-    {
-        $this->changeState = $changeState;
 
         return $this;
     }

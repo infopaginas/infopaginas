@@ -6,6 +6,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Domain\ReportBundle\Model\ReportInterface;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Oxa\Sonata\AdminBundle\Model\ChangeStateInterface;
+use Oxa\Sonata\AdminBundle\Util\Traits\ChangeStateTrait;
 use Symfony\Component\Validator\Constraints as Assert;
 use Domain\BusinessBundle\Validator\Constraints\BusinessProfileWorkingHourType as BusinessWorkingHourTypeValidator;
 
@@ -17,8 +19,10 @@ use Domain\BusinessBundle\Validator\Constraints\BusinessProfileWorkingHourType a
  * @ORM\HasLifecycleCallbacks
  * @BusinessWorkingHourTypeValidator()
  */
-class EmergencyBusiness extends EmergencyAbstractBusiness implements ReportInterface
+class EmergencyBusiness extends EmergencyAbstractBusiness implements ReportInterface, ChangeStateInterface
 {
+    use ChangeStateTrait;
+
     const ELASTIC_DOCUMENT_TYPE = 'EmergencyBusiness';
     const DISTANCE_TO_BUSINESS_PRECISION = 1;
 
@@ -99,8 +103,6 @@ class EmergencyBusiness extends EmergencyAbstractBusiness implements ReportInter
      */
     protected $distance;
 
-    protected $changeState;
-
     /**
      * Constructor
      */
@@ -180,17 +182,5 @@ class EmergencyBusiness extends EmergencyAbstractBusiness implements ReportInter
     public function getDistanceUX()
     {
         return number_format($this->getDistance(), self::DISTANCE_TO_BUSINESS_PRECISION, '.', '');
-    }
-
-    public function getChangeState()
-    {
-        return $this->changeState;
-    }
-
-    public function setChangeState(array $changeState) : self
-    {
-        $this->changeState = $changeState;
-
-        return $this;
     }
 }

@@ -185,13 +185,13 @@ class UserActionReportManager extends BaseReportManager
      *
      * @return bool
      */
-    public function registerUserAction($action, $data = [], $entity = null)
+    public function registerUserAction($action, $data = [], $dataSet = [])
     {
         if (!in_array($action, UserActionModel::getTypes())) {
             return false;
         }
 
-        $data = $this->buildUserAction($action, $data, $entity);
+        $data = $this->buildUserAction($action, $data, $dataSet);
         $this->insertUserAction($data);
 
         return true;
@@ -203,7 +203,7 @@ class UserActionReportManager extends BaseReportManager
      *
      * @return array
      */
-    protected function buildUserAction($action, $data = [], $entity = null)
+    protected function buildUserAction($action, $data = [], $dataSet = [])
     {
         $date = $this->mongoDbManager->typeUTCDateTime(new \DateTime());
 
@@ -218,15 +218,6 @@ class UserActionReportManager extends BaseReportManager
 
         if (empty($data['entityName'])) {
             $data['entityName'] = '';
-        }
-
-        $dataSet = [];
-
-        if ($entity && method_exists($entity, 'getChangeState') && $entity->getChangeState()) {
-            foreach ($entity->getChangeState() as $key => $changeSet) {
-                $dataSet['dataBefore'][$key] = $changeSet[0];
-                $dataSet['dataAfter'][$key]  = $changeSet[1];
-            }
         }
 
         $userAction = [
