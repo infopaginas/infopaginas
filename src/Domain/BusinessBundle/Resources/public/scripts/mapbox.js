@@ -286,7 +286,7 @@ document.addEventListener( 'jQueryLoaded', function() {
                         map.stop();
 
                         map.flyTo({
-                            zoom: 9,
+                            zoom: 1,
                             speed: 0.2
                         });
 
