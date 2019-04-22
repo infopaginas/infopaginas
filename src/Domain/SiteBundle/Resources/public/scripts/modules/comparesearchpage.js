@@ -33,17 +33,6 @@ define(
             });
           }
         })
-
-        this.bindEventsDirections();
-    };
-
-    compareSearchPage.prototype.bindEventsDirections = function () {
-        $('.get-dir').click(function() {
-            var businessSlug = $(this).data('slug');
-            var id = $(this).data('id');
-            $( document ).trigger( 'trackingInteractions', ['directionButton', id] );
-            window.open( Routing.generate( 'domain_search_show_directions', { slug: businessSlug } ) );
-        });
     };
 
     return compareSearchPage;
