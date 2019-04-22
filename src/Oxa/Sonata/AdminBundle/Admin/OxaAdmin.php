@@ -4,6 +4,7 @@ namespace Oxa\Sonata\AdminBundle\Admin;
 use Domain\BusinessBundle\Model\DatetimePeriodStatusInterface;
 use Domain\BusinessBundle\Util\Traits\StatusTrait;
 use Domain\ReportBundle\Model\UserActionModel;
+use Oxa\Sonata\AdminBundle\Model\ChangeStateInterface;
 use Oxa\Sonata\AdminBundle\Model\CopyableEntityInterface;
 use Oxa\Sonata\AdminBundle\Model\PostponeRemoveInterface;
 use Oxa\Sonata\MediaBundle\Entity\Media;
@@ -308,7 +309,7 @@ class OxaAdmin extends BaseAdmin
             }
         }
 
-        if (method_exists($entity, 'setChangeState')) {
+        if ($entity instanceof ChangeStateInterface) {
             $entity->setChangeState($changeSet);
         }
     }
@@ -348,7 +349,7 @@ class OxaAdmin extends BaseAdmin
 
         $data = $this->generateUserLogData($action, $entity);
 
-        $actionReportManager->registerUserAction($action, $data, $entity);
+        $actionReportManager->registerUserAction($action, $data);
     }
 
     /**
@@ -373,6 +374,13 @@ class OxaAdmin extends BaseAdmin
 
         if ($url) {
             $data['url'] = $url;
+        }
+
+        if ($entity && $entity instanceof ChangeStateInterface && $entity->getChangeState()) {
+            foreach ($entity->getChangeState() as $key => $changeSet) {
+                $data['dataSet']['dataBefore'][$key] = $changeSet[0];
+                $data['dataSet']['dataAfter'][$key]  = $changeSet[1];
+            }
         }
 
         return $data;

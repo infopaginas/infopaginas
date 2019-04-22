@@ -6,7 +6,9 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Mapping as ORM;
 use Domain\BusinessBundle\Entity\BusinessProfile;
+use Oxa\Sonata\AdminBundle\Model\ChangeStateInterface;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
+use Oxa\Sonata\AdminBundle\Util\Traits\ChangeStateTrait;
 use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
 use Oxa\Sonata\MediaBundle\Entity\Gallery;
 use Oxa\Sonata\MediaBundle\Entity\Media;
@@ -28,10 +30,11 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\HasLifecycleCallbacks
  * @Gedmo\TranslationEntity(class="Domain\BusinessBundle\Entity\Translation\Media\BusinessGalleryTranslation")
  */
-class BusinessGallery implements DefaultEntityInterface, TranslatableInterface
+class BusinessGallery implements DefaultEntityInterface, TranslatableInterface, ChangeStateInterface
 {
     use DefaultEntityTrait;
     use PersonalTranslatable;
+    use ChangeStateTrait;
 
     const MAX_IMAGES_PER_BUSINESS = 25;
 
@@ -97,8 +100,6 @@ class BusinessGallery implements DefaultEntityInterface, TranslatableInterface
      * @ORM\Column(name="position", type="integer", nullable=true)
      */
     protected $position;
-
-    protected $changeState;
 
     /**
      * Get id
@@ -271,17 +272,5 @@ class BusinessGallery implements DefaultEntityInterface, TranslatableInterface
     public function getPosition()
     {
         return $this->position;
-    }
-
-    public function getChangeState()
-    {
-        return $this->changeState;
-    }
-
-    public function setChangeState(array $changeState) : self
-    {
-        $this->changeState = $changeState;
-
-        return $this;
     }
 }

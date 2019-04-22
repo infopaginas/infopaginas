@@ -3,6 +3,8 @@
 namespace Domain\PageBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Oxa\Sonata\AdminBundle\Model\ChangeStateInterface;
+use Oxa\Sonata\AdminBundle\Util\Traits\ChangeStateTrait;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -11,8 +13,10 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Table(name="page_link")
  * @ORM\Entity(repositoryClass="Domain\PageBundle\Repository\PageLinkRepository")
  */
-class PageLink
+class PageLink implements ChangeStateInterface
 {
+    use ChangeStateTrait;
+
     const PAGE_LINK_TYPE_LINK  = 'link';
     const PAGE_LINK_TYPE_OFFER = 'offer';
 
@@ -62,8 +66,6 @@ class PageLink
      * @ORM\JoinColumn(name="page_id", referencedColumnName="id", onDelete="CASCADE")
      */
     protected $page;
-
-    protected $changeState;
 
     public function __construct()
     {
@@ -189,17 +191,5 @@ class PageLink
             self::PAGE_LINK_TYPE_LINK   => 'page_link.type.link',
             self::PAGE_LINK_TYPE_OFFER  => 'page_link.type.offer',
         ];
-    }
-
-    public function getChangeState()
-    {
-        return $this->changeState;
-    }
-
-    public function setChangeState(array $changeState) : self
-    {
-        $this->changeState = $changeState;
-
-        return $this;
     }
 }

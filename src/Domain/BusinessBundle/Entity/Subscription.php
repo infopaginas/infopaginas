@@ -8,8 +8,10 @@ use Domain\BusinessBundle\Model\DatetimePeriodStatusInterface;
 use Domain\BusinessBundle\Model\StatusInterface;
 use Domain\BusinessBundle\Util\Traits\DatetimePeriodStatusTrait;
 use Domain\BusinessBundle\Util\Traits\StatusTrait;
+use Oxa\Sonata\AdminBundle\Model\ChangeStateInterface;
 use Oxa\Sonata\AdminBundle\Model\DatetimePeriodInterface;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
+use Oxa\Sonata\AdminBundle\Util\Traits\ChangeStateTrait;
 use Oxa\Sonata\AdminBundle\Util\Traits\DatetimePeriodTrait;
 use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -24,11 +26,16 @@ use Oxa\Sonata\AdminBundle\Util\Traits\OxaPersonalTranslatable as PersonalTransl
  * @ORM\Entity(repositoryClass="Domain\BusinessBundle\Repository\SubscriptionRepository")
  * @Gedmo\TranslationEntity(class="Domain\BusinessBundle\Entity\Translation\SubscriptionTranslation")
  */
-class Subscription implements DefaultEntityInterface, TranslatableInterface, DatetimePeriodStatusInterface
+class Subscription implements
+    DefaultEntityInterface,
+    TranslatableInterface,
+    DatetimePeriodStatusInterface,
+    ChangeStateInterface
 {
     use DefaultEntityTrait;
     use PersonalTranslatable;
     use DatetimePeriodStatusTrait;
+    use ChangeStateTrait;
 
     const PROPERTY_NAME_UPDATED_AT = 'updatedAt';
 
@@ -69,8 +76,6 @@ class Subscription implements DefaultEntityInterface, TranslatableInterface, Dat
      * )
      */
     protected $translations;
-
-    protected $changeState;
 
     /**
      * Get id
@@ -170,17 +175,5 @@ class Subscription implements DefaultEntityInterface, TranslatableInterface, Dat
     public function removeTranslation(\Domain\BusinessBundle\Entity\Translation\SubscriptionTranslation $translation)
     {
         $this->translations->removeElement($translation);
-    }
-
-    public function getChangeState()
-    {
-        return $this->changeState;
-    }
-
-    public function setChangeState(array $changeState) : self
-    {
-        $this->changeState = $changeState;
-
-        return $this;
     }
 }

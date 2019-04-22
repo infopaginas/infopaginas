@@ -8,6 +8,8 @@ use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\Coupon;
 use Domain\ArticleBundle\Entity\Article;
 use Domain\BusinessBundle\Entity\Media\BusinessGallery;
+use Oxa\Sonata\AdminBundle\Model\ChangeStateInterface;
+use Oxa\Sonata\AdminBundle\Util\Traits\ChangeStateTrait;
 use Oxa\VideoBundle\Entity\VideoMedia;
 use Domain\PageBundle\Entity\Page;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
@@ -27,10 +29,15 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
  * @ORM\HasLifecycleCallbacks
  * @Assert\Callback(methods={"validateMediaSize"})
  */
-class Media extends BaseMedia implements OxaMediaInterface, DefaultEntityInterface, PostponeRemoveInterface
+class Media extends BaseMedia implements
+    OxaMediaInterface,
+    DefaultEntityInterface,
+    PostponeRemoveInterface,
+    ChangeStateInterface
 {
     use DefaultEntityTrait;
     use PostponeRemoveTrait;
+    use ChangeStateTrait;
 
     const UPLOADS_DIR_NAME = 'uploads';
 
@@ -134,8 +141,6 @@ class Media extends BaseMedia implements OxaMediaInterface, DefaultEntityInterfa
      * )
      */
     protected $videoMedia;
-
-    protected $changeState;
 
     /**
      * Get id
@@ -606,17 +611,5 @@ class Media extends BaseMedia implements OxaMediaInterface, DefaultEntityInterfa
         }
 
         return $maxSize;
-    }
-
-    public function getChangeState()
-    {
-        return $this->changeState;
-    }
-
-    public function setChangeState(array $changeState) : self
-    {
-        $this->changeState = $changeState;
-
-        return $this;
     }
 }

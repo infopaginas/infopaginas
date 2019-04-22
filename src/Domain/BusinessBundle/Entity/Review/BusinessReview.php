@@ -4,8 +4,10 @@ namespace Domain\BusinessBundle\Entity\Review;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Oxa\Sonata\AdminBundle\Model\ChangeStateInterface;
 use Oxa\Sonata\AdminBundle\Model\CopyableEntityInterface;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
+use Oxa\Sonata\AdminBundle\Util\Traits\ChangeStateTrait;
 use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Oxa\Sonata\UserBundle\Entity\User;
@@ -22,10 +24,15 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\HasLifecycleCallbacks
  * @Gedmo\TranslationEntity(class="Domain\BusinessBundle\Entity\Translation\Review\BusinessReviewTranslation")
  */
-class BusinessReview implements DefaultEntityInterface, CopyableEntityInterface, TranslatableInterface
+class BusinessReview implements
+    DefaultEntityInterface,
+    CopyableEntityInterface,
+    TranslatableInterface,
+    ChangeStateInterface
 {
     use DefaultEntityTrait;
     use PersonalTranslatable;
+    use ChangeStateTrait;
 
     const RATING_MIN_VALUE = 1;
     const RATING_MAX_VALUE = 5;
@@ -91,8 +98,6 @@ class BusinessReview implements DefaultEntityInterface, CopyableEntityInterface,
      * )
      */
     protected $translations;
-
-    protected $changeState;
 
     /**
      * Constructor
@@ -272,17 +277,5 @@ class BusinessReview implements DefaultEntityInterface, CopyableEntityInterface,
     public function removeTranslation(BusinessReviewTranslation $translation)
     {
         $this->translations->removeElement($translation);
-    }
-
-    public function getChangeState()
-    {
-        return $this->changeState;
-    }
-
-    public function setChangeState(array $changeState) : self
-    {
-        $this->changeState = $changeState;
-
-        return $this;
     }
 }

@@ -8,7 +8,9 @@ use Domain\PageBundle\Entity\Translation\PageTranslation;
 use Domain\PageBundle\Model\PageInterface;
 use Domain\ReportBundle\Util\DatesUtil;
 use Domain\SiteBundle\Utils\Traits\SeoTrait;
+use Oxa\Sonata\AdminBundle\Model\ChangeStateInterface;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
+use Oxa\Sonata\AdminBundle\Util\Traits\ChangeStateTrait;
 use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
 use Oxa\Sonata\MediaBundle\Entity\Media;
 use Sonata\TranslationBundle\Model\Gedmo\TranslatableInterface;
@@ -26,11 +28,12 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
  * @Gedmo\TranslationEntity(class="Domain\PageBundle\Entity\Translation\PageTranslation")
  * @Assert\Callback(methods={"validatePageActionLink"})
  */
-class Page implements DefaultEntityInterface, TranslatableInterface, PageInterface
+class Page implements DefaultEntityInterface, TranslatableInterface, PageInterface, ChangeStateInterface
 {
     use DefaultEntityTrait;
     use PersonalTranslatable;
     use SeoTrait;
+    use ChangeStateTrait;
 
     const POPULAR_CATEGORY_COUNT = 3;
     const POPULAR_CATEGORY_PAGE  = 1;
@@ -174,8 +177,6 @@ class Page implements DefaultEntityInterface, TranslatableInterface, PageInterfa
      * @ORM\Column(name="use_action_link", type="boolean", options={"default" : 0})
      */
     protected $useActionLink;
-
-    protected $changeState;
 
     /**
      * Get id
@@ -681,17 +682,5 @@ class Page implements DefaultEntityInterface, TranslatableInterface, PageInterfa
         }
 
         return $links;
-    }
-
-    public function getChangeState()
-    {
-        return $this->changeState;
-    }
-
-    public function setChangeState(array $changeState) : self
-    {
-        $this->changeState = $changeState;
-
-        return $this;
     }
 }

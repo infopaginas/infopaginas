@@ -4,6 +4,8 @@ namespace Domain\BusinessBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Oxa\Sonata\AdminBundle\Model\ChangeStateInterface;
+use Oxa\Sonata\AdminBundle\Util\Traits\ChangeStateTrait;
 
 /**
  * LocalityPseudo
@@ -11,8 +13,10 @@ use Gedmo\Mapping\Annotation as Gedmo;
  * @ORM\Table(name="locality_pseudo")
  * @ORM\Entity(repositoryClass="Domain\BusinessBundle\Repository\LocalityPseudoRepository")
  */
-class LocalityPseudo
+class LocalityPseudo implements ChangeStateInterface
 {
+    use ChangeStateTrait;
+
     /**
      * @var int
      *
@@ -46,8 +50,6 @@ class LocalityPseudo
      * @ORM\JoinColumn(name="locality_id", referencedColumnName="id", onDelete="CASCADE")
      */
     protected $locality;
-
-    protected $changeState;
 
     /**
      * @return string
@@ -129,17 +131,5 @@ class LocalityPseudo
     public function getLocality()
     {
         return $this->locality;
-    }
-
-    public function getChangeState()
-    {
-        return $this->changeState;
-    }
-
-    public function setChangeState(array $changeState) : self
-    {
-        $this->changeState = $changeState;
-
-        return $this;
     }
 }

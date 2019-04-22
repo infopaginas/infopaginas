@@ -4,6 +4,8 @@ namespace Domain\BusinessBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Domain\BusinessBundle\Util\ZipFormatterUtil;
+use Oxa\Sonata\AdminBundle\Model\ChangeStateInterface;
+use Oxa\Sonata\AdminBundle\Util\Traits\ChangeStateTrait;
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\Common\Collections\ArrayCollection;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
@@ -15,8 +17,10 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  * @ORM\Table(name="zip")
  * @ORM\Entity(repositoryClass="Domain\BusinessBundle\Repository\ZipRepository")
  */
-class Zip
+class Zip implements ChangeStateInterface
 {
+    use ChangeStateTrait;
+
     /**
      * @var int
      *
@@ -45,8 +49,6 @@ class Zip
      * @ORM\JoinColumn(name="neighborhood_id", referencedColumnName="id", onDelete="CASCADE")
      */
     protected $neighborhood;
-
-    protected $changeState;
 
     /**
      * Constructor
@@ -119,17 +121,5 @@ class Zip
     public function __toString()
     {
         return $this->getZipCode() ?: '';
-    }
-
-    public function getChangeState()
-    {
-        return $this->changeState;
-    }
-
-    public function setChangeState(array $changeState) : self
-    {
-        $this->changeState = $changeState;
-
-        return $this;
     }
 }

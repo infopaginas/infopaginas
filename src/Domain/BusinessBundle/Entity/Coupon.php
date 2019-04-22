@@ -4,8 +4,10 @@ namespace Domain\BusinessBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Oxa\Sonata\AdminBundle\Model\ChangeStateInterface;
 use Oxa\Sonata\AdminBundle\Model\CopyableEntityInterface;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
+use Oxa\Sonata\AdminBundle\Util\Traits\ChangeStateTrait;
 use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
 use Oxa\Sonata\MediaBundle\Entity\Media;
 use Sonata\TranslationBundle\Model\Gedmo\TranslatableInterface;
@@ -20,10 +22,11 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Entity(repositoryClass="Domain\BusinessBundle\Repository\CouponRepository")
  * @Gedmo\TranslationEntity(class="Domain\BusinessBundle\Entity\Translation\CouponTranslation")
  */
-class Coupon implements DefaultEntityInterface, CopyableEntityInterface, TranslatableInterface
+class Coupon implements DefaultEntityInterface, CopyableEntityInterface, TranslatableInterface, ChangeStateInterface
 {
     use DefaultEntityTrait;
     use PersonalTranslatable;
+    use ChangeStateTrait;
 
     /**
      * @var int
@@ -73,8 +76,6 @@ class Coupon implements DefaultEntityInterface, CopyableEntityInterface, Transla
      * @Assert\NotBlank()
      */
     protected $image;
-
-    protected $changeState;
 
     /**
      * Get id
@@ -190,17 +191,5 @@ class Coupon implements DefaultEntityInterface, CopyableEntityInterface, Transla
     public function getBusinessProfile()
     {
         return $this->businessProfile;
-    }
-
-    public function getChangeState()
-    {
-        return $this->changeState;
-    }
-
-    public function setChangeState(array $changeState) : self
-    {
-        $this->changeState = $changeState;
-
-        return $this;
     }
 }

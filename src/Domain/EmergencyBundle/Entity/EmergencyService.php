@@ -5,6 +5,8 @@ namespace Domain\EmergencyBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Oxa\Sonata\AdminBundle\Model\ChangeStateInterface;
+use Oxa\Sonata\AdminBundle\Util\Traits\ChangeStateTrait;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -13,8 +15,10 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Table(name="emergency_service")
  * @ORM\Entity(repositoryClass="Domain\EmergencyBundle\Repository\EmergencyServiceRepository")
  */
-class EmergencyService
+class EmergencyService implements ChangeStateInterface
 {
+    use ChangeStateTrait;
+
     /**
      * @var int
      *
@@ -63,8 +67,6 @@ class EmergencyService
      * @ORM\Column(name="use_as_filter", type="boolean", options={"default" : 0})
      */
     protected $useAsFilter;
-
-    protected $changeState;
 
     /**
      * Get id
@@ -232,17 +234,5 @@ class EmergencyService
     public function getUseAsFilter()
     {
         return $this->useAsFilter;
-    }
-
-    public function getChangeState()
-    {
-        return $this->changeState;
-    }
-
-    public function setChangeState(array $changeState) : self
-    {
-        $this->changeState = $changeState;
-
-        return $this;
     }
 }
