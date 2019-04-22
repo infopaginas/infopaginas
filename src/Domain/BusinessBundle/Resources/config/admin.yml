@@ -136,11 +136,11 @@ services:
         calls:
             - [setPositionService, ['@pix_sortable_behavior.position']]
 
-    domain_business.admin.clickbait_banner:
-        class: Domain\BusinessBundle\Admin\ClickbaitBannerAdmin
-        arguments: [~, Domain\BusinessBundle\Entity\ClickbaitBanner, OxaSonataAdminBundle:CRUD]
+    domain_business.admin.clickbait_title:
+        class: Domain\BusinessBundle\Admin\ClickbaitTitleAdmin
+        arguments: [~, Domain\BusinessBundle\Entity\ClickbaitTitle, OxaSonataAdminBundle:CRUD]
         tags:
-            - {name: sonata.admin, manager_type: orm, group: admin, label: Clickbait Banner}
+            - {name: sonata.admin, manager_type: orm, group: admin, label: Clickbait Title}
 
     domain_business.admin.locality_pseudo:
         class: Domain\BusinessBundle\Admin\LocalityPseudoAdmin

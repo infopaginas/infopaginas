@@ -100,7 +100,7 @@ define(['jquery', 'bootstrap', 'business/tools/form', 'tools/spin', 'tools/selec
         mapboxgl.accessToken = API_KEY;
         var map =  new mapboxgl.Map({
             container: mapContainer,
-            style: 'mapbox://styles/mapbox/basic-v9',
+            style: 'mapbox://styles/mapbox/streets-v9',
             center: {
                 lat: lat,
                 lng: lng

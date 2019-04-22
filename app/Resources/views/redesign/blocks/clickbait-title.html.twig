@@ -1,0 +1,7 @@
+{% if loop.first and clickbaitTitle and clickbaitTitle.isActive %}
+    <li class="clickbait-title" data-bw-gtm-component="clickbait-title">
+        <a href="{{ clickbaitTitle.url }}" target="_blank" data-bw-gtm-event-click data-bw-gtm-label="{% trans %}Clickbait title{% endtrans %}">
+            <span>{{ clickbaitTitle.title }}</span>
+        </a>
+    </li>
+{% endif %}

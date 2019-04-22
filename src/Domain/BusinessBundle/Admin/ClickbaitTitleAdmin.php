@@ -11,7 +11,7 @@ use Sonata\AdminBundle\Show\ShowMapper;
 use Sonata\AdminBundle\Route\RouteCollection;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
-class ClickbaitBannerAdmin extends OxaAdmin
+class ClickbaitTitleAdmin extends OxaAdmin
 {
     /**
      * @param DatagridMapper $datagridMapper
@@ -34,7 +34,7 @@ class ClickbaitBannerAdmin extends OxaAdmin
         $listMapper
             ->add('id')
             ->add('locality', null, [
-                'template' => 'DomainBusinessBundle:Admin:ClickbaitBanner/list_locality.html.twig',
+                'template' => 'DomainBusinessBundle:Admin:ClickbaitTitle/list_locality.html.twig',
             ])
             ->add('isActive')
             ->add('title')
@@ -49,23 +49,12 @@ class ClickbaitBannerAdmin extends OxaAdmin
     protected function configureFormFields(FormMapper $formMapper)
     {
         $formMapper
-            ->tab('Clickbait Banner')
+            ->tab('Clickbait Title')
                 ->with('Locality')
                     ->add('locality', null, ['required' => true])
                     ->add('isActive')
                     ->add('title')
                     ->add('url', null, ['required' => true])
-                    ->add(
-                        'image',
-                        'sonata_type_model_list',
-                        ['constraints' => [new NotBlank()]],
-                        [
-                            'link_parameters' => [
-                                'context'  => OxaMediaInterface::CONTEXT_CLICKBAIT_BANNER,
-                                'provider' => OxaMediaInterface::PROVIDER_IMAGE,
-                            ]
-                        ]
-                    )
                 ->end()
             ->end()
         ;

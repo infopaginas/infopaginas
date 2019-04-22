@@ -1,10 +1,11 @@
 <script type="text/javascript">
-    var mapDefaultCenter = '{{ map_default_center }}';
-    var mapDefaultZoom   = {{ map_default_zoom }};
-    var youPosText       = '{% trans %}mapbox.current_user_position.label{% endtrans %}';
-    var mapScriptInit    = false;
-    var mapRequested     = false;
-    var apiKey           = '{{ mapbox_api_key }}';
+    var mapDefaultCenter   = '{{ map_default_center }}';
+    var sanJuanCoordinates = '{{ san_juan_coordinates }}';
+    var mapDefaultZoom     = {{ map_default_zoom }};
+    var youPosText         = '{% trans %}mapbox.current_user_position.label{% endtrans %}';
+    var mapScriptInit      = false;
+    var mapRequested       = false;
+    var apiKey             = '{{ mapbox_api_key }}';
 </script>
 
 {% if hideMap is not defined or not hideMap %}

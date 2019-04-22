@@ -5,7 +5,6 @@ namespace Oxa\Sonata\MediaBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Domain\ArticleBundle\Entity\Media\ArticleGallery;
 use Domain\BusinessBundle\Entity\BusinessProfile;
-use Domain\BusinessBundle\Entity\ClickbaitBanner;
 use Domain\BusinessBundle\Entity\Coupon;
 use Domain\ArticleBundle\Entity\Article;
 use Domain\BusinessBundle\Entity\Media\BusinessGallery;
@@ -135,15 +134,6 @@ class Media extends BaseMedia implements
     protected $articles;
 
     /**
-     * @var ClickbaitBanner[]
-     * @ORM\OneToMany(targetEntity="Domain\BusinessBundle\Entity\ClickbaitBanner",
-     *     mappedBy="image",
-     *     cascade={"persist"}
-     * )
-     */
-    protected $clickbaitBanners;
-
-    /**
      * @var VideoMedia[]
      * @ORM\OneToMany(targetEntity="Oxa\VideoBundle\Entity\VideoMedia",
      *     mappedBy="poster",
@@ -211,7 +201,6 @@ class Media extends BaseMedia implements
             self::CONTEXT_BUSINESS_PROFILE_LOGO       => self::CONTEXT_BUSINESS_PROFILE_LOGO,
             self::CONTEXT_BUSINESS_PROFILE_BACKGROUND => self::CONTEXT_BUSINESS_PROFILE_BACKGROUND,
             self::CONTEXT_ARTICLE                     => self::CONTEXT_ARTICLE,
-            self::CONTEXT_CLICKBAIT_BANNER            => self::CONTEXT_CLICKBAIT_BANNER,
             self::CONTEXT_ARTICLE_IMAGES              => self::CONTEXT_ARTICLE_IMAGES,
             self::CONTEXT_PAGE_BACKGROUND             => self::CONTEXT_PAGE_BACKGROUND,
             self::CONTEXT_VIDEO_POSTER                => self::CONTEXT_VIDEO_POSTER,

@@ -4,6 +4,6 @@ namespace Domain\BusinessBundle\Repository;
 
 use Doctrine\ORM\EntityRepository;
 
-class ClickbaitBannerRepository extends EntityRepository
+class ClickbaitTitleRepository extends EntityRepository
 {
 }

@@ -120,6 +120,7 @@ twig:
         app_version: '%app_version%'
         google_badge_partner_id: '%google_badge_partner_id%'
         mapbox_api_key: '%mapbox_api_key%'
+        san_juan_coordinates: '%san_juan_coordinates%'
         map_default_center: '%map_default_center%'
         map_default_zoom: '%map_default_zoom%'
         media_file_name_max_length: 20

@@ -37,6 +37,7 @@ We can find everything!: We can find everything!
 Search whatever you need and find it instantly: Search whatever you need and find it instantly
 homepage.search_block.title: Find what you are looking for instantly!
 What do you want to find?: What do you want to find?
+I wanted you to see this site: I wanted you to see this site
 Search by: Search by
 business name: business name
 keyword: keyword
@@ -347,6 +348,8 @@ Payment methods: Payment methods
 Advertising: Advertising
 Share on Facebook: Share on Facebook
 Share on Twitter: Share on Twitter
+Share on WhatsApp: Share on WhatsApp
+Share on Email: Share on Email
 Business categories: Business categories
 Forgot password?: Forgot password?
 New to Infopáginas: New to Infopáginas
@@ -391,7 +394,7 @@ Details: Details
 Web: Web
 compare.view: Compare&nbspview
 Best match: Best match
-Clickbait banner: Clickbait banner
+Clickbait title: Clickbait title
 Map view: Map view
 Close list: Close list
 Go to watch...: Go to watch...
@@ -631,11 +634,7 @@ TripAdvisor: TripAdvisor
 
 popular_searches.title: Popular Searches
 mapbox.current_user_position.label : Current location
-mapbox.menu.basic: Basic
 mapbox.menu.streets: Streets
-mapbox.menu.bright: Bright
-mapbox.menu.light: Light
-mapbox.menu.dark: Dark
 mapbox.menu.satellite: Satellite
 mapbox.profile.driving_traffic: Driving-traffic
 mapbox.profile.driving_traffic_info: For automotive routing. This profile factors in current and historic traffic conditions to avoid slowdowns.

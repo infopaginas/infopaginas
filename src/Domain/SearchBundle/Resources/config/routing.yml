@@ -35,7 +35,7 @@ domain_search_catalog:
     defaults: { _controller: DomainSearchBundle:Search:catalog, localitySlug: '', categorySlug: '' }
 
 domain_search_show_directions:
-    path:   /show-directions/{targetCoordinates}/{currentCoordinates}
+    path:   /show-directions/{slug}
     defaults: { _controller: DomainSearchBundle:Search:showDirections }
     options:
         expose: true

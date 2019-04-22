@@ -274,8 +274,8 @@ services:
         class: Domain\BusinessBundle\Manager\VideoManager
         arguments: ['@doctrine.orm.entity_manager']
 
-    domain_business.manager.clickbait_banner_manager:
-        class: Domain\BusinessBundle\Manager\ClickbaitBannerManager
+    domain_business.manager.clickbait_title_manager:
+        class: Domain\BusinessBundle\Manager\ClickbaitTitleManager
         arguments: ['@doctrine.orm.entity_manager']
 
     domain_business.manager.landing_page_short_cut_manager:
