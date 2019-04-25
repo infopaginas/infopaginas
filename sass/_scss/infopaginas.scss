@@ -766,7 +766,7 @@ $side-padding-mb: 16px;
     margin: 0 10px 0 10px;
     height: 100%;
     line-height: 30px;
-    
+
     &::after {
       background: $blue--dark;
       bottom: -4px;
@@ -1979,11 +1979,11 @@ $thumb-width-mb: 60px;
 
 .map {
   height: calc(100vh - 45px);
-  width: 100%;  
+  width: 100%;
 
   @media only screen and (max-width: 804px) {
     height: calc(100vh - 82px);
-    width: 100%;  
+    width: 100%;
   }
 }
 
@@ -4924,6 +4924,10 @@ li.active {
       .catalog-list__index {
         background: darken($grey--light, 15%);
       }
+
+      .clickbait-title {
+        background: darken($grey--light, 15%);
+      }
     }
   }
 }
@@ -5499,7 +5503,7 @@ table {
   z-index: 101;
   width: 570px !important;
   max-width: 85vw;
-  background-color: #f0f1f3 !important; 
+  background-color: #f0f1f3 !important;
   padding: 10px 30px;
   list-style: none;
   li.category a {
@@ -5859,8 +5863,8 @@ input[type='radio'], input[type='checkbox'] {
   background-color: $grey--light;
   min-height: 0;
   @media only screen and (max-width: 768px){
-    max-width: 100%; 
-    padding: 10px; 
+    max-width: 100%;
+    padding: 10px;
   }
   .profile-header {
     box-shadow: none;
@@ -5905,7 +5909,7 @@ input[type='radio'], input[type='checkbox'] {
   border-radius: 2px;
   &:hover {
     background-color: #acc02f;
-  }  
+  }
 }
 
 .open {
@@ -6621,7 +6625,12 @@ span.no-js-warning-message {
 
 .clickbait-title {
   width: 100%;
-  background: darken($grey--light, 15%);
+  transition-property: background;
+  transition-duration: 0.15s;
+}
+
+.catalog-list ul {
+  padding: 0px;
 }
 
 .wiggle {

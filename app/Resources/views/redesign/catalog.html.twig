@@ -97,6 +97,9 @@
             require(['{{ absolute_url(asset("assetic/js/modules/tools/mapSpin.min.js")) }}'], function(spin) {
                 var spin = new spin('map');
             });
+            require(['{{ absolute_url(asset("assetic/js/modules/tools/redirect.min.js")) }}'], function(redirect) {
+                var redirect = new redirect();
+            });
         });
     </script>
 

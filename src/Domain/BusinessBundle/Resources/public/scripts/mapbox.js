@@ -285,18 +285,8 @@ document.addEventListener( 'jQueryLoaded', function() {
                     setTimeout( function() {
                         map.stop();
 
-                        map.flyTo({
-                            zoom: 1,
-                            speed: 0.2
-                        });
-
-                        setTimeout( function() {
-                            map.stop();
-
-                            $( html.containers.mapContainer ).removeClass( 'blur-effect' );
-                            document.dispatchEvent( mapSpinEvent );
-                        }, 500);
-                    }, 500);
+                        document.dispatchEvent( mapSpinEvent );
+                    }, 300);
 
                     focusZoom = false;
                 }
@@ -524,7 +514,9 @@ document.addEventListener( 'jQueryLoaded', function() {
 
     function initMap ( options ) {
         this.map = new mapboxgl.Map( this.options.mapOptions );
-        this.map.addControl( new mapboxgl.NavigationControl(), 'bottom-right' );
+        map.addControl( new mapboxgl.NavigationControl( { showCompass: false } ), 'bottom-right' );
+        map.dragRotate.disable();
+        map.touchZoomRotate.disableRotation();
 
         var options = this.options;
 
