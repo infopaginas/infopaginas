@@ -8,15 +8,6 @@
   width: 100%;
 }
 
-.blur-effect {
-  -webkit-filter: blur(5px);
-  -moz-filter: blur(5px);
-  -o-filter: blur(5px);
-  -ms-filter: blur(5px);
-  filter: blur(5px);
-  background-color: #ccc;
-}
-
 .marker {
   display: block;
   border: none;
@@ -45,7 +36,7 @@
   left: 10px;
   bottom: 10px;
   text-indent: -9999px;
-  z-index: 99999;
+  z-index: 99;
   overflow: hidden;
   background-image: url(/redesign/img/infopaginas.svg);
   background-repeat: no-repeat;
@@ -60,7 +51,7 @@
   left: 52px;
   bottom: 0px;
   text-indent: -9999px;
-  z-index: 99999;
+  z-index: 99;
   overflow: hidden;
   background-image: url(/redesign/img/infopaginas-iso.svg);
   background-repeat: no-repeat;

@@ -26,7 +26,9 @@ $.getScript( 'https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.js', f
             attributionControl: false
         });
 
-        map.addControl( new mapboxgl.NavigationControl(), 'bottom-right' );
+        map.addControl( new mapboxgl.NavigationControl( { showCompass: false } ), 'bottom-right' );
+        map.dragRotate.disable();
+        map.touchZoomRotate.disableRotation();
 
         $( document ).on( 'ifChecked', 'input[data-layer]', function() {
             var layerId = this.id;

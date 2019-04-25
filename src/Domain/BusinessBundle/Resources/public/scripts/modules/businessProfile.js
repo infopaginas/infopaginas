@@ -129,7 +129,9 @@ define(['jquery', 'bootstrap', 'business/tools/form', 'tools/spin', 'tools/selec
         }
 
         var map = that.getGoogleMapObject( lat, lng );
-        map.addControl( new mapboxgl.NavigationControl(), 'bottom-right' );
+        map.addControl( new mapboxgl.NavigationControl( { showCompass: false } ), 'bottom-right' );
+        map.dragRotate.disable();
+        map.touchZoomRotate.disableRotation();
         map.addControl( new mapboxgl.FullscreenControl() );
 
         var marker = new mapboxgl.Marker()
