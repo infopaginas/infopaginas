@@ -364,6 +364,7 @@ div.single-media-preview-block img {
     z-index: 1;
     padding: 10px;
     font-family: 'Open Sans', sans-serif;
+    background: #e4e4e4;
 }
 
 .help-form-info {

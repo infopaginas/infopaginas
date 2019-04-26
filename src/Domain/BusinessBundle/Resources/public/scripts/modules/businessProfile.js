@@ -134,7 +134,7 @@ define(['jquery', 'bootstrap', 'business/tools/form', 'tools/spin', 'tools/selec
         map.touchZoomRotate.disableRotation();
         map.addControl( new mapboxgl.FullscreenControl() );
 
-        var marker = new mapboxgl.Marker()
+        var marker = new mapboxgl.Marker( { color: '#e73a2f' } )
             .setLngLat( [lng, lat] )
             .setDraggable( true )
             .addTo( map );
