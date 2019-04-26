@@ -1,6 +1,10 @@
 <div id="menu">
-    <input id='streets' type='radio' name='rtoggle' value='streets' checked='checked' data-layer>
-    <label for='streets'>{% trans %}mapbox.menu.streets{% endtrans %}</label>
-    <input id='satellite' type='radio' name='rtoggle' value='satellite' data-layer>
-    <label for='satellite'>{% trans %}mapbox.menu.satellite{% endtrans %}</label>
+    <span class="map-menu-checkbox">
+        <input id='streets' type='radio' name='rtoggle' value='streets' checked='checked' data-layer>
+        <label for='streets'>{% trans %}mapbox.menu.streets{% endtrans %}</label>
+    </span>
+    <span class="map-menu-checkbox">
+        <input id='satellite' type='radio' name='rtoggle' value='satellite' data-layer>
+        <label for='satellite'>{% trans %}mapbox.menu.satellite{% endtrans %}</label>
+    </span>
 </div>
