@@ -58,10 +58,6 @@ define(['jquery', 'spin'], function( $, _spin ) {
         self.autoSearch = false;
         self.show( this.container );
 
-        if ( $( '[data-target-coordinates]' ).data( 'targetCoordinates' ) ) {
-            self.hide( this.container );
-        }
-
         document.addEventListener( 'mapSpin', function() {
             map.on( 'dragstart', function () {
                 self.mapLoadingStart();
