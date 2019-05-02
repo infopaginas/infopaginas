@@ -6,7 +6,9 @@
     {% set attr = attr|merge({'class': attr.class|default('') ~ ' form-control'}) %}
     {%- set type = type|default('text') -%}
     <br>
-    {% include ':redesign/blocks/mapbox:mapMenu.html.twig' %}
+    <div id="menu">
+        {% include ':redesign/blocks/mapbox:mapMenu.html.twig' %}
+    </div>
     <div style="{{ attr.class }}" id="google-map">
         {% include ':redesign/blocks/mapbox:mapLogo.html.twig' %}
         <div id='geocoder' class='geocoder'></div>

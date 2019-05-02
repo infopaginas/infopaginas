@@ -5,13 +5,14 @@
     <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.css" />
 {% endblock %}
 
-{% block bodyClass %}results-list{% endblock %}
-
 {% block body %}
     <span data-target-coordinates="{{ targetCoordinates }}"></span>
+    <div id="directions-menu">
+        {% include ':redesign/blocks/mapbox:mapMenu.html.twig' %}
+    </div>
     <div id="map" class="map">
         {% include ':redesign/blocks/mapbox:mapLogo.html.twig' %}
-        <div class="social-medias">
+        <div class="social-medias map-socials">
             {% include ':redesign/blocks:social-share.html.twig' %}
         </div>
     </div>

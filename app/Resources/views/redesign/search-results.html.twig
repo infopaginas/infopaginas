@@ -42,7 +42,9 @@
                 <i class="fa fa-list"></i>
                 <span>{% trans %}List view{% endtrans %}</span>
             </button>
-            {% include ':redesign/blocks/mapbox:mapMenu.html.twig' %}
+            <div id="menu" class="default-menu">
+                {% include ':redesign/blocks/mapbox:mapMenu.html.twig' %}
+            </div>
             <div id="map" class="map">
                 {% include ':redesign/blocks/mapbox:mapLogo.html.twig' %}
             </div>

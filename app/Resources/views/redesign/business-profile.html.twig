@@ -291,7 +291,9 @@
 
                         {% if not businessProfile.hideMap %}
                             <section class="page-section profile-map">
-                                {% include ':redesign/blocks/mapbox:mapMenu.html.twig' %}
+                                <div id="menu">
+                                    {% include ':redesign/blocks/mapbox:mapMenu.html.twig' %}
+                                </div>
                                 <div id="map" class="business-map">
                                     {% include ':redesign/blocks/mapbox:mapLogo.html.twig' %}
                                 </div>
@@ -302,8 +304,9 @@
                     </article><!-- profile -->
 
                     <aside class="profile__sidebar">
-
-                        {% include ':redesign/blocks:social-share.html.twig' %}
+                        <div class="social-medias">
+                            {% include ':redesign/blocks:social-share.html.twig' %}
+                        </div>
 
                         {% include ':redesign/blocks/banners:side-block.html.twig' with { 'bannerType': BANNER_CODE.BUSINESS_PAGE_RIGHT } %}
 

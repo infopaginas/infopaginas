@@ -63,13 +63,31 @@
   z-index: 1;
   padding: 10px;
   font-family: 'Open Sans', sans-serif;
+  background: #e4e4e4;
+}
+
+.default-menu {
   top: 10px;
+}
+
+#directions-menu {
+  position: absolute;
+  z-index: 1;
+  padding: 10px;
+  font-family: 'Open Sans', sans-serif;
+  top: 60px;
   background: #e4e4e4;
 }
 
 @media (max-width: 767px) {
-  #menu {
+  .default-menu {
     top: 0px;
+  }
+}
+
+@media (max-width: 804px) {
+  #directions-menu {
+    top: 40px;
   }
 }
 

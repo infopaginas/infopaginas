@@ -35,7 +35,7 @@ define(['jquery'], function( $, ReportTracker ) {
     redirect.prototype.bindRedirectEvents = function ( e ) {
         var self = this;
 
-        $( this.events.redirectEvent ).on( 'click', function( evt ) {
+        $( document ).on( 'click', this.events.redirectEvent, function( evt ) {
             self.redirectEvent( evt );
         });
     };

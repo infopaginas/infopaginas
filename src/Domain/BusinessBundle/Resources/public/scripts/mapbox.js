@@ -1,6 +1,7 @@
 document.addEventListener( 'jQueryLoaded', function() {
     var width  = 24;
     var height = 34;
+    var directionMarkers = [];
     var mapSpinEvent = new CustomEvent( 'mapSpin' );
 
     var urls = {
@@ -9,6 +10,11 @@ document.addEventListener( 'jQueryLoaded', function() {
 
     var storage = {
         mapSearchUrl: 'mapSearchUrl'
+    };
+
+    var classes = {
+        marker:       'marker',
+        markerYellow: 'marker-yellow'
     };
 
     var html = {
@@ -79,6 +85,82 @@ document.addEventListener( 'jQueryLoaded', function() {
         });
     }
 
+    function getRoute( start, end ) {
+        var url = 'https://api.mapbox.com/directions/v5/mapbox/driving/' + start[0] + ',' + start[1] + ';'
+            + end[0] + ',' + end[1] + '?steps=true&geometries=geojson&overview=full&access_token='
+            + mapboxgl.accessToken;
+
+        var req = new XMLHttpRequest();
+        req.responseType = 'json';
+        req.open( 'GET', url, true );
+
+        req.onload = function() {
+            if ( req.response.routes && req.status === 200 ) {
+                var data = req.response.routes[0];
+
+                if ( data ) {
+                    var route = data.geometry.coordinates;
+                    var geojson = {
+                        type: 'Feature',
+                        properties: {},
+                        geometry: {
+                            type: 'LineString',
+                            coordinates: route
+                        }
+                    };
+
+                    if (map.getSource( 'route' )) {
+                        map.getSource( 'route' ).setData( geojson );
+                    } else {
+                        map.addLayer({
+                            id: 'route',
+                            type: 'line',
+                            source: {
+                                type: 'geojson',
+                                data: {
+                                    type: 'Feature',
+                                    properties: {},
+                                    geometry: {
+                                        type: 'LineString',
+                                        coordinates: geojson
+                                    }
+                                }
+                            },
+                            layout: {
+                                'line-join': 'round',
+                                'line-cap': 'round'
+                            },
+                            paint: {
+                                'line-color': '#3887be',
+                                'line-width': 6,
+                                'line-opacity': 0.75
+                            }
+                        });
+                    }
+                }
+            }
+        };
+
+        req.send();
+    }
+
+    function createDirectionsMarker( className, coords ) {
+        var el = document.createElement( 'div' );
+        el.className = className;
+
+        el.id = className;
+        el.style.height = height + 'px';
+        el.style.width = width + 'px';
+
+        var marker = new mapboxgl.Marker( el, { offset: [0, -height / 2] }, { interactive: true } )
+            .setLngLat( coords )
+            .addTo( map );
+
+        directionMarkers[el.id] = {
+            marker : marker
+        };
+    }
+
     function getDirections( currentCoordinates ) {
         var canvas = map.getCanvasContainer();
 
@@ -105,116 +187,12 @@ document.addEventListener( 'jQueryLoaded', function() {
         start.push( starter[1] );
         start.push( starter[0] );
 
-        function getRoute( start, end ) {
-            var url = 'https://api.mapbox.com/directions/v5/mapbox/driving/' + start[0] + ',' + start[1] + ';'
-                + end[0] + ',' + end[1] + '?steps=true&geometries=geojson&overview=full&access_token='
-                + mapboxgl.accessToken;
-
-            var req = new XMLHttpRequest();
-            req.responseType = 'json';
-            req.open( 'GET', url, true );
-
-            req.onload = function() {
-                if ( req.response.routes && req.status === 200 ) {
-                    var data = req.response.routes[0];
-
-                    if ( data ) {
-                        var route = data.geometry.coordinates;
-                        var geojson = {
-                            type: 'Feature',
-                            properties: {},
-                            geometry: {
-                                type: 'LineString',
-                                coordinates: route
-                            }
-                        };
-
-                        if (map.getSource( 'route' )) {
-                            map.getSource( 'route' ).setData( geojson );
-                        } else {
-                            map.addLayer({
-                                id: 'route',
-                                type: 'line',
-                                source: {
-                                    type: 'geojson',
-                                    data: {
-                                        type: 'Feature',
-                                        properties: {},
-                                        geometry: {
-                                            type: 'LineString',
-                                            coordinates: geojson
-                                        }
-                                    }
-                                },
-                                layout: {
-                                    'line-join': 'round',
-                                    'line-cap': 'round'
-                                },
-                                paint: {
-                                    'line-color': '#3887be',
-                                    'line-width': 6,
-                                    'line-opacity': 0.75
-                                }
-                            });
-                        }
-                    }
-                }
-            };
-
-            req.send();
-        }
-
         map.on( 'load', function() {
             getRoute( start, end );
             getRoute( start, end );
 
-            map.addLayer({
-                id: 'start',
-                type: 'circle',
-                source: {
-                    type: 'geojson',
-                    data: {
-                        type: 'FeatureCollection',
-                        features: [{
-                            type: 'Feature',
-                            properties: {},
-                            geometry: {
-                                type: 'Point',
-                                coordinates: start
-                            }
-                        }
-                        ]
-                    }
-                },
-                paint: {
-                    'circle-radius': 10,
-                    'circle-color': '#3887be'
-                }
-            });
-
-            map.addLayer({
-                id: 'end',
-                type: 'circle',
-                source: {
-                    type: 'geojson',
-                    data: {
-                        type: 'FeatureCollection',
-                        features: [{
-                            type: 'Feature',
-                            properties: {},
-                            geometry: {
-                                type: 'Point',
-                                coordinates: end
-                            }
-                        }
-                        ]
-                    }
-                },
-                paint: {
-                    'circle-radius': 10,
-                    'circle-color': '#f30'
-                }
-            });
+            createDirectionsMarker( classes.marker, start );
+            createDirectionsMarker( classes.markerYellow, end );
 
             map.on( 'click', function( e ) {
                 var coordsObj = e.lngLat;
@@ -223,47 +201,8 @@ document.addEventListener( 'jQueryLoaded', function() {
                     return coordsObj[key];
                 });
 
-                map.removeLayer( 'end' );
-                map.removeSource( 'end' );
-
-                var end = {
-                    type: 'FeatureCollection',
-                    features: [{
-                        type: 'Feature',
-                        properties: {},
-                        geometry: {
-                            type: 'Point',
-                            coordinates: coords
-                        }
-                    }
-                    ]
-                };
-                if (map.getLayer( 'end' )) {
-                    map.getSource( 'end' ).setData( end );
-                } else {
-                    map.addLayer({
-                        id: 'end',
-                        type: 'circle',
-                        source: {
-                            type: 'geojson',
-                            data: {
-                                type: 'FeatureCollection',
-                                features: [{
-                                    type: 'Feature',
-                                    properties: {},
-                                    geometry: {
-                                        type: 'Point',
-                                        coordinates: coords
-                                    }
-                                }]
-                            }
-                        },
-                        paint: {
-                            'circle-radius': 10,
-                            'circle-color': '#f30'
-                        }
-                    });
-                }
+                directionMarkers[classes.markerYellow].marker.remove();
+                createDirectionsMarker( classes.markerYellow, coords );
 
                 getRoute( start, coords );
                 getRoute( start, coords );
@@ -272,6 +211,7 @@ document.addEventListener( 'jQueryLoaded', function() {
             });
 
             fitBoundsOnRoute( start, 0 );
+            addMenuSwitch( 'directions-menu' );
 
             var focusZoom = true;
 
@@ -294,8 +234,24 @@ document.addEventListener( 'jQueryLoaded', function() {
         });
     }
 
+    function addMenuSwitch( id ) {
+        var layerList = document.getElementById( id );
+
+        if ( layerList ) {
+            var inputs = layerList.getElementsByTagName( 'input' );
+
+            for ( var i = 0; i < inputs.length; i++ ) {
+                inputs[i].onclick = switchLayer;
+            }
+        }
+    }
+
     function fitBoundsOnRoute( start ) {
-        var end = map.getSource( 'end' )['_options']['data']['features'][0]['geometry']['coordinates'];
+        var end = [
+            directionMarkers[classes.markerYellow].marker.getLngLat().lng,
+            directionMarkers[classes.markerYellow].marker.getLngLat().lat
+        ];
+
         var bounds = [end, start];
 
         map.fitBounds( bounds, { padding: 50 } );
@@ -433,14 +389,6 @@ document.addEventListener( 'jQueryLoaded', function() {
         }
     }
 
-    function updateGoogleTagTargeting( targeting ) {
-        if ( targeting && typeof googletag != 'undefined' ) {
-            googletag.pubads().clearTargeting();
-            googletag.pubads().setTargeting( 'search', targeting.searchKeywords );
-            googletag.pubads().refresh();
-        }
-    }
-
     function updateMapMarkers ( markers ) {
         deleteMarkers();
 
@@ -523,14 +471,8 @@ document.addEventListener( 'jQueryLoaded', function() {
         //pass map to main.js for resizing event
         map = this.map;
 
-        var layerList = document.getElementById( 'menu' );
-
-        if ( layerList ) {
-            var inputs = layerList.getElementsByTagName( 'input' );
-
-            for ( var i = 0; i < inputs.length; i++ ) {
-                inputs[i].onclick = switchLayer;
-            }
+        if ( !$( '[data-target-coordinates]' ).data( 'targetCoordinates' ) ) {
+            addMenuSwitch( 'menu' );
         }
 
         if ( !$( '[data-target-coordinates]' ).data( 'targetCoordinates' ) ) {
@@ -545,6 +487,21 @@ document.addEventListener( 'jQueryLoaded', function() {
     function switchLayer( layer ) {
         var layerId = layer.target.id;
         map.setStyle( 'mapbox://styles/mapbox/' + layerId + '-v9' );
+
+        if ( $( '[data-target-coordinates]' ).data( 'targetCoordinates' ) ) {
+            var start = [
+                directionMarkers[classes.marker].marker.getLngLat().lng,
+                directionMarkers[classes.marker].marker.getLngLat().lat
+            ];
+
+            var end = [
+                directionMarkers[classes.markerYellow].marker.getLngLat().lng,
+                directionMarkers[classes.markerYellow].marker.getLngLat().lat
+            ];
+
+            getRoute(start, end);
+            getRoute(start, end);
+        }
     }
 
     function addMarkers( markers, isSearchOnMap ) {
