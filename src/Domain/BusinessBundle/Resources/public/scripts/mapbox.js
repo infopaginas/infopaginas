@@ -212,25 +212,6 @@ document.addEventListener( 'jQueryLoaded', function() {
 
             fitBoundsOnRoute( start, 0 );
             addMenuSwitch( 'directions-menu' );
-
-            var focusZoom = true;
-
-            map.on( 'idle', function() {
-                if ( focusZoom ) {
-                    map.flyTo({
-                        zoom: 16,
-                        speed: 0.2
-                    });
-
-                    setTimeout( function() {
-                        map.stop();
-
-                        document.dispatchEvent( mapSpinEvent );
-                    }, 300);
-
-                    focusZoom = false;
-                }
-            })
         });
     }
 
@@ -475,9 +456,7 @@ document.addEventListener( 'jQueryLoaded', function() {
             addMenuSwitch( 'menu' );
         }
 
-        if ( !$( '[data-target-coordinates]' ).data( 'targetCoordinates' ) ) {
-            document.dispatchEvent(mapSpinEvent);
-        }
+        document.dispatchEvent(mapSpinEvent);
 
         if ( !_.isEmpty( this.options.markers ) ) {
             addMarkers( this.options.markers );
