@@ -2759,7 +2759,7 @@ $thumb-width-mb: 60px;
   }
 }
 
-.social-medias {
+.map-socials {
   position: absolute;
   display: block;
   right: 10px;
@@ -2767,6 +2767,7 @@ $thumb-width-mb: 60px;
   z-index: 99999;
   overflow: hidden;
 }
+
 .social-medias .button {
   width: 36px;
 }
@@ -2776,7 +2777,7 @@ $thumb-width-mb: 60px;
 }
 
 .social-medias ul {
-  display:flex;
+  display: flex;
 }
 
 .social-medias li {
@@ -6627,6 +6628,7 @@ span.no-js-warning-message {
   width: 100%;
   transition-property: background;
   transition-duration: 0.15s;
+  background: #f0f1f3;
 }
 
 .catalog-list ul {
