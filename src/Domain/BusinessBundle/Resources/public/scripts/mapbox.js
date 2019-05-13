@@ -548,9 +548,7 @@ document.addEventListener( 'jQueryLoaded', function() {
 
                 scrollTo( markerData.id );
 
-                var bounds = new mapboxgl.LngLatBounds();
-                bounds.extend( marker.getLngLat() );
-                map.fitBounds( bounds );
+                map.flyTo( { center: marker.getLngLat() } );
             });
         }
 
