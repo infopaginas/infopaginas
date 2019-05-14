@@ -450,6 +450,7 @@ class Page implements DefaultEntityInterface, TranslatableInterface, PageInterfa
             case PageInterface::CODE_CATALOG_LOCALITY:
             case PageInterface::CODE_CATALOG_LOCALITY_CATEGORY:
             case PageInterface::CODE_EMERGENCY_AREA_CATEGORY:
+            case PageInterface::CODE_SEARCH:
                 $validCode = $code;
                 break;
             default:
@@ -507,6 +508,16 @@ class Page implements DefaultEntityInterface, TranslatableInterface, PageInterfa
                 'seoDescription'    => 'page.help_message.emergency_area_category.seoDescription',
                 'placeholders'      => [
                     '[area]',
+                    '[category]',
+                ],
+            ],
+            PageInterface::CODE_SEARCH => [
+                'title'             => 'page.help_message.default.title',
+                'description'       => 'page.help_message.default.description',
+                'seoTitle'          => 'page.help_message.search.seoTitle',
+                'seoDescription'    => 'page.help_message.search.seoDescription',
+                'placeholders'      => [
+                    '[locality]',
                     '[category]',
                 ],
             ],

@@ -461,7 +461,6 @@ Create Profile: Crear perfil
 Unlimited: Ilimitado
 Edit Profile: Editar perfil
 View profile: Ver perfil
-View more articles: Ver más artículos
 To view this video please enable JavaScript, and consider upgrading to a web browser that: Para ver este video, habilita JavaScript y considera actualizar a un navegador web que
 supports HTML5 video: soporta video HTML5
 Video example: Ejemplo de video
@@ -649,7 +648,7 @@ business_profile.image.description.required: Este campo es requerido
 business_profile.video.description.required: Este campo es requerido
 business_profile.panorama.title: Se trata de un panorama 360, arrastre la imagen para mirar alrededor
 
-search_results.count.total: Hemos encontrado {-count-} resultados
+search_results.count.total: Hemos encontrado {-count-} resultados para
 
 no_js.warning.message: La funcionalidad Javascript de tu navegador está desactivada. Por favor, enciéndala para que pueda experimentar todas las capacidades de este sitio.
 
