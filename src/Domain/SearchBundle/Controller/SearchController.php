@@ -383,10 +383,11 @@ class SearchController extends Controller
         );
 
         $data = [
-            'search'        => $searchDTO,
-            'seoTags'       => BusinessProfileUtil::getSeoTags($seoType),
-            'results'       => $searchResultsDTO,
-            'banners'       => $banners,
+            'search'  => $searchDTO,
+            'seoData' => $seoData,
+            'seoTags' => BusinessProfileUtil::getSeoTags($seoType),
+            'results' => $searchResultsDTO,
+            'banners' => $banners,
         ];
 
         $html = $this->renderView(

@@ -1474,28 +1474,21 @@ class BusinessProfileManager extends Manager
         return $url;
     }
 
-    public function getBusinessProfileSearchSeoData(
-        $locality = null,
-        $categories = [],
-        $isCatalog = false
-    ) {
-        $translator  = $this->container->get('translator');
+    public function getBusinessProfileSearchSeoData($locality = null, $categories = [])
+    {
         $seoSettings = $this->container->getParameter('seo_custom_settings');
 
-        $companyName          = $seoSettings['company_name'];
         $titleMaxLength       = $seoSettings['title_max_length'];
-        $titleCategoryMaxLength = $seoSettings['title_category_max_length'];
         $titleLocalityMaxLength = $seoSettings['locality_length'];
         $descriptionMaxLength = $seoSettings['description_max_length'];
         $descriptionCategoriesMaxLength = $seoSettings['description_category_max_length'];
         $descriptionCategoriesSeparator = $seoSettings['description_category_separator'];
         $categoriesCut = $seoSettings['description_category_cut'];
 
-        $seoTitle = '';
         $categoryData = [];
 
         if (!$locality) {
-            $localityText = Locality::ALL_LOCALITY;
+            $localityText = Locality::ALL_LOCALITY_NAME;
         } else {
             $localityText = $locality;
         }
@@ -1504,7 +1497,6 @@ class BusinessProfileManager extends Manager
 
         if ($categories) {
             $itemsCount = count($categories);
-            $categoryData = [];
             $categoryMaxLength = floor($descriptionCategoriesMaxLength / $itemsCount);
 
             foreach ($categories as $category) {
@@ -1520,45 +1512,23 @@ class BusinessProfileManager extends Manager
 
         $categoryText = implode($descriptionCategoriesSeparator, $categoryData);
 
-        $seoDescription = $translator->trans(
-            'business_profile.seoDescription.search',
-            [
-                '{-categories-}' => $categoryText,
-                '{-locality-}'   => $localityText,
-            ],
-            'messages'
-        );
+        $pageManager = $this->container->get('domain_page.manager.page');
+        $pageCode = Page::CODE_SEARCH;
 
-        if ($categories) {
-            $seoTitle = $translator->trans(
-                'business_profile.seoTitle.search',
-                [
-                    'categories' => $categoryText,
-                    'locality'   => $localityText,
-                ],
-                'messages'
-            );
-        } elseif ($isCatalog) {
-            if ($locality) {
-                $seoTitle = $translator->trans(
-                    'business_profile.seoTitle.catalog',
-                    [
-                        'locality'   => $localityText,
-                    ],
-                    'messages'
-                );
-
-            } else {
-                $seoTitle = $translator->trans('Catalog');
-            }
+        if ($localityText) {
+            $data['[locality]'] = $localityText;
         }
 
-        $seoTitle .=' | ' . $companyName;
+        if ($categoryText) {
+            $data['[category]'] = $categoryText;
+        }
 
-        $seoData = [
-            'seoTitle' => mb_substr($seoTitle, 0, $titleMaxLength),
-            'seoDescription' => mb_substr($seoDescription, 0, $descriptionMaxLength),
-        ];
+        $page    = $pageManager->getPageByCode($pageCode);
+        $seoData = $pageManager->getPageSeoData($page, $data);
+        $seoData['title'] = $pageManager->getPageTitle($page, $data);
+
+        $seoData['seoTitle'] = mb_substr($seoData['seoTitle'], 0, $titleMaxLength);
+        $seoData['seoDescription'] = mb_substr($seoData['seoDescription'], 0, $descriptionMaxLength);
 
         return $seoData;
     }
@@ -1598,6 +1568,7 @@ class BusinessProfileManager extends Manager
 
         $page    = $pageManager->getPageByCode($pageCode);
         $seoData = $pageManager->getPageSeoData($page, $data);
+        $seoData['title'] = $pageManager->getPageTitle($page, $data);
 
         return $seoData;
     }
