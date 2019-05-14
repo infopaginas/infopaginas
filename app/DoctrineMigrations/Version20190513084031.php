@@ -39,7 +39,7 @@ class Version20190513084031 extends AbstractMigration implements ContainerAwareI
                 'code'        => PageInterface::CODE_SEARCH,
                 'body'        => '',
                 'isPublished' => true,
-                'slug'        => 'search',
+                'slug'        => '/businesses',
             ],
         ];
 
