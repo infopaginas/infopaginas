@@ -194,22 +194,6 @@ document.addEventListener( 'jQueryLoaded', function() {
             createDirectionsMarker( classes.marker, start );
             createDirectionsMarker( classes.markerYellow, end );
 
-            map.on( 'click', function( e ) {
-                var coordsObj = e.lngLat;
-                canvas.style.cursor = '';
-                var coords = Object.keys( coordsObj ).map(function( key ) {
-                    return coordsObj[key];
-                });
-
-                directionMarkers[classes.markerYellow].marker.remove();
-                createDirectionsMarker( classes.markerYellow, coords );
-
-                getRoute( start, coords );
-                getRoute( start, coords );
-
-                fitBoundsOnRoute( start );
-            });
-
             fitBoundsOnRoute( start, 0 );
             addMenuSwitch( 'directions-menu' );
         });
