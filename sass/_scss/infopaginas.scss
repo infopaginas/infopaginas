@@ -2763,7 +2763,6 @@ $thumb-width-mb: 60px;
   position: absolute;
   display: block;
   right: 10px;
-  top: 10px;
   z-index: 99999;
   overflow: hidden;
 }
@@ -2778,6 +2777,7 @@ $thumb-width-mb: 60px;
 
 .social-medias ul {
   display: flex;
+  justify-content: center;
 }
 
 .social-medias li {
@@ -6002,6 +6002,12 @@ input[type='radio'], input[type='checkbox'] {
   padding: 15px 35px 10px;
   font-size: 16px;
   font-family: 'Roboto Medium', sans serif;
+
+  h1 {
+    display: inline;
+    font-size: 16px;
+    text-transform: none;
+  }
 
   @media only screen and (max-width: 804px) {
     padding-left: 23px;
