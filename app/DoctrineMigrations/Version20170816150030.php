@@ -5,9 +5,8 @@ namespace Application\Migrations;
 use Doctrine\DBAL\Migrations\AbstractMigration;
 use Doctrine\DBAL\Schema\Schema;
 use Oxa\ConfigBundle\Model\ConfigInterface;
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 
-class Version20170816150030 extends AbstractMigration implements ContainerAwareInterface
+class Version20170816150030 extends AbstractMigration
 {
     /**
      * @param Schema $schema
