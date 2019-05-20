@@ -72,3 +72,6 @@ parameters:
 
     # teleportme access token
     teleportme_access_token: '358345fc5ddcea15eb3595e7bb84fb0c'
+
+    # mapbox api key
+    mapbox_api_key: pk.eyJ1IjoiaW5mb3BhZ2luYXMiLCJhIjoiY2p2cXBrN3lhMTU4cjQ0cmg5NWIzcnZzdyJ9.6zKsbfv03anWt0zvR5q0xQ
