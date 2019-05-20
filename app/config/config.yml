@@ -44,7 +44,6 @@ parameters:
             image: 'header-logo.png'
             width: '221'
             height: '42'
-    mapbox_api_key: "pk.eyJ1IjoidGl2dW5vdmR2IiwiYSI6ImNqcnU4Ym43azJsZWc0OW50NGJmd29vMDcifQ.LxkL1jVvb_rXFk6oT7ioCw"
     map_default_center: '18.185039, -66.491729'
     san_juan_coordinates: '18.446344, -66.07558'
     map_default_center_name: 'Orocovis'
