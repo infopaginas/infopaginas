@@ -81,11 +81,6 @@ assetic:
                 - '@DomainBusinessBundle/Resources/public/scripts/modules/chartPreview.js'
             filters:
                 - jsqueeze
-        require_map_search_page_js:
-            inputs:
-                - '@DomainSiteBundle/Resources/public/scripts/modules/mapsearchpage.js'
-            filters:
-                - jsqueeze
         require_business_profile_view_js:
             inputs:
                 - '@DomainBusinessBundle/Resources/public/scripts/modules/businessProfileView.js'
@@ -118,12 +113,6 @@ assetic:
             output: 'assetic/js/modules/profile.min.js'
             filters:
                 - jsqueeze
-        maps_redesign_js:
-            inputs:
-                - '@DomainSiteBundle/Resources/public/scripts/modules/mapsearchpage.js'
-            output: 'assetic/js/modules/mapSearchPage.min.js'
-            filters:
-                - jsqueeze
         tools_reset_password_js:
             inputs:
                 - '@DomainSiteBundle/Resources/public/scripts/modules/tools/resetPassword.js'
@@ -134,6 +123,12 @@ assetic:
             inputs:
                 - '@DomainSiteBundle/Resources/public/scripts/modules/tools/star-rating.js'
             output: 'assetic/js/modules/tools/starRating.min.js'
+            filters:
+                - jsqueeze
+        tools_mapboxgl_js:
+            inputs:
+                - '@DomainSiteBundle/Resources/public/scripts/modules/tools/mapboxgl.js'
+            output: 'assetic/js/modules/tools/mapboxgl.min.js'
             filters:
                 - jsqueeze
         tools_search_js:
@@ -266,11 +261,5 @@ assetic:
             inputs:
                 - '@DomainBusinessBundle/Resources/public/scripts/modules/tools/videos.js'
             output: 'assetic/js/modules/tools/videos.min.js'
-            filters:
-                - jsqueeze
-        user_google_map_js:
-            inputs:
-                - '@DomainBusinessBundle/Resources/public/scripts/google_map.js'
-            output: 'assetic/js/googleMap.min.js'
             filters:
                 - jsqueeze

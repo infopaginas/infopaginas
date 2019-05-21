@@ -4,7 +4,9 @@ namespace Domain\BusinessBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Domain\BusinessBundle\Model\Task\TaskInterface;
+use Oxa\Sonata\AdminBundle\Model\ChangeStateInterface;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
+use Oxa\Sonata\AdminBundle\Util\Traits\ChangeStateTrait;
 use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
 use Symfony\Component\Validator\Constraints as Assert;
 use Fresh\DoctrineEnumBundle\Validator\Constraints as DoctrineAssert;
@@ -20,9 +22,10 @@ use JMS\Serializer\Annotation\MaxDepth;
  * @ORM\Table(name="task")
  * @ORM\Entity(repositoryClass="Domain\BusinessBundle\Repository\TaskRepository")
  */
-class Task implements DefaultEntityInterface, TaskInterface
+class Task implements DefaultEntityInterface, TaskInterface, ChangeStateInterface
 {
     use DefaultEntityTrait;
+    use ChangeStateTrait;
 
     const REJECT_REASON_BUSINESS_ALREADY_CLAIMED = 'Business already claimed';
 

@@ -5,6 +5,11 @@
     {% include ':redesign/blocks:search-sorting.html.twig' %}
 {% endblock %}
 
+{% block styles %}
+    {{ parent() }}
+    <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.css" />
+{% endblock %}
+
 {% block bodyClass %}results-list{% endblock %}
 
 {% block body %}
@@ -37,11 +42,13 @@
                 <i class="fa fa-list"></i>
                 <span>{% trans %}List view{% endtrans %}</span>
             </button>
-
-            <div id="map" class="map">
-                {% include ':redesign/blocks/googleMap:google_map_placeholder.html.twig' %}
+            <div id="menu" class="default-menu">
+                {% include ':redesign/blocks/mapbox:mapMenu.html.twig' %}
             </div>
-            <span id="map-markers" hidden data-google-markers="{{ markers }}"></span>
+            <div id="map" class="map">
+                {% include ':redesign/blocks/mapbox:mapLogo.html.twig' %}
+            </div>
+            <span id="map-markers" hidden data-mapbox-markers="{{ markers }}"></span>
         </section><!-- results-map -->
 
         {% include ':redesign/blocks/banners:search-page-float.html.twig' with { 'bannerType': BANNER_CODE.SEARCH_FLOAT_BOTTOM } %}
@@ -49,17 +56,21 @@
 {% endblock %}
 
 {% block scripts %}
+    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.js'></script>
+    <script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.0.0/mapbox-gl-directions.js'></script>
+
     {{ parent() }}
 
-    {% include ':widgets:google_map_script.html.twig' %}
-
     <script type="text/javascript">
-        var map;
-
         requirejs(['{{ absolute_url(asset("assetic/require_common_js.js")) }}'], function(common) {
-            require(['{{ absolute_url(asset("assetic/require_map_search_page_js.js")) }}'], function(mapSearchPage) {
-                var mapSearchPage = new mapSearchPage();
+            require(['{{ absolute_url(asset("assetic/js/modules/tools/mapSpin.min.js")) }}'], function(spin) {
+                var spin = new spin('map');
+            });
+            require(['{{ absolute_url(asset("assetic/js/modules/tools/redirect.min.js")) }}'], function(redirect) {
+                var redirect = new redirect();
             });
         });
     </script>
+
+    {% include ':widgets:mapbox_script.html.twig' %}
 {% endblock%}

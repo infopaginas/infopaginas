@@ -4,6 +4,8 @@ namespace Domain\BusinessBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Oxa\Sonata\AdminBundle\Model\ChangeStateInterface;
+use Oxa\Sonata\AdminBundle\Util\Traits\ChangeStateTrait;
 use Symfony\Component\Validator\Constraints as Assert;
 use Domain\BusinessBundle\Validator\Constraints\ServiceAreaType as ServiceAreaTypeValidator;
 
@@ -14,8 +16,10 @@ use Domain\BusinessBundle\Validator\Constraints\ServiceAreaType as ServiceAreaTy
  * @ORM\Entity(repositoryClass="Domain\BusinessBundle\Repository\BusinessProfileExtraSearchRepository")
  * @ServiceAreaTypeValidator()
  */
-class BusinessProfileExtraSearch
+class BusinessProfileExtraSearch implements ChangeStateInterface
 {
+    use ChangeStateTrait;
+
     const SERVICE_AREAS_AREA_CHOICE_VALUE = 'area';
     const SERVICE_AREAS_LOCALITY_CHOICE_VALUE = 'locality';
 

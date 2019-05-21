@@ -22,7 +22,7 @@ imports:
 # Put parameters here that don't need to change on each machine where the app is deployed
 # http://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
-    app_version: '1.19.2'
+    app_version: '1.20.0'
     locale: en
     locales: [en, es]
     locale_data:
@@ -44,11 +44,10 @@ parameters:
             image: 'header-logo.png'
             width: '221'
             height: '42'
-    google_map_api_key: "AIzaSyD-1F1-Wr4GLyP5Pk2-IH4DAd_jW0w4xqU"
-    google_map_default_center: '18.446344, -66.07558'
-    google_map_default_center_name: 'San Juan'
-    google_map_default_zoom: 8
-    google_map_min_single_zoom: 15  #min zoom for single map marker
+    map_default_center: '18.185039, -66.491729'
+    san_juan_coordinates: '18.446344, -66.07558'
+    map_default_center_name: 'Orocovis'
+    map_default_zoom: 8
     google_tag_manager_id: 'GTM-TWPMVZ'
     google_analytics_id:   'UA-10361727-2'
     seo_custom_settings:
@@ -119,10 +118,10 @@ twig:
     globals:
         app_version: '%app_version%'
         google_badge_partner_id: '%google_badge_partner_id%'
-        google_map_api_key: '%google_map_api_key%'
-        google_map_default_center: '%google_map_default_center%'
-        google_map_default_zoom: '%google_map_default_zoom%'
-        google_map_min_zoom: '%google_map_min_single_zoom%'
+        mapbox_api_key: '%mapbox_api_key%'
+        san_juan_coordinates: '%san_juan_coordinates%'
+        map_default_center: '%map_default_center%'
+        map_default_zoom: '%map_default_zoom%'
         media_file_name_max_length: 20
         breadcrumb_max_length: '%breadcrumb_max_length%'
         suggested_title_max_length: '%suggested_title_max_length%'

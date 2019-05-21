@@ -5,8 +5,10 @@ namespace Domain\BusinessBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Domain\BusinessBundle\Model\SubscriptionPlanInterface;
+use Oxa\Sonata\AdminBundle\Model\ChangeStateInterface;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Oxa\Sonata\AdminBundle\Util\Traits\ChangeStateTrait;
 use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
 use Sonata\TranslationBundle\Model\Gedmo\TranslatableInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\OxaPersonalTranslatable as PersonalTranslatable;
@@ -21,10 +23,15 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @UniqueEntity("code")
  * @Gedmo\TranslationEntity(class="Domain\BusinessBundle\Entity\Translation\SubscriptionPlanTranslation")
  */
-class SubscriptionPlan implements DefaultEntityInterface, SubscriptionPlanInterface, TranslatableInterface
+class SubscriptionPlan implements
+    DefaultEntityInterface,
+    SubscriptionPlanInterface,
+    TranslatableInterface,
+    ChangeStateInterface
 {
     use DefaultEntityTrait;
     use PersonalTranslatable;
+    use ChangeStateTrait;
 
     /**
      * @var int

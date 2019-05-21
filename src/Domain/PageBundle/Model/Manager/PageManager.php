@@ -58,6 +58,19 @@ class PageManager extends Manager
         return $seoData;
     }
 
+    public function getPageTitle($page, $data = [])
+    {
+        $code = $page->getCode();
+
+        $title = $this->replacePlaceholders(
+            $page->getTitle(),
+            Page::getPageSeoHintByCode($code)['placeholders'],
+            $data
+        );
+
+        return $title;
+    }
+
     /**
      * @param Page $entity
      * @param ContainerInterface $container

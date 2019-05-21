@@ -1,0 +1,96 @@
+.mapboxgl-ctrl-bottom-left{
+  display: none;
+}
+
+#map {
+  top: 0;
+  bottom: 0;
+  width: 100%;
+}
+
+.marker {
+  display: block;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  padding: 0;
+  background-image: url("/redesign/img/mapIcons/marker-red.svg");
+  background-size: 24px 34px;
+}
+
+.marker-yellow {
+  display: block;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  padding: 0;
+  background-image: url("/redesign/img/mapIcons/marker-yellow.svg");
+  background-size: 24px 34px;
+}
+
+.mapbox-logo {
+  position: absolute;
+  display: block;
+  height: 40px;
+  width: 40px;
+  left: 10px;
+  bottom: 10px;
+  text-indent: -9999px;
+  z-index: 99;
+  overflow: hidden;
+  background-image: url(/redesign/img/infopaginas.svg);
+  background-repeat: no-repeat;
+  background-position: 0 0;
+}
+
+.mapbox-logo-words {
+  position: absolute;
+  display: block;
+  height: 40px;
+  width: 100px;
+  left: 52px;
+  bottom: 0px;
+  text-indent: -9999px;
+  z-index: 99;
+  overflow: hidden;
+  background-image: url(/redesign/img/infopaginas-iso.svg);
+  background-repeat: no-repeat;
+  background-position: 0 0;
+}
+
+#menu {
+  position: absolute;
+  z-index: 1;
+  padding: 10px;
+  font-family: 'Open Sans', sans-serif;
+  background: #e4e4e4;
+}
+
+.default-menu {
+  top: 10px;
+}
+
+#directions-menu {
+  position: absolute;
+  z-index: 1;
+  padding: 10px;
+  font-family: 'Open Sans', sans-serif;
+  top: 60px;
+  background: #e4e4e4;
+}
+
+@media (max-width: 767px) {
+  .default-menu {
+    top: 0px;
+  }
+}
+
+@media (max-width: 804px) {
+  #directions-menu {
+    top: 40px;
+  }
+}
+
+.map-menu-checkbox:not(:first-child)  {
+  margin-left: 7px;
+}

@@ -70,7 +70,10 @@ class UserActionCsvExporter extends CsvPostponedExporterModel
         $row = [];
 
         foreach ($data as $key => $value) {
-            if ($key == UserActionReportManager::MONGO_DB_FIELD_DATA) {
+            if ($key == UserActionReportManager::MONGO_DB_FIELD_DATA
+                || $key == UserActionReportManager::MONGO_DB_FIELD_DATA_BEFORE
+                || $key == UserActionReportManager::MONGO_DB_FIELD_DATA_AFTER
+            ) {
                 $row[] = implode(',', $value);
             } elseif ($key == UserActionReportManager::MONGO_DB_FIELD_ACTION) {
                 $row[] = $this->translator->trans($eventsMapping[$value], [], 'AdminReportBundle');

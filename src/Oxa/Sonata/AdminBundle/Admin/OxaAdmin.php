@@ -4,6 +4,7 @@ namespace Oxa\Sonata\AdminBundle\Admin;
 use Domain\BusinessBundle\Model\DatetimePeriodStatusInterface;
 use Domain\BusinessBundle\Util\Traits\StatusTrait;
 use Domain\ReportBundle\Model\UserActionModel;
+use Oxa\Sonata\AdminBundle\Model\ChangeStateInterface;
 use Oxa\Sonata\AdminBundle\Model\CopyableEntityInterface;
 use Oxa\Sonata\AdminBundle\Model\PostponeRemoveInterface;
 use Oxa\Sonata\MediaBundle\Entity\Media;
@@ -295,6 +296,27 @@ class OxaAdmin extends BaseAdmin
     /**
      * @param mixed $entity
      */
+    public function preUpdate($entity)
+    {
+        $uow = $this->getConfigurationPool()->getContainer()->get('Doctrine')->getManager()->getUnitOfWork();
+        $uow->computeChangeSets();
+        $changeSet = $uow->getEntityChangeSet($entity);
+
+        foreach ($changeSet as $fieldName => $value) {
+            if (is_object($value[0]) && method_exists($value[0], 'getId')) {
+                $changeSet[$fieldName][0] = $value[0]->getId();
+                $changeSet[$fieldName][1] = $value[1]->getId();
+            }
+        }
+
+        if ($entity instanceof ChangeStateInterface) {
+            $entity->setChangeState($changeSet);
+        }
+    }
+
+    /**
+     * @param mixed $entity
+     */
     public function postUpdate($entity)
     {
         $this->handleActionLog(UserActionModel::TYPE_ACTION_UPDATE, $entity);
@@ -352,6 +374,13 @@ class OxaAdmin extends BaseAdmin
 
         if ($url) {
             $data['url'] = $url;
+        }
+
+        if ($entity && $entity instanceof ChangeStateInterface && $entity->getChangeState()) {
+            foreach ($entity->getChangeState() as $key => $changeSet) {
+                $data['dataSet']['dataBefore'][$key] = $changeSet[0];
+                $data['dataSet']['dataAfter'][$key]  = $changeSet[1];
+            }
         }
 
         return $data;

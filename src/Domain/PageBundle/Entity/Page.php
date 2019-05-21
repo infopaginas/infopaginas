@@ -8,7 +8,9 @@ use Domain\PageBundle\Entity\Translation\PageTranslation;
 use Domain\PageBundle\Model\PageInterface;
 use Domain\ReportBundle\Util\DatesUtil;
 use Domain\SiteBundle\Utils\Traits\SeoTrait;
+use Oxa\Sonata\AdminBundle\Model\ChangeStateInterface;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
+use Oxa\Sonata\AdminBundle\Util\Traits\ChangeStateTrait;
 use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
 use Oxa\Sonata\MediaBundle\Entity\Media;
 use Sonata\TranslationBundle\Model\Gedmo\TranslatableInterface;
@@ -26,11 +28,12 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
  * @Gedmo\TranslationEntity(class="Domain\PageBundle\Entity\Translation\PageTranslation")
  * @Assert\Callback(methods={"validatePageActionLink"})
  */
-class Page implements DefaultEntityInterface, TranslatableInterface, PageInterface
+class Page implements DefaultEntityInterface, TranslatableInterface, PageInterface, ChangeStateInterface
 {
     use DefaultEntityTrait;
     use PersonalTranslatable;
     use SeoTrait;
+    use ChangeStateTrait;
 
     const POPULAR_CATEGORY_COUNT = 3;
     const POPULAR_CATEGORY_PAGE  = 1;
@@ -447,6 +450,7 @@ class Page implements DefaultEntityInterface, TranslatableInterface, PageInterfa
             case PageInterface::CODE_CATALOG_LOCALITY:
             case PageInterface::CODE_CATALOG_LOCALITY_CATEGORY:
             case PageInterface::CODE_EMERGENCY_AREA_CATEGORY:
+            case PageInterface::CODE_SEARCH:
                 $validCode = $code;
                 break;
             default:
@@ -504,6 +508,16 @@ class Page implements DefaultEntityInterface, TranslatableInterface, PageInterfa
                 'seoDescription'    => 'page.help_message.emergency_area_category.seoDescription',
                 'placeholders'      => [
                     '[area]',
+                    '[category]',
+                ],
+            ],
+            PageInterface::CODE_SEARCH => [
+                'title'             => 'page.help_message.default.title',
+                'description'       => 'page.help_message.default.description',
+                'seoTitle'          => 'page.help_message.search.seoTitle',
+                'seoDescription'    => 'page.help_message.search.seoDescription',
+                'placeholders'      => [
+                    '[locality]',
                     '[category]',
                 ],
             ],

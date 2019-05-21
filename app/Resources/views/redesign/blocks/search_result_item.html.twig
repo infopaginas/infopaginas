@@ -54,7 +54,7 @@
     </div><!-- item__content -->
     <div class="item__actions">
         <div class="item__primary-actions" data-bw-gtm-component="search-results-primary-action">
-            <a data-bname="{{ item.name }}" class="get-dir button button--small button--featured link-pointer {% if item.isAd %}svm-getdir{% endif %}" data-id="{{ item.getId() }}" data-latlng="{{ item.getLatLng() }}" data-bw-gtm-event-click data-bw-gtm-label="{% trans %}Directions{% endtrans %}">
+            <a data-bname="{{ item.name }}" class="get-dir redirect-event button button--small button--featured link-pointer {% if item.isAd %}svm-getdir{% endif %}" data-href="{{ path('domain_search_show_directions', {'slug': item.getSlug() }) }}" data-id="{{ item.getId() }}" data-latlng="{{ item.getLatLng() }}" data-type="directionButton" data-bw-gtm-event-click data-bw-gtm-label="{% trans %}Directions{% endtrans %}">
                 <i class="fa fa-location-arrow"></i>
                 {% trans %}Directions{% endtrans %}
             </a>

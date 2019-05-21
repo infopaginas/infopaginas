@@ -3,6 +3,8 @@
 namespace Domain\BusinessBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Oxa\Sonata\AdminBundle\Model\ChangeStateInterface;
+use Oxa\Sonata\AdminBundle\Util\Traits\ChangeStateTrait;
 use Symfony\Component\Validator\Constraints as Assert;
 use Gedmo\Mapping\Annotation as Gedmo;
 
@@ -10,8 +12,10 @@ use Gedmo\Mapping\Annotation as Gedmo;
  * @ORM\Table(name="landing_page_short_cut_search")
  * @ORM\Entity(repositoryClass="Domain\BusinessBundle\Repository\LandingPageShortCutSearchRepository")
  */
-class LandingPageShortCutSearch
+class LandingPageShortCutSearch implements ChangeStateInterface
 {
+    use ChangeStateTrait;
+
     /**
      * @var int
      *

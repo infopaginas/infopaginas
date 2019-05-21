@@ -93,20 +93,6 @@ class EmergencyAbstractBusiness  implements GeolocationInterface
     protected $workingHoursJson;
 
     /**
-     * @var boolean
-     *
-     * @ORM\Column(name="use_map_address", type="boolean", options={"default" : 0})
-     */
-    protected $useMapAddress;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="google_address", type="string", nullable=true)
-     */
-    protected $googleAddress;
-
-    /**
      * Constructor
      */
     public function __construct()
@@ -116,7 +102,6 @@ class EmergencyAbstractBusiness  implements GeolocationInterface
         $this->collectionWorkingHours = new ArrayCollection();
 
         $this->isActive       = true;
-        $this->useMapAddress  = false;
     }
 
     /**
@@ -400,46 +385,6 @@ class EmergencyAbstractBusiness  implements GeolocationInterface
     public function getWorkingHoursJsonAsObject()
     {
         return json_decode($this->getWorkingHoursJson());
-    }
-
-    /**
-     * @param string $googleAddress
-     *
-     * @return EmergencyAbstractBusiness
-     */
-    public function setGoogleAddress($googleAddress)
-    {
-        $this->googleAddress = $googleAddress;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getGoogleAddress()
-    {
-        return $this->googleAddress;
-    }
-
-    /**
-     * @param boolean $useMapAddress
-     *
-     * @return EmergencyAbstractBusiness
-     */
-    public function setUseMapAddress($useMapAddress)
-    {
-        $this->useMapAddress = $useMapAddress;
-
-        return $this;
-    }
-
-    /**
-     * @return boolean
-     */
-    public function getUseMapAddress()
-    {
-        return $this->useMapAddress;
     }
 
     /**

@@ -127,6 +127,8 @@ twig:
                 ACTION: 'action'
                 INFO:   'data'
                 ENTITY_NAME: 'entity_name'
+                DATA_BEFORE: 'data_before'
+                DATA_AFTER: 'data_after'
             DATA:
                 URL:  'url'
                 TYPE: 'type'

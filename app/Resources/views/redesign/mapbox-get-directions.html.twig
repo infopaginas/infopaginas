@@ -1,0 +1,37 @@
+{% extends "redesign/layout/base.html.twig" %}
+
+{% block styles %}
+    {{ parent() }}
+    <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.css" />
+{% endblock %}
+
+{% block body %}
+    <span data-target-coordinates="{{ targetCoordinates }}"></span>
+    <div id="directions-menu">
+        {% include ':redesign/blocks/mapbox:mapMenu.html.twig' %}
+    </div>
+    <div id="map" class="map">
+        {% include ':redesign/blocks/mapbox:mapLogo.html.twig' %}
+        <div class="social-medias map-socials">
+            {% include ':redesign/blocks:social-share.html.twig' %}
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block scripts %}
+    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.js'></script>
+    <script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.0.0/mapbox-gl-directions.js'></script>
+
+    {{ parent() }}
+
+    {% include ':widgets:mapbox_script.html.twig' %}
+
+    <script type="text/javascript">
+        requirejs(['{{ absolute_url(asset("assetic/require_common_js.js")) }}'], function(common) {
+            require(['{{ absolute_url(asset("assetic/js/modules/tools/mapSpin.min.js")) }}'], function(spin) {
+                var spin = new spin('map');
+            });
+        });
+    </script>
+{% endblock %}

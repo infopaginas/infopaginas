@@ -2,10 +2,12 @@
 
 namespace Domain\SearchBundle\Controller;
 
+use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\Category;
 use Domain\BusinessBundle\Entity\Locality;
 use Domain\BusinessBundle\Manager\BusinessProfileManager;
 use Domain\BusinessBundle\Manager\CategoryManager;
+use Domain\BusinessBundle\Manager\ClickbaitTitleManager;
 use Domain\BusinessBundle\Manager\LocalityManager;
 use Domain\BusinessBundle\Util\BusinessProfileUtil;
 use Domain\BusinessBundle\Util\SlugUtil;
@@ -139,6 +141,34 @@ class SearchController extends Controller
         );
     }
 
+    public function showDirectionsAction(string $slug)
+    {
+        /** @var BusinessProfile $businessProfile */
+        $businessProfile = $this->getBusinessProfileManager()->findBySlug($slug);
+
+        if (!$businessProfile) {
+            $businessProfileAlias = $this->getBusinessProfileManager()->findByAlias($slug);
+
+            if ($businessProfileAlias) {
+                return $this->redirectToRoute(
+                    'domain_search_show_directions',
+                    ['slug' => $businessProfileAlias->getSlug()],
+                    301
+                );
+            } else {
+                throw new \Symfony\Component\HttpKernel\Exception\GoneHttpException();
+            }
+        } elseif (!$businessProfile->getIsActive()) {
+            throw $this->createNotFoundException();
+        }
+
+        $targetCoordinates = $businessProfile->getLatitude() . ',' . $businessProfile->getLongitude();
+
+        return $this->render(
+            ':redesign:mapbox-get-directions.html.twig',
+            ['targetCoordinates'  => $targetCoordinates]
+        );
+    }
 
     /**
      * @param Request $request
@@ -353,10 +383,11 @@ class SearchController extends Controller
         );
 
         $data = [
-            'search'        => $searchDTO,
-            'seoTags'       => BusinessProfileUtil::getSeoTags($seoType),
-            'results'       => $searchResultsDTO,
-            'banners'       => $banners,
+            'search'  => $searchDTO,
+            'seoData' => $seoData,
+            'seoTags' => BusinessProfileUtil::getSeoTags($seoType),
+            'results' => $searchResultsDTO,
+            'banners' => $banners,
         ];
 
         $html = $this->renderView(
@@ -413,6 +444,14 @@ class SearchController extends Controller
     protected function getCategoryManager() : CategoryManager
     {
         return $this->get('domain_business.manager.category');
+    }
+
+    /**
+     * @return ClickbaitTitleManager
+     */
+    protected function getClickbaitTitleManager() : ClickbaitTitleManager
+    {
+        return $this->get('domain_business.manager.clickbait_title_manager');
     }
 
     /**
@@ -562,26 +601,27 @@ class SearchController extends Controller
         return $this->render(
             ':redesign:catalog.html.twig',
             [
-                'search'             => $searchDTO,
-                'results'            => $searchResultsDTO,
-                'seoData'            => $seoData,
-                'seoTags'            => BusinessProfileUtil::getSeoTags($seoType),
-                'banners'            => $banners,
-                'dcDataDTO'          => $dcDataDTO,
-                'searchData'         => $searchData,
-                'pageRouter'         => $pageRouter,
-                'currentLocality'    => $locality,
-                'currentCategory'    => $category,
-                'schemaJsonLD'       => $schema,
-                'markers'            => $locationMarkers,
-                'catalogLevelItems'  => $catalogLevelItems,
-                'showResults'        => $showResults,
-                'showCatalog'        => $showCatalog,
-                'noFollowRelevance'  => SearchDataUtil::ORDER_BY_RELEVANCE != SearchDataUtil::DEFAULT_ORDER_BY_VALUE,
-                'noFollowDistance'   => SearchDataUtil::ORDER_BY_DISTANCE  != SearchDataUtil::DEFAULT_ORDER_BY_VALUE,
-                'searchRelevance'    => SearchDataUtil::ORDER_BY_RELEVANCE,
-                'searchDistance'     => SearchDataUtil::ORDER_BY_DISTANCE,
-                'trackingParams'     => $trackingParams,
+                'search'            => $searchDTO,
+                'results'           => $searchResultsDTO,
+                'seoData'           => $seoData,
+                'seoTags'           => BusinessProfileUtil::getSeoTags($seoType),
+                'banners'           => $banners,
+                'dcDataDTO'         => $dcDataDTO,
+                'searchData'        => $searchData,
+                'pageRouter'        => $pageRouter,
+                'currentLocality'   => $locality,
+                'currentCategory'   => $category,
+                'schemaJsonLD'      => $schema,
+                'markers'           => $locationMarkers,
+                'catalogLevelItems' => $catalogLevelItems,
+                'showResults'       => $showResults,
+                'showCatalog'       => $showCatalog,
+                'noFollowRelevance' => SearchDataUtil::ORDER_BY_RELEVANCE != SearchDataUtil::DEFAULT_ORDER_BY_VALUE,
+                'noFollowDistance'  => SearchDataUtil::ORDER_BY_DISTANCE  != SearchDataUtil::DEFAULT_ORDER_BY_VALUE,
+                'searchRelevance'   => SearchDataUtil::ORDER_BY_RELEVANCE,
+                'searchDistance'    => SearchDataUtil::ORDER_BY_DISTANCE,
+                'trackingParams'    => $trackingParams,
+                'clickbaitTitle'    => $this->getClickbaitTitleManager()->getClickbaitTitleByLocality($locality),
             ]
         );
     }

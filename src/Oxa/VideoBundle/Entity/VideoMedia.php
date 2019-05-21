@@ -5,7 +5,9 @@ namespace Oxa\VideoBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Domain\BusinessBundle\Entity\BusinessProfile;
+use Oxa\Sonata\AdminBundle\Model\ChangeStateInterface;
 use Oxa\Sonata\AdminBundle\Model\PostponeRemoveInterface;
+use Oxa\Sonata\AdminBundle\Util\Traits\ChangeStateTrait;
 use Oxa\Sonata\AdminBundle\Util\Traits\PostponeRemoveTrait;
 use Symfony\Component\Validator\Constraints as Assert;
 use Oxa\Sonata\MediaBundle\Entity\Media;
@@ -16,9 +18,10 @@ use Oxa\Sonata\MediaBundle\Entity\Media;
  * @ORM\Table(name="video_media")
  * @ORM\Entity(repositoryClass="Oxa\VideoBundle\Repository\VideoMediaRepository")
  */
-class VideoMedia implements PostponeRemoveInterface
+class VideoMedia implements PostponeRemoveInterface, ChangeStateInterface
 {
     use PostponeRemoveTrait;
+    use ChangeStateTrait;
 
     const YOUTUBE_ACTION_ADD     = 'YOUTUBE_ACTION_ADD';
     const YOUTUBE_ACTION_UPDATE  = 'YOUTUBE_ACTION_UPDATE';

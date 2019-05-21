@@ -104,12 +104,6 @@ h4.filter_legend img {
     border: 1px solid #ccc;
 }
 
-#pac-input{
-    margin-top: 10px;
-    height: 32px;
-    width: 75%;
-}
-
 div.scrollable-table {
     overflow-x: auto;
     padding: 10px;
@@ -302,4 +296,84 @@ div.single-media-preview-block img {
 .chart-box {
     padding-bottom: 10px;
     border-bottom: 4px solid #00c0ef;
+}
+
+.mapboxgl-ctrl-bottom-left{
+    display: none;
+}
+
+#map {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 100%;
+}
+
+.marker {
+    display: block;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    padding: 0;
+    background-image: url("/redesign/img/mapIcons/marker-red.svg");
+    background-size: 24px 34px;
+}
+
+.marker-yellow {
+    display: block;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    padding: 0;
+    background-image: url("/redesign/img/mapIcons/marker-yellow.svg");
+    background-size: 24px 34px;
+}
+
+.mapbox-logo {
+    position: absolute;
+    display: block;
+    height: 40px;
+    width: 40px;
+    left: 10px;
+    bottom: 10px;
+    text-indent: -9999px;
+    z-index: 99999;
+    overflow: hidden;
+    background-image: url(/redesign/img/infopaginas.svg);
+    background-repeat: no-repeat;
+    background-position: 0 0;
+}
+
+.mapbox-logo-words {
+    position: absolute;
+    display: block;
+    height: 40px;
+    width: 100px;
+    left: 52px;
+    bottom: 0px;
+    text-indent: -9999px;
+    z-index: 99999;
+    overflow: hidden;
+    background-image: url(/redesign/img/infopaginas-iso.svg);
+    background-repeat: no-repeat;
+    background-position: 0 0;
+}
+
+#menu {
+    position: absolute;
+    z-index: 1;
+    padding: 10px;
+    font-family: 'Open Sans', sans-serif;
+    background: #e4e4e4;
+}
+
+.help-form-info {
+    color: red;
+    display: inline-block;
+    margin-left: 20%;
+}
+
+.grid-list-info-message {
+    color: red;
+    margin-left: 20%;
 }

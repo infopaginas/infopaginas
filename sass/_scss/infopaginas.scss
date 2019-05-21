@@ -2,6 +2,7 @@
 @import 'main';
 @import 'mixins';
 @import 'buttons';
+@import 'mapbox';
 
 * {
   box-sizing: border-box;
@@ -765,7 +766,7 @@ $side-padding-mb: 16px;
     margin: 0 10px 0 10px;
     height: 100%;
     line-height: 30px;
-    
+
     &::after {
       background: $blue--dark;
       bottom: -4px;
@@ -1978,11 +1979,11 @@ $thumb-width-mb: 60px;
 
 .map {
   height: calc(100vh - 45px);
-  width: 100%;  
+  width: 100%;
 
   @media only screen and (max-width: 804px) {
     height: calc(100vh - 82px);
-    width: 100%;  
+    width: 100%;
   }
 }
 
@@ -2758,6 +2759,31 @@ $thumb-width-mb: 60px;
   }
 }
 
+.map-socials {
+  position: absolute;
+  display: block;
+  right: 10px;
+  z-index: 99999;
+  overflow: hidden;
+}
+
+.social-medias .button {
+  width: 36px;
+}
+
+.social-medias .button span {
+  display: none;
+}
+
+.social-medias ul {
+  display: flex;
+  justify-content: center;
+}
+
+.social-medias li {
+  margin: 2px;
+}
+
 .section--social {
   font-size: 14px;
 
@@ -2790,7 +2816,24 @@ $thumb-width-mb: 60px;
     }
   }
 
-  a.button-share--twitter[data-href], a.button-share--facebook[data-href], a.button[data-show-modal-id] {
+  .button-share--whatsapp {
+    background: $whatsup;
+    &:hover {
+      background: darken($whatsup, 10%) !important;
+      color: $white !important;
+    }
+  }
+
+  .button-share--email {
+    background: $email;
+    &:hover {
+      background: darken($email, 10%) !important;
+      color: $white !important;
+    }
+  }
+
+  a.button-share--twitter[data-href], a.button-share--facebook[data-href],
+  a.button-share--whatsapp[data-href], a.button-share--email a.button[data-show-modal-id], {
     cursor: pointer;
   }
 }
@@ -4882,6 +4925,10 @@ li.active {
       .catalog-list__index {
         background: darken($grey--light, 15%);
       }
+
+      .clickbait-title {
+        background: darken($grey--light, 15%);
+      }
     }
   }
 }
@@ -5457,7 +5504,7 @@ table {
   z-index: 101;
   width: 570px !important;
   max-width: 85vw;
-  background-color: #f0f1f3 !important; 
+  background-color: #f0f1f3 !important;
   padding: 10px 30px;
   list-style: none;
   li.category a {
@@ -5817,8 +5864,8 @@ input[type='radio'], input[type='checkbox'] {
   background-color: $grey--light;
   min-height: 0;
   @media only screen and (max-width: 768px){
-    max-width: 100%; 
-    padding: 10px; 
+    max-width: 100%;
+    padding: 10px;
   }
   .profile-header {
     box-shadow: none;
@@ -5863,7 +5910,7 @@ input[type='radio'], input[type='checkbox'] {
   border-radius: 2px;
   &:hover {
     background-color: #acc02f;
-  }  
+  }
 }
 
 .open {
@@ -5955,6 +6002,12 @@ input[type='radio'], input[type='checkbox'] {
   padding: 15px 35px 10px;
   font-size: 16px;
   font-family: 'Roboto Medium', sans serif;
+
+  h1 {
+    display: inline;
+    font-size: 16px;
+    text-transform: none;
+  }
 
   @media only screen and (max-width: 804px) {
     padding-left: 23px;
@@ -6575,4 +6628,43 @@ span.no-js-warning-message {
 
 .text-align-left {
   text-align: left;
+}
+
+.clickbait-title {
+  width: 100%;
+  transition-property: background;
+  transition-duration: 0.15s;
+  background: #f0f1f3;
+}
+
+.catalog-list ul {
+  padding: 0px;
+}
+
+.wiggle {
+  animation: wiggle 2s linear infinite;
+}
+
+@keyframes wiggle {
+  0%, 7% {
+    transform: rotateZ(0);
+  }
+  15% {
+    transform: rotateZ(-15deg);
+  }
+  20% {
+    transform: rotateZ(10deg);
+  }
+  25% {
+    transform: rotateZ(-10deg);
+  }
+  30% {
+    transform: rotateZ(6deg);
+  }
+  35% {
+    transform: rotateZ(-4deg);
+  }
+  40%, 100% {
+    transform: rotateZ(0);
+  }
 }

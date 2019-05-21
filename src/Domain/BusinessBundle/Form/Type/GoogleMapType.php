@@ -43,7 +43,7 @@ class GoogleMapType extends AbstractType
         $view->vars['latitude'] = $options['latitude'];
         $view->vars['longitude'] = $options['longitude'];
         $view->vars['zoom'] = $options['zoom'];
-        $view->vars['google_api_key'] = $options['google_api_key'];
+        $view->vars['mapbox_api_key'] = $options['mapbox_api_key'];
     }
 
     /**
@@ -56,8 +56,8 @@ class GoogleMapType extends AbstractType
             'language' => 'en',
             'latitude' => $this->config->getValue(ConfigInterface::DEFAULT_MAP_COORDINATE_LATITUDE),
             'longitude' => $this->config->getValue(ConfigInterface::DEFAULT_MAP_COORDINATE_LONGITUDE),
-            'google_api_key' => $this->config->getValue(ConfigInterface::GOOGLE_API_KEY),
-            'zoom' => 12,
+            'mapbox_api_key' => $this->config->getValue(ConfigInterface::MAPBOX_API_KEY),
+            'zoom' => 8,
         ]);
     }
 

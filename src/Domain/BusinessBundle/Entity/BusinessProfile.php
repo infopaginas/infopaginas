@@ -16,10 +16,12 @@ use Domain\BusinessBundle\Model\SubscriptionPlanInterface;
 use Domain\BusinessBundle\Util\ZipFormatterUtil;
 use Domain\ReportBundle\Model\PostponeExportInterface;
 use Domain\ReportBundle\Model\ReportInterface;
+use Oxa\Sonata\AdminBundle\Model\ChangeStateInterface;
 use Oxa\Sonata\AdminBundle\Model\CopyableEntityInterface;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
 use Oxa\Sonata\AdminBundle\Model\PostponeRemoveInterface;
 use Oxa\Sonata\AdminBundle\Util\Helpers\AdminHelper;
+use Oxa\Sonata\AdminBundle\Util\Traits\ChangeStateTrait;
 use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
 use Oxa\Sonata\AdminBundle\Util\Traits\PostponeRemoveTrait;
 use Oxa\Sonata\MediaBundle\Entity\Media;
@@ -55,13 +57,15 @@ class BusinessProfile implements
     GeolocationInterface,
     PostponeRemoveInterface,
     ReportInterface,
-    PostponeExportInterface
+    PostponeExportInterface,
+    ChangeStateInterface
 {
     use DefaultEntityTrait;
     use PersonalTranslatable;
     use LocationTrait;
     use SeoTrait;
     use PostponeRemoveTrait;
+    use ChangeStateTrait;
 
     const SERVICE_AREAS_AREA_CHOICE_VALUE = 'area';
     const SERVICE_AREAS_LOCALITY_CHOICE_VALUE = 'locality';
@@ -118,12 +122,10 @@ class BusinessProfile implements
     const BUSINESS_PROFILE_FIELD_STREET_NUMBER      = 'streetNumber';
     const BUSINESS_PROFILE_FIELD_EXTENDED_ADDRESS   = 'extendedAddress';
     const BUSINESS_PROFILE_FIELD_CROSS_STREET       = 'crossStreet';
-    const BUSINESS_PROFILE_FIELD_GOOGLE_ADDRESS     = 'googleAddress';
     const BUSINESS_PROFILE_FIELD_STATE              = 'state';
     const BUSINESS_PROFILE_FIELD_CITY               = 'city';
     const BUSINESS_PROFILE_FIELD_ZIP_CODE           = 'zipCode';
     const BUSINESS_PROFILE_FIELD_CUSTOM_ADDRESS     = 'customAddress';
-    const BUSINESS_PROFILE_FIELD_USE_MAP_ADDRESS    = 'useMapAddress';
     const BUSINESS_PROFILE_FIELD_HIDE_ADDRESS       = 'hideAddress';
     const BUSINESS_PROFILE_FIELD_HIDE_MAP           = 'hideMap';
 
@@ -533,13 +535,6 @@ class BusinessProfile implements
     /**
      * @var string
      *
-     * @ORM\Column(name="google_address", type="string", nullable=true)
-     */
-    protected $googleAddress;
-
-    /**
-     * @var string
-     *
      * @ORM\Column(name="state", type="string", length=30, nullable=true)
      * @Assert\Length(max=30, maxMessage="business_profile.max_length")
      */
@@ -571,13 +566,6 @@ class BusinessProfile implements
      * @Assert\Length(max=255, maxMessage="business_profile.max_length")
      */
     protected $customAddress;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="use_map_address", type="boolean", options={"default" : 0})
-     */
-    protected $useMapAddress = false;
 
     /**
      * @var string - If checkbox is checked, both address of Business and mark on map are not shown to Consumer.
@@ -2013,30 +2001,6 @@ class BusinessProfile implements
     }
 
     /**
-     * Set useMapAddress
-     *
-     * @param boolean $useMapAddress
-     *
-     * @return BusinessProfile
-     */
-    public function setUseMapAddress($useMapAddress)
-    {
-        $this->useMapAddress = $useMapAddress;
-
-        return $this;
-    }
-
-    /**
-     * Get useMapAddress
-     *
-     * @return boolean
-     */
-    public function getUseMapAddress()
-    {
-        return $this->useMapAddress;
-    }
-
-    /**
      * @return mixed
      */
     public function getTwitterURL()
@@ -2301,30 +2265,6 @@ class BusinessProfile implements
     }
 
     /**
-     * Set googleAddress
-     *
-     * @param string $googleAddress
-     *
-     * @return BusinessProfile
-     */
-    public function setGoogleAddress($googleAddress)
-    {
-        $this->googleAddress = $googleAddress;
-
-        return $this;
-    }
-
-    /**
-     * Get googleAddress
-     *
-     * @return string
-     */
-    public function getGoogleAddress()
-    {
-        return $this->googleAddress;
-    }
-
-    /**
      * @return mixed
      */
     public function getUid()
@@ -2362,7 +2302,8 @@ class BusinessProfile implements
      */
     public function getFullAddress()
     {
-        $address = [];
+        $address       = [];
+        $addressResult = '';
 
         if ($this->getCustomAddress()) {
             return $this->getCustomAddress();
@@ -2394,8 +2335,6 @@ class BusinessProfile implements
 
         if ($address) {
             $addressResult = implode(', ', $address);
-        } else {
-            $addressResult = $this->getGoogleAddress();
         }
 
         return $addressResult;
@@ -2407,6 +2346,8 @@ class BusinessProfile implements
      */
     public function getShortAddress()
     {
+        $addressResult = '';
+
         if ($this->getHideAddress()) {
             return '';
         }
@@ -2430,8 +2371,6 @@ class BusinessProfile implements
 
         if ($address) {
             $addressResult = implode(', ', $address);
-        } else {
-            $addressResult = $this->getGoogleAddress();
         }
 
         return $addressResult;
@@ -3189,7 +3128,6 @@ class BusinessProfile implements
     public static function getCommonBooleanFields()
     {
         return [
-            self::BUSINESS_PROFILE_FIELD_USE_MAP_ADDRESS,
             self::BUSINESS_PROFILE_FIELD_HIDE_ADDRESS,
             self::BUSINESS_PROFILE_FIELD_HIDE_MAP,
         ];
@@ -3223,7 +3161,6 @@ class BusinessProfile implements
             self::BUSINESS_PROFILE_FIELD_CITY,
             self::BUSINESS_PROFILE_FIELD_ZIP_CODE,
             self::BUSINESS_PROFILE_FIELD_CUSTOM_ADDRESS,
-            self::BUSINESS_PROFILE_FIELD_USE_MAP_ADDRESS,
 
             // geo
             self::BUSINESS_PROFILE_FIELD_LATITUDE,

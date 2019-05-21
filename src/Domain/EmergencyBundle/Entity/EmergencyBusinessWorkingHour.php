@@ -3,6 +3,8 @@
 namespace Domain\EmergencyBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Oxa\Sonata\AdminBundle\Model\ChangeStateInterface;
+use Oxa\Sonata\AdminBundle\Util\Traits\ChangeStateTrait;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -11,8 +13,10 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Table(name="emergency_business_working_hour")
  * @ORM\Entity(repositoryClass="Domain\EmergencyBundle\Repository\EmergencyBusinessWorkingHourRepository")
  */
-class EmergencyBusinessWorkingHour
+class EmergencyBusinessWorkingHour implements ChangeStateInterface
 {
+    use ChangeStateTrait;
+
     const DEFAULT_TASK_TIME_FORMAT = 'g:i A';
     const DEFAULT_DATE = '1970-01-01';
 

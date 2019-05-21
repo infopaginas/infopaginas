@@ -21,11 +21,12 @@ use Symfony\Component\Routing\RequestContext;
 
 class SitemapSubscriber implements EventSubscriberInterface
 {
-    const SECTION_MAIN              = 'main';
-    const SECTION_ARTICLE           = 'article';
-    const SECTION_CATALOG           = 'catalog';
-    const SECTION_EMERGENCY_CATALOG = 'emergency_catalog';
-    const SECTION_BUSINESS_PROFILES = 'businessProfiles';
+    const SECTION_MAIN                        = 'main';
+    const SECTION_ARTICLE                     = 'article';
+    const SECTION_CATALOG                     = 'catalog';
+    const SECTION_EMERGENCY_CATALOG           = 'emergency_catalog';
+    const SECTION_BUSINESS_PROFILES           = 'businessProfiles';
+    const SECTION_BUSINESS_PROFILE_DIRECTIONS = 'businessProfileDirections';
 
     /**
      * @var ContainerInterface
@@ -124,14 +125,24 @@ class SitemapSubscriber implements EventSubscriberInterface
                 UrlGeneratorInterface::ABSOLUTE_URL
             );
 
+            $locDirections = $this->urlGenerator->generate(
+                'domain_search_show_directions',
+                [
+                    'slug'     => $businessProfile->getSlug(),
+                ],
+                UrlGeneratorInterface::ABSOLUTE_URL
+            );
+
             $lastModify      = $businessProfile->getUpdatedAt();
             $priority        = $this->getBusinessProfilePriority($businessProfile);
             $changeFrequency = null;
 
             $baseUrl = new UrlConcrete($loc, $lastModify, $changeFrequency, $priority);
+            $baseDirectionsUrl = new UrlConcrete($locDirections, $lastModify, $changeFrequency, $priority);
 
             if ($this->languages) {
                 $urlLang = new GoogleMultilangUrlDecorator($baseUrl);
+                $directionsUrl = new GoogleMultilangUrlDecorator($baseDirectionsUrl);
 
                 foreach ($this->languages as $locale) {
                     $this->context->setHost($locale . '.' . $this->defaultHost);
@@ -145,13 +156,22 @@ class SitemapSubscriber implements EventSubscriberInterface
                         UrlGeneratorInterface::ABSOLUTE_URL
                     );
 
+                    $directionsUrl = $this->urlGenerator->generate(
+                        'domain_search_show_directions',
+                        ['slug' => $businessProfile->getSlug()],
+                        UrlGeneratorInterface::ABSOLUTE_URL
+                    );
+
                     $urlLang->addLink($url, $locale);
+                    $directionsUrl->addLink($directionsUrl, $locale);
                 }
 
                 $baseUrl = $urlLang;
+                $baseDirectionsUrl = $directionsUrl;
             }
 
             $this->siteMapEvent->getUrlContainer()->addUrl($baseUrl, self::SECTION_BUSINESS_PROFILES);
+            $this->siteMapEvent->getUrlContainer()->addUrl($baseDirectionsUrl, self::SECTION_BUSINESS_PROFILE_DIRECTIONS);
 
             $this->manager->detach($row[0]);
         }

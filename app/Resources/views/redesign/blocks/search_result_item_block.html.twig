@@ -3,6 +3,7 @@
 
     <div class="number-results">
         {% trans with {'{-count-}': results.resultCount} %}search_results.count.total{% endtrans %}
+        <h1>{{ seoData.title }}</h1>
     </div>
 
     {% for item in results.resultSet %}

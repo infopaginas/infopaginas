@@ -1,5 +1,5 @@
 define(
-    ['jquery', 'tools/directions', 'tools/redirect'], function ( $, directions, Redirect ) {
+    ['jquery', 'tools/redirect'], function ( $, Redirect ) {
     'use strict';
 
     var compareSearchPage = function () {
@@ -9,10 +9,6 @@ define(
     };
 
     compareSearchPage.prototype.init = function () {
-        this.options = {
-            directions: new directions
-        };
-
         this.redirect = new Redirect;
 
         var highlightsElems = ['address', 'phone', 'hours', 'brands', 'social', 'payment', 'share'];
@@ -37,8 +33,6 @@ define(
             });
           }
         })
-
-        this.options.directions.bindEventsDirections();
     };
 
     return compareSearchPage;

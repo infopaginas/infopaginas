@@ -5,12 +5,12 @@
         {% set phoneToCall = item.phones.first.phone %}
     {% endif %}
     <a href="tel:{{ phoneToCall }}" data-bname="{{ item.name }}" class="button button--small button--featured hide-desktop phone-call buttons-width" data-id="{{ item.id }}" data-type="callMobButton" data-bw-gtm-event-click data-bw-gtm-label="{% trans %}ActionButtonCall{% endtrans %}">
-        <i class="fa fa-phone"></i>
+        <i class="fa fa-phone wiggle"></i>
         <span>{% trans %}ActionButtonCall{% endtrans %}</span>
     </a>
 {% endif %}
 {% if not item.getHideAddress() %}
-    <a data-bname="{{ item.name }}" class="get-dir button button--small button--featured link-pointer direction-button vertical-left-separator buttons-width" data-id="{{ item.getId() }}" data-latlng="{{ item.getLatLng() }}"  data-bw-gtm-event-click data-bw-gtm-label="{% trans %}Directions{% endtrans %}">
+    <a data-bname="{{ item.name }}" class="get-dir redirect-event button button--small button--featured link-pointer direction-button vertical-left-separator buttons-width" data-href="{{ path('domain_search_show_directions', { 'slug': item.getSlug() }) }}" data-id="{{ item.getId() }}" data-latlng="{{ item.getLatLng() }}" data-type="directionButton" data-bw-gtm-event-click data-bw-gtm-label="{% trans %}Directions{% endtrans %}">
         <i class="fa fa-location-arrow"></i>
         <span>{% trans %}Directions{% endtrans %}</span>
     </a>

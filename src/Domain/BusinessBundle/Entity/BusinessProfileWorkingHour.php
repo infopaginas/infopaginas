@@ -5,6 +5,8 @@ namespace Domain\BusinessBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Domain\BusinessBundle\Model\DayOfWeekModel;
 use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
+use Oxa\Sonata\AdminBundle\Model\ChangeStateInterface;
+use Oxa\Sonata\AdminBundle\Util\Traits\ChangeStateTrait;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -13,8 +15,10 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Table(name="business_profile_working_hour")
  * @ORM\Entity(repositoryClass="Domain\BusinessBundle\Repository\BusinessProfileWorkingHourRepository")
  */
-class BusinessProfileWorkingHour
+class BusinessProfileWorkingHour implements ChangeStateInterface
 {
+    use ChangeStateTrait;
+
     const DEFAULT_TASK_TIME_FORMAT = 'g:i A';
     const DEFAULT_DATE = '1970-01-01';
 

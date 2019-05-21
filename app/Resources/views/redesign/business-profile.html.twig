@@ -8,6 +8,11 @@
     {% include ':redesign/blocks:breadcrumbs.html.twig' with {'catalogLocality': businessProfile.catalogLocality, 'category': businessProfile.categories|first} %}
 {% endblock %}
 
+{% block styles %}
+    {{ parent() }}
+    <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.css" />
+{% endblock %}
+
 {% block bodyClass %}profile{% endblock %}
 
 {% block body %}
@@ -219,7 +224,7 @@
                                                 {% else %}
                                                     {% set hasPhone = false %}
                                                 {% endif %}
-                                                <a class="slide-button get-dir button button--small button--featured link-pointer {% if suggestedBusiness.isAd %}svm-getdir{% endif %} {% if not hasPhone %}empty-phone{% endif %}" data-id="{{ suggestedBusiness.id }}" data-latlng="{{ suggestedBusiness.latLng }}" data-bw-gtm-event-click data-bw-gtm-label="{% trans %}Directions{% endtrans %}" data-bname="{{ suggestedBusiness.name }}">
+                                                <a class="slide-button get-dir redirect-event button button--small button--featured link-pointer {% if suggestedBusiness.isAd %}svm-getdir{% endif %} {% if not hasPhone %}empty-phone{% endif %}" data-href="{{ path('domain_search_show_directions', {'slug': suggestedBusiness.slug }) }}" data-id="{{ suggestedBusiness.id }}" data-latlng="{{ suggestedBusiness.latLng }}" data-type="directionButton" data-bw-gtm-event-click data-bw-gtm-label="{% trans %}Directions{% endtrans %}" data-bname="{{ suggestedBusiness.name }}">
                                                     <i class="fa fa-location-arrow"></i>
                                                     {% trans %}Directions{% endtrans %}
                                                 </a>
@@ -286,18 +291,22 @@
 
                         {% if not businessProfile.hideMap %}
                             <section class="page-section profile-map">
-                                <div id="map" class="business-map">
-                                    {% include ':redesign/blocks/googleMap:google_map_placeholder.html.twig' %}
+                                <div id="menu">
+                                    {% include ':redesign/blocks/mapbox:mapMenu.html.twig' %}
                                 </div>
-                                <span id="map-markers" hidden data-google-markers="{{ markers }}"></span>
+                                <div id="map" class="business-map">
+                                    {% include ':redesign/blocks/mapbox:mapLogo.html.twig' %}
+                                </div>
+                                <span id="map-markers" hidden data-mapbox-markers="{{ markers }}"></span>
                             </section>
                         {% endif %}
 
                     </article><!-- profile -->
 
                     <aside class="profile__sidebar">
-
-                        {% include ':redesign/blocks:social-share.html.twig' %}
+                        <div class="social-medias">
+                            {% include ':redesign/blocks:social-share.html.twig' %}
+                        </div>
 
                         {% include ':redesign/blocks/banners:side-block.html.twig' with { 'bannerType': BANNER_CODE.BUSINESS_PAGE_RIGHT } %}
 
@@ -336,17 +345,14 @@
 {% endblock %}
 
 {% block scripts %}
-    {{ parent() }}
+    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.js'></script>
 
-    {% include ':widgets:google_map_script.html.twig' with {hideMap: businessProfile.hideMap} %}
+    {{ parent() }}
 
     <script type="text/javascript">
         var map;
 
         requirejs(['{{ absolute_url(asset("assetic/require_common_js.js")) }}'], function(common) {
-            require(['{{ absolute_url(asset("assetic/require_map_search_page_js.js")) }}'], function(mapSearchPage) {
-                var mapSearchPage = new mapSearchPage();
-            });
             requirejs([
                 '{{ absolute_url(asset("assetic/require_business_profile_view_js.js")) }}'
             ], function(businessProfileView, interactionsReport) {
@@ -354,4 +360,6 @@
             })
         });
     </script>
+
+    {% include ':widgets:mapbox_script.html.twig' %}
 {% endblock%}

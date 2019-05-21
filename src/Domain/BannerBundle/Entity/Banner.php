@@ -4,7 +4,9 @@ namespace Domain\BannerBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Domain\BannerBundle\Model\TypeModel;
+use Oxa\Sonata\AdminBundle\Model\ChangeStateInterface;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
+use Oxa\Sonata\AdminBundle\Util\Traits\ChangeStateTrait;
 use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -15,9 +17,10 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Table(name="banner")
  * @ORM\Entity(repositoryClass="Domain\BannerBundle\Repository\BannerRepository")
  */
-class Banner implements DefaultEntityInterface
+class Banner implements DefaultEntityInterface, ChangeStateInterface
 {
     use DefaultEntityTrait;
+    use ChangeStateTrait;
 
     /**
      * @var int

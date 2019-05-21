@@ -863,13 +863,13 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
     }
 
     function triggerMapResize() {
-        if ( typeof google != 'undefined' && googleMapScriptInit ) {
-            google.maps.event.trigger( map, 'resize' );
+        if ( mapScriptInit ) {
+            map.resize();
         }
     }
 
     function triggerMapRequested() {
-        $( document ).trigger( 'googleMapScriptRequested' );
+        $( document ).trigger( 'mapScriptRequested' );
     }
 
     function isScrolledIntoView( element, fullyInView ) {
@@ -912,5 +912,10 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
             workingHoursTitle.addClass( 'arrow-down' );
             currentDayBlock.html( todayTextValue );
         }
+    });
+
+    $( document ).ready( function() {
+        var event = new CustomEvent( 'jQueryLoaded' );
+        document.dispatchEvent( event );
     });
 });

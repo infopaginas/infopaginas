@@ -24,6 +24,8 @@ class UserActionReportManager extends BaseReportManager
     const MONGO_DB_FIELD_ENTITY_NAME_SEARCH = 'entity_name_search';
     const MONGO_DB_FIELD_ACTION        = 'action';
     const MONGO_DB_FIELD_DATA          = 'data';
+    const MONGO_DB_FIELD_DATA_BEFORE   = 'data_before';
+    const MONGO_DB_FIELD_DATA_AFTER    = 'data_after';
 
     const MONGO_DB_DEFAULT_USER      = 'unknown';
     const MONGO_DB_DEFAULT_USER_ID   = 0;
@@ -116,6 +118,12 @@ class UserActionReportManager extends BaseReportManager
                     case self::MONGO_DB_FIELD_DATA:
                         $value = $rawData[self::MONGO_DB_FIELD_DATA]->getArrayCopy();
                         break;
+                    case self::MONGO_DB_FIELD_DATA_BEFORE:
+                        $value = $rawData[self::MONGO_DB_FIELD_DATA_BEFORE]->getArrayCopy();
+                        break;
+                    case self::MONGO_DB_FIELD_DATA_AFTER:
+                        $value = $rawData[self::MONGO_DB_FIELD_DATA_AFTER]->getArrayCopy();
+                        break;
                     default:
                         $value = $rawData[$key];
                         break;
@@ -148,6 +156,12 @@ class UserActionReportManager extends BaseReportManager
                             break;
                         case self::MONGO_DB_FIELD_DATA:
                             $value = $item[self::MONGO_DB_FIELD_DATA]->getArrayCopy();
+                            break;
+                        case self::MONGO_DB_FIELD_DATA_BEFORE:
+                            $value = $item[self::MONGO_DB_FIELD_DATA_BEFORE]->getArrayCopy();
+                            break;
+                        case self::MONGO_DB_FIELD_DATA_AFTER:
+                            $value = $item[self::MONGO_DB_FIELD_DATA_AFTER]->getArrayCopy();
                             break;
                         default:
                             $value = $item[$key];
@@ -206,6 +220,14 @@ class UserActionReportManager extends BaseReportManager
             $data['entityName'] = '';
         }
 
+        $dataSet = [];
+
+        if (!empty($data['dataSet'])) {
+            $dataSet = $data['dataSet'];
+        }
+
+        unset($data['dataSet']);
+
         $userAction = [
             self::MONGO_DB_FIELD_USER_NAME      => $userName,
             self::MONGO_DB_FIELD_USER_ID        => $userId,
@@ -216,6 +238,8 @@ class UserActionReportManager extends BaseReportManager
             self::MONGO_DB_FIELD_ENTITY_NAME_SEARCH => AdminHelper::convertAccentedString($data['entityName']),
             self::MONGO_DB_FIELD_ACTION         => $action,
             self::MONGO_DB_FIELD_DATA           => $data,
+            self::MONGO_DB_FIELD_DATA_BEFORE    => $dataSet ? ($dataSet['dataBefore']) : [],
+            self::MONGO_DB_FIELD_DATA_AFTER     => $dataSet ? ($dataSet['dataAfter'])  : [],
         ];
 
         return $userAction;
@@ -323,6 +347,8 @@ class UserActionReportManager extends BaseReportManager
             self::MONGO_DB_FIELD_ENTITY_NAME => 'user_action_report.mapping.entity_name',
             self::MONGO_DB_FIELD_ACTION      => 'user_action_report.mapping.action',
             self::MONGO_DB_FIELD_DATA        => 'user_action_report.mapping.data',
+            self::MONGO_DB_FIELD_DATA_BEFORE => 'user_action_report.mapping.data_before',
+            self::MONGO_DB_FIELD_DATA_AFTER  => 'user_action_report.mapping.data_after',
         ];
     }
 

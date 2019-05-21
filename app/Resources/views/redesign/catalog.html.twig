@@ -8,6 +8,11 @@
     {% endembed %}
 {% endblock %}
 
+{% block styles %}
+    {{ parent() }}
+    <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.css" />
+{% endblock %}
+
 {% block bodyClass %}results-list{% endblock %}
 
 {% block body %}
@@ -22,6 +27,7 @@
                                     {{ key }}
                                 </div><!-- index -->
                                 <ul>
+                                    {% include ':redesign/blocks:clickbait-title.html.twig' %}
                                     {% for item in list %}
                                         <li {% if currentLocality is null %}id="{{ item.id }}"{% endif %}>
                                             {% include ':redesign/blocks:catalog_link.html.twig' %}
@@ -38,6 +44,7 @@
 
                         <div class="number-results">
                             {% trans with {'{-count-}': results.resultCount} %}search_results.count.total{% endtrans %}
+                            <h1>{{ seoData.title }}</h1>
                         </div>
 
                         {% for item in results.resultSet %}
@@ -58,7 +65,6 @@
                         {% endembed %}
                     {% endif %}
                 {% endif %}
-
                 <button id="show-map" type="button" class="button button-round button--show-map button- floating-offset" data-bw-gtm-event-click data-bw-gtm-label="{% trans %}Map view{% endtrans %}">
                     <i class="fa fa-map"></i>
                     <span>{% trans %}Map view{% endtrans %}</span>
@@ -71,11 +77,13 @@
                 <i class="fa fa-list"></i>
                 <span>{% trans %}List view{% endtrans %}</span>
             </button>
-
-            <div id="map" class="map">
-                {% include ':redesign/blocks/googleMap:google_map_placeholder.html.twig' %}
+            <div id="menu" class="default-menu">
+                {% include ':redesign/blocks/mapbox:mapMenu.html.twig' %}
             </div>
-            <span id="map-markers" hidden data-google-markers="{{ markers }}"></span>
+            <div id="map" class="map">
+                {% include ':redesign/blocks/mapbox:mapLogo.html.twig' %}
+            </div>
+            <span id="map-markers" hidden data-mapbox-markers="{{ markers }}"></span>
         </section><!-- results-map -->
 
         {% include ':redesign/blocks/banners:search-page-float.html.twig' with { 'bannerType': BANNER_CODE.SEARCH_FLOAT_BOTTOM } %}
@@ -83,17 +91,20 @@
 {% endblock %}
 
 {% block scripts %}
+    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.js'></script>
+
     {{ parent() }}
 
-    {% include ':widgets:google_map_script.html.twig' %}
-
     <script type="text/javascript">
-        var map;
-
         requirejs(['{{ absolute_url(asset("assetic/require_common_js.js")) }}'], function(common) {
-            require(['{{ absolute_url(asset("assetic/require_map_search_page_js.js")) }}'], function(mapSearchPage) {
-                var mapSearchPage = new mapSearchPage();
+            require(['{{ absolute_url(asset("assetic/js/modules/tools/mapSpin.min.js")) }}'], function(spin) {
+                var spin = new spin('map');
+            });
+            require(['{{ absolute_url(asset("assetic/js/modules/tools/redirect.min.js")) }}'], function(redirect) {
+                var redirect = new redirect();
             });
         });
     </script>
+
+    {% include ':widgets:mapbox_script.html.twig' %}
 {% endblock%}

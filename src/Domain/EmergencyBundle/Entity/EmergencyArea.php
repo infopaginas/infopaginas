@@ -5,6 +5,8 @@ namespace Domain\EmergencyBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Oxa\Sonata\AdminBundle\Model\ChangeStateInterface;
+use Oxa\Sonata\AdminBundle\Util\Traits\ChangeStateTrait;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -13,8 +15,10 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Table(name="emergency_area")
  * @ORM\Entity(repositoryClass="Domain\EmergencyBundle\Repository\EmergencyAreaRepository")
  */
-class EmergencyArea
+class EmergencyArea implements ChangeStateInterface
 {
+    use ChangeStateTrait;
+
     /**
      * @var int
      *

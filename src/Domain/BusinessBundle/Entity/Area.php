@@ -5,8 +5,10 @@ namespace Domain\BusinessBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Mapping as ORM;
+use Oxa\Sonata\AdminBundle\Model\ChangeStateInterface;
 use Oxa\Sonata\AdminBundle\Model\CopyableEntityInterface;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
+use Oxa\Sonata\AdminBundle\Util\Traits\ChangeStateTrait;
 use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Oxa\Sonata\AdminBundle\Util\Traits\OxaPersonalTranslatable as PersonalTranslatable;
@@ -23,10 +25,11 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @UniqueEntity("name")
  * @Gedmo\TranslationEntity(class="Domain\BusinessBundle\Entity\Translation\AreaTranslation")
  */
-class Area implements DefaultEntityInterface, CopyableEntityInterface, TranslatableInterface
+class Area implements DefaultEntityInterface, CopyableEntityInterface, TranslatableInterface, ChangeStateInterface
 {
     use DefaultEntityTrait;
     use PersonalTranslatable;
+    use ChangeStateTrait;
 
     /**
      * @var int

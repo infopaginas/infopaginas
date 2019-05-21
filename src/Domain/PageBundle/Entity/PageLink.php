@@ -3,6 +3,8 @@
 namespace Domain\PageBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Oxa\Sonata\AdminBundle\Model\ChangeStateInterface;
+use Oxa\Sonata\AdminBundle\Util\Traits\ChangeStateTrait;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -11,8 +13,10 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Table(name="page_link")
  * @ORM\Entity(repositoryClass="Domain\PageBundle\Repository\PageLinkRepository")
  */
-class PageLink
+class PageLink implements ChangeStateInterface
 {
+    use ChangeStateTrait;
+
     const PAGE_LINK_TYPE_LINK  = 'link';
     const PAGE_LINK_TYPE_OFFER = 'offer';
 
