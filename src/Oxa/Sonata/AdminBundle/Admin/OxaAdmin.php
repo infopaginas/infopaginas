@@ -303,9 +303,9 @@ class OxaAdmin extends BaseAdmin
         $changeSet = $uow->getEntityChangeSet($entity);
 
         foreach ($changeSet as $fieldName => $value) {
-            if (is_object($value[0]) && method_exists($value[0], 'getId')) {
-                $changeSet[$fieldName][0] = $value[0]->getId();
-                $changeSet[$fieldName][1] = $value[1]->getId();
+            if (is_object($value[0]) || is_object($value[1])) {
+                $changeSet[$fieldName][0] = method_exists($value[0], 'getId') ? $value[0]->getId() : 0;
+                $changeSet[$fieldName][1] = method_exists($value[1], 'getId') ? $value[1]->getId() : 0;
             }
         }
 
