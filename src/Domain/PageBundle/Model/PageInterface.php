@@ -22,6 +22,7 @@ interface PageInterface
     const CODE_CATALOG_LOCALITY_CATEGORY    = 14;
     const CODE_EMERGENCY                    = 15;
     const CODE_EMERGENCY_AREA_CATEGORY      = 16;
+    const CODE_SEARCH                       = 17;
 
     /**
      * @return mixed

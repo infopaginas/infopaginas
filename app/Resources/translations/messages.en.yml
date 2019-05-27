@@ -341,7 +341,7 @@ user.business.type_category_3: Categories lvl 3
 What?: What?
 Where?: Where?
 Common searches N/A link: Common searches N/A link
-Catalog: Catalog
+Catalog: List of Towns
 Infopáginas: Infopáginas
 Business hours: Business hours
 Payment methods: Payment methods
@@ -461,7 +461,6 @@ Create Profile: Create Profile
 Edit Profile: Edit profile
 View profile: View profile
 Unlimited: Unlimited
-View more articles: View more articles
 To view this video please enable JavaScript, and consider upgrading to a web browser that: To view this video please enable JavaScript, and consider upgrading to a web browser that
 supports HTML5 video: supports HTML5 video
 Video example: Video example
@@ -649,7 +648,7 @@ business_profile.image.description.required: This field is required
 business_profile.video.description.required: This field is required
 business_profile.panorama.title: This is a 360 panorama, drag the image to look around
 
-search_results.count.total: We've found {-count-} results
+search_results.count.total: We've found {-count-} results for
 
 no_js.warning.message: Your browser's Javascript functionality is turned off. Please turn it on so that you can experience the full capabilities of this site.
 
