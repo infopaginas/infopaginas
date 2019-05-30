@@ -486,7 +486,7 @@ class SitemapSubscriber implements EventSubscriberInterface
             ],
         ];
 
-        if (!$this->getEmergencyFeatureEnabled()) {
+        if ($this->getEmergencyFeatureEnabled()) {
             $statisticUrls['emergency_main'] = [
                 'route'   => 'emergency_main',
                 'section' => self::SECTION_MAIN,
