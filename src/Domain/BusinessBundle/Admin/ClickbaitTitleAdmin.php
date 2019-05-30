@@ -33,9 +33,7 @@ class ClickbaitTitleAdmin extends OxaAdmin
     {
         $listMapper
             ->add('id')
-            ->add('locality', null, [
-                'template' => 'DomainBusinessBundle:Admin:ClickbaitTitle/list_locality.html.twig',
-            ])
+            ->add('locality')
             ->add('isActive')
             ->add('title')
         ;
@@ -49,13 +47,11 @@ class ClickbaitTitleAdmin extends OxaAdmin
     protected function configureFormFields(FormMapper $formMapper)
     {
         $formMapper
-            ->tab('Clickbait Title')
-                ->with('Locality')
-                    ->add('locality', null, ['required' => true])
-                    ->add('isActive')
-                    ->add('title')
-                    ->add('url', null, ['required' => true])
-                ->end()
+            ->with('Clickbait Title')
+                ->add('locality', null, ['required' => true])
+                ->add('isActive')
+                ->add('title')
+                ->add('url', null, ['required' => true])
             ->end()
         ;
     }
