@@ -23,7 +23,7 @@ class EmergencyController extends Controller
         $emergencyManger = $this->getEmergencyManager();
 
         if (!$emergencyManger->getEmergencyFeatureEnabled()) {
-            throw $this->createNotFoundException();
+            throw new \Symfony\Component\HttpKernel\Exception\GoneHttpException();
         }
 
         $pageManager = $this->get('domain_page.manager.page');

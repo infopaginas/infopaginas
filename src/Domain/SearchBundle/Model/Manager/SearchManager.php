@@ -532,6 +532,17 @@ class SearchManager extends Manager
         return $locality;
     }
 
+    public function searchCatalogLocalityByName($localityName)
+    {
+        $locality = null;
+
+        if ($localityName) {
+            $locality = $this->localityManager->getLocalityByName($localityName);
+        }
+
+        return $locality;
+    }
+
     /**
      * @param string $categorySlug
      *
