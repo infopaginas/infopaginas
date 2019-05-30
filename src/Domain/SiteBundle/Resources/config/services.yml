@@ -158,3 +158,11 @@ services:
         class:  Domain\SiteBundle\Logger\CronLogger
         arguments:
             - "@mongodb.manager"
+
+    domain_site.twig_extension.language:
+        class: Domain\SiteBundle\Twig\Extension\LanguageExtension
+        public: false
+        tags:
+            - { name: twig.extension }
+        calls:
+            - [ setDefaultLanguage, [ '%locale%' ] ]
