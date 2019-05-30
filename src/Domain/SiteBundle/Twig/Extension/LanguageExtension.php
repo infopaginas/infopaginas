@@ -2,7 +2,6 @@
 
 namespace Domain\SiteBundle\Twig\Extension;
 
-
 class LanguageExtension extends \Twig_Extension
 {
     private $defaultLanguage;
