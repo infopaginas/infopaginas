@@ -10,6 +10,7 @@ define(['jquery', 'tools/spin', 'jquery-ui', 'main-redesign'], function( $, Spin
 
         this.modals = {
             resetModalId: '#resetPasswordModal',
+            forgottenModalId: '#forgottenPasswordModal',
             resetRequesModalId: '#forgottenPasswordModal',
             loginModalId: '#loginModal'
         };
@@ -224,6 +225,11 @@ define(['jquery', 'tools/spin', 'jquery-ui', 'main-redesign'], function( $, Spin
     resetPassword.prototype.checkPasswordResetToken = function() {
         if( window.location.pathname.indexOf('password_reset') !== -1 ) {
             $( this.modals.resetModalId ).addClass('modal--opened');
+            $( 'body' ).addClass( 'body--no-scroll' );
+        }
+
+        if( window.location.pathname.indexOf( 'forgotten_password' ) !== -1 ) {
+            $( this.modals.forgottenModalId ).addClass( 'modal--opened' );
             $( 'body' ).addClass( 'body--no-scroll' );
         }
     };
