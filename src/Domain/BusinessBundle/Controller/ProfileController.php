@@ -244,7 +244,6 @@ class ProfileController extends Controller
             'trackingParams'  => $trackingParams,
             'suggestedResult' => $suggestedResult,
             'contactForm'     => $contactForm->createView(),
-            'isReportProblem' => true,
         ]);
     }
 

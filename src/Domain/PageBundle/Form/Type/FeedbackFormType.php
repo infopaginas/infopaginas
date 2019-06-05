@@ -28,7 +28,7 @@ class FeedbackFormType extends AbstractType
         $resolver->setDefaults(
             [
                 'isReportProblem'    => false,
-                'allow_extra_fields' => true
+                'allow_extra_fields' => true,
             ]
         );
     }

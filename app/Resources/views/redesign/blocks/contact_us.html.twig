@@ -13,7 +13,7 @@
                             {{ form_widget(contactForm.fullName) }}
                         </div>
                     </div>
-                    {% if isReportProblem is not defined %}
+                    {% if contactForm.businessName is defined %}
                         <div class="form__row">
                             <div class="form__field field--businessname">
                                 {{ custom_form_label.widget(contactForm.businessName) }}
@@ -24,7 +24,7 @@
                 </div>
 
                 <div class="form__column">
-                    {% if isReportProblem is not defined %}
+                    {% if contactForm.phone is defined %}
                         <div class="form__row">
                             <div class="form__field field--phone">
                                 {{ custom_form_label.widget(contactForm.phone) }}
@@ -43,7 +43,7 @@
             </div>
         </div>
         <div class="form__section">
-            {% if isReportProblem is not defined %}
+            {% if contactForm.subject is defined %}
                 <div class="form__row vertical__row">
                     {{ custom_form_label.widget(contactForm.subject) }}
                     {{ form_widget(contactForm.subject) }}
