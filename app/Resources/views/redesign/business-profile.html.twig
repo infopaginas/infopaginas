@@ -336,6 +336,18 @@
                             {% include ':redesign/blocks/modals:claim_business.html.twig' %}
                         {% endif %}
 
+                        <div class="sidebar__section section--social">
+                            <ul>
+                                <li>
+                                    <a class="button" data-show-modal-id="reportProblemModal" data-bw-gtm-event-click data-bw-gtm-label="{% trans %}Do you see a problem? Report it here{% endtrans %}">
+                                        <i class="fa fa-envelope"></i>
+                                        <span>{% trans %}Do you see a problem? Report it here{% endtrans %}</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+
+                        {% include ':redesign/blocks/modals:report_problem.html.twig' %}
                     </aside>
                 </div><!-- container -->
             </div><!-- profile-body_-container -->

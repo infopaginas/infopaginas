@@ -77,9 +77,9 @@ class DefaultController extends Controller
         );
 
         if (Page::getShowContactForm($code)) {
-            $contactForm        = $this->createForm(new FeedbackFormType());
-            $contactFormView    = $contactForm->createView();
-            $instantEmail       = $this->getConfigManager()->getInstantEmail();
+            $contactForm     = $this->createForm(new FeedbackFormType(), null, ['isReportProblem' => false]);
+            $contactFormView = $contactForm->createView();
+            $instantEmail    = $this->getConfigManager()->getInstantEmail();
         } else {
             $contactFormView = null;
             $instantEmail    = null;

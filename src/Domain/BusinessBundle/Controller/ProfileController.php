@@ -10,6 +10,7 @@ use Domain\BusinessBundle\Form\Type\BusinessClaimRequestType;
 use Domain\BusinessBundle\Model\DayOfWeekModel;
 use Domain\BusinessBundle\Model\SubscriptionPlanInterface;
 use Domain\BusinessBundle\Util\BusinessProfileUtil;
+use Domain\PageBundle\Form\Type\FeedbackFormType;
 use Domain\ReportBundle\Model\BusinessOverviewModel;
 use Domain\SearchBundle\Model\Manager\SearchManager;
 use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
@@ -226,6 +227,8 @@ class ProfileController extends Controller
             $suggestedResult = [];
         }
 
+        $contactForm = $this->createForm(new FeedbackFormType(), null, ['isReportProblem' => true]);
+
         return $this->render(':redesign:business-profile.html.twig', [
             'businessProfile' => $businessProfile,
             'seoData'         => $businessProfile,
@@ -240,6 +243,8 @@ class ProfileController extends Controller
             'locale'          => $locale,
             'trackingParams'  => $trackingParams,
             'suggestedResult' => $suggestedResult,
+            'contactForm'     => $contactForm->createView(),
+            'isReportProblem' => true,
         ]);
     }
 

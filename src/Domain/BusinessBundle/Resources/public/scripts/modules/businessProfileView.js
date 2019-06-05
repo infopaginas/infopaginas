@@ -17,7 +17,8 @@ define( ['jquery', 'bootstrap', 'business/tools/interactions', 'tools/select', '
             },
             modals: {
                 createReviewModalId: '#writeReviewModal',
-                claimBusinessModalId: '#claimBusinessModal'
+                claimBusinessModalId: '#claimBusinessModal',
+                reportProblemModalId: '#reportProblemModal'
             },
             loadingSpinnerContainerId: 'create-review-spinner-container',
             claimBusinessMessage: '#claimBusinessMessage'
