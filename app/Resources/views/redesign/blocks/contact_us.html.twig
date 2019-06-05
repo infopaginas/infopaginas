@@ -13,22 +13,25 @@
                             {{ form_widget(contactForm.fullName) }}
                         </div>
                     </div>
-
-                    <div class="form__row">
-                        <div class="form__field field--businessname">
-                            {{ custom_form_label.widget(contactForm.businessName) }}
-                            {{ form_widget(contactForm.businessName) }}
+                    {% if contactForm.businessName is defined %}
+                        <div class="form__row">
+                            <div class="form__field field--businessname">
+                                {{ custom_form_label.widget(contactForm.businessName) }}
+                                {{ form_widget(contactForm.businessName) }}
+                            </div>
                         </div>
-                    </div>
+                    {% endif %}
                 </div>
 
                 <div class="form__column">
-                    <div class="form__row">
-                        <div class="form__field field--phone">
-                            {{ custom_form_label.widget(contactForm.phone) }}
-                            {{ form_widget(contactForm.phone) }}
+                    {% if contactForm.phone is defined %}
+                        <div class="form__row">
+                            <div class="form__field field--phone">
+                                {{ custom_form_label.widget(contactForm.phone) }}
+                                {{ form_widget(contactForm.phone) }}
+                            </div>
                         </div>
-                    </div>
+                    {% endif %}
 
                     <div class="form__row">
                         <div class="form__field field--email">
@@ -40,10 +43,12 @@
             </div>
         </div>
         <div class="form__section">
-            <div class="form__row vertical__row">
-                {{ custom_form_label.widget(contactForm.subject) }}
-                {{ form_widget(contactForm.subject) }}
-            </div>
+            {% if contactForm.subject is defined %}
+                <div class="form__row vertical__row">
+                    {{ custom_form_label.widget(contactForm.subject) }}
+                    {{ form_widget(contactForm.subject) }}
+                </div>
+            {% endif %}
 
             <div class="form__row">
                 <div class="form__field field--message">

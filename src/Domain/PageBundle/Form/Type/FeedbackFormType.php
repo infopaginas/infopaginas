@@ -11,6 +11,7 @@ use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
@@ -22,6 +23,16 @@ use Symfony\Component\Validator\Constraints\Regex;
  */
 class FeedbackFormType extends AbstractType
 {
+    public function configureOptions(OptionsResolver $resolver)
+    {
+        $resolver->setDefaults(
+            [
+                'isReportProblem'    => false,
+                'allow_extra_fields' => true,
+            ]
+        );
+    }
+
     /**
      * @param FormBuilderInterface $builder
      * @param array $options
@@ -39,28 +50,6 @@ class FeedbackFormType extends AbstractType
                     ]),
                 ],
             ])
-            ->add('businessName', TextType::class, [
-                'label'    => 'contact.form.business_name',
-                'required' => false,
-                'constraints' => [
-                    new Length([
-                        'max' => FeedbackReportManager::MAX_LENGTH_BUSINESS_NAME,
-                    ]),
-                ],
-            ])
-            ->add('phone', TextType::class, [
-                'label' => 'contact.form.phone',
-                'attr'  => [
-                    'class' => 'phone-mask',
-                ],
-                'required' => false,
-                'constraints' => [
-                    new Regex([
-                        'pattern' => BusinessProfilePhone::REGEX_PHONE_PATTERN,
-                        'message' => 'business_profile.phone.digit_dash',
-                    ]),
-                ]
-            ])
             ->add('email', EmailType::class, [
                 'label' => 'contact.form.email',
                 'required' => true,
@@ -74,12 +63,6 @@ class FeedbackFormType extends AbstractType
                     ]),
                 ],
             ])
-            ->add('subject', ChoiceType::class, [
-                'label'     => 'contact.form.subject',
-                'multiple'  => false,
-                'choices'   => Page::getContactSubjects(),
-                'choice_translation_domain' => true,
-            ])
             ->add('message', TextareaType::class, [
                 'label'    => 'contact.form.message',
                 'required' => true,
@@ -90,7 +73,47 @@ class FeedbackFormType extends AbstractType
                     ]),
                 ],
             ])
+            ->add('isReportProblem', TextType::class, [
+                'label'    => false,
+                'required' => false,
+                'attr'     => ['class' => 'hidden'],
+                'data'     => $options['isReportProblem']
+            ])
+
         ;
+
+        if (!$options['isReportProblem']) {
+            $builder
+                ->add('businessName', TextType::class, [
+                    'label'    => 'contact.form.business_name',
+                    'required' => false,
+                    'constraints' => [
+                        new Length([
+                            'max' => FeedbackReportManager::MAX_LENGTH_BUSINESS_NAME,
+                        ]),
+                    ],
+                ])
+                ->add('phone', TextType::class, [
+                    'label' => 'contact.form.phone',
+                    'attr'  => [
+                        'class' => 'phone-mask',
+                    ],
+                    'required' => false,
+                    'constraints' => [
+                        new Regex([
+                            'pattern' => BusinessProfilePhone::REGEX_PHONE_PATTERN,
+                            'message' => 'business_profile.phone.digit_dash',
+                        ]),
+                    ]
+                ])
+                ->add('subject', ChoiceType::class, [
+                    'label'     => 'contact.form.subject',
+                    'multiple'  => false,
+                    'choices'   => Page::getContactSubjects(),
+                    'choice_translation_domain' => true,
+                ])
+            ;
+        }
     }
 
     /**
