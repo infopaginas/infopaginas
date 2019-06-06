@@ -1043,6 +1043,11 @@ select {
   }
 }
 
+.no-page-scroll {
+  overflow-x: hidden;
+  overflow-y: hidden;
+}
+
 //main container
 $bps-column-number: 7;
 $bps-border: 1px dotted #bcbcbc;
@@ -1454,17 +1459,19 @@ $bps-border: 1px dotted #bcbcbc;
 
 .main {
   height: auto;
-  padding-top: $padding-mb;
+  padding-top: 25px;
   padding-bottom: 30px;
   transition-duration: .4s;
   transition-property: width;
   transition-timing-function: ease-in-out;
 
   @media only screen and (min-width: 805px) {
-    height: calc(100vh - 45px);
+    height: calc(100vh - 132px);
     overflow-y: auto;
-    padding-top: 40px;
     width: 60%;
+    position: relative;
+    top: 86px;
+    padding-top: 0px;
 
     &.main-results-resize {
       padding-top: 52px;
@@ -1983,6 +1990,16 @@ $thumb-width-mb: 60px;
 
   @media only screen and (max-width: 804px) {
     height: calc(100vh - 82px);
+    width: 100%;
+  }
+}
+
+.directions-map {
+  height: calc(100vh - 45px);
+  width: 100%;
+
+  @media only screen and (max-width: 804px) {
+    height: calc(100vh - 45px);
     width: 100%;
   }
 }
