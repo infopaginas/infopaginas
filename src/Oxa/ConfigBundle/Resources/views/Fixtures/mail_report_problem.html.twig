@@ -1,6 +1,7 @@
 <h1>User's feedback:</h1>
 <ul>
     <li>Full Name: {{ fullName }}</li>
+    <li>Business name: {{ businessName }}</li>
     <li>Email: {{ email }}</li>
     <li>Message: {{ message }}</li>
     <li>UserId: {% if userId %}<a href="{{ absolute_url(path('admin_sonata_user_user_show', {'id': userId})) }}">{{ userId }}</a>{% else %}unlogged user{% endif %}</li>

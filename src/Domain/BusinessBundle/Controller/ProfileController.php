@@ -227,7 +227,11 @@ class ProfileController extends Controller
             $suggestedResult = [];
         }
 
-        $contactForm = $this->createForm(new FeedbackFormType(), null, ['isReportProblem' => true]);
+        $contactForm = $this->createForm(
+            new FeedbackFormType(),
+            ['businessName' => $businessProfile->getName()],
+            ['isReportProblem' => true]
+        );
 
         return $this->render(':redesign:business-profile.html.twig', [
             'businessProfile' => $businessProfile,

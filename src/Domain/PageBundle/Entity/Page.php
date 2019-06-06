@@ -46,6 +46,8 @@ class Page implements DefaultEntityInterface, TranslatableInterface, PageInterfa
     const CONTACT_SUBJECT_CREATE_BUSINESS = 'create_business';
     const CONTACT_SUBJECT_OTHER = 'other';
 
+    const SUBJECT_REPORT_A_PROBLEM = 'report_a_problem';
+
     /**
      * @var int
      *
@@ -569,6 +571,20 @@ class Page implements DefaultEntityInterface, TranslatableInterface, PageInterfa
             self::CONTACT_SUBJECT_BUG => 'contact.form.subject_type.bug',
             self::CONTACT_SUBJECT_ADS => 'contact.form.subject_type.ads',
             self::CONTACT_SUBJECT_OTHER => 'contact.form.subject_type.other',
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public static function getAllSubjects()
+    {
+        return [
+            self::CONTACT_SUBJECT_CREATE_BUSINESS => 'contact.form.subject_type.create_business',
+            self::CONTACT_SUBJECT_BUG             => 'contact.form.subject_type.bug',
+            self::CONTACT_SUBJECT_ADS             => 'contact.form.subject_type.ads',
+            self::SUBJECT_REPORT_A_PROBLEM        => 'Report a problem',
+            self::CONTACT_SUBJECT_OTHER           => 'contact.form.subject_type.other',
         ];
     }
 

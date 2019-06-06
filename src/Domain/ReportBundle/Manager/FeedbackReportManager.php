@@ -2,6 +2,7 @@
 
 namespace Domain\ReportBundle\Manager;
 
+use Domain\PageBundle\Entity\Page;
 use Domain\ReportBundle\Util\DatesUtil;
 use Domain\SiteBundle\Mailer\Mailer;
 use Oxa\MongoDbBundle\Manager\MongoDbManager;
@@ -56,6 +57,8 @@ class FeedbackReportManager extends BaseReportManager
     public function handleFeedback($data)
     {
         if ($data['isReportProblem']) {
+            $data['subject'] = Page::SUBJECT_REPORT_A_PROBLEM;
+
             $this->mailer->sendReportProblemEmailMessage($data);
         } else {
             $this->mailer->sendFeedbackEmailMessage($data);

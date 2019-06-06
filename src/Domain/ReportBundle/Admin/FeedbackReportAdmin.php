@@ -86,7 +86,7 @@ class FeedbackReportAdmin extends ReportAdmin
                 'show_filter' => !empty($this->datagridValues['subject']['value']) ?: null,
                 'field_options' => [
                     'mapped'    => false,
-                    'choices' => Page::getContactSubjects(),
+                    'choices' => Page::getAllSubjects(),
                 ],
                 'field_type' => 'choice'
             ])
@@ -122,7 +122,7 @@ class FeedbackReportAdmin extends ReportAdmin
 
         $this->feedbacks = $this->getFeedbackReportManager()->getFeedbackReportData($filterParam);
         $this->locales = LocaleHelper::getLocaleList();
-        $this->subjects = Page::getContactSubjects();
+        $this->subjects = Page::getAllSubjects();
     }
 
     /**
