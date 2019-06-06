@@ -56,6 +56,8 @@ class FeedbackReportManager extends BaseReportManager
     public function handleFeedback($data)
     {
         if ($data['isReportProblem']) {
+            $data['subject'] = 'report_a_problem';
+
             $this->mailer->sendReportProblemEmailMessage($data);
         } else {
             $this->mailer->sendFeedbackEmailMessage($data);

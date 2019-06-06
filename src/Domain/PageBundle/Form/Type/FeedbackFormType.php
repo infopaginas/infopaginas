@@ -79,20 +79,20 @@ class FeedbackFormType extends AbstractType
                 'attr'     => ['class' => 'hidden'],
                 'data'     => $options['isReportProblem']
             ])
-
+            ->add('businessName', TextType::class, [
+                'label'    => 'contact.form.business_name',
+                'required' => false,
+                'attr'     => ['class' => $options['isReportProblem'] ? 'hidden' : ''],
+                'constraints' => [
+                    new Length([
+                        'max' => FeedbackReportManager::MAX_LENGTH_BUSINESS_NAME,
+                    ]),
+                ],
+            ])
         ;
 
         if (!$options['isReportProblem']) {
             $builder
-                ->add('businessName', TextType::class, [
-                    'label'    => 'contact.form.business_name',
-                    'required' => false,
-                    'constraints' => [
-                        new Length([
-                            'max' => FeedbackReportManager::MAX_LENGTH_BUSINESS_NAME,
-                        ]),
-                    ],
-                ])
                 ->add('phone', TextType::class, [
                     'label' => 'contact.form.phone',
                     'attr'  => [
