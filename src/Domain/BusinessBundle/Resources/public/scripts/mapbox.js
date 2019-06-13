@@ -3,6 +3,7 @@ document.addEventListener( 'jQueryLoaded', function() {
     var height = 34;
     var directionMarkers = [];
     var mapSpinEvent = new CustomEvent( 'mapSpin' );
+    var liTag = 'LI';
 
     var urls = {
         search: Routing.generate( 'domain_search_map' )
@@ -576,7 +577,9 @@ document.addEventListener( 'jQueryLoaded', function() {
     {
         var card = this.$( '#' + elementId );
 
-        if ( card.offset() && elementId ) {
+        if ( card.offset() && elementId &&
+            ( document.getElementById( 'searchContainer' ) || card[0].tagName == liTag )
+        ) {
             var offset = card.offset().top + $( '#searchResults' ).scrollTop()
                 - $( '#searchResults' ).height()/2 + card.height()/2;
 
