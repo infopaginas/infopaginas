@@ -3817,6 +3817,20 @@ a.tag {
   margin-bottom: 20px;
 }
 
+.report-problem-form {
+  .form__row {
+    margin-bottom: 0px;
+  }
+
+  .form__section {
+    padding: 0px;
+  }
+
+  #feedbackButton {
+    margin: auto;
+  }
+}
+
 #emergency-pop-up .modal__content {
   min-height: 200px;
 }
