@@ -2,7 +2,11 @@
 
 <section class="page-section" data-bw-gtm-component="contact-form">
     <form id="feedbackForm" class="form feedback-form" action="{{ absolute_url(path('domain_page_feedback')) }}" method="post">
-        <h3 class="language-title">{{ 'contact.form.title'|trans }}</h3>
+        {% if contactForm.subject is defined %}
+            <h3 class="language-title">{{ 'contact.form.title'|trans }}</h3>
+        {% else %}
+            <h3 class="language-title">{% trans %}Report a problem{% endtrans %}</h3>
+        {% endif %}
         <span class="feedback-message"></span>
         <div class="form__section">
             <div class="form-column__container clearfix">
