@@ -3802,12 +3802,29 @@ a.tag {
 }
 
 .report-problem-form {
-  .form__row {
-    margin-bottom: 0px;
+  .form__actions {
+    background: #f0f1f3;
+  }
+
+  .page-section {
+    background: none;
   }
 
   .form__section {
-    padding: 0px;
+    margin-bottom: 0px;
+    padding: 7px;
+  }
+
+  .feedback-business-row {
+    display: none;
+  }
+
+  .language-title {
+    margin-bottom: 10px;
+  }
+
+  .feedback-message {
+    display: none;
   }
 
   #feedbackButton {

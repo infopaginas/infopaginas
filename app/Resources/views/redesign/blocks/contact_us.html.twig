@@ -5,7 +5,7 @@
         {% if contactForm.subject is defined %}
             <h3 class="language-title">{{ 'contact.form.title'|trans }}</h3>
         {% else %}
-            <h3 class="language-title">{% trans %}Report a problem{% endtrans %}</h3>
+            <h3 class="language-title">{% trans %}Report a Problem{% endtrans %}</h3>
         {% endif %}
         <span class="feedback-message"></span>
         <div class="form__section">
@@ -18,7 +18,7 @@
                         </div>
                     </div>
                     {% if contactForm.businessName is defined %}
-                        <div class="form__row">
+                        <div class="form__row feedback-business-row">
                             <div class="form__field field--businessname">
                                 {{ custom_form_label.widget(contactForm.businessName) }}
                                 {{ form_widget(contactForm.businessName) }}
