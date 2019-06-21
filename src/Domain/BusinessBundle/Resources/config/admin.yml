@@ -154,7 +154,7 @@ services:
         tags:
             - {name: sonata.admin, manager_type: orm, group: admin, label: Business Profile Extra Search}
 
-    domain_business.admin.section:
+    domain_business.admin.business_custom_fields_section:
         class: Domain\BusinessBundle\Admin\CustomFields\SectionAdmin
         arguments: [~, Domain\BusinessBundle\Entity\CustomFields\Section, OxaSonataAdminBundle:CRUD]
         tags:

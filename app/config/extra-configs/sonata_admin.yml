@@ -54,7 +54,7 @@ sonata_admin:
                 label: Business Custom Fields
                 icon: <i class="fa fa-list"></i>
                 items:
-                    - domain_business.admin.section
+                    - domain_business.admin.business_custom_fields_section
                     - domain_business.admin.business_custom_fields_checkbox
                     - domain_business.admin.business_custom_fields_text_area
                     - domain_business.admin.business_custom_fields_radio_button
