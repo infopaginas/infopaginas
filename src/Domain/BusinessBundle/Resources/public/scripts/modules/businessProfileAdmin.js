@@ -7,6 +7,8 @@ $( document ).ready( function() {
     var localityAjaxCall = {};
     var neighborhoodAjaxCall;
     var addExtraSearchLock = false;
+    var addRadioButtonCollection = false;
+    var addListCollection = false;
 
     var categoryField       = $( '#' + formId + '_categories' );
     var areasField          = $( '#' + formId + '_areas' );
@@ -164,6 +166,272 @@ $( document ).ready( function() {
             checkCollectionWorkingHours( openAllTimeCheckbox );
         });
     }
+
+    function insertRadioButton( ids )
+    {
+        $.ajax({
+            type: 'POST',
+            url: Routing.generate( 'domain_business_get_radio_button_values' ),
+            data: { ids: ids },
+            dataType: 'JSON',
+            success: function( response ) {
+                $.each(response, function( key, value ) {
+                    var parent = document.getElementById(formId + '_radioButtonCollection_' + key + '_value' ).parentElement;
+                    var theForm = document.createElement( 'form' );
+                    theForm.setAttribute( 'name', 'radioButtonCustomForm' + key );
+                    theForm.setAttribute( 'id', 'radioButtonCustomForm' + key );
+
+                    value.forEach( function( item, childKey ) {
+                        theInput = document.createElement( 'input' );
+                        theInput.setAttribute( 'type', 'radio' );
+                        theInput.setAttribute( 'name', 'radioButtonCustom' + key );
+                        theInput.setAttribute( 'id', 'radioButtonCustom' + key );
+                        theInput.setAttribute( 'value', item['id'] );
+                        var label = document.createElement( 'label');
+                        label.appendChild( theInput );
+                        label.setAttribute( 'class', 'custom-radio' );
+                        label.innerHTML += '<span>' + item['title'] + '</span>';
+                        theForm.appendChild( label );
+                    });
+
+                    parent.appendChild( theForm );
+
+                    jQuery( "input[type='radio']" ).iCheck({
+                        radioClass: 'iradio_square-blue'
+                    });
+                });
+
+                $.each(response, function( key, value ) {
+                    var valueIds = [];
+
+                    $.each(value, function( key, item ) {
+                        valueIds.push(item['id']);
+                    });
+
+                    var object = document.getElementById( formId + '_radioButtonCollection_' + key + '_value' );
+                    var form = $( document.getElementById( 'radioButtonCustomForm' + key ) );
+
+                    if (object.value) {
+                        form.find( 'input' ).each( function () {
+                            if ( this.value == object.value ) {
+                                $( this.parentElement )[0].className += ' checked';
+                            }
+                        });
+                    }
+
+                    form.find( 'label' ).each(function () {
+                        $( this ).click( function(e)
+                        {
+                            var object = document.getElementById( formId + '_radioButtonCollection_' + key + '_value' );
+                            object.value = $( this ).find( 'input' )[0].value;
+                        });
+                    });
+
+                    form.find( 'ins' ).each( function () {
+                        $( this ).click( function( e )
+                        {
+                            var label = $( this.closest( 'label' ) );
+                            var input = label.find( 'input' );
+                            var object = document.getElementById( formId + '_radioButtonCollection_' + key + '_value' );
+                            object.value = input[0].value;
+                        });
+                    });
+                });
+            }
+        });
+    }
+
+    function addRadioButtons()
+    {
+        var ids = [];
+        var radioValues = document.getElementsByClassName('radio-value');
+
+        if (radioValues) {
+            for (var i = 0; i < radioValues.length; i++) {
+                var radioButton = $(document.getElementById(
+                    'field_widget_' + formId + '_radioButtonCollection_' + i + '_radioButtons'
+                ));
+                var radioButtonInput = $('#' + formId + '_radioButtonCollection_' + i + '_radioButtons')[0];
+
+                if (!radioButton.length) {
+                    continue;
+                }
+
+                if (radioButtonInput.value) {
+                    ids[i] = radioButtonInput.value;
+                }
+
+                $('#' + formId + '_radioButtonCollection_' + i + '_radioButtons').on('change', function () {
+                    for (var i = 0; i < radioValues.length; i++) {
+                        var radioButton = $(document.getElementById(
+                            'field_widget_' + formId + '_radioButtonCollection_' + i + '_radioButtons'
+                        ));
+                        var radioButtonInput = $('#' + formId + '_radioButtonCollection_' + i + '_radioButtons')[0];
+
+                        if (!radioButton.length) {
+                            continue;
+                        }
+
+                        if (radioButtonInput.value) {
+                            ids[i] = radioButtonInput.value;
+                        }
+
+                        var oldForm = document.getElementById('radioButtonCustomForm' + i);
+
+                        if (oldForm) {
+                            oldForm.parentNode.removeChild(oldForm);
+                        }
+                    }
+
+                    var parts = this.id.split('_');
+
+                    var object = document.getElementById(formId + '_radioButtonCollection_' + parts[2] + '_value');
+                    object.value = '';
+
+                    if (ids.length) {
+                        insertRadioButton(ids);
+                    }
+                });
+            }
+        }
+
+        if ( ids.length ) {
+            insertRadioButton( ids );
+        }
+    }
+
+    $( '#sonata-ba-field-container-' + formId + '_radioButtonCollection' ).on( 'sonata.add_element', function( event ) {
+        if ( !addRadioButtonCollection ) {
+            addRadioButtonCollection = true;
+
+            setTimeout( function() {
+                addRadioButtons();
+
+                addRadioButtonCollection = false;
+            }, 100 );
+        }
+
+    });
+
+    addRadioButtons();
+
+    function insertList( ids )
+    {
+        $.ajax({
+            type: 'POST',
+            url: Routing.generate( 'domain_business_get_list_values' ),
+            data: { ids: ids },
+            dataType: 'JSON',
+            success: function( response ) {
+                $.each(response, function( key, value ) {
+                    var parent = document.getElementById( formId + '_listCollection_' + key + '_value' ).parentElement;
+                    var select = document.createElement( 'select' );
+                    var theForm = document.createElement( 'form' );
+                    var isSelected = false;
+                    theForm.setAttribute( 'name', 'listCustomForm' + key );
+                    theForm.setAttribute( 'id', 'listCustomForm' + key );
+                    select.setAttribute( 'id', 'listCustomSelect' + key );
+
+                    value.forEach( function( item, childKey ) {
+                        var option = document.createElement( 'option' );
+                        option.setAttribute( 'value', item['id'] );
+                        option.innerText = item.title;
+
+                        if ( document.getElementById( formId + '_listCollection_' + key + '_value' ).value == item['id'] ) {
+                            option.setAttribute( 'selected', 'selected' );
+                            isSelected = true;
+                        }
+
+                        select.appendChild( option );
+                    });
+
+                    theForm.appendChild( select );
+                    parent.appendChild( theForm );
+
+                    if ( !isSelected ) {
+                        document.getElementById( formId + '_listCollection_' + key + '_value' ).value
+                            = $( '#listCustomSelect' + key + ' option:first' ).val();
+                    }
+
+                    $( '#listCustomSelect' + key ).select2( { minimumResultsForSearch: -1 } );
+
+                    $( '#listCustomSelect' + key ).on( 'change', function() {
+                        document.getElementById( formId + '_listCollection_' + key + '_value' ).value = this.value;
+                    });
+                });
+            }
+        });
+    }
+
+    function addLists()
+    {
+        var ids = [];
+        var listValues = document.getElementsByClassName('list-value');
+
+        if (listValues) {
+            for (var i = 0; i < listValues.length; i++) {
+                var list = $(document.getElementById('field_widget_' + formId + '_listCollection_' + i + '_lists'));
+                var listInput = $('#' + formId + '_listCollection_' + i + '_lists')[0];
+
+                if (!list.length) {
+                    continue;
+                }
+
+                if (listInput.value) {
+                    ids[i] = listInput.value;
+                }
+
+                $('#' + formId + '_listCollection_' + i + '_lists').on('change', function () {
+                    for (var i = 0; i < listValues.length; i++) {
+                        var list = $(document.getElementById('field_widget_' + formId + '_listCollection_' + i + '_lists'));
+                        var listInput = $('#' + formId + '_listCollection_' + i + '_lists')[0];
+
+                        if (!list.length) {
+                            continue;
+                        }
+
+                        if (listInput.value) {
+                            ids[i] = listInput.value;
+                        }
+
+                        var oldForm = document.getElementById('listCustomForm' + i);
+
+                        if (oldForm) {
+                            oldForm.parentNode.removeChild(oldForm);
+                        }
+                    }
+
+                    var parts = this.id.split('_');
+
+                    var object = document.getElementById(formId + '_listCollection_' + parts[2] + '_value');
+                    object.value = '';
+
+                    if (ids.length) {
+                        insertList(ids);
+                    }
+                });
+            }
+        }
+
+        if ( ids.length ) {
+            insertList( ids );
+        }
+    }
+
+    $( '#sonata-ba-field-container-' + formId + '_listCollection' ).on( 'sonata.add_element', function( event ) {
+        if ( !addListCollection ) {
+            addListCollection = true;
+
+            setTimeout( function() {
+                addLists();
+
+                addListCollection = false;
+            }, 100 );
+        }
+
+    });
+
+    addLists();
 
     function checkCollectionWorkingHours( openAllTimeCheckbox ) {
         var workingHourBlock = $( openAllTimeCheckbox ).parents( 'tr' ).first();

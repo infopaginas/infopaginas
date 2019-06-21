@@ -595,6 +595,7 @@ form.collectionWorkingHours.blank: Time should not be blank
 business_profile.category.required: This field is required
 business_profile.category.max: This field should contain 3 elements or less
 business_profile.category.free_hint: Categories (Maximum 3 categories)
+business_custom_field_item.exist: Already used in business profile
 
 # reset password form
 user:

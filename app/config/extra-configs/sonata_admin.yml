@@ -50,6 +50,15 @@ sonata_admin:
                     - domain_business.admin.address.country
                     - domain_business.admin.landing_page_short_cut
                     - domain_business.admin.clickbait_title
+            domain.admin.group.business_custom_fields:
+                label: Business Custom Fields
+                icon: <i class="fa fa-list"></i>
+                items:
+                    - domain_business.admin.section
+                    - domain_business.admin.business_custom_fields_checkbox
+                    - domain_business.admin.business_custom_fields_text_area
+                    - domain_business.admin.business_custom_fields_radio_button
+                    - domain_business.admin.business_custom_fields_list
             domain.admin.group.emergency:
                 label: Emergency
                 icon: <i class="fa fa-exclamation-triangle"></i>

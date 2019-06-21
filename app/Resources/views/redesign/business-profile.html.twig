@@ -137,6 +137,28 @@
                                         </ul>
                                     </div><!-- highlights__item -->
                                 {% endif %}
+
+                                {% for section, values in sections %}
+                                    {% if values is not empty %}
+                                        <div class="highlights__item">
+                                            <h3>{{ section }}</h3>
+                                            <ul class="section-ul">
+                                                {% for field in values %}
+                                                    <li>
+                                                        <span class="section-title">{{ field.title }}: </span>
+                                                        {% if field.value is sameas(true) %}
+                                                            <i class="fa fa-check-square"></i>
+                                                        {% elseif field.value is sameas(false) %}
+                                                            <i class="fa fa-times"></i>
+                                                        {% else %}
+                                                            {{ field.value }}
+                                                        {% endif %}
+                                                    </li>
+                                                {% endfor %}
+                                            </ul>
+                                        </div><!-- highlights__item -->
+                                    {% endif %}
+                                {% endfor %}
                             </div><!-- container -->
                         </section>
 

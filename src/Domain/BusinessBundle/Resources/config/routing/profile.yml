@@ -36,6 +36,18 @@ domain_business_get_neighborhoods:
     options:
         expose: true
 
+domain_business_get_radio_button_values:
+    path:     /radio/value/list
+    defaults: { _controller: DomainBusinessBundle:Profile:radioValueList }
+    options:
+        expose: true
+
+domain_business_get_list_values:
+    path:     /list/value/list
+    defaults: { _controller: DomainBusinessBundle:Profile:listValueList }
+    options:
+        expose: true
+
 domain_business_claim:
     path:     /claim
     defaults: { _controller: DomainBusinessBundle:Profile:claim }

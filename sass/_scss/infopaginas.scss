@@ -2392,6 +2392,9 @@ $thumb-width-mb: 60px;
     margin: 0;
     padding: 0;
   }
+  .section-ul {
+    list-style-type: disc;
+  }
 
   @media only screen and (min-width: 805px) {
     padding: 0 20px;
@@ -6667,4 +6670,8 @@ span.no-js-warning-message {
   40%, 100% {
     transform: rotateZ(0);
   }
+}
+
+.section-title {
+  font-weight: 600;
 }

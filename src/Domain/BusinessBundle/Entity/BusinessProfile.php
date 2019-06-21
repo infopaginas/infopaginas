@@ -8,6 +8,10 @@ use Doctrine\ORM\Mapping as ORM;
 use Domain\BusinessBundle\DBAL\Types\TaskStatusType;
 use Domain\BusinessBundle\DBAL\Types\TaskType;
 use Domain\BusinessBundle\Entity\Address\Country;
+use Domain\BusinessBundle\Entity\CustomFields\BusinessCustomFieldCheckboxCollection;
+use Domain\BusinessBundle\Entity\CustomFields\BusinessCustomFieldListCollection;
+use Domain\BusinessBundle\Entity\CustomFields\BusinessCustomFieldRadioButtonCollection;
+use Domain\BusinessBundle\Entity\CustomFields\BusinessCustomFieldTextAreaCollection;
 use Domain\BusinessBundle\Entity\Media\BusinessGallery;
 use Domain\BusinessBundle\Entity\Review\BusinessReview;
 use Domain\BusinessBundle\Entity\Task;
@@ -822,6 +826,58 @@ class BusinessProfile implements
      */
     protected $extraSearches;
 
+    /**
+     * @var BusinessCustomFieldCheckboxCollection[] - BusinessCustomFieldCheckboxCollection
+     * @Assert\Valid()
+     *
+     * @ORM\OneToMany(
+     *     targetEntity="Domain\BusinessBundle\Entity\CustomFields\BusinessCustomFieldCheckboxCollection",
+     *     mappedBy="businessProfile",
+     *     cascade={"persist", "remove"},
+     *     orphanRemoval=true
+     *     )
+     */
+    protected $checkboxCollection;
+
+    /**
+     * @var BusinessCustomFieldTextAreaCollection[] - BusinessCustomFieldTextAreaCollection
+     * @Assert\Valid()
+     *
+     * @ORM\OneToMany(
+     *     targetEntity="Domain\BusinessBundle\Entity\CustomFields\BusinessCustomFieldTextAreaCollection",
+     *     mappedBy="businessProfile",
+     *     cascade={"persist", "remove"},
+     *     orphanRemoval=true
+     *     )
+     */
+    protected $textAreaCollection;
+
+    /**
+     * @var BusinessCustomFieldRadioButtonCollection[] - BusinessCustomFieldRadioButtonCollection
+     * @Assert\Valid()
+     *
+     * @ORM\OneToMany(
+     *     targetEntity="Domain\BusinessBundle\Entity\CustomFields\BusinessCustomFieldRadioButtonCollection",
+     *     mappedBy="businessProfile",
+     *     cascade={"persist", "remove"},
+     *     orphanRemoval=true
+     *     )
+     */
+    protected $radioButtonCollection;
+
+    /**
+     * @var BusinessCustomFieldListCollection[] - BusinessCustomFieldListCollection
+     * @Assert\Valid()
+     *
+     * @ORM\OneToMany(
+     *     targetEntity="Domain\BusinessBundle\Entity\CustomFields\BusinessCustomFieldListCollection",
+     *     mappedBy="businessProfile",
+     *     cascade={"persist", "remove"},
+     *     orphanRemoval=true
+     *     )
+     */
+    protected $listCollection;
+
     /* @var string */
     private $statusForUser;
 
@@ -1010,6 +1066,10 @@ class BusinessProfile implements
         $this->phones                   = new ArrayCollection();
         $this->collectionWorkingHours   = new ArrayCollection();
         $this->extraSearches            = new ArrayCollection();
+        $this->checkboxCollection       = new ArrayCollection();
+        $this->radioButtonCollection    = new ArrayCollection();
+        $this->listCollection           = new ArrayCollection();
+        $this->textAreaCollection       = new ArrayCollection();
         $this->keywords                 = new ArrayCollection();
         $this->aliases                  = new ArrayCollection();
         $this->tasks                    = new ArrayCollection();
@@ -3105,6 +3165,150 @@ class BusinessProfile implements
     public function removeExtraSearch(BusinessProfileExtraSearch $extraSearch)
     {
         $this->extraSearches->removeElement($extraSearch);
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getCheckboxCollection()
+    {
+        return $this->checkboxCollection;
+    }
+
+    /**
+     * Add $checkboxCollection
+     *
+     * @param BusinessCustomFieldCheckboxCollection $checkboxCollection
+     *
+     * @return BusinessProfile
+     */
+    public function addCheckboxCollection($checkboxCollection)
+    {
+        $this->checkboxCollection[] = $checkboxCollection;
+
+        if ($checkboxCollection) {
+            $checkboxCollection->setBusinessProfile($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Remove $checkboxCollection
+     *
+     * @param BusinessCustomFieldCheckboxCollection $checkboxCollection
+     */
+    public function removeCheckboxCollection(BusinessCustomFieldCheckboxCollection $checkboxCollection)
+    {
+        $this->checkboxCollection->removeElement($checkboxCollection);
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getTextAreaCollection()
+    {
+        return $this->textAreaCollection;
+    }
+
+    /**
+     * Add $textAreaCollection
+     *
+     * @param BusinessCustomFieldTextAreaCollection $textAreaCollection
+     *
+     * @return BusinessProfile
+     */
+    public function addTextAreaCollection(BusinessCustomFieldTextAreaCollection $textAreaCollection)
+    {
+        $this->textAreaCollection[] = $textAreaCollection;
+
+        if ($textAreaCollection) {
+            $textAreaCollection->setBusinessProfile($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Remove $textAreaCollection
+     *
+     * @param BusinessCustomFieldTextAreaCollection $textAreaCollection
+     */
+    public function removeTextAreaCollection(BusinessCustomFieldTextAreaCollection $textAreaCollection)
+    {
+        $this->textAreaCollection->removeElement($textAreaCollection);
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getRadioButtonCollection()
+    {
+        return $this->radioButtonCollection;
+    }
+
+    /**
+     * Add $radioButtonCollection
+     *
+     * @param BusinessCustomFieldRadioButtonCollection $radioButtonCollection
+     *
+     * @return BusinessProfile
+     */
+    public function addRadioButtonCollection(BusinessCustomFieldRadioButtonCollection $radioButtonCollection)
+    {
+        $this->radioButtonCollection[] = $radioButtonCollection;
+
+        if ($radioButtonCollection) {
+            $radioButtonCollection->setBusinessProfile($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Remove $radioButtonCollection
+     *
+     * @param BusinessCustomFieldRadioButtonCollection $radioButtonCollection
+     */
+    public function removeRadioButtonCollection(BusinessCustomFieldRadioButtonCollection $radioButtonCollection)
+    {
+        $this->radioButtonCollection->removeElement($radioButtonCollection);
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getListCollection()
+    {
+        return $this->listCollection;
+    }
+
+    /**
+     * Add $listCollection
+     *
+     * @param BusinessCustomFieldListCollection $listCollection
+     *
+     * @return BusinessProfile
+     */
+    public function addListCollection(BusinessCustomFieldListCollection $listCollection)
+    {
+        $this->listCollection[] = $listCollection;
+
+        if ($listCollection) {
+            $listCollection->setBusinessProfile($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Remove $listCollection
+     *
+     * @param BusinessCustomFieldListCollection $listCollection
+     */
+    public function removeListCollection(BusinessCustomFieldListCollection $listCollection)
+    {
+        $this->listCollection->removeElement($listCollection);
     }
 
     /**

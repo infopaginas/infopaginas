@@ -15,6 +15,8 @@ use Domain\BusinessBundle\Entity\BusinessProfileWorkingHour;
 use Domain\BusinessBundle\Entity\Category;
 use Domain\BusinessBundle\Entity\ChangeSet;
 use Domain\BusinessBundle\Entity\ChangeSetEntry;
+use Domain\BusinessBundle\Entity\CustomFields\BusinessCustomFieldListItem;
+use Domain\BusinessBundle\Entity\CustomFields\BusinessCustomFieldRadioButtonItem;
 use Domain\BusinessBundle\Entity\Locality;
 use Domain\BusinessBundle\Entity\Media\BusinessGallery;
 use Domain\BusinessBundle\Entity\Neighborhood;
@@ -3913,5 +3915,51 @@ class BusinessProfileManager extends Manager
     public function getBusinessGalleryMediaById($id)
     {
         return $this->em->getRepository(Media::class)->find($id);
+    }
+
+    public function getRadioButtonValuesByIds($radioButtonNames)
+    {
+        $values = [];
+
+        foreach ($radioButtonNames as $key => $radioButtonName) {
+            if (!$radioButtonName) {
+                continue;
+            }
+
+            $businessCustomFieldRadioButtonItems = $this->em->getRepository(BusinessCustomFieldRadioButtonItem::class)
+                ->getRadioButtonValuesByIds($radioButtonName);
+
+            foreach ($businessCustomFieldRadioButtonItems as $item) {
+                $values[$key][] = [
+                    'id'    => $item->getId(),
+                    'title' => $item->getTitle(),
+                ];
+            }
+        }
+
+        return $values;
+    }
+
+    public function getListValuesByIds($listNames)
+    {
+        $values = [];
+
+        foreach ($listNames as $key => $listName) {
+            if (!$listName) {
+                continue;
+            }
+
+            $businessCustomFieldListItems = $this->em->getRepository(BusinessCustomFieldListItem::class)
+                ->getListValuesByIds($listName);
+
+            foreach ($businessCustomFieldListItems as $item) {
+                $values[$key][] = [
+                    'id'    => $item->getId(),
+                    'title' => $item->getTitle(),
+                ];
+            }
+        }
+
+        return $values;
     }
 }
