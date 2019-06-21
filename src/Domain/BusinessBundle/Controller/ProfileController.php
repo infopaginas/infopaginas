@@ -5,6 +5,8 @@ namespace Domain\BusinessBundle\Controller;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Domain\BusinessBundle\Entity\BusinessProfilePhone;
 use Domain\BusinessBundle\Entity\Category;
+use Domain\BusinessBundle\Entity\CustomFields\BusinessCustomFieldListItem;
+use Domain\BusinessBundle\Entity\CustomFields\BusinessCustomFieldRadioButtonItem;
 use Domain\BusinessBundle\Form\Handler\BusinessClaimFormHandler;
 use Domain\BusinessBundle\Form\Type\BusinessClaimRequestType;
 use Domain\BusinessBundle\Manager\SectionManager;
@@ -228,7 +230,10 @@ class ProfileController extends Controller
             $suggestedResult = [];
         }
 
-        $sections = $this->getSectionManager()->getCustomFieldsOrderedBySectionPosition($request, $businessProfile);
+        $sections = $this->getSectionManager()->getCustomFieldsOrderedBySectionPosition(
+            $request->getLocale(),
+            $businessProfile
+        );
 
         $contactForm = $this->createForm(
             new FeedbackFormType(),
@@ -371,8 +376,10 @@ class ProfileController extends Controller
      */
     public function radioValueListAction(Request $request)
     {
-        $radioButtonValues = $this->getBusinessProfilesManager()
-            ->getRadioButtonValuesByIds($request->request->get('ids'));
+        $radioButtonValues = $this->getBusinessProfilesManager()->getCollectionItemValuesByIds(
+            $request->request->get('ids'),
+            BusinessCustomFieldRadioButtonItem::class
+        );
 
         return new JsonResponse($radioButtonValues);
     }
@@ -384,8 +391,10 @@ class ProfileController extends Controller
      */
     public function listValueListAction(Request $request)
     {
-        $listValues = $this->getBusinessProfilesManager()
-            ->getListValuesByIds($request->request->get('ids'));
+        $listValues = $this->getBusinessProfilesManager()->getCollectionItemValuesByIds(
+            $request->request->get('ids'),
+            BusinessCustomFieldListItem::class
+        );
 
         return new JsonResponse($listValues);
     }

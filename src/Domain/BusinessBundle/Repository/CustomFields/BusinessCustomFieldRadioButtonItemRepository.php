@@ -6,7 +6,7 @@ use Doctrine\ORM\EntityRepository;
 
 class BusinessCustomFieldRadioButtonItemRepository extends EntityRepository
 {
-    public function getRadioButtonValuesByIds($radioButtonIds)
+    public function getValuesByIds($radioButtonIds)
     {
         $queryBuilder = $this->createQueryBuilder('bcfrbi')
             ->join('bcfrbi.businessCustomFieldRadioButton', 'bcfrb')

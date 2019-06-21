@@ -6,7 +6,7 @@ use Doctrine\ORM\EntityRepository;
 
 class BusinessCustomFieldListItemRepository extends EntityRepository
 {
-    public function getListValuesByIds($listIds)
+    public function getValuesByIds($listIds)
     {
         $queryBuilder = $this->createQueryBuilder('bcfli')
             ->join('bcfli.businessCustomFieldList', 'bcfl')

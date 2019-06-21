@@ -15,7 +15,7 @@ class SectionManager extends Manager
         return $this->getEntityManager()->getRepository(Section::class)->findBy([], ['position' => 'ASC']);
     }
 
-    public function getCustomFieldsOrderedBySectionPosition($request, $businessProfile)
+    public function getCustomFieldsOrderedBySectionPosition($locale, $businessProfile)
     {
         $orderedSections = $this->getEntityManager()->getRepository(Section::class)->findBy([], ['position' => 'ASC']);
 
@@ -43,7 +43,8 @@ class SectionManager extends Manager
         }
 
         foreach ($businessProfile->getListCollection() as $key => $value) {
-            $listValue = $this->getEntityManager()->getRepository(BusinessCustomFieldListItem::class)->find($value->getValue());
+            $listValue = $this->getEntityManager()->getRepository(BusinessCustomFieldListItem::class)
+                ->find($value->getValue());
 
             $sections[$value->getLists()->getSection()->getTitle()][] = [
                 'title' => $value->getLists()->getTitle(),
@@ -52,7 +53,7 @@ class SectionManager extends Manager
         }
 
         foreach ($businessProfile->getTextAreaCollection() as $key => $value) {
-            $textAreaValue = ($request->getLocale() === RedirectController::LOCALE_EN)
+            $textAreaValue = ($locale === RedirectController::LOCALE_EN)
                 ? $value->getTextAreaValueEn()
                 : $value->getTextAreaValueEs();
 

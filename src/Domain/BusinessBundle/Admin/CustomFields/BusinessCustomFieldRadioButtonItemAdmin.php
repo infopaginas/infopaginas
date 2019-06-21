@@ -4,15 +4,17 @@ namespace Domain\BusinessBundle\Admin\CustomFields;
 
 use Domain\BusinessBundle\Entity\CustomFields\BusinessCustomFieldRadioButtonCollection;
 use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
+use Oxa\Sonata\AdminBundle\Util\Traits\ValidateIsUsedCollectionTrait;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Show\ShowMapper;
 use Sonata\CoreBundle\Validator\ErrorElement;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 
 class BusinessCustomFieldRadioButtonItemAdmin extends OxaAdmin
 {
-    private $isUsede = false;
+    use ValidateIsUsedCollectionTrait;
 
     /**
      * Default values to the datagrid.
@@ -56,11 +58,9 @@ class BusinessCustomFieldRadioButtonItemAdmin extends OxaAdmin
     {
         $formMapper
             ->with('Item', ['class' => 'col-md-6',])
-            ->add('title', null, [
-                'label' => 'title',
-            ])
+            ->add('title', null, ['label' => 'title'])
             ->end()
-            ->add('position', 'hidden', ['attr' => ['hidden' => true]])
+            ->add('position', HiddenType::class, ['attr' => ['hidden' => true]])
         ;
     }
 
@@ -78,20 +78,9 @@ class BusinessCustomFieldRadioButtonItemAdmin extends OxaAdmin
     public function validate(ErrorElement $errorElement, $object)
     {
         $deleteDiff = $object->getBusinessCustomFieldRadioButton()->getRadioButtonItems()->getDeleteDiff();
+        $repository = $this->getConfigurationPool()->getContainer()->get('doctrine')
+            ->getRepository(BusinessCustomFieldRadioButtonCollection::class);
 
-        foreach ($deleteDiff as $item) {
-            $container = $this->getConfigurationPool()->getContainer();
-            $isUsed = $container->get('doctrine')->getRepository(BusinessCustomFieldRadioButtonCollection::class)
-                ->findBy(['value' => $item->getId()]);
-
-            if ($isUsed && !$this->isUsede) {
-                $this->isUsede = true;
-                dump($this->isUsede);
-
-                $errorElement->with('position')
-                    ->addViolation($this->getTranslator()->trans('business_custom_field_item.exist'))
-                    ->end();
-            }
-        }
+        $this->validateIsUsedCollection($deleteDiff, $errorElement, $repository);
     }
 }

@@ -40,7 +40,7 @@ class BusinessCustomFieldCheckboxCollectionAdmin extends OxaAdmin
                 'required' => true,
                 'btn_add'  => false,
             ])
-            ->add('isAvailable', 'checkbox')
+            ->add('isAvailable')
         ;
     }
 
