@@ -1,6 +1,10 @@
 security:
     role_hierarchy:
 
+        # __VIEW    - only view data
+        # __ALL     - all operations with data
+        # __CONTENT - customize only collections of data
+
         # PROJECT ROLE
         # has access to admin panel
         # can not physicaly delete data

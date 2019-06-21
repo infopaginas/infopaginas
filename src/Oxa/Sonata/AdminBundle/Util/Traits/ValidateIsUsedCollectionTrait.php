@@ -17,9 +17,9 @@ trait ValidateIsUsedCollectionTrait
                 $errorElement->with('position')
                     ->addViolation($this->getTranslator()->trans('business_custom_field_item.exist'))
                     ->end();
-            }
 
-            break;
+                break;
+            }
         }
     }
 }
