@@ -285,6 +285,21 @@ class Mailer
         }
     }
 
+    public function sendReportProblemEmailMessage($data)
+    {
+        $email   = $this->getConfigService()->getValue(ConfigInterface::REPORT_PROBLEM_EMAIL_ADDRESS);
+        $subject = $this->getConfigService()->getValue(ConfigInterface::REPORT_PROBLEM_EMAIL_SUBJECT);
+
+        if ($email and $subject) {
+            $message = $this->templateEngine->render(
+                'OxaConfigBundle:Fixtures:mail_report_problem.html.twig',
+                $data
+            );
+
+            $this->send($email, $subject, $message, self::CONTENT_TYPE_HTML);
+        }
+    }
+
     /**
      * @param User  $user
      * @param array $updateProfileData

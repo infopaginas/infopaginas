@@ -40,6 +40,17 @@ domain_site_redirect_sign_in:
         route: domain_site_home_index
         permanent: true
 
+domain_site_redirect_business:
+    path:     /b
+    defaults:
+        _controller: FrameworkBundle:Redirect:redirect
+        route: domain_search_catalog
+        permanent: true
+
+domain_site_redirect_business_locality:
+    path:     /b/{localitySlug}
+    defaults: { _controller: DomainSiteBundle:Redirect:business }
+
 domain_site_redirect_forgot:
     path:     /users/password/new
     defaults:

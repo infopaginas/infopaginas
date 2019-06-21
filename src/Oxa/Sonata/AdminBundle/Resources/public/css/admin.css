@@ -337,7 +337,7 @@ div.single-media-preview-block img {
     left: 10px;
     bottom: 10px;
     text-indent: -9999px;
-    z-index: 99999;
+    z-index: 4;
     overflow: hidden;
     background-image: url(/redesign/img/infopaginas.svg);
     background-repeat: no-repeat;
@@ -352,7 +352,7 @@ div.single-media-preview-block img {
     left: 52px;
     bottom: 0px;
     text-indent: -9999px;
-    z-index: 99999;
+    z-index: 4;
     overflow: hidden;
     background-image: url(/redesign/img/infopaginas-iso.svg);
     background-repeat: no-repeat;

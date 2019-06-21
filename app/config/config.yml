@@ -22,7 +22,7 @@ imports:
 # Put parameters here that don't need to change on each machine where the app is deployed
 # http://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
-    app_version: '1.19.2'
+    app_version: '1.20.3'
     locale: en
     locales: [en, es]
     locale_data:
@@ -44,7 +44,6 @@ parameters:
             image: 'header-logo.png'
             width: '221'
             height: '42'
-    mapbox_api_key: "pk.eyJ1IjoidGl2dW5vdmR2IiwiYSI6ImNqcnU4Ym43azJsZWc0OW50NGJmd29vMDcifQ.LxkL1jVvb_rXFk6oT7ioCw"
     map_default_center: '18.185039, -66.491729'
     san_juan_coordinates: '18.446344, -66.07558'
     map_default_center_name: 'Orocovis'

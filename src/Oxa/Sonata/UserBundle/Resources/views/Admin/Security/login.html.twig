@@ -59,7 +59,7 @@
                     </div>
                 </form>
 
-                <a href="{{ reset_route }}">{{ 'forgotten_password'|trans({}, 'SonataUserBundle') }}</a>
+                <a href="{{ absolute_url(path('fos_user_forgotten_password')) }}">{{ 'forgotten_password'|trans({}, 'SonataUserBundle') }}</a>
             {% endblock %}
         </div>
     </div>

@@ -1453,8 +1453,9 @@ class BusinessProfileAdmin extends OxaAdmin
      */
     public function preUpdate($entity)
     {
-        parent::preUpdate($entity);
+        //If you swap those 2 lines, the title will be saved half the time
         $this->preSave($entity);
+        parent::preUpdate($entity);
     }
 
     /**

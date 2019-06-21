@@ -451,7 +451,7 @@ class SitemapSubscriber implements EventSubscriberInterface
 
     private function getStaticUrls()
     {
-        return [
+        $statisticUrls = [
             'domain_article_homepage' => [
                 'route'   => 'domain_article_homepage',
                 'section' => self::SECTION_ARTICLE,
@@ -484,11 +484,16 @@ class SitemapSubscriber implements EventSubscriberInterface
                 'route'   => 'domain_business_video_list',
                 'section' => self::SECTION_MAIN,
             ],
-            'emergency_main' => [
+        ];
+
+        if ($this->getEmergencyFeatureEnabled()) {
+            $statisticUrls['emergency_main'] = [
                 'route'   => 'emergency_main',
                 'section' => self::SECTION_MAIN,
-            ],
-        ];
+            ];
+        }
+
+        return $statisticUrls;
     }
 
     private function addCatalogUrlByCatalogItem(CatalogItem $catalogItem)

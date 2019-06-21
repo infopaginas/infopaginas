@@ -37,6 +37,7 @@ We can find everything!: ¡Podemos encontrar todo!
 Search whatever you need and find it instantly: Busca lo que necesites y lo encuentras al instante
 homepage.search_block.title: Encuentra lo que buscas al instante!
 What do you want to find?: ¿Qué está buscando?
+Report a Problem: Reporta un Problema
 I wanted you to see this site: Quería que vieras este sitio
 Search by: Buscar por
 business name: nombre de la empresa
@@ -199,6 +200,13 @@ Select Neighborhoods: Seleccione Vecindarios
 Select country: Seleccione el país
 Locality: Localidad
 Search: Buscar
+
+Search Box: Caja de búsqeda
+Close Search: Cerrar búsqueda
+Navigation Toggle: Palanca de navegación
+Navigation Close: Navegación Cerrar
+Search Location: Buscar Ubicación
+Remove Compare Item: Eliminar artículo de comparación
 
 Solicitors: Solicitantes
 Builders: Contratistas

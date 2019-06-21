@@ -1043,6 +1043,11 @@ select {
   }
 }
 
+.no-page-scroll {
+  overflow-x: hidden;
+  overflow-y: hidden;
+}
+
 //main container
 $bps-column-number: 7;
 $bps-border: 1px dotted #bcbcbc;
@@ -1454,17 +1459,18 @@ $bps-border: 1px dotted #bcbcbc;
 
 .main {
   height: auto;
-  padding-top: $padding-mb;
+  padding-top: 25px;
   padding-bottom: 30px;
   transition-duration: .4s;
   transition-property: width;
   transition-timing-function: ease-in-out;
 
   @media only screen and (min-width: 805px) {
-    height: calc(100vh - 45px);
+    height: calc(100vh - 132px);
     overflow-y: auto;
-    padding-top: 40px;
     width: 60%;
+    top: 86px;
+    padding-top: 0px;
 
     &.main-results-resize {
       padding-top: 52px;
@@ -1983,6 +1989,16 @@ $thumb-width-mb: 60px;
 
   @media only screen and (max-width: 804px) {
     height: calc(100vh - 82px);
+    width: 100%;
+  }
+}
+
+.directions-map {
+  height: calc(100vh - 45px);
+  width: 100%;
+
+  @media only screen and (max-width: 804px) {
+    height: calc(100vh - 45px);
     width: 100%;
   }
 }
@@ -2766,7 +2782,6 @@ $thumb-width-mb: 60px;
   position: absolute;
   display: block;
   right: 10px;
-  top: 10px;
   z-index: 99999;
   overflow: hidden;
 }
@@ -2781,6 +2796,7 @@ $thumb-width-mb: 60px;
 
 .social-medias ul {
   display: flex;
+  justify-content: center;
 }
 
 .social-medias li {
@@ -3802,6 +3818,37 @@ a.tag {
 
 .modal__section {
   margin-bottom: 20px;
+}
+
+.report-problem-form {
+  .form__actions {
+    background: #f0f1f3;
+  }
+
+  .page-section {
+    background: none;
+  }
+
+  .form__section {
+    margin-bottom: 0px;
+    padding: 7px;
+  }
+
+  .feedback-business-row {
+    display: none;
+  }
+
+  .language-title {
+    margin-bottom: 10px;
+  }
+
+  .feedback-message {
+    display: none;
+  }
+
+  #feedbackButton {
+    margin: auto;
+  }
 }
 
 #emergency-pop-up .modal__content {
@@ -5055,7 +5102,7 @@ li.active {
     margin-bottom: 0;
     @media only screen and (min-width: 805px) {
       position: fixed;
-      width: 60%;
+      width: 59%;
     }
   }
 
@@ -5100,7 +5147,7 @@ li.active {
   .pagination {
     @media only screen and (min-width: 805px) {
       position: fixed;
-      width: 25%;
+      width: 24%;
       min-width: 300px;;
     }
   }
@@ -6039,6 +6086,10 @@ input[type='radio'], input[type='checkbox'] {
   }
 }
 
+.results-top {
+  top: 53px;
+}
+
 #searchResults {
   &.main-results-resize {
     .att-icons {
@@ -6079,6 +6130,10 @@ input[type='radio'], input[type='checkbox'] {
     }
 
     padding-bottom: 0;
+  }
+
+  @media only screen and (min-width: 805px) {
+    position: relative;
   }
 }
 

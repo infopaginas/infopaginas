@@ -12,7 +12,7 @@
         {% endblock %}
     {% endif %}
 
-    <button id="nav-toggle" type="button" class="nav__toggle button button--text" data-bw-gtm-event-click data-bw-gtm-label="nav-toggle">
+    <button id="nav-toggle" type="button" aria-label="{% trans %}Navigation Toggle{% endtrans %}" class="nav__toggle button button--text" data-bw-gtm-event-click data-bw-gtm-label="nav-toggle">
         <i class="fa fa-bars"></i>
     </button>
 
@@ -68,7 +68,7 @@
                 <a href="{{ absolute_url(path('domain_search_catalog')) }}" data-bw-gtm-label="Catalog::{{ absolute_url(path('domain_search_catalog')) }}"><i class="fa fa-sitemap"></i>{% trans %}Catalog{% endtrans %}</a>
             </li>
             <li>
-                <a href="https://www.infopaginasmedia.com/" target="_blank" data-bw-gtm-label="About Us::https://www.infopaginasmedia.com/">{% trans %}About Us{% endtrans %}</a>
+                <a href="https://www.infopaginasmedia.com/" target="_blank" data-bw-gtm-label="About Us::https://www.infopaginasmedia.com/" rel="noopener">{% trans %}About Us{% endtrans %}</a>
             </li>
             <li>
                 <a href="{{ absolute_url(path('domain_page_view_contact')) }}" data-bw-gtm-label="Contact Us::{{ absolute_url(path('domain_page_view_contact')) }}"target="_blank">{% trans %}Contact Us{% endtrans %}</a>
@@ -103,7 +103,7 @@
                 </span>
             </div>
         </div>
-        <button id="nav-close" type="button" class="button--square nav-close" data-bw-gtm-event-click data-bw-gtm-label="nav-close">
+        <button id="nav-close" type="button" aria-label="{% trans %}Navigation Close{% endtrans %}" class="button--square nav-close" data-bw-gtm-event-click data-bw-gtm-label="nav-close">
             <i class="fa fa-remove"></i>
         </button>
     </nav>

@@ -11,6 +11,7 @@ use Domain\BusinessBundle\Manager\SectionManager;
 use Domain\BusinessBundle\Model\DayOfWeekModel;
 use Domain\BusinessBundle\Model\SubscriptionPlanInterface;
 use Domain\BusinessBundle\Util\BusinessProfileUtil;
+use Domain\PageBundle\Form\Type\FeedbackFormType;
 use Domain\ReportBundle\Model\BusinessOverviewModel;
 use Domain\SearchBundle\Model\Manager\SearchManager;
 use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
@@ -229,6 +230,12 @@ class ProfileController extends Controller
 
         $sections = $this->getSectionManager()->getCustomFieldsOrderedBySectionPosition($request, $businessProfile);
 
+        $contactForm = $this->createForm(
+            new FeedbackFormType(),
+            ['businessName' => $businessProfile->getName()],
+            ['isReportProblem' => true]
+        );
+
         return $this->render(':redesign:business-profile.html.twig', [
             'businessProfile'   => $businessProfile,
             'seoData'           => $businessProfile,
@@ -244,6 +251,7 @@ class ProfileController extends Controller
             'trackingParams'    => $trackingParams,
             'suggestedResult'   => $suggestedResult,
             'sections'          => $sections,
+            'contactForm'       => $contactForm->createView(),
         ]);
     }
 
