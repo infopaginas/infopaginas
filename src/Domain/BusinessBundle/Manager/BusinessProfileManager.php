@@ -3914,4 +3914,26 @@ class BusinessProfileManager extends Manager
     {
         return $this->em->getRepository(Media::class)->find($id);
     }
+
+    public function getCollectionItemValuesByIds($ids, $class)
+    {
+        $values = [];
+
+        foreach ($ids as $key => $id) {
+            if (!$id) {
+                continue;
+            }
+
+            $items = $this->em->getRepository($class)->getValuesByIds($id);
+
+            foreach ($items as $item) {
+                $values[$key][] = [
+                    'id'    => $item->getId(),
+                    'title' => $item->getTitle(),
+                ];
+            }
+        }
+
+        return $values;
+    }
 }

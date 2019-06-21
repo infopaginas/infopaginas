@@ -377,3 +377,7 @@ div.single-media-preview-block img {
     color: red;
     margin-left: 20%;
 }
+
+.custom-radio {
+    display: block;
+}

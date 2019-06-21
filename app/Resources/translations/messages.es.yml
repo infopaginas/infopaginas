@@ -603,6 +603,7 @@ form.collectionWorkingHours.blank: El tiempo no debe estar en blanco
 business_profile.category.required: Este campo es obligatorio
 business_profile.category.max: Este campo debe contener 3 elementos o menos
 business_profile.category.free_hint: Categorías (Máximo 3 categorías)
+business_custom_field_radio_button_item.exist: Ya utilizado en el perfil de negocios
 
 # reset password form
 user:
