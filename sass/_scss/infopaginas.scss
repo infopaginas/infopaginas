@@ -2851,8 +2851,22 @@ $thumb-width-mb: 60px;
     }
   }
 
+  .button-share--sms {
+    background: $sms;
+    &:hover {
+      background: darken($sms, 10%) !important;
+      color: $white !important;
+    }
+  }
+
+  @media only screen {
+    #sms-button {
+      display: none;
+    }
+  }
+
   a.button-share--twitter[data-href], a.button-share--facebook[data-href],
-  a.button-share--whatsapp[data-href], a.button-share--email a.button[data-show-modal-id], {
+  a.button-share--whatsapp, a.button-share--email, button-share--sms, a.button[data-show-modal-id] {
     cursor: pointer;
   }
 }
