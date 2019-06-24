@@ -2859,14 +2859,8 @@ $thumb-width-mb: 60px;
     }
   }
 
-  @media only screen {
-    #sms-button {
-      display: none;
-    }
-  }
-
   a.button-share--twitter[data-href], a.button-share--facebook[data-href],
-  a.button-share--whatsapp, a.button-share--email, button-share--sms, a.button[data-show-modal-id] {
+  a.button-share--whatsapp, a.button-share--email, a.button-share--sms, a.button[data-show-modal-id] {
     cursor: pointer;
   }
 }
