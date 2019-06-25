@@ -2,6 +2,7 @@
 
 namespace Domain\BusinessBundle\Admin\CustomFields;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Domain\BusinessBundle\Entity\CustomFields\BusinessCustomFieldRadioButtonCollection;
 use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
 use Oxa\Sonata\AdminBundle\Util\Traits\ValidateIsUsedCollectionTrait;
@@ -77,10 +78,12 @@ class BusinessCustomFieldRadioButtonItemAdmin extends OxaAdmin
 
     public function validate(ErrorElement $errorElement, $object)
     {
-        $deleteDiff = $object->getBusinessCustomFieldRadioButton()->getRadioButtonItems()->getDeleteDiff();
-        $repository = $this->getConfigurationPool()->getContainer()->get('doctrine')
-            ->getRepository(BusinessCustomFieldRadioButtonCollection::class);
+        if (!$object->getBusinessCustomFieldRadioButton()->getRadioButtonItems() instanceof ArrayCollection) {
+            $deleteDiff = $object->getBusinessCustomFieldRadioButton()->getRadioButtonItems()->getDeleteDiff();
+            $repository = $this->getConfigurationPool()->getContainer()->get('doctrine')
+                ->getRepository(BusinessCustomFieldRadioButtonCollection::class);
 
-        $this->validateIsUsedCollection($deleteDiff, $errorElement, $repository);
+            $this->validateIsUsedCollection($deleteDiff, $errorElement, $repository);
+        }
     }
 }

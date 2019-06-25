@@ -2,6 +2,7 @@
 
 namespace Domain\BusinessBundle\Admin\CustomFields;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Domain\BusinessBundle\Entity\CustomFields\BusinessCustomFieldListCollection;
 use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
 use Oxa\Sonata\AdminBundle\Util\Traits\ValidateIsUsedCollectionTrait;
@@ -77,10 +78,12 @@ class BusinessCustomFieldListItemAdmin extends OxaAdmin
 
     public function validate(ErrorElement $errorElement, $object)
     {
-        $deleteDiff = $object->getBusinessCustomFieldList()->getListItems()->getDeleteDiff();
-        $repository = $this->getConfigurationPool()->getContainer()->get('doctrine')
-            ->getRepository(BusinessCustomFieldListCollection::class);
+        if (!$object->getBusinessCustomFieldList()->getListItems() instanceof ArrayCollection) {
+            $deleteDiff = $object->getBusinessCustomFieldList()->getListItems()->getDeleteDiff();
+            $repository = $this->getConfigurationPool()->getContainer()->get('doctrine')
+                ->getRepository(BusinessCustomFieldListCollection::class);
 
-        $this->validateIsUsedCollection($deleteDiff, $errorElement, $repository);
+            $this->validateIsUsedCollection($deleteDiff, $errorElement, $repository);
+        }
     }
 }

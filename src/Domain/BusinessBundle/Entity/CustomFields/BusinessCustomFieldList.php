@@ -58,7 +58,7 @@ class BusinessCustomFieldList implements DefaultEntityInterface, TranslatableInt
      *     orphanRemoval=true
      *     )
      * @Assert\Valid
-     * @Assert\Count(max="10", min="1")
+     * @Assert\Count(min="1")
      * @ORM\OrderBy({"position" = "ASC"})
      */
     protected $listItems;
