@@ -28,6 +28,7 @@ use Domain\BusinessBundle\Model\SubscriptionPlanInterface;
 use Domain\BusinessBundle\Repository\BusinessGalleryRepository;
 use Domain\BusinessBundle\Repository\BusinessReviewRepository;
 use Domain\BusinessBundle\Util\ChangeSetCalculator;
+use Domain\BusinessBundle\Util\JsonUtil;
 use Domain\BusinessBundle\Util\Task\PhoneChangeSetUtil;
 use Domain\BusinessBundle\Util\SlugUtil;
 use Domain\BusinessBundle\Util\Task\RelationChangeSetUtil;
@@ -1244,7 +1245,7 @@ class BusinessProfileManager extends Manager
             $schema[] = $schemaItem;
         }
 
-        return json_encode($schema, JSON_UNESCAPED_SLASHES);
+        return JsonUtil::jsonHtmlEntitiesEncode(JsonUtil::htmlEntitiesEncode($schema));
     }
 
     /**
@@ -1264,7 +1265,7 @@ class BusinessProfileManager extends Manager
 
         $schemaItem['image'] = $this->getDefaultLocalBusinessImage($schemaItem, $businessProfile);
 
-        return json_encode([$schemaItem], JSON_UNESCAPED_SLASHES);
+        return JsonUtil::jsonHtmlEntitiesEncode(JsonUtil::htmlEntitiesEncode([$schemaItem]));
     }
 
     /**
