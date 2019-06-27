@@ -2781,9 +2781,19 @@ $thumb-width-mb: 60px;
 .map-socials {
   position: absolute;
   display: block;
-  right: 10px;
+  right: 0px;
   z-index: 99999;
   overflow: hidden;
+
+  .sidebar__section {
+    margin: 0;
+
+    @media only screen and (min-width: 805px) {
+      &:first-child {
+        margin-top: 15px;
+      }
+    }
+  }
 }
 
 .social-medias .button {
