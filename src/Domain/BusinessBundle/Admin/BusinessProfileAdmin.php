@@ -242,7 +242,8 @@ class BusinessProfileAdmin extends OxaAdmin
             ->add('name', null, [
                 'show_filter' => true,
             ])
-            ->add('city');
+            ->add('city')
+            ->add('email');
 
         foreach ($this->getOverviewFilters() as $overviewFilter) {
             $datagridMapper->add($overviewFilter, 'doctrine_orm_callback',
