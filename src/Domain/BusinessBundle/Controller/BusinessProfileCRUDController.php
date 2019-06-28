@@ -2,13 +2,13 @@
 
 namespace Domain\BusinessBundle\Controller;
 
-use \Oxa\Sonata\AdminBundle\Controller\CRUDController as Controller;
+use Oxa\Sonata\AdminBundle\Controller\CRUDExportController;
 
 /**
- * Class CRUDController
- * @package Domain\ReportBundle\Controller
+ * Class BusinessProfileCRUDController
+ * @package Domain\BusinessBundle\Controller
  */
-class BusinessProfileCRUDController extends Controller
+class BusinessProfileCRUDController extends CRUDExportController
 {
 
 }

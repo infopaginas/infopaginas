@@ -2,13 +2,14 @@
 
 namespace Domain\ReportBundle\Controller;
 
+use Oxa\Sonata\AdminBundle\Controller\CRUDExportController;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 /**
  * Class CRUDPostponeExportController
  * @package Domain\ReportBundle\Controller
  */
-class CRUDPostponeExportController extends CRUDController
+class CRUDPostponeExportController extends CRUDExportController
 {
     /**
      * Show action.
