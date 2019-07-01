@@ -147,6 +147,12 @@ services:
         tags:
             - { name: kernel.event_subscriber }
 
+    listener.exception_listener:
+        class: Domain\SiteBundle\EventListener\ExceptionListener
+        arguments: [ @domain_site.mailer ]
+        tags:
+            - { name: kernel.event_listener, event: kernel.exception, method: onKernelException }
+
     sitemap.dynamic_urls_subscriber:
         class: Domain\SiteBundle\EventListener\SitemapSubscriber
         arguments:
