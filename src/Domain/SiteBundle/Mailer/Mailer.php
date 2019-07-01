@@ -322,7 +322,7 @@ class Mailer
             $params = [
                 '{DATE}'       => $data['date'],
                 '{URL}'        => $data['url'],
-                '{ERROR_CODE}' => $data['error_code'],
+                '{ERROR_CODE}' => $data['errorCode'],
             ];
 
             $parsedMessage = strtr($message, $params);

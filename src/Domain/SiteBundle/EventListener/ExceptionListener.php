@@ -28,7 +28,7 @@ class ExceptionListener
             $this->mailer->sendErrorNotification([
                 'date'       => $date->format(DatesUtil::DATETIME_FORMAT),
                 'url'        => $this->container->get('request')->getRequestUri(),
-                'error_code' => $exception->getStatusCode(),
+                'errorCode' => $exception->getStatusCode(),
             ]);
         }
     }
