@@ -149,7 +149,7 @@ services:
 
     listener.exception_listener:
         class: Domain\SiteBundle\EventListener\ExceptionListener
-        arguments: [ @service_container, @domain_site.mailer ]
+        arguments: [ @domain_site.mailer ]
         tags:
             - { name: kernel.event_listener, event: kernel.exception, method: onKernelException }
 

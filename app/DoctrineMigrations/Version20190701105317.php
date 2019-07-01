@@ -37,31 +37,31 @@ class Version20190701105317 extends AbstractMigration implements ContainerAwareI
             $this->em->persist($configMail);
         }
 
-        $this->em->flush();
+        if (!$this->checkNewConfigValue(ConfigInterface::EXCEPTION_ERROR_EMAIL_ADDRESS)) {
+            $configEmailAddress = new Config();
+            $configEmailAddress->setKey(ConfigInterface::EXCEPTION_ERROR_EMAIL_ADDRESS)
+                ->setTitle('Exception error email addresses')
+                ->setValue('jizquierdo@infopaginas.com, tsantiago@infopaginas.com, mccpsp@infopaginas.com')
+                ->setFormat('text')
+                ->setDescription('All 4xx and 5xx errors will be sent to this emails')
+                ->setIsActive(true);
 
-        $this->addSql('
-            INSERT INTO config (key, title, value, format, description, created_at, updated_at, is_active)
-            VALUES (
-                \'EXCEPTION_ERROR_EMAIL_ADDRESS\',
-                \'Exception error email address\',
-                \'jizquierdo@infopaginas.com, tsantiago@infopaginas.com, mccpsp@infopaginas.com\',
-                \'text\',
-                \'All 4xx and 5xx errors will be sent to this email\',
-                NOW(),
-                NOW(),
-                true
-            ),
-            (
-                \'EXCEPTION_ERROR_EMAIL_SUBJECT\',
-                \'Exception error subject\',
-                \'Exception error\',
-                \'text\',
-                \'Subject of exception error email\',
-                NOW(),
-                NOW(),
-                true
-            )'
-        );
+            $this->em->persist($configEmailAddress);
+        }
+
+        if (!$this->checkNewConfigValue(ConfigInterface::EXCEPTION_ERROR_EMAIL_SUBJECT)) {
+            $configEmailSubject = new Config();
+            $configEmailSubject->setKey(ConfigInterface::EXCEPTION_ERROR_EMAIL_SUBJECT)
+                ->setTitle('Exception error subject')
+                ->setValue('Exception error')
+                ->setFormat('text')
+                ->setDescription('Subject of exception error email')
+                ->setIsActive(true);
+
+            $this->em->persist($configEmailSubject);
+        }
+
+        $this->em->flush();
     }
 
     public function down(Schema $schema)
