@@ -39,6 +39,7 @@ class DatesUtil
 
     const START_END_DATE_ARRAY_FORMAT = 'd-m-Y';
     const DATE_DB_FORMAT              = 'Y-m-d';
+    const DATETIME_FORMAT             = 'Y-m-d H:i:s';
 
     /**
      * @return array
