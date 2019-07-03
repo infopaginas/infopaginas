@@ -587,6 +587,14 @@ class BusinessProfile implements
 
     /**
      * Related to BUSINESS_PROFILE_URL_MAX_LENGTH
+     * @ORM\Column(name="linkedin_url", type="string", nullable=true, length=1000)
+     * @Assert\Length(max=1000, maxMessage="business_profile.max_length")
+     * @Assert\Url()
+     */
+    protected $linkedInURL;
+
+    /**
+     * Related to BUSINESS_PROFILE_URL_MAX_LENGTH
      * @ORM\Column(name="twitter_url", type="string", nullable=true, length=1000)
      * @Assert\Length(max=1000, maxMessage="business_profile.max_length")
      * @Assert\Url()
@@ -2058,6 +2066,25 @@ class BusinessProfile implements
     public function getStreetNumber()
     {
         return $this->streetNumber;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getLinkedInURL()
+    {
+        return $this->linkedInURL;
+    }
+
+    /**
+     * @param mixed $linkedInURL
+     * @return BusinessProfile
+     */
+    public function setLinkedInURL($linkedInURL)
+    {
+        $this->linkedInURL = $linkedInURL;
+
+        return $this;
     }
 
     /**

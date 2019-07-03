@@ -740,6 +740,9 @@ class BusinessProfileAdmin extends OxaAdmin
         $formMapper
             ->tab('Media')
                 ->with('Social Networks')
+                    ->add('linkedInURL', UrlType::class, [
+                        'required' => false,
+                    ])
                     ->add('twitterURL', UrlType::class, [
                         'required' => false,
                     ])
@@ -1127,6 +1130,7 @@ class BusinessProfileAdmin extends OxaAdmin
         $showMapper
             ->tab('Media')
                 ->with('Social Networks')
+                    ->add('linkedInURL')
                     ->add('twitterURL')
                     ->add('facebookURL')
                     ->add('googleURL')

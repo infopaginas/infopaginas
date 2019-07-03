@@ -2,6 +2,11 @@
 
 {% if socialLinksExists %}
     <div class="share" data-bw-gtm-component="social-buttons">
+        {% if item.linkedInURL %}
+            <div class="share__item linked-in">
+                <a data-href="{{ item.linkedInURL }}" class="redirect-event" data-id="{{ item.id }}" data-type="linkedInVisit" title="{% trans %}Visit business profile on...{% endtrans %}" data-bw-gtm-event-click data-bw-gtm-label="linkedIn::{{ item.linkedInURL }}"><i class="fa fa-linkedin"></i></a>
+            </div><!-- share__item -->
+        {% endif %}
         {% if item.facebookURL %}
             <div class="share__item facebook">
                 <a data-href="{{ item.facebookURL }}" class="redirect-event" data-id="{{ item.id }}" data-type="facebookVisit" title="{% trans %}Visit business profile on...{% endtrans %}" data-bw-gtm-event-click data-bw-gtm-label="facebook::{{ item.facebookURL }}"><i class="fa fa-facebook"></i></a>
