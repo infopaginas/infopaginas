@@ -513,6 +513,7 @@ interaction_report.button.add_compare: Añadir a Comparar
 interaction_report.button.remove_compare: Eliminar de Comparar
 interaction_report.share.facebook: Compartir Facebook
 interaction_report.share.twitter: Compartir Twitter
+interaction_report.visit.linked_in: Visita LinkedIn
 interaction_report.visit.facebook: Visita Facebook
 interaction_report.visit.twitter: Visita Twitter
 interaction_report.visit.google: Visite Google

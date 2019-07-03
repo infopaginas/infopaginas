@@ -24,6 +24,7 @@ class BusinessOverviewModel implements ReportInterface
     const TYPE_CODE_FACEBOOK_SHARE  = 'facebookShare';
     const TYPE_CODE_TWITTER_SHARE   = 'twitterShare';
 
+    const TYPE_CODE_LINKED_IN_VISIT    = 'linkedInVisit';
     const TYPE_CODE_FACEBOOK_VISIT     = 'facebookVisit';
     const TYPE_CODE_TWITTER_VISIT      = 'twitterVisit';
     const TYPE_CODE_GOOGLE_VISIT       = 'googleVisit';
@@ -49,6 +50,7 @@ class BusinessOverviewModel implements ReportInterface
         self::TYPE_CODE_REMOVE_COMPARE_BUTTON => 'interaction_report.button.remove_compare',
         self::TYPE_CODE_FACEBOOK_SHARE        => 'interaction_report.share.facebook',
         self::TYPE_CODE_TWITTER_SHARE         => 'interaction_report.share.twitter',
+        self::TYPE_CODE_LINKED_IN_VISIT       => 'interaction_report.visit.linked_in',
         self::TYPE_CODE_FACEBOOK_VISIT        => 'interaction_report.visit.facebook',
         self::TYPE_CODE_TWITTER_VISIT         => 'interaction_report.visit.twitter',
         self::TYPE_CODE_GOOGLE_VISIT          => 'interaction_report.visit.google',
@@ -107,6 +109,7 @@ class BusinessOverviewModel implements ReportInterface
             self::TYPE_CODE_REMOVE_COMPARE_BUTTON,
             self::TYPE_CODE_FACEBOOK_SHARE,
             self::TYPE_CODE_TWITTER_SHARE,
+            self::TYPE_CODE_LINKED_IN_VISIT,
             self::TYPE_CODE_FACEBOOK_VISIT,
             self::TYPE_CODE_TWITTER_VISIT,
             self::TYPE_CODE_GOOGLE_VISIT,
@@ -144,6 +147,7 @@ class BusinessOverviewModel implements ReportInterface
                 self::TYPE_CODE_REMOVE_COMPARE_BUTTON,
                 self::TYPE_CODE_FACEBOOK_SHARE,
                 self::TYPE_CODE_TWITTER_SHARE,
+                self::TYPE_CODE_LINKED_IN_VISIT,
                 self::TYPE_CODE_FACEBOOK_VISIT,
                 self::TYPE_CODE_TWITTER_VISIT,
                 self::TYPE_CODE_GOOGLE_VISIT,
