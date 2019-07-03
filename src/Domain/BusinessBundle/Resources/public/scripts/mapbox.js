@@ -426,6 +426,30 @@ document.addEventListener( 'jQueryLoaded', function() {
         $( link ).addClass( 'disabledLink' );
     }
 
+    function addHrefToNavigationButton() {
+        if ( $( '[data-target-coordinates]' ).data( 'targetCoordinates' ) ) {
+            var targetCoordinatesArray = $( '[data-target-coordinates]' ).data( 'targetCoordinates' ).split( ',' );
+
+            var latitude = targetCoordinatesArray[0];
+            var longitude = targetCoordinatesArray[1];
+        } else {
+            var latitude = this.options.markers[0].latitude;
+            var longitude = this.options.markers[0].longitude;
+        }
+
+        var ua = navigator.userAgent.toLowerCase();
+        var url = '';
+
+        if (ua.indexOf('android') > -1) {
+            url = 'google.navigation:q=' + latitude + ',' + longitude;
+        } else {
+            url = 'http://maps.apple.com/?saddr=My+Location&daddr=' + latitude + ',' + longitude;
+        }
+
+        var a = document.getElementById( 'navigation-button' );
+        a.href = url;
+    }
+
     function initMap ( options ) {
         this.map = new mapboxgl.Map( this.options.mapOptions );
         map.addControl( new mapboxgl.NavigationControl( { showCompass: false } ), 'bottom-right' );
@@ -439,6 +463,10 @@ document.addEventListener( 'jQueryLoaded', function() {
 
         if ( !$( '[data-target-coordinates]' ).data( 'targetCoordinates' ) ) {
             addMenuSwitch( 'menu' );
+        }
+
+        if ( $( '.navigation-button' ).length ) {
+            addHrefToNavigationButton();
         }
 
         document.dispatchEvent(mapSpinEvent);

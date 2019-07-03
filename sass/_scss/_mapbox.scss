@@ -70,6 +70,24 @@
   top: 10px;
 }
 
+.navigation-button {
+  left: 160px;
+  margin-left: 10px;
+  background-image: url(/redesign/img/navigation-button.png);
+  width: 35px;
+  z-index: 1;
+  position: absolute;
+  height: 37px;
+  background-size: 35px 37px;
+}
+
+.directions-navigation-button {
+  .navigation-button {
+    top: 87px;
+    left: 0;
+  }
+}
+
 #directions-menu {
   position: absolute;
   z-index: 1;
