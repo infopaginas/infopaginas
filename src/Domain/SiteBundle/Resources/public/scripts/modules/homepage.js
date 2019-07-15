@@ -1,7 +1,7 @@
 define(
     [
         'jquery', 'bootstrap', 'tools/search', 'tools/geolocation', 'tools/searchMenu', 'tools/resetPassword',
-        'tools/feedback', 'tools/login', 'tools/registration', 'profile-redesign', 'main-redesign'
+        'tools/feedback', 'tools/login', 'tools/registration', 'main-redesign'
     ], function ( $, bootstrap, Search, Geolocation, SearchMenu, ResetPassword, Feedback ) {
     'use strict';
 

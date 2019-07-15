@@ -3,6 +3,7 @@
 namespace Domain\SiteBundle\Controller;
 
 use AntiMattr\GoogleBundle\Analytics\CustomVariable;
+use Domain\BusinessBundle\Entity\HomepageCarousel;
 use Domain\BusinessBundle\Manager\LandingPageShortCutManager;
 use Domain\PageBundle\Model\PageInterface;
 use Domain\SiteBundle\Form\Type\RegistrationType;
@@ -14,7 +15,6 @@ use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Domain\BannerBundle\Model\TypeInterface;
-use Symfony\Component\Security\Core\Role\RoleInterface;
 
 /**
  * Class HomeController
@@ -49,17 +49,34 @@ class HomeController extends Controller
         $landingPage = $this->get('domain_page.manager.page')->getPageByCode(PageInterface::CODE_LANDING);
         $seoData     = $this->get('domain_page.manager.page')->getPageSeoData($landingPage);
 
+        $carouselBusinesses = $this->container->get('doctrine')->getRepository(HomepageCarousel::class)->findBy(
+            [],
+            ['position' => 'ASC']
+        );
+
+        $showCarousel = false;
+
+        foreach ($carouselBusinesses as $carouselBusiness) {
+            if ($carouselBusiness->getBusinessProfile()->getIsActive() == true) {
+                $showCarousel = true;
+
+                break;
+            }
+        }
+
         return $this->render(
             ':redesign:homepage.html.twig',
             [
-                'banners'       => $banners,
-                'articles'      => $articles,
-                'locale'        => $locale,
-                'schemaJsonLD'  => $schema,
-                'hideHeaderSearch' => true,
-                'landingPage'   => $landingPage,
-                'seoData'       => $seoData,
-                'page'          => $landingPage,
+                'banners'            => $banners,
+                'articles'           => $articles,
+                'locale'             => $locale,
+                'schemaJsonLD'       => $schema,
+                'hideHeaderSearch'   => true,
+                'landingPage'        => $landingPage,
+                'seoData'            => $seoData,
+                'page'               => $landingPage,
+                'carouselBusinesses' => $carouselBusinesses,
+                'showCarousel'       => $showCarousel,
             ]
         );
     }

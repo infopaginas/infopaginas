@@ -13,7 +13,9 @@ use Symfony\Component\Validator\Constraints as Assert;
  * BusinessCustomFieldCheckboxCollection
  *
  * @ORM\Table(name="business_custom_field_checkbox_collection")
- * @ORM\Entity(repositoryClass="Domain\BusinessBundle\Repository\BusinessCustomFieldCheckboxCollectionRepository")
+ * @ORM\Entity(
+ *     repositoryClass="Domain\BusinessBundle\Repository\CustomFields\BusinessCustomFieldCheckboxCollectionRepository"
+ * )
  */
 class BusinessCustomFieldCheckboxCollection implements ChangeStateInterface
 {

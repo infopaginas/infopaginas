@@ -6426,6 +6426,13 @@ body.results-list.results--map-view {
   }
 }
 
+.homepage-carousel-video {
+  .video-js {
+    height: 124px;
+    top: -9px;
+  }
+}
+
 .report-button-group button {
   margin: 10px;
 }

@@ -761,12 +761,12 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
     });
 
     //slider
-    window.onload = function() {
+    $(document).ready(function () {
         $( document ).trigger( 'resize' );
         $( '.section--slider' ).removeClass( 'hide-before' );
         $( '.suggested-slider-section' ).removeClass( 'hide-before' );
         $( '.panorama-frame' ).removeClass( 'hide-before' );
-    };
+    });
 
     // map controls
     $( document ).on( 'disableAutoSearchInMap', function() {
