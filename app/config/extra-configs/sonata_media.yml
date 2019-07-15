@@ -78,6 +78,15 @@ sonata_media:
             formats:
                 preview:   { width: 75, height: 75, quality: 100}
                 normal:    { width: 500, height: 500, quality: 70}
+        homepage_carousel:
+            download:
+                mode: http
+            providers:
+                - sonata.media.provider.image
+            formats:
+                preview:      { width: 223, height: 124, quality: 70}
+                normal:       { width: 892, height: 496, quality: 70}
+
     cdn:
         #define the public base url for the uploaded media
         server:

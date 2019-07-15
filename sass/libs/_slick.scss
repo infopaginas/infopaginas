@@ -136,6 +136,13 @@
 
     text-align: center;
 }
+
+.homepage-slider-main {
+  .slick-dots {
+    bottom: -2px;
+  }
+}
+
 .slick-dots li
 {
     position: relative;
@@ -329,7 +336,7 @@
     }
 
     a {
-      &.suggested-link, &.get-dir {
+      &.suggested-link, &.get-dir, &.homepage-carousel-action {
         color: $black;
       }
       &:focus{
@@ -391,10 +398,38 @@
         }
       }
 
+      .homepage-opentable-image {
+        width: 30px;
+        position: relative;
+        display: inline-block;
+        left: 5%;
+        top: 44%;
+      }
+
+      .homepage-opentable-button {
+        background: $red;
+        color: $white;
+      }
+
       .phone-call {
         margin-top: 5px;
         width: 100%;
       }
     }
+  }
+
+  .homepage-slider__item {
+    height: 356px;
+    img {
+      top: 27%;
+      max-width: 223px;
+      max-height: 124px;
+    }
+  }
+}
+
+.homepage-slider-main {
+  &.slider {
+    height: 380px;
   }
 }

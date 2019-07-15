@@ -7,6 +7,7 @@ use Domain\ArticleBundle\Entity\Media\ArticleGallery;
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\Coupon;
 use Domain\ArticleBundle\Entity\Article;
+use Domain\BusinessBundle\Entity\HomepageCarousel;
 use Domain\BusinessBundle\Entity\Media\BusinessGallery;
 use Oxa\Sonata\AdminBundle\Model\ChangeStateInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\ChangeStateTrait;
@@ -143,6 +144,15 @@ class Media extends BaseMedia implements
     protected $videoMedia;
 
     /**
+     * @var HomepageCarousel[]
+     * @ORM\OneToMany(targetEntity="Domain\BusinessBundle\Entity\HomepageCarousel",
+     *     mappedBy="image",
+     *     cascade={"persist"}
+     * )
+     */
+    protected $homepageCarousel;
+
+    /**
      * Get id
      *
      * @return integer $id
@@ -204,6 +214,7 @@ class Media extends BaseMedia implements
             self::CONTEXT_ARTICLE_IMAGES              => self::CONTEXT_ARTICLE_IMAGES,
             self::CONTEXT_PAGE_BACKGROUND             => self::CONTEXT_PAGE_BACKGROUND,
             self::CONTEXT_VIDEO_POSTER                => self::CONTEXT_VIDEO_POSTER,
+            self::CONTEXT_HOMEPAGE_CAROUSEL           => self::CONTEXT_HOMEPAGE_CAROUSEL,
         ];
     }
 

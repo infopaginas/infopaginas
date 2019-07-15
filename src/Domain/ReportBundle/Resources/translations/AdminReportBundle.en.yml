@@ -68,6 +68,7 @@ user_action_report:
 
 flash_export_report_requested: Report is being generated. To see its status please go to reports page
 flash_export_report_request_error: Error the report could not be sent, please reload the page and try again.
+flash_homepage_carousel_add_error: Maximum number of elements in carousel is %count%.
 
 category_report:
   page_type:

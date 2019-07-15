@@ -225,3 +225,11 @@ services:
         arguments: [~, Domain\BusinessBundle\Entity\CustomFields\BusinessCustomFieldListCollection, OxaSonataAdminBundle:CRUD]
         tags:
             - {name: sonata.admin, manager_type: orm, group: admin, label: List Collection}
+
+    domain_business.admin.homepage_carousel:
+        class: Domain\BusinessBundle\Admin\HomepageCarouselAdmin
+        arguments: [~, Domain\BusinessBundle\Entity\HomepageCarousel, DomainBusinessBundle:HomepageCarouselCRUD]
+        tags:
+            - {name: sonata.admin, manager_type: orm, group: admin, label: Homepage Carousel}
+        calls:
+            - [setPositionService, ['@pix_sortable_behavior.position']]

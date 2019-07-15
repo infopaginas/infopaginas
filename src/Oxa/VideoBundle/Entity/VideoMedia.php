@@ -5,6 +5,7 @@ namespace Oxa\VideoBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Domain\BusinessBundle\Entity\BusinessProfile;
+use Domain\BusinessBundle\Entity\HomepageCarousel;
 use Oxa\Sonata\AdminBundle\Model\ChangeStateInterface;
 use Oxa\Sonata\AdminBundle\Model\PostponeRemoveInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\ChangeStateTrait;
@@ -146,6 +147,16 @@ class VideoMedia implements PostponeRemoveInterface, ChangeStateInterface
     protected $businessProfiles;
 
     /**
+     * @var ArrayCollection
+     *
+     * @ORM\OneToMany(
+     *      targetEntity="Domain\BusinessBundle\Entity\HomepageCarousel",
+     *      mappedBy="video"
+     * )
+     */
+    protected $homepageCarousel;
+
+    /**
      * Logo Field. Related to class constant BUSINESS_PROFILE_FIELD_LOGO
      *
      * @var Media - Media poster
@@ -175,6 +186,7 @@ class VideoMedia implements PostponeRemoveInterface, ChangeStateInterface
         $this->setYoutubeAction(null);
 
         $this->businessProfiles = new ArrayCollection();
+        $this->homepageCarousel = new ArrayCollection();
     }
 
     /**
@@ -459,6 +471,50 @@ class VideoMedia implements PostponeRemoveInterface, ChangeStateInterface
     public function removeBusinessProfiles(BusinessProfile $businessProfile)
     {
         $this->businessProfiles->removeElement($businessProfile);
+
+        return $this;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getHomepageCarousel()
+    {
+        return $this->homepageCarousel;
+    }
+
+    /**
+     * @param mixed $homepageCarousel
+     *
+     * @return VideoMedia
+     */
+    public function setHomepageCarousel($homepageCarousel)
+    {
+        $this->homepageCarousel = $homepageCarousel;
+
+        return $this;
+    }
+
+    /**
+     * Add homepageCarousel
+     *
+     * @param HomepageCarousel $homepageCarousel
+     *
+     * @return VideoMedia
+     */
+    public function addHomepageCarousel(HomepageCarousel $homepageCarousel)
+    {
+        $this->homepageCarousel[] = $homepageCarousel;
+    }
+
+    /**
+     * @param HomepageCarousel $homepageCarousel
+     *
+     * @return $this
+     */
+    public function removeHomepageCarousel(HomepageCarousel $homepageCarousel)
+    {
+        $this->homepageCarousel->removeElement($homepageCarousel);
 
         return $this;
     }

@@ -197,6 +197,12 @@ assetic:
             output: 'assetic/js/modules/tools/mapSpin.min.js'
             filters:
                 - jsqueeze
+        tools_homepage_carousel_js:
+            inputs:
+                - '@DomainSiteBundle/Resources/public/scripts/modules/tools/homepageCarousel.js'
+            output: 'assetic/js/modules/tools/homepageCarousel.min.js'
+            filters:
+                - jsqueeze
         tools_report_tracker_js:
             inputs:
                 - '@DomainSiteBundle/Resources/public/scripts/modules/tools/reportTracker.js'
