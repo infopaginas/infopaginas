@@ -20,8 +20,6 @@ class HomepageCarouselAdmin extends OxaAdmin
         '_sort_by' => 'position',
     ];
 
-    public $errorMessage = 'homepageCarouselList.errorMessage';
-
     /**
      * @param DatagridMapper $datagridMapper
      */
@@ -29,7 +27,7 @@ class HomepageCarouselAdmin extends OxaAdmin
     {
         $datagridMapper
             ->add('id')
-            ->add('businessProfile', null, [
+            ->add('businessProfile.name', null, [
                 'show_filter' => true,
             ])
             ->add('position')

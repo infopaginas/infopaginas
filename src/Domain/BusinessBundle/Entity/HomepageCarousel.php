@@ -37,7 +37,6 @@ class HomepageCarousel implements DefaultEntityInterface, ChangeStateInterface
      * @var BusinessProfile
      * @ORM\ManyToOne(targetEntity="Domain\BusinessBundle\Entity\BusinessProfile",
      *     cascade={"persist"},
-     *     inversedBy="homepageCarousel",
      * )
      * @ORM\JoinColumn(name="business_profile_id", referencedColumnName="id", onDelete="CASCADE")
      * @Assert\NotBlank()
