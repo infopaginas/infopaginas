@@ -2798,6 +2798,7 @@ $thumb-width-mb: 60px;
 
 .social-medias .button {
   width: 36px;
+  border-radius: 0;
 }
 
 .social-medias .button span {
@@ -2810,7 +2811,9 @@ $thumb-width-mb: 60px;
 }
 
 .social-medias li {
-  margin: 2px;
+  @media only screen and (min-width: 805px) {
+    margin: 2px;
+  }
 }
 
 .section--social {
