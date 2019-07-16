@@ -57,7 +57,7 @@ sonata_admin:
                     - domain_business.admin.business_custom_fields_text_area
                     - domain_business.admin.business_custom_fields_radio_button
                     - domain_business.admin.business_custom_fields_list
-            domain.admin.group.homepage_carousel:
+            domain.admin.group.additional:
                 label: Additional
                 icon: <i class="fa fa-chevron-circle-right"></i>
                 items:
