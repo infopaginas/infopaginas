@@ -290,3 +290,7 @@ services:
     domain_business.manager.business_api_manager:
             class: Domain\BusinessBundle\Manager\BusinessApiManager
             arguments: [ '@service_container' ]
+
+    domain_business.manager.homepage_carousel_manager:
+        class: Domain\BusinessBundle\Manager\HomepageCarouselManager
+        arguments: ['@doctrine.orm.entity_manager']
