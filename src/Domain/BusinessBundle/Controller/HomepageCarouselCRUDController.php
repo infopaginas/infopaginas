@@ -19,18 +19,13 @@ class HomepageCarouselCRUDController extends CRUDController
         $em = $this->container->get('doctrine');
 
         $rowCount = $em->getRepository(HomepageCarousel::class)->countRows();
-        $maxRowCount = $em->getRepository(Config::class)->findOneBy(
-            ['key' => ConfigInterface::HOMEPAGE_CAROUSEL_MAX_ELEMENT_COUNT]
-        );
+        $maxRowCount = $this->container->get('oxa_config')
+            ->getValue(ConfigInterface::HOMEPAGE_CAROUSEL_MAX_ELEMENT_COUNT);
 
-        if ($maxRowCount && $rowCount >= $maxRowCount->getValue()) {
+        if ($maxRowCount && $rowCount >= $maxRowCount) {
             $this->addFlash(
                 'sonata_flash_error',
-                str_replace(
-                    '%count%',
-                    $maxRowCount->getValue(),
-                    $this->trans('flash_homepage_carousel_add_error', [], 'AdminReportBundle')
-                )
+                $this->trans('flash_homepage_carousel_add_error', ['%count%' => $maxRowCount], 'AdminReportBundle')
             );
 
             return new RedirectResponse($this->admin->generateUrl('list'));
