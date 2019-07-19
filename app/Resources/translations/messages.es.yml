@@ -687,7 +687,7 @@ contact:
       create_business: Quiero crear un perfil de negocio.
       other: Otro
     validation_failure: Error de validación.
-    send_success: Su mensaje fue enviado.
+    send_success: Gracias, su mensaje ha sido enviado exitosamente.
     instant_email: E-mail instantáneo
 
 business_profile.phone.tooltip:

@@ -101,6 +101,11 @@ define(['jquery', 'tools/spin', 'maskedInput'], function( $, Spin, mask ) {
         if ( response.success ) {
             $( this.html.block.message ).html( response.message );
             $( this.html.forms.feedbackFormId )[0].reset();
+
+            if ( !document.getElementById( 'domain_page_bundle_feedback_form_type_subject' ) ) {
+                $( '.form-fields-to-hide' ).empty();
+                $( '.success-logo' ).removeClass( 'hidden' );
+            }
         } else {
             if ( !$.isEmptyObject( response.errors ) ) {
                 this.enableFieldsHighlight( response.errors );
