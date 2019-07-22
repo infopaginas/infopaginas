@@ -9,13 +9,9 @@ class BusinessCustomFieldListCollectionRepository extends EntityRepository
 {
     public function getBusinessProfileNames($id)
     {
-        $qb = $this->createQueryBuilder('bcflcr')
+        $qb = $this->getBusinessProfilesQb($id)
             ->distinct()
             ->select('bp.name')
-            ->join('bcflcr.lists', 'c')
-            ->join('bcflcr.businessProfile', 'bp')
-            ->where('bcflcr.lists = :id')
-            ->setParameter('id', $id)
             ->setMaxResults(BusinessCustomFieldListAdmin::MAX_BUSINESS_NAMES_SHOW)
         ;
 
@@ -24,14 +20,19 @@ class BusinessCustomFieldListCollectionRepository extends EntityRepository
 
     public function countBusinesses($id)
     {
+        $qb = $this->getBusinessProfilesQb($id)->select('COUNT(DISTINCT bp)');
+
+        return $qb->getQuery()->getSingleScalarResult();
+    }
+
+    private function getBusinessProfilesQb($id)
+    {
         $qb = $this->createQueryBuilder('bcflcr')
-            ->select('COUNT(DISTINCT bp)')
-            ->join('bcflcr.lists', 'c')
             ->join('bcflcr.businessProfile', 'bp')
             ->where('bcflcr.lists = :id')
             ->setParameter('id', $id)
         ;
 
-        return $qb->getQuery()->getSingleScalarResult();
+        return $qb;
     }
 }

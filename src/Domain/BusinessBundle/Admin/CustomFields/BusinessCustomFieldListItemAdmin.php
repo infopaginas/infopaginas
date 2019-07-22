@@ -2,21 +2,15 @@
 
 namespace Domain\BusinessBundle\Admin\CustomFields;
 
-use Doctrine\Common\Collections\ArrayCollection;
-use Domain\BusinessBundle\Entity\CustomFields\BusinessCustomFieldListCollection;
 use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
-use Oxa\Sonata\AdminBundle\Util\Traits\ValidateIsUsedCollectionTrait;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Show\ShowMapper;
-use Sonata\CoreBundle\Validator\ErrorElement;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 
 class BusinessCustomFieldListItemAdmin extends OxaAdmin
 {
-    use ValidateIsUsedCollectionTrait;
-
     /**
      * Default values to the datagrid.
      *
@@ -74,16 +68,5 @@ class BusinessCustomFieldListItemAdmin extends OxaAdmin
             ->add('id')
             ->add('title')
         ;
-    }
-
-    public function validate(ErrorElement $errorElement, $object)
-    {
-        if (!$object->getBusinessCustomFieldList()->getListItems() instanceof ArrayCollection) {
-            $deleteDiff = $object->getBusinessCustomFieldList()->getListItems()->getDeleteDiff();
-            $repository = $this->getConfigurationPool()->getContainer()->get('doctrine')
-                ->getRepository(BusinessCustomFieldListCollection::class);
-
-            $this->validateIsUsedCollection($deleteDiff, $errorElement, $repository);
-        }
     }
 }

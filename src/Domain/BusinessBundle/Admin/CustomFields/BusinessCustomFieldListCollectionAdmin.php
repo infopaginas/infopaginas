@@ -2,13 +2,11 @@
 
 namespace Domain\BusinessBundle\Admin\CustomFields;
 
-use Domain\BusinessBundle\Entity\BusinessProfile;
 use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Show\ShowMapper;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 class BusinessCustomFieldListCollectionAdmin extends OxaAdmin
 {
@@ -43,7 +41,7 @@ class BusinessCustomFieldListCollectionAdmin extends OxaAdmin
                 'btn_add'    => false,
                 'btn_delete' => false,
             ])
-            ->add('value', TextType::class, [
+            ->add('value', null, [
                 'required' => true,
                 'attr'     => ['class' => 'hidden list-value'],
             ])

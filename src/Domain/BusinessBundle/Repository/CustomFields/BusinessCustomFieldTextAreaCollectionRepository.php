@@ -9,13 +9,9 @@ class BusinessCustomFieldTextAreaCollectionRepository extends EntityRepository
 {
     public function getBusinessProfileNames($id)
     {
-        $qb = $this->createQueryBuilder('bcftacr')
+        $qb = $this->getBusinessProfilesQb($id)
             ->distinct()
             ->select('bp.name')
-            ->join('bcftacr.textAreas', 'c')
-            ->join('bcftacr.businessProfile', 'bp')
-            ->where('bcftacr.textAreas = :id')
-            ->setParameter('id', $id)
             ->setMaxResults(BusinessCustomFieldTextAreaAdmin::MAX_BUSINESS_NAMES_SHOW)
         ;
 
@@ -24,14 +20,19 @@ class BusinessCustomFieldTextAreaCollectionRepository extends EntityRepository
 
     public function countBusinesses($id)
     {
+        $qb = $this->getBusinessProfilesQb($id)->select('COUNT(DISTINCT bp)');
+
+        return $qb->getQuery()->getSingleScalarResult();
+    }
+
+    private function getBusinessProfilesQb($id)
+    {
         $qb = $this->createQueryBuilder('bcftacr')
-            ->select('COUNT(DISTINCT bp)')
-            ->join('bcftacr.textAreas', 'c')
             ->join('bcftacr.businessProfile', 'bp')
             ->where('bcftacr.textAreas = :id')
             ->setParameter('id', $id)
         ;
 
-        return $qb->getQuery()->getSingleScalarResult();
+        return $qb;
     }
 }

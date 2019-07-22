@@ -9,13 +9,9 @@ class BusinessCustomFieldRadioButtonCollectionRepository extends EntityRepositor
 {
     public function getBusinessProfileNames($id)
     {
-        $qb = $this->createQueryBuilder('bcfrbcr')
+        $qb = $this->getBusinessProfilesQb($id)
             ->distinct()
             ->select('bp.name')
-            ->join('bcfrbcr.radioButtons', 'c')
-            ->join('bcfrbcr.businessProfile', 'bp')
-            ->where('bcfrbcr.radioButtons = :id')
-            ->setParameter('id', $id)
             ->setMaxResults(BusinessCustomFieldRadioButtonAdmin::MAX_BUSINESS_NAMES_SHOW)
         ;
 
@@ -24,14 +20,19 @@ class BusinessCustomFieldRadioButtonCollectionRepository extends EntityRepositor
 
     public function countBusinesses($id)
     {
+        $qb = $this->getBusinessProfilesQb($id)->select('COUNT(DISTINCT bp)');
+
+        return $qb->getQuery()->getSingleScalarResult();
+    }
+
+    private function getBusinessProfilesQb($id)
+    {
         $qb = $this->createQueryBuilder('bcfrbcr')
-            ->select('COUNT(DISTINCT bp)')
-            ->join('bcfrbcr.radioButtons', 'c')
             ->join('bcfrbcr.businessProfile', 'bp')
             ->where('bcfrbcr.radioButtons = :id')
             ->setParameter('id', $id)
         ;
 
-        return $qb->getQuery()->getSingleScalarResult();
+        return $qb;
     }
 }

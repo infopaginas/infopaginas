@@ -9,13 +9,9 @@ class BusinessCustomFieldCheckboxCollectionRepository extends EntityRepository
 {
     public function getBusinessProfileNames($id)
     {
-        $qb = $this->createQueryBuilder('bcfccr')
+        $qb = $this->getBusinessProfilesQb($id)
             ->distinct()
             ->select('bp.name')
-            ->join('bcfccr.checkboxes', 'c')
-            ->join('bcfccr.businessProfile', 'bp')
-            ->where('bcfccr.checkboxes = :id')
-            ->setParameter('id', $id)
             ->setMaxResults(BusinessCustomFieldCheckboxAdmin::MAX_BUSINESS_NAMES_SHOW)
         ;
 
@@ -24,14 +20,19 @@ class BusinessCustomFieldCheckboxCollectionRepository extends EntityRepository
 
     public function countBusinesses($id)
     {
+        $qb = $this->getBusinessProfilesQb($id)->select('COUNT(DISTINCT bp)');
+
+        return $qb->getQuery()->getSingleScalarResult();
+    }
+
+    private function getBusinessProfilesQb($id)
+    {
         $qb = $this->createQueryBuilder('bcfccr')
-            ->select('COUNT(DISTINCT bp)')
-            ->join('bcfccr.checkboxes', 'c')
             ->join('bcfccr.businessProfile', 'bp')
             ->where('bcfccr.checkboxes = :id')
             ->setParameter('id', $id)
         ;
 
-        return $qb->getQuery()->getSingleScalarResult();
+        return $qb;
     }
 }

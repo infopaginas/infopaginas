@@ -4,6 +4,7 @@ namespace Domain\BusinessBundle\Admin\CustomFields;
 
 use Domain\BusinessBundle\Entity\CustomFields\BusinessCustomFieldTextAreaCollection;
 use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
+use Oxa\Sonata\AdminBundle\Util\Traits\ShowBusinessNamesOnDeleteTrait;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
@@ -11,6 +12,8 @@ use Sonata\AdminBundle\Show\ShowMapper;
 
 class BusinessCustomFieldTextAreaAdmin extends OxaAdmin
 {
+    use ShowBusinessNamesOnDeleteTrait;
+
     const MAX_BUSINESS_NAMES_SHOW = 10;
 
     /**
@@ -68,30 +71,9 @@ class BusinessCustomFieldTextAreaAdmin extends OxaAdmin
         ;
     }
 
-    public function getDependentBusinessNames()
+    private function getCollectionRepository()
     {
-        $checkboxCollectionRepository = $this->getConfigurationPool()->getContainer()->get('doctrine')
+        return $this->getConfigurationPool()->getContainer()->get('doctrine')
             ->getRepository(BusinessCustomFieldTextAreaCollection::class);
-
-        $businessNames = $checkboxCollectionRepository->getBusinessProfileNames($this->getSubject()->getId());
-
-        return $businessNames;
-    }
-
-    public function getDependentBusinessCount()
-    {
-        $checkboxCollectionRepository = $this->getConfigurationPool()->getContainer()->get('doctrine')
-            ->getRepository(BusinessCustomFieldTextAreaCollection::class);
-
-        $businessCount = $checkboxCollectionRepository->countBusinesses($this->getSubject()->getId());
-
-        return ($businessCount > self::MAX_BUSINESS_NAMES_SHOW) ? true : false;
-    }
-
-    public function configure()
-    {
-        $this->setPerPageOptions([10, 25, 50, 100, 250, 500]);
-
-        $this->setTemplate('delete', 'OxaSonataAdminBundle:CRUD:custom_field_delete.html.twig');
     }
 }
