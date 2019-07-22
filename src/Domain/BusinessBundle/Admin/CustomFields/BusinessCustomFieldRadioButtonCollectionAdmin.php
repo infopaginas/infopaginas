@@ -7,7 +7,6 @@ use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Show\ShowMapper;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 class BusinessCustomFieldRadioButtonCollectionAdmin extends OxaAdmin
 {
@@ -42,7 +41,7 @@ class BusinessCustomFieldRadioButtonCollectionAdmin extends OxaAdmin
                 'btn_add'    => false,
                 'btn_delete' => false,
             ])
-            ->add('value', TextType::class, [
+            ->add('value', null, [
                 'required' => true,
                 'attr'     => ['class' => 'hidden radio-value'],
             ])

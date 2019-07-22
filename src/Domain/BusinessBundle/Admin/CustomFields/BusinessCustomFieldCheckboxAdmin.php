@@ -2,7 +2,9 @@
 
 namespace Domain\BusinessBundle\Admin\CustomFields;
 
+use Domain\BusinessBundle\Entity\CustomFields\BusinessCustomFieldCheckboxCollection;
 use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
+use Oxa\Sonata\AdminBundle\Util\Traits\ShowBusinessNamesOnDeleteTrait;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
@@ -11,6 +13,10 @@ use Sonata\AdminBundle\Route\RouteCollection;
 
 class BusinessCustomFieldCheckboxAdmin extends OxaAdmin
 {
+    use ShowBusinessNamesOnDeleteTrait;
+
+    const MAX_BUSINESS_NAMES_SHOW = 10;
+
     /**
      * @param DatagridMapper $datagridMapper
      */
@@ -19,6 +25,7 @@ class BusinessCustomFieldCheckboxAdmin extends OxaAdmin
         $datagridMapper
             ->add('id')
             ->add('title')
+            ->add('hideTitle')
             ->add('section')
         ;
     }
@@ -31,6 +38,7 @@ class BusinessCustomFieldCheckboxAdmin extends OxaAdmin
         $listMapper
             ->add('id')
             ->add('title')
+            ->add('hideTitle')
             ->add('section')
         ;
 
@@ -45,6 +53,7 @@ class BusinessCustomFieldCheckboxAdmin extends OxaAdmin
         $formMapper
             ->tab('Checkbox')
                 ->add('title', null, ['required' => true])
+                ->add('hideTitle')
                 ->add('section', null, ['required' => true])
             ->end()
         ;
@@ -58,6 +67,7 @@ class BusinessCustomFieldCheckboxAdmin extends OxaAdmin
         $showMapper
             ->add('id')
             ->add('title')
+            ->add('hideTitle')
             ->add('section')
         ;
     }
@@ -71,5 +81,11 @@ class BusinessCustomFieldCheckboxAdmin extends OxaAdmin
             ->remove('export')
             ->add('move', $this->getRouterIdParameter().'/move/{position}')
         ;
+    }
+
+    private function getCollectionRepository()
+    {
+        return $this->getConfigurationPool()->getContainer()->get('doctrine')
+            ->getRepository(BusinessCustomFieldCheckboxCollection::class);
     }
 }

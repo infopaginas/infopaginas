@@ -27,7 +27,7 @@ class SectionManager extends Manager
 
         foreach ($businessProfile->getCheckboxCollection() as $key => $value) {
             $sections[$value->getCheckboxes()->getSection()->getTitle()][] = [
-                'title' => $value->getCheckboxes()->getTitle(),
+                'title' => !$value->getCheckboxes()->getHideTitle() ? $value->getCheckboxes()->getTitle() : null,
                 'value' => $value->getIsAvailable(),
             ];
         }
@@ -37,7 +37,7 @@ class SectionManager extends Manager
                 ->find($value->getValue());
 
             $sections[$value->getRadioButtons()->getSection()->getTitle()][] = [
-                'title' => $value->getRadioButtons()->getTitle(),
+                'title' => !$value->getRadioButtons()->getHideTitle() ? $value->getRadioButtons()->getTitle() : null,
                 'value' => $radioButtonValue->getTitle(),
             ];
         }
@@ -47,7 +47,7 @@ class SectionManager extends Manager
                 ->find($value->getValue());
 
             $sections[$value->getLists()->getSection()->getTitle()][] = [
-                'title' => $value->getLists()->getTitle(),
+                'title' => !$value->getLists()->getHideTitle() ? $value->getLists()->getTitle() : null,
                 'value' => $listValue->getTitle(),
             ];
         }
@@ -58,7 +58,7 @@ class SectionManager extends Manager
                 : $value->getTextAreaValueEs();
 
             $sections[$value->getTextAreas()->getSection()->getTitle()][] = [
-                'title' => $value->getTextAreas()->getTitle(),
+                'title' => !$value->getTextAreas()->getHideTitle() ? $value->getTextAreas()->getTitle() : null,
                 'value' => $textAreaValue,
             ];
         }

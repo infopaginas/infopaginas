@@ -64,16 +64,16 @@ class BusinessCustomFieldTextArea implements DefaultEntityInterface, Translatabl
      *      inversedBy="businessCustomFieldTextArea"
      * )
      * @ORM\JoinColumn(name="section_id", referencedColumnName="id", onDelete="SET NULL")
+     * @Assert\NotBlank()
      */
     protected $section;
 
     /**
-     * @var string
+     * @var bool
      *
-     * @Gedmo\Translatable(fallback=true)
-     * @ORM\Column(name="textAreaValue", type="string", length=255, nullable=true)
+     * @ORM\Column(name="hide_title", type="boolean", nullable=true)
      */
-    protected $textAreaValue;
+    private $hideTitle;
 
     /**
      * Constructor
@@ -120,26 +120,6 @@ class BusinessCustomFieldTextArea implements DefaultEntityInterface, Translatabl
     }
 
     /**
-     * @return string
-     */
-    public function getTextAreaValue()
-    {
-        return $this->textAreaValue;
-    }
-
-    /**
-     * @param string $textAreaValue
-     *
-     * @return BusinessCustomFieldTextArea
-     */
-    public function setTextAreaValue($textAreaValue)
-    {
-        $this->textAreaValue = $textAreaValue;
-
-        return $this;
-    }
-
-    /**
      * @return BusinessCustomFieldTextAreaCollection|null
      */
     public function getTextAreaCollection()
@@ -177,5 +157,25 @@ class BusinessCustomFieldTextArea implements DefaultEntityInterface, Translatabl
         $this->section = $section;
 
         return $this;
+    }
+
+    /**
+     * @param boolean $hideTitle
+     *
+     * @return BusinessCustomFieldTextArea
+     */
+    public function setHideTitle($hideTitle)
+    {
+        $this->hideTitle = $hideTitle;
+
+        return $this;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getHideTitle()
+    {
+        return $this->hideTitle;
     }
 }

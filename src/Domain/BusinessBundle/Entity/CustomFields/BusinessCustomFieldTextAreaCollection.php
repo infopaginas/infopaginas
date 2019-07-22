@@ -47,6 +47,7 @@ class BusinessCustomFieldTextAreaCollection implements ChangeStateInterface
      *     inversedBy="textAreaCollection",
      *     cascade={"persist"}
      *     )
+     * @ORM\JoinColumn(name="textAreas", referencedColumnName="id", onDelete="CASCADE")
      */
     protected $textAreas;
 

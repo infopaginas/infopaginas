@@ -48,16 +48,18 @@ class BusinessCustomFieldRadioButtonCollection implements ChangeStateInterface
      *     inversedBy="radioButtonCollection",
      *     cascade={"persist"}
      *     )
+     * @ORM\JoinColumn(name="radioButtons", referencedColumnName="id", onDelete="CASCADE")
      */
     protected $radioButtons;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(name="value", type="string", length=255, nullable=true)
-     * @Assert\NotBlank()
+     * @var BusinessCustomFieldRadioButtonItem
+     * @ORM\ManyToOne(targetEntity="Domain\BusinessBundle\Entity\CustomFields\BusinessCustomFieldRadioButtonItem",
+     *     cascade={"persist"},
+     * )
+     * @ORM\JoinColumn(name="value", referencedColumnName="id", onDelete="CASCADE")
      */
-    private $value;
+    protected $value;
 
     /**
      * @return string
@@ -126,7 +128,7 @@ class BusinessCustomFieldRadioButtonCollection implements ChangeStateInterface
     }
 
     /**
-     * @param string $value
+     * @param BusinessCustomFieldRadioButtonItem $value
      *
      * @return BusinessCustomFieldRadioButtonCollection
      */
@@ -138,7 +140,7 @@ class BusinessCustomFieldRadioButtonCollection implements ChangeStateInterface
     }
 
     /**
-     * @return string
+     * @return BusinessCustomFieldRadioButtonItem
      */
     public function getValue()
     {

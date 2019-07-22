@@ -9,8 +9,10 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Domain\ArticleBundle\Entity\Article;
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\Category;
+use Domain\BusinessBundle\Entity\CustomFields\BusinessCustomFieldCheckbox;
 use Domain\BusinessBundle\Entity\CustomFields\BusinessCustomFieldList;
 use Domain\BusinessBundle\Entity\CustomFields\BusinessCustomFieldRadioButton;
+use Domain\BusinessBundle\Entity\CustomFields\BusinessCustomFieldTextArea;
 use Domain\BusinessBundle\Entity\LandingPageShortCut;
 use Domain\BusinessBundle\Entity\Locality;
 use Domain\BusinessBundle\Entity\PaymentMethod;
@@ -191,14 +193,22 @@ class AdminManager extends DefaultManager
                 }
 
                 //allow delete BusinessCustomFieldList
-                if ($entity instanceof BusinessCustomFieldList && $entity->getListCollection()->IsEmpty()) {
+                if ($entity instanceof BusinessCustomFieldList) {
                     continue;
                 }
 
                 //allow delete BusinessCustomFieldRadioButton
-                if ($entity instanceof BusinessCustomFieldRadioButton
-                    && $entity->getRadioButtonCollection()->IsEmpty()
-                ) {
+                if ($entity instanceof BusinessCustomFieldRadioButton) {
+                    continue;
+                }
+
+                //allow delete BusinessCustomFieldCheckbox
+                if ($entity instanceof BusinessCustomFieldCheckbox) {
+                    continue;
+                }
+
+                //allow delete BusinessCustomFieldTextArea
+                if ($entity instanceof BusinessCustomFieldTextArea) {
                     continue;
                 }
 

@@ -79,8 +79,16 @@ class BusinessCustomFieldRadioButton implements DefaultEntityInterface, Translat
      *      inversedBy="businessCustomFieldRadioButton"
      * )
      * @ORM\JoinColumn(name="section_id", referencedColumnName="id", onDelete="SET NULL")
+     * @Assert\NotBlank()
      */
     protected $section;
+
+    /**
+     * @var bool
+     *
+     * @ORM\Column(name="hide_title", type="boolean", nullable=true)
+     */
+    private $hideTitle;
 
     /**
      * Constructor
@@ -212,5 +220,25 @@ class BusinessCustomFieldRadioButton implements DefaultEntityInterface, Translat
     public function removeRadioButtonCollection(BusinessCustomFieldRadioButtonCollection $radioButtonCollection)
     {
         $this->radioButtonCollection->removeElement($radioButtonCollection);
+    }
+
+    /**
+     * @param boolean $hideTitle
+     *
+     * @return BusinessCustomFieldRadioButton
+     */
+    public function setHideTitle($hideTitle)
+    {
+        $this->hideTitle = $hideTitle;
+
+        return $this;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getHideTitle()
+    {
+        return $this->hideTitle;
     }
 }

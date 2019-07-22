@@ -37,8 +37,9 @@ class BusinessCustomFieldTextAreaCollectionAdmin extends OxaAdmin
     {
         $formMapper
             ->add('textAreas', 'sonata_type_model_list', [
-                'required' => false,
-                'btn_add'  => false,
+                'required'   => true,
+                'btn_add'    => false,
+                'btn_delete' => false,
             ])
             ->add('textAreaValueEn')
             ->add('textAreaValueEs')

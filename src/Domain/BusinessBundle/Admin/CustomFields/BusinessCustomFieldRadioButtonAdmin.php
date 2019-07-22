@@ -2,7 +2,9 @@
 
 namespace Domain\BusinessBundle\Admin\CustomFields;
 
+use Domain\BusinessBundle\Entity\CustomFields\BusinessCustomFieldRadioButtonCollection;
 use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
+use Oxa\Sonata\AdminBundle\Util\Traits\ShowBusinessNamesOnDeleteTrait;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
@@ -11,6 +13,10 @@ use Sonata\AdminBundle\Route\RouteCollection;
 
 class BusinessCustomFieldRadioButtonAdmin extends OxaAdmin
 {
+    use ShowBusinessNamesOnDeleteTrait;
+
+    const MAX_BUSINESS_NAMES_SHOW = 10;
+
     /**
      * @param DatagridMapper $datagridMapper
      */
@@ -19,6 +25,7 @@ class BusinessCustomFieldRadioButtonAdmin extends OxaAdmin
         $datagridMapper
             ->add('id')
             ->add('title')
+            ->add('hideTitle')
             ->add('section')
         ;
     }
@@ -31,6 +38,7 @@ class BusinessCustomFieldRadioButtonAdmin extends OxaAdmin
         $listMapper
             ->add('id')
             ->add('title')
+            ->add('hideTitle')
             ->add('section')
         ;
 
@@ -45,6 +53,7 @@ class BusinessCustomFieldRadioButtonAdmin extends OxaAdmin
         $formMapper
             ->tab('Radio Button')
             ->add('title', null, ['required' => true])
+            ->add('hideTitle')
             ->add('section', null, ['required' => true])
             ->add(
                 'radioButtonItems',
@@ -72,6 +81,7 @@ class BusinessCustomFieldRadioButtonAdmin extends OxaAdmin
         $showMapper
             ->add('id')
             ->add('title')
+            ->add('hideTitle')
             ->add('section')
             ->add('radioButtonItems')
         ;
@@ -86,5 +96,11 @@ class BusinessCustomFieldRadioButtonAdmin extends OxaAdmin
             ->remove('export')
             ->add('move', $this->getRouterIdParameter().'/move/{position}')
         ;
+    }
+
+    private function getCollectionRepository()
+    {
+        return $this->getConfigurationPool()->getContainer()->get('doctrine')
+            ->getRepository(BusinessCustomFieldRadioButtonCollection::class);
     }
 }

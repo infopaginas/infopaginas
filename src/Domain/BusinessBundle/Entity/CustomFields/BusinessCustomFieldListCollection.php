@@ -47,16 +47,18 @@ class BusinessCustomFieldListCollection implements ChangeStateInterface
      *     inversedBy="listCollection",
      *     cascade={"persist"}
      * )
+     * @ORM\JoinColumn(name="lists", referencedColumnName="id", onDelete="CASCADE")
      */
     protected $lists;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(name="value", type="string", length=255, nullable=true)
-     * @Assert\NotBlank()
+     * @var BusinessCustomFieldListItem
+     * @ORM\ManyToOne(targetEntity="Domain\BusinessBundle\Entity\CustomFields\BusinessCustomFieldListItem",
+     *     cascade={"persist"},
+     * )
+     * @ORM\JoinColumn(name="value", referencedColumnName="id", onDelete="CASCADE")
      */
-    private $value;
+    protected $value;
 
     /**
      * @return string
@@ -125,7 +127,7 @@ class BusinessCustomFieldListCollection implements ChangeStateInterface
     }
 
     /**
-     * @param string $value
+     * @param BusinessCustomFieldListItem $value
      *
      * @return BusinessCustomFieldListCollection
      */
@@ -137,7 +139,7 @@ class BusinessCustomFieldListCollection implements ChangeStateInterface
     }
 
     /**
-     * @return string
+     * @return BusinessCustomFieldListItem
      */
     public function getValue()
     {
