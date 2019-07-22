@@ -48,6 +48,7 @@ class BusinessCustomFieldRadioButtonCollection implements ChangeStateInterface
      *     inversedBy="radioButtonCollection",
      *     cascade={"persist"}
      *     )
+     * @ORM\JoinColumn(name="radioButtons", referencedColumnName="id", onDelete="CASCADE")
      */
     protected $radioButtons;
 

@@ -79,8 +79,16 @@ class BusinessCustomFieldList implements DefaultEntityInterface, TranslatableInt
      *      inversedBy="businessCustomFieldList"
      * )
      * @ORM\JoinColumn(name="section_id", referencedColumnName="id", onDelete="SET NULL")
+     * @Assert\NotBlank()
      */
     protected $section;
+
+    /**
+     * @var bool
+     *
+     * @ORM\Column(name="hide_title", type="boolean", nullable=true)
+     */
+    private $hideTitle;
 
     /**
      * Constructor
@@ -212,5 +220,25 @@ class BusinessCustomFieldList implements DefaultEntityInterface, TranslatableInt
     public function removeListCollection(BusinessCustomFieldListCollection $listCollection)
     {
         $this->listCollection->removeElement($listCollection);
+    }
+
+    /**
+     * @param boolean $hideTitle
+     *
+     * @return BusinessCustomFieldList
+     */
+    public function setHideTitle($hideTitle)
+    {
+        $this->hideTitle = $hideTitle;
+
+        return $this;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getHideTitle()
+    {
+        return $this->hideTitle;
     }
 }

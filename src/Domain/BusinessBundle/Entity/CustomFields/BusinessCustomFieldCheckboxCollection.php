@@ -48,6 +48,7 @@ class BusinessCustomFieldCheckboxCollection implements ChangeStateInterface
      *     inversedBy="checkboxCollection",
      *     cascade={"persist"}
      *     )
+     * @ORM\JoinColumn(name="checkboxes", referencedColumnName="id", onDelete="CASCADE")
      */
     protected $checkboxes;
 

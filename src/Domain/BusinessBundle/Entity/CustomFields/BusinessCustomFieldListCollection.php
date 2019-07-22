@@ -47,6 +47,7 @@ class BusinessCustomFieldListCollection implements ChangeStateInterface
      *     inversedBy="listCollection",
      *     cascade={"persist"}
      * )
+     * @ORM\JoinColumn(name="lists", referencedColumnName="id", onDelete="CASCADE")
      */
     protected $lists;
 

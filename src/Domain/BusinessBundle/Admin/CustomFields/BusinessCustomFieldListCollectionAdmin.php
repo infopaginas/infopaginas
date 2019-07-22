@@ -39,7 +39,7 @@ class BusinessCustomFieldListCollectionAdmin extends OxaAdmin
     {
         $formMapper
             ->add('lists', 'sonata_type_model_list', [
-                'required'   => false,
+                'required'   => true,
                 'btn_add'    => false,
                 'btn_delete' => false,
             ])

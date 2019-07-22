@@ -2,6 +2,7 @@
 
 namespace Domain\BusinessBundle\Admin\CustomFields;
 
+use Domain\BusinessBundle\Entity\CustomFields\BusinessCustomFieldRadioButtonCollection;
 use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
@@ -11,6 +12,8 @@ use Sonata\AdminBundle\Route\RouteCollection;
 
 class BusinessCustomFieldRadioButtonAdmin extends OxaAdmin
 {
+    const MAX_BUSINESS_NAMES_SHOW = 10;
+
     /**
      * @param DatagridMapper $datagridMapper
      */
@@ -19,6 +22,7 @@ class BusinessCustomFieldRadioButtonAdmin extends OxaAdmin
         $datagridMapper
             ->add('id')
             ->add('title')
+            ->add('hideTitle')
             ->add('section')
         ;
     }
@@ -31,6 +35,7 @@ class BusinessCustomFieldRadioButtonAdmin extends OxaAdmin
         $listMapper
             ->add('id')
             ->add('title')
+            ->add('hideTitle')
             ->add('section')
         ;
 
@@ -45,6 +50,7 @@ class BusinessCustomFieldRadioButtonAdmin extends OxaAdmin
         $formMapper
             ->tab('Radio Button')
             ->add('title', null, ['required' => true])
+            ->add('hideTitle')
             ->add('section', null, ['required' => true])
             ->add(
                 'radioButtonItems',
@@ -72,6 +78,7 @@ class BusinessCustomFieldRadioButtonAdmin extends OxaAdmin
         $showMapper
             ->add('id')
             ->add('title')
+            ->add('hideTitle')
             ->add('section')
             ->add('radioButtonItems')
         ;
@@ -86,5 +93,32 @@ class BusinessCustomFieldRadioButtonAdmin extends OxaAdmin
             ->remove('export')
             ->add('move', $this->getRouterIdParameter().'/move/{position}')
         ;
+    }
+
+    public function getDependentBusinessNames()
+    {
+        $checkboxCollectionRepository = $this->getConfigurationPool()->getContainer()->get('doctrine')
+            ->getRepository(BusinessCustomFieldRadioButtonCollection::class);
+
+        $businessNames = $checkboxCollectionRepository->getBusinessProfileNames($this->getSubject()->getId());
+
+        return $businessNames;
+    }
+
+    public function getDependentBusinessCount()
+    {
+        $checkboxCollectionRepository = $this->getConfigurationPool()->getContainer()->get('doctrine')
+            ->getRepository(BusinessCustomFieldRadioButtonCollection::class);
+
+        $businessCount = $checkboxCollectionRepository->countBusinesses($this->getSubject()->getId());
+
+        return ($businessCount > self::MAX_BUSINESS_NAMES_SHOW) ? true : false;
+    }
+
+    public function configure()
+    {
+        $this->setPerPageOptions([10, 25, 50, 100, 250, 500]);
+
+        $this->setTemplate('delete', 'OxaSonataAdminBundle:CRUD:custom_field_delete.html.twig');
     }
 }

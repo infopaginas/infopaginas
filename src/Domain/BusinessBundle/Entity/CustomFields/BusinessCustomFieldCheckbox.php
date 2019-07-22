@@ -65,8 +65,16 @@ class BusinessCustomFieldCheckbox implements DefaultEntityInterface, Translatabl
      *      inversedBy="businessCustomFieldCheckbox"
      * )
      * @ORM\JoinColumn(name="section_id", referencedColumnName="id", onDelete="SET NULL")
+     * @Assert\NotBlank()
      */
     protected $section;
+
+    /**
+     * @var bool
+     *
+     * @ORM\Column(name="hide_title", type="boolean", nullable=true)
+     */
+    private $hideTitle;
 
     /**
      * Constructor
@@ -150,5 +158,25 @@ class BusinessCustomFieldCheckbox implements DefaultEntityInterface, Translatabl
         $this->checkboxCollection = $checkboxCollection;
 
         return $this;
+    }
+
+    /**
+     * @param boolean $hideTitle
+     *
+     * @return BusinessCustomFieldCheckbox
+     */
+    public function setHideTitle($hideTitle)
+    {
+        $this->hideTitle = $hideTitle;
+
+        return $this;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getHideTitle()
+    {
+        return $this->hideTitle;
     }
 }

@@ -37,8 +37,9 @@ class BusinessCustomFieldCheckboxCollectionAdmin extends OxaAdmin
     {
         $formMapper
             ->add('checkboxes', 'sonata_type_model_list', [
-                'required' => true,
-                'btn_add'  => false,
+                'required'   => true,
+                'btn_add'    => false,
+                'btn_delete' => false,
             ])
             ->add('isAvailable')
         ;
