@@ -3817,14 +3817,6 @@ a.tag {
   }
 }
 
-.report-problem-content {
-  @media only screen and (max-width: 705px) {
-    top: 40px;
-  }
-
-  padding-bottom: 0;
-}
-
 .modal--opened {
   display: flex;
   opacity: 1;
@@ -6656,6 +6648,16 @@ span.no-js-warning-message {
 
 .modal--opened .modal__content.emergency {
   top: 0;
+}
+
+.modal--opened {
+  .report-problem-content {
+    @media only screen and (max-width: 705px) {
+      top: 40px;
+    }
+
+    padding-bottom: 0;
+  }
 }
 
 #chart_container {
