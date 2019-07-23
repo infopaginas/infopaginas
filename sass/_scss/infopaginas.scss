@@ -3817,6 +3817,14 @@ a.tag {
   }
 }
 
+.report-problem-content {
+  @media only screen and (max-width: 374px) {
+    height: 400px;
+  }
+
+  padding-bottom: 0;
+}
+
 .modal--opened {
   display: flex;
   opacity: 1;
