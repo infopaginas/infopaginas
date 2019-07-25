@@ -37,4 +37,3 @@ define(['jquery', 'spin'], function (global, factory) {
     return mapboxgl;
 
 }));
-//# sourceMappingURL=mapbox-gl.js.map
