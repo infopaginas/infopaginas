@@ -18,7 +18,8 @@ define(['jquery', 'tools/spin', 'jquery-ui', 'main-redesign'], function( $, Spin
         this.html = {
             forms: {
                 resetPasswordRequestFormId: '#forgottenPasswordForm',
-                resetPasswordFormId: '#resetPasswordForm'
+                resetPasswordFormId: '#resetPasswordForm',
+                resetPasswordFormDiv: '.hideFormOnSuccess'
             },
             fields: {
                 emailInputId: '#domain_site_reset_password_request_email',
@@ -27,7 +28,8 @@ define(['jquery', 'tools/spin', 'jquery-ui', 'main-redesign'], function( $, Spin
             },
             buttons: {
                 resetPasswordRequestButtonId: '#resetPasswordRequestButton',
-                resetPasswordButtonId: '#resetPasswordButton'
+                resetPasswordButtonId: '#resetPasswordButton',
+                loginButton: '#login-button'
             },
             resetPasswordRequestSpinContainerId: 'resetPasswordRequestSpinContainer',
             resetPasswordSpinContainerId: 'resetPasswordSpinContainer',
@@ -146,6 +148,8 @@ define(['jquery', 'tools/spin', 'jquery-ui', 'main-redesign'], function( $, Spin
         if( response.success ) {
             if ( activeModal == this.html.forms.resetPasswordFormId ) {
                 $( this.html.fields.resetPasswordMessage ).text( response.message );
+                $( this.html.buttons.loginButton ).removeClass( 'hidden' );
+                $( this.html.forms.resetPasswordFormDiv ).addClass( 'hidden' );
             } else if ( activeModal == this.html.forms.resetPasswordRequestFormId ) {
                 $( this.html.fields.resetPasswordRequestMessage ).text( response.message );
             }
