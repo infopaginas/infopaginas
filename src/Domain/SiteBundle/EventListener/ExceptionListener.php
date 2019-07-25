@@ -12,7 +12,7 @@ class ExceptionListener
 
     public function __construct(Mailer $mailer)
     {
-        $this->mailer    = $mailer;
+        $this->mailer = $mailer;
     }
 
     public function onKernelException(GetResponseForExceptionEvent $exceptionEvent)
