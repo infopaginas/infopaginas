@@ -86,7 +86,6 @@ sonata_media:
             formats:
                 preview:      { width: 223, height: 124, quality: 70}
                 normal:       { width: 892, height: 496, quality: 70}
-
     cdn:
         #define the public base url for the uploaded media
         server:

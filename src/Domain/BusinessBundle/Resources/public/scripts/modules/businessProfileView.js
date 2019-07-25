@@ -44,7 +44,6 @@ define( ['jquery', 'bootstrap', 'business/tools/interactions', 'tools/select', '
         this.handleReviewCreation();
         this.handleBusinessClaim();
         this.handlePrintableCoupons();
-        this.checkUrl();
     };
 
     //build form field id
@@ -209,13 +208,6 @@ define( ['jquery', 'bootstrap', 'business/tools/interactions', 'tools/select', '
 
             event.preventDefault();
         } );
-    };
-
-    businessProfileView.prototype.checkUrl = function() {
-        if( window.location.pathname.indexOf( 'contact-us' ) !== -1 ) {
-            $( this.html.modals.reportProblemModalId ).addClass( 'modal--opened' );
-            $( 'body' ).addClass( 'body--no-scroll' );
-        }
     };
 
     return businessProfileView;

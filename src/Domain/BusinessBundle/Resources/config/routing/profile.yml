@@ -24,10 +24,6 @@ domain_business_profile_view:
     path:     /b/{citySlug}/{slug}
     defaults: { _controller: DomainBusinessBundle:Profile:view }
 
-business_profile_contact_us:
-    path:     /b/{citySlug}/{slug}/contact-us
-    defaults: { _controller: DomainBusinessBundle:Profile:view }
-
 domain_business_get_localities:
     path:     /locality/list/{businessProfileId}
     defaults: { _controller: DomainBusinessBundle:Profile:localityList, businessProfileId: null }
