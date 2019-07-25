@@ -4,10 +4,12 @@ define(['jquery', 'slick'], function( $, Slick ) {
     $( document ).ready(function () {
         var sliderParams = {
             autoplay: true,
-            autoplaySpeed: 500,
+            focusOnSelect: false,
+            autoplaySpeed: 3000,
             touchThreshold: 10,
-            infinite: true,
+            infinite: false,
             swipeToSlide: true,
+            pauseOnDotsHover: true,
             arrows: true,
             dots: true,
             mobileFirst: true,
@@ -48,13 +50,14 @@ define(['jquery', 'slick'], function( $, Slick ) {
 
         var sliderSuggestedParams = {
             autoplay: true,
+            focusOnSelect: false,
             autoplaySpeed: 3000,
             touchThreshold: 10,
-            infinite: true,
+            infinite: false,
             swipeToSlide: true,
+            pauseOnDotsHover: true,
             arrows: true,
             dots: true,
-            focusOnSelect: true,
             mobileFirst: true,
             adaptiveHeight: false,
             variableWidth: false,
@@ -90,6 +93,17 @@ define(['jquery', 'slick'], function( $, Slick ) {
         };
 
         var slider = $( '.slider.suggested-slider' ).slick( sliderSuggestedParams );
+
+        slider.on( 'afterChange', function( event, slick, currentSlide, nextSlide ) {
+            var slidesToShow = document.getElementsByClassName( 'slick-active' ).length - 1;
+            var slidesCount = document.getElementsByClassName( 'slick-slide' ).length;
+
+            if ( currentSlide === ( slidesCount - slidesToShow ) ) {
+                setTimeout( function() {
+                    slider.slick( 'slickGoTo', 0 );
+                }, 6000 );
+            }
+        });
 
         addSuggestedSliderEvent( slider );
     });

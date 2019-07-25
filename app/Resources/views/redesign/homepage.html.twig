@@ -37,7 +37,7 @@
                                             <div class="slider__item homepage-slider__item">
                                                 <a href="{{ absolute_url(path('domain_business_profile_view', { 'citySlug' : carouselBusiness.businessProfile.citySlug, slug: carouselBusiness.businessProfile.slug })) }}" title="{{ carouselBusiness.businessProfile.name }}" class="suggested-link" target="_blank" data-bw-gtm-event-click data-bw-gtm-label="item-suggested::{{ carouselBusiness.businessProfile.name }}::{{ absolute_url(path('domain_business_profile_view', { 'citySlug' : carouselBusiness.businessProfile.citySlug, slug: carouselBusiness.businessProfile.slug })) }}">
                                                     <div class="slide-title">
-                                                        <p>{{ carouselBusiness.businessProfile.name }}</p>
+                                                        <h3>{{ carouselBusiness.businessProfile.name|truncate(suggested_title_max_length) }}</h3>
                                                     </div>
                                                     {% if not carouselBusiness.getVideo() %}
                                                         <div class="">
@@ -76,14 +76,6 @@
                                                     <a class="slide-button get-dir homepage-carousel-action redirect-event button button--small button--featured link-pointer {% if carouselBusiness.businessProfile.isAd %}svm-getdir{% endif %}" data-href="{{ path('domain_search_show_directions', {'slug': carouselBusiness.businessProfile.slug }) }}" data-id="{{ carouselBusiness.businessProfile.id }}" data-latlng="{{ carouselBusiness.businessProfile.latLng }}" data-type="directionButton" data-bw-gtm-event-click data-bw-gtm-label="{% trans %}Directions{% endtrans %}" data-bname="{{ carouselBusiness.businessProfile.name }}">
                                                         <i class="fa fa-location-arrow"></i>
                                                         <span class="hide-mobile">{% trans %}Directions{% endtrans %}</span>
-                                                    </a>
-                                                    <a data-href="{{ path('business_profile_contact_us', {'citySlug': carouselBusiness.businessProfile.citySlug, slug: carouselBusiness.businessProfile.slug }) }}" class="slide-button homepage-carousel-action redirect-event button button--small button--featured link-pointer">
-                                                        <i class="fa fa-envelope"></i>
-                                                        <span class="hide-mobile">{% trans %}Get Quote{% endtrans %}</span>
-                                                    </a>
-                                                    <a data-href="mailto:{{ carouselBusiness.businessProfile.getEmail() }}" class="slide-button homepage-carousel-action redirect-event button button--small button--featured link-pointer" data-id="{{ carouselBusiness.businessProfile.id }}" data-type="emailClick" data-bw-gtm-event-click data-bw-gtm-label="{% trans %}Contact Us{% endtrans %}">
-                                                        <i class="fa fa-at"></i>
-                                                        <span class="hide-mobile">{% trans %}Contact Us{% endtrans %}</span>
                                                     </a>
                                                     {% if carouselBusiness.businessProfile.actionUrl %}
                                                         <a class="homepage-opentable-button slide-button button button--small button--featured redirect-event link-pointer homepage-carousel-action" data-href="{{ carouselBusiness.businessProfile.actionUrl }}" data-id="{{ carouselBusiness.businessProfile.id }}" data-type="webActionButton" data-bw-gtm-event-click data-bw-gtm-label="{{ carouselBusiness.businessProfile.actionUrl }}">
