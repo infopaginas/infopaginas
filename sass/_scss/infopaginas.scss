@@ -2281,6 +2281,17 @@ $thumb-width-mb: 60px;
       margin: 10px 0;
     }
 
+    .homepage-carousel-video {
+      max-width: 222px;
+      margin-left: auto;
+      margin-right: auto;
+
+      .video-js {
+        height: 124px;
+        top: -9px;
+      }
+    }
+
     &.page-section--no-box {
       background: transparent;
       box-shadow: none;
@@ -6422,17 +6433,6 @@ body.results-list.results--map-view {
 
   @media only screen and (max-height: 740px) {
     height: 350px;
-  }
-}
-
-.homepage-carousel-video {
-  max-width: 222px;
-  margin-left: auto;
-  margin-right: auto;
-
-  .video-js {
-    height: 124px;
-    top: -9px;
   }
 }
 
