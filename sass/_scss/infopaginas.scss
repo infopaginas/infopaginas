@@ -6426,6 +6426,10 @@ body.results-list.results--map-view {
 }
 
 .homepage-carousel-video {
+  max-width: 222px;
+  margin-left: auto;
+  margin-right: auto;
+
   .video-js {
     height: 124px;
     top: -9px;

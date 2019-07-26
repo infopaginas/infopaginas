@@ -36,7 +36,7 @@
                                         {% if carouselBusiness.businessProfile.isActive %}
                                             <div class="slider__item homepage-slider__item">
                                                 <a href="{{ absolute_url(path('domain_business_profile_view', { 'citySlug' : carouselBusiness.businessProfile.citySlug, slug: carouselBusiness.businessProfile.slug })) }}" title="{{ carouselBusiness.businessProfile.name }}" class="suggested-link" target="_blank" data-bw-gtm-event-click data-bw-gtm-label="item-suggested::{{ carouselBusiness.businessProfile.name }}::{{ absolute_url(path('domain_business_profile_view', { 'citySlug' : carouselBusiness.businessProfile.citySlug, slug: carouselBusiness.businessProfile.slug })) }}">
-                                                    <div class="slide-title">
+                                                    <div class="slide-title homepage-slide-title">
                                                         <h3>{{ carouselBusiness.businessProfile.name|truncate(suggested_title_max_length) }}</h3>
                                                     </div>
                                                     {% if not carouselBusiness.getVideo() %}
@@ -52,7 +52,7 @@
                                                         </section>
                                                     {% endif %}
                                                 </div>
-                                                <div class="slide-actions">
+                                                <div class="slide-actions homepage-actions">
                                                     {% if not carouselBusiness.businessProfile.phones.empty %}
                                                         {% set hasPhone = true %}
                                                         {% if carouselBusiness.businessProfile.mainPhone %}

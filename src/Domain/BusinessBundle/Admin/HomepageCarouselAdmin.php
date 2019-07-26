@@ -79,7 +79,11 @@ class HomepageCarouselAdmin extends OxaAdmin
                 'btn_delete' => false,
             ])
             ->add('position')
-            ->add('image', 'sonata_type_model_list', ['constraints' => [new NotBlank()]],
+            ->add('image', 'sonata_type_model_list',
+                [
+                    'constraints' => [new NotBlank()],
+                    'sonata_help' => 'homepageCarouselImageRatioHelpMessage',
+                ],
                 [
                     'link_parameters' => [
                         'context'  => OxaMediaInterface::CONTEXT_HOMEPAGE_CAROUSEL,
