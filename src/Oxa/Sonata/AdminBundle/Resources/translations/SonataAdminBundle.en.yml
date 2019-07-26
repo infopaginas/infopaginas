@@ -43,3 +43,4 @@ media_max_size_message: Max file size is
 media_invalid_extension_files_message: Invalid file extension
 businessProfileList.infoMessage: The data seen on this page was updated today at 12:05am. If you want to see real time data, click on the specific business name.
 imageHelpMessage: Use keywords for the picture names. Use underscores between two keywords. Example: Plantas_Ornamentales.png
+homepageCarouselImageRatioHelpMessage: For a better quality image should have aspect ratio about 888:492

@@ -402,8 +402,13 @@
         width: 30px;
         position: relative;
         display: inline-block;
-        left: 5%;
+        left: 8%;
         top: 44%;
+
+        @media only screen and (max-width: 805px) {
+          left: 50%;
+          display: flex;
+        }
       }
 
       .homepage-opentable-button {
@@ -416,14 +421,21 @@
         width: 100%;
       }
     }
+
+    .homepage-actions {
+      max-width: 222px;
+      margin-left: auto;
+      margin-right: auto;
+    }
   }
 
   .homepage-slider__item {
     height: 356px;
     img {
-      top: 27%;
-      max-width: 223px;
-      max-height: 124px;
+      top: 28%;
+      max-width: 222px;
+      max-height: 123px;
+      width: 100%;
     }
   }
 }
@@ -432,4 +444,8 @@
   &.slider {
     height: 298px;
   }
+}
+
+.homepage-slide-title {
+  text-align: center;
 }
