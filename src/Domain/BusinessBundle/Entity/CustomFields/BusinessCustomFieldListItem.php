@@ -9,7 +9,6 @@ use Oxa\Sonata\AdminBundle\Model\ChangeStateInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\ChangeStateTrait;
 use Sonata\TranslationBundle\Model\Gedmo\TranslatableInterface;
 use Sonata\TranslationBundle\Traits\Gedmo\PersonalTranslatable;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 use Gedmo\Mapping\Annotation as Gedmo;
 
@@ -19,7 +18,6 @@ use Gedmo\Mapping\Annotation as Gedmo;
  * @Gedmo\TranslationEntity(
  *     class="Domain\BusinessBundle\Entity\Translation\CustomFields\BusinessCustomFieldListItemTranslation"
  * )
- * @UniqueEntity("title")
  */
 class BusinessCustomFieldListItem implements ChangeStateInterface, TranslatableInterface
 {
@@ -39,7 +37,7 @@ class BusinessCustomFieldListItem implements ChangeStateInterface, TranslatableI
      * @ORM\Column(name="title", type="string", length=100)
      * @Gedmo\Translatable(fallback=true)
      * @Assert\NotBlank()
-     * @Assert\Length(max=100, min=2)
+     * @Assert\Length(max=100, min=1)
      */
     protected $title;
 
