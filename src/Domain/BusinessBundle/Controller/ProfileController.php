@@ -230,10 +230,14 @@ class ProfileController extends Controller
             $suggestedResult = [];
         }
 
-        $sections = $this->getSectionManager()->getCustomFieldsOrderedBySectionPosition(
-            $request->getLocale(),
-            $businessProfile
-        );
+        $sections = [];
+
+        if ($businessProfile->getSubscriptionPlanCode() >= SubscriptionPlanInterface::CODE_PREMIUM_PLATINUM) {
+            $sections = $this->getSectionManager()->getCustomFieldsOrderedBySectionPosition(
+                $request->getLocale(),
+                $businessProfile
+            );
+        }
 
         $contactForm = $this->createForm(
             new FeedbackFormType(),

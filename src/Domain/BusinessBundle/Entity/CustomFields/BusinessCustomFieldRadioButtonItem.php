@@ -9,7 +9,6 @@ use Oxa\Sonata\AdminBundle\Model\ChangeStateInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\ChangeStateTrait;
 use Sonata\TranslationBundle\Model\Gedmo\TranslatableInterface;
 use Sonata\TranslationBundle\Traits\Gedmo\PersonalTranslatable;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 use Gedmo\Mapping\Annotation as Gedmo;
 
@@ -21,7 +20,6 @@ use Gedmo\Mapping\Annotation as Gedmo;
  * @Gedmo\TranslationEntity(
  *     class="Domain\BusinessBundle\Entity\Translation\CustomFields\BusinessCustomFieldRadioButtonItemTranslation"
  * )
- * @UniqueEntity("title")
  */
 class BusinessCustomFieldRadioButtonItem implements ChangeStateInterface, TranslatableInterface
 {
