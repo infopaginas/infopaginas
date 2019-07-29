@@ -11,6 +11,16 @@
 {% block styles %}
     {{ parent() }}
     <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.css" />
+
+    {% if businessProfile.getBackground() and hasSubscription(businessProfile, "CODE_PREMIUM_PLUS") %}
+        <style>
+            @media only screen and (min-width: 805px) {
+                .business-pr-background-{{ businessProfile.id }} {
+                    background-image:  url({% path businessProfile.getBackground(), 'normal' %});
+                }
+            }
+        </style>
+    {% endif %}
 {% endblock %}
 
 {% block bodyClass %}profile{% endblock %}
@@ -18,13 +28,12 @@
 {% block body %}
     <div class="main__container main__container--centered">
         <div class="main" data-bw-gtm-component="business-profile-main">
-            {% if businessProfile.getBackground() and hasSubscription(businessProfile, "CODE_PREMIUM_PLUS")  %}
-                <div class="container profile-header__container" style="margin: 0 auto; background-image:url({% path businessProfile.getBackground(), 'normal' %});">
-                    <div class="shadow-background" style="margin: 0 auto; background-image:url({% path businessProfile.getBackground(), 'reference' %});"></div>
+            {% if businessProfile.getBackground() and hasSubscription(businessProfile, "CODE_PREMIUM_PLUS") %}
+                <div class="container profile-header__container business-pr-background-{{ businessProfile.id }}" >
             {% else %}
                 <div class="container profile-header__container profile-header--no-image {% for category in businessProfile.categories %}category-{{ category.slug }} {% endfor %}">
-                    <div class="shadow-background" style="margin: 0 auto; );"></div>
             {% endif %}
+                <div class="shadow-background business-pr-background-shadow"></div>
                 <header class="page-section profile-header">
                     <div class="item__header container">
                         {% set workingHoursData = get_business_profile_open_status(businessProfile) %}
