@@ -54,7 +54,7 @@ Sort by: Organizar por
 Relevance: Relevancia
 Distance: Distancia
 Get Direction: Obtener Dirección
-Call: Telefono
+Call: Teléfono
 ActionButtonCall: Llamar
 WebsiteButton: Website
 Url: Url
@@ -375,7 +375,7 @@ Log In with Google: Iniciar sesión con Google
 Old password: Contraseña anterior
 New password: Nueva contraseña
 
-Directions: Como&nbsp;Llegar
+Directions: Cómo&nbsp;Llegar
 Displayed Name: Nombre mostrado
 Go to homepage: Ir a la página de inicio
 Personal information: Informacion personal
@@ -703,7 +703,7 @@ emergency.load_more.button: Ver más
 emergency.label.category: Tipo
 emergency.label.address: Address
 emergency.label.working_hours: Horarios
-emergency.label.phone: Telefono
+emergency.label.phone: Teléfono
 emergency.label.payment: Pagar con
 emergency.label.services: Servicios addicionales
 emergency.label.distance: Distancia
