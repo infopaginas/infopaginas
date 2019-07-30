@@ -618,8 +618,8 @@ user:
   auth:
     validation_failure: Error de validación
     registration_success: Successfully registered. Please login with your credentials
-    reset_link_sent: Registrado exitosamente. Inicia sesión con tus credenciales
-    password_updated: Contraseña actualizada correctamente. Ahora puedes iniciar sesión con nuevas credenciales
+    reset_link_sent: Un enlace de cambio de contraseña ha sido enviado a su correo electrónico. Favor de verificar su correo electrónico.
+    password_updated: Contraseña actualizada correctamente. Ahora puedes iniciar sesión con los nuevos credenciales.
 business_profile:
   url:
     invalid: Este valor no es una URL válida.
