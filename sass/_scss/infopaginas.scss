@@ -6784,3 +6784,11 @@ span.no-js-warning-message {
   background-image: url(/redesign/img/infopaginas.svg);
   background-repeat: no-repeat;
 }
+
+.form__actions {
+  .button-centered {
+    &:last-child {
+      margin: 0 auto;
+    }
+  }
+}
