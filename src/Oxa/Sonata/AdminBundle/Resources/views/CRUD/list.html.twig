@@ -97,12 +97,6 @@
                             </div>
                         </div>
 
-                        {% if admin.customMessage is defined %}
-                            <div class="grid-list-info-message">
-                                {{ admin.customMessage|trans({}, 'SonataAdminBundle') }}
-                            </div>
-                        {% endif %}
-
                         {% for paramKey, paramValue in admin.persistentParameters %}
                             <input type="hidden" name="{{ paramKey }}" value="{{ paramValue }}">
                         {% endfor %}

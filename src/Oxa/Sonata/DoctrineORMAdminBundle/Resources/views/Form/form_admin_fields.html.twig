@@ -187,7 +187,7 @@
             {% endif %}
             </label>
             {% if sonata_help is defined %}
-                <div class="help-form-info">{{ sonata_help|trans({}, 'SonataAdminBundle') }}</div>
+                <div class="help-form-info">{{ sonata_help|trans({}, 'SonataAdminBundle')|purify }}</div>
             {% endif %}
         {% endif %}
     {% endspaceless %}
