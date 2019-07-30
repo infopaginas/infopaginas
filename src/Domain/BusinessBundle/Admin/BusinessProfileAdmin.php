@@ -78,7 +78,6 @@ class BusinessProfileAdmin extends OxaAdmin
         'validation_groups' => ['Default', 'Admin']
     ];
 
-    public $customMessage    = 'businessProfileList.infoMessage';
     public $imageHelpMessage = 'imageHelpMessage';
 
     /**
