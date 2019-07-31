@@ -19,7 +19,10 @@ class ExceptionListener
     {
         $exception = $exceptionEvent->getException();
 
-        if (method_exists($exception, 'getStatusCode') && $exception->getStatusCode() >= 400) {
+        if (method_exists($exception, 'getStatusCode') && $exception->getStatusCode() >= 400
+           && $exception->getStatusCode != 404
+           && $exception->getStatusCode != 410
+        ) {
             $date = new \DateTime();
 
             $this->mailer->sendErrorNotification([
