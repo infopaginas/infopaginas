@@ -62,3 +62,13 @@
         </div>
     </div>
 {% endblock %}
+
+{% block scripts %}
+    {{ parent() }}
+
+    <script type="text/javascript">
+        requirejs(['{{ absolute_url(asset("assetic/require_common_js.js")) }}'], function(common) {
+            require(['{{ absolute_url(asset("assetic/js/modules/profile.min.js")) }}'], function() {});
+        });
+    </script>
+{% endblock%}

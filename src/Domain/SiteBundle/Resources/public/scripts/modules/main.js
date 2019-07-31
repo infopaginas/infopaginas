@@ -151,12 +151,14 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
             sortToggle.removeClass( 'active' );
             sort.removeClass( 'sort--on' );
             results.removeClass( 'active__toggle' );
+            searchResultBlock.addClass('results-top');
         } else {
             filterToggle.removeClass( 'active' );
             filter.removeClass( 'filter--on' );
             sortToggle.addClass( 'active' );
             sort.addClass( 'sort--on' );
             results.addClass( 'active__toggle' );
+            searchResultBlock.removeClass('results-top');
         }
     };
 
@@ -169,12 +171,14 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
             filterToggle.removeClass( 'active' );
             filter.removeClass( 'filter--on' );
             results.removeClass( 'active__toggle' );
+            searchResultBlock.addClass('results-top');
         } else {
             sortToggle.removeClass( 'active' );
             sort.removeClass( 'sort--on' );
             filterToggle.addClass( 'active' );
             filter.addClass( 'filter--on' );
             results.addClass( 'active__toggle' );
+            searchResultBlock.removeClass('results-top');
         }
     };
 
@@ -500,6 +504,7 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
     var resultActions = $( '.item__actions' );
     var detailLink = $( '.detail-link' );
     var itemActive = $('.results__item--active');
+    var sortBar = $('.sort-bar');
 
 
 //ad
@@ -539,6 +544,10 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
                 }
             }
         });
+    }
+
+    if (!sortBar.length) {
+        searchResultBlock.addClass('results-top');
     }
 
 //media querie conditional scripts
@@ -752,12 +761,12 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
     });
 
     //slider
-    window.onload = function() {
+    $(document).ready(function () {
         $( document ).trigger( 'resize' );
         $( '.section--slider' ).removeClass( 'hide-before' );
         $( '.suggested-slider-section' ).removeClass( 'hide-before' );
         $( '.panorama-frame' ).removeClass( 'hide-before' );
-    };
+    });
 
     // map controls
     $( document ).on( 'disableAutoSearchInMap', function() {

@@ -27,6 +27,10 @@ services:
         calls:
             - [ setContainer, [ '@service_container' ] ]
 
+    domain_business.manager.section_manager:
+        class: Domain\BusinessBundle\Manager\SectionManager
+        arguments: ['@doctrine.orm.entity_manager']
+
     domain_business.manager.subscription_status_manager:
         class: Domain\BusinessBundle\Manager\SubscriptionStatusManager
 
@@ -286,3 +290,7 @@ services:
     domain_business.manager.business_api_manager:
             class: Domain\BusinessBundle\Manager\BusinessApiManager
             arguments: [ '@service_container' ]
+
+    domain_business.manager.homepage_carousel_manager:
+        class: Domain\BusinessBundle\Manager\HomepageCarouselManager
+        arguments: ['@doctrine.orm.entity_manager']

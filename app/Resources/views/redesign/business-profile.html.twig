@@ -11,6 +11,16 @@
 {% block styles %}
     {{ parent() }}
     <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.css" />
+
+    {% if businessProfile.getBackground() and hasSubscription(businessProfile, "CODE_PREMIUM_PLUS") %}
+        <style>
+            @media only screen and (min-width: 805px) {
+                .business-pr-background-{{ businessProfile.id }} {
+                    background-image:  url({% path businessProfile.getBackground(), 'normal' %});
+                }
+            }
+        </style>
+    {% endif %}
 {% endblock %}
 
 {% block bodyClass %}profile{% endblock %}
@@ -18,13 +28,12 @@
 {% block body %}
     <div class="main__container main__container--centered">
         <div class="main" data-bw-gtm-component="business-profile-main">
-            {% if businessProfile.getBackground() and hasSubscription(businessProfile, "CODE_PREMIUM_PLUS")  %}
-                <div class="container profile-header__container" style="margin: 0 auto; background-image:url({% path businessProfile.getBackground(), 'normal' %});">
-                    <div class="shadow-background" style="margin: 0 auto; background-image:url({% path businessProfile.getBackground(), 'reference' %});"></div>
+            {% if businessProfile.getBackground() and hasSubscription(businessProfile, "CODE_PREMIUM_PLUS") %}
+                <div class="container profile-header__container business-pr-background-{{ businessProfile.id }}" >
             {% else %}
                 <div class="container profile-header__container profile-header--no-image {% for category in businessProfile.categories %}category-{{ category.slug }} {% endfor %}">
-                    <div class="shadow-background" style="margin: 0 auto; );"></div>
             {% endif %}
+                <div class="shadow-background business-pr-background-shadow"></div>
                 <header class="page-section profile-header">
                     <div class="item__header container">
                         {% set workingHoursData = get_business_profile_open_status(businessProfile) %}
@@ -137,6 +146,30 @@
                                         </ul>
                                     </div><!-- highlights__item -->
                                 {% endif %}
+
+                                {% for section, values in sections %}
+                                    {% if values is not empty %}
+                                        <div class="highlights__item">
+                                            <h3>{{ section }}</h3>
+                                            <ul class="section-ul">
+                                                {% for field in values %}
+                                                    <li>
+                                                        {% if field.title %}
+                                                            <span class="section-title">{{ field.title }}: </span>
+                                                        {% endif %}
+                                                        {% if field.value is sameas(true) %}
+                                                            <i class="fa fa-check-square"></i>
+                                                        {% elseif field.value is sameas(false) %}
+                                                            <i class="fa fa-times"></i>
+                                                        {% else %}
+                                                            {{ field.value }}
+                                                        {% endif %}
+                                                    </li>
+                                                {% endfor %}
+                                            </ul>
+                                        </div><!-- highlights__item -->
+                                    {% endif %}
+                                {% endfor %}
                             </div><!-- container -->
                         </section>
 
@@ -214,7 +247,7 @@
                                                     <div class="item__actions">
                                                         <a href="tel:{{ phoneToCall }}" class="slide-button button button--small button--featured hide-desktop phone-call {% if suggestedBusiness.isAd %}svm-callmobile{% endif %}" data-id="{{ suggestedBusiness.id }}" data-type="callMobButton" data-bw-gtm-event-click data-bw-gtm-label="{{ phoneToCall }}" data-bname="{{ suggestedBusiness.name }}">
                                                             <i class="fa fa-phone"></i>
-                                                            {% trans %}Call{% endtrans %}
+                                                            {% trans %}ActionButtonCall{% endtrans %}
                                                         </a>
                                                         <button class="btn btn-default dropdown-call-button phone-call link-pointer {% if suggestedBusiness.isAd %}svm-calldesktop{% endif %} hide-mobile" type="button" data-id="{{ suggestedBusiness.id }}" data-type="callDeskButton" data-bw-gtm-event-click data-bw-gtm-label="{{ phoneToCall }}" data-bname="{{ suggestedBusiness.name }}">
                                                             <i class="fa fa-phone"></i>
@@ -294,6 +327,7 @@
                                 <div id="menu">
                                     {% include ':redesign/blocks/mapbox:mapMenu.html.twig' %}
                                 </div>
+                                {% include ':redesign/blocks/mapbox:navigationButton.html.twig' %}
                                 <div id="map" class="business-map">
                                     {% include ':redesign/blocks/mapbox:mapLogo.html.twig' %}
                                 </div>
@@ -325,7 +359,7 @@
                             <div class="sidebar__section section--social">
                                 <ul>
                                     <li>
-                                        <a class="button" data-show-modal-id="claimBusinessModal" data-bw-gtm-event-click data-bw-gtm-label="{% trans %}claim_business.button{% endtrans %}">
+                                        <a href="#" class="button" data-show-modal-id="claimBusinessModal" data-bw-gtm-event-click data-bw-gtm-label="{% trans %}claim_business.button{% endtrans %}">
                                             <i class="fa fa-suitcase"></i>
                                             <span>{% trans %}claim_business.button{% endtrans %}</span>
                                         </a>
@@ -336,6 +370,18 @@
                             {% include ':redesign/blocks/modals:claim_business.html.twig' %}
                         {% endif %}
 
+                        <div class="sidebar__section section--social">
+                            <ul>
+                                <li>
+                                    <a href="#" class="button" data-show-modal-id="reportProblemModal" data-bw-gtm-event-click data-bw-gtm-label="{% trans %}Report a Problem{% endtrans %}">
+                                        <i class="fa fa-envelope"></i>
+                                        <span>{% trans %}Report a Problem{% endtrans %}</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+
+                        {% include ':redesign/blocks/modals:report_problem.html.twig' %}
                     </aside>
                 </div><!-- container -->
             </div><!-- profile-body_-container -->

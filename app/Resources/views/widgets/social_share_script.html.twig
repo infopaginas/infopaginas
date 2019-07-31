@@ -26,3 +26,17 @@
         fjs.parentNode.insertBefore(js, fjs);
     }(document, 'script', 'facebook-jssdk'));
 </script>
+
+<script>
+    var ua = navigator.userAgent.toLowerCase();
+    var url = '';
+
+    if (ua.indexOf("iphone") > -1 || ua.indexOf("ipad") > -1) {
+        url = 'sms://&body=' + window.location.href;
+    } else {
+        url = 'sms:?body=' + window.location.href;
+    }
+
+    var a = document.getElementById('sms-button');
+    a.href = url;
+</script>

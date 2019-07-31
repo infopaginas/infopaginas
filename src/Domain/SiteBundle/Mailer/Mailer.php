@@ -285,6 +285,52 @@ class Mailer
         }
     }
 
+    public function sendReportProblemEmailMessage($data)
+    {
+        $email   = $this->getConfigService()->getValue(ConfigInterface::REPORT_PROBLEM_EMAIL_ADDRESS);
+        $subject = $this->getConfigService()->getValue(ConfigInterface::REPORT_PROBLEM_EMAIL_SUBJECT);
+
+        if ($email and $subject) {
+            $message = $this->templateEngine->render(
+                'OxaConfigBundle:Fixtures:mail_report_problem.html.twig',
+                $data
+            );
+
+            $this->send($email, $subject, $message, self::CONTENT_TYPE_HTML);
+        }
+    }
+
+    public function sendErrorNotification($data)
+    {
+        $email   = $this->getConfigService()->getValue(ConfigInterface::EXCEPTION_ERROR_EMAIL_ADDRESS);
+        $subject = $this->getConfigService()->getValue(ConfigInterface::EXCEPTION_ERROR_EMAIL_SUBJECT);
+        $message = $this->getConfigService()->getValue(ConfigInterface::EXCEPTION_ERROR_TEMPLATE);
+
+        $emailsTo = explode(',', $email);
+
+        foreach ($emailsTo as $key => $item) {
+            $item = trim($item);
+
+            if (filter_var($item, FILTER_VALIDATE_EMAIL)) {
+                $emailsTo[$key] = $item;
+            } else {
+                unset($emailsTo[$key]);
+            }
+        }
+
+        if ($emailsTo && $subject && $message) {
+            $params = [
+                '{DATE}'       => $data['date'],
+                '{URL}'        => $data['url'],
+                '{ERROR_CODE}' => $data['errorCode'],
+            ];
+
+            $parsedMessage = strtr($message, $params);
+
+            $this->send($emailsTo, $subject, $parsedMessage, self::CONTENT_TYPE_HTML);
+        }
+    }
+
     /**
      * @param User  $user
      * @param array $updateProfileData

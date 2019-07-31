@@ -113,6 +113,7 @@ requirejs.config({
         'tools/directions': '/assetic/js/modules/tools/directions.min',
         'tools/select': '/assetic/js/modules/tools/select.min',
         'tools/mapSpin': '/assetic/js/modules/tools/mapSpin.min',
+        'tools/homepageCarousel': '/assetic/js/modules/tools/homepageCarousel.min',
         'tools/reportTracker': '/assetic/js/modules/tools/reportTracker.min',
         'tools/slider': '/assetic/js/modules/tools/slider.min',
         'tools/redirect': '/assetic/js/modules/tools/redirect.min',

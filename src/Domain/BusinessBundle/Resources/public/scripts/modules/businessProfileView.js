@@ -1,5 +1,5 @@
 define( ['jquery', 'bootstrap', 'business/tools/interactions', 'tools/select', 'slick', 'lightbox', 'tools/slider', 'tools/starRating', 'tools/spin', 'tools/redirect', 'tools/resetPassword',
-    'tools/login', 'tools/registration' ], function( $, bootstrap, interactionsTracker, select, slick, lightbox, slider, rating, Spin, Redirect ) {
+    'tools/login', 'tools/registration', 'profile-redesign' ], function( $, bootstrap, interactionsTracker, select, slick, lightbox, slider, rating, Spin, Redirect ) {
     'use strict';
 
     var businessProfileView = function() {
@@ -17,7 +17,8 @@ define( ['jquery', 'bootstrap', 'business/tools/interactions', 'tools/select', '
             },
             modals: {
                 createReviewModalId: '#writeReviewModal',
-                claimBusinessModalId: '#claimBusinessModal'
+                claimBusinessModalId: '#claimBusinessModal',
+                reportProblemModalId: '#reportProblemModal'
             },
             loadingSpinnerContainerId: 'create-review-spinner-container',
             claimBusinessMessage: '#claimBusinessMessage'

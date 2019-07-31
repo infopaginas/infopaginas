@@ -153,3 +153,83 @@ services:
         arguments: [~, Domain\BusinessBundle\Entity\BusinessProfileExtraSearch, OxaSonataAdminBundle:CRUD]
         tags:
             - {name: sonata.admin, manager_type: orm, group: admin, label: Business Profile Extra Search}
+
+    domain_business.admin.business_custom_fields_section:
+        class: Domain\BusinessBundle\Admin\CustomFields\SectionAdmin
+        arguments: [~, Domain\BusinessBundle\Entity\CustomFields\Section, OxaSonataAdminBundle:CRUD]
+        tags:
+            - {name: sonata.admin, manager_type: orm, group: admin, label: Section}
+        calls:
+            - [setPositionService, ['@pix_sortable_behavior.position']]
+
+    domain_business.admin.business_custom_fields_checkbox:
+        class: Domain\BusinessBundle\Admin\CustomFields\BusinessCustomFieldCheckboxAdmin
+        arguments: [~, Domain\BusinessBundle\Entity\CustomFields\BusinessCustomFieldCheckbox, OxaSonataAdminBundle:CRUD]
+        tags:
+            - {name: sonata.admin, manager_type: orm, group: admin, label: Checkbox}
+
+    domain_business.admin.checkbox_collection:
+        class: Domain\BusinessBundle\Admin\CustomFields\BusinessCustomFieldCheckboxCollectionAdmin
+        arguments: [~, Domain\BusinessBundle\Entity\CustomFields\BusinessCustomFieldCheckboxCollection, OxaSonataAdminBundle:CRUD]
+        tags:
+            - {name: sonata.admin, manager_type: orm, group: admin, label: Checkbox Collection}
+
+    domain_business.admin.business_custom_fields_text_area:
+        class: Domain\BusinessBundle\Admin\CustomFields\BusinessCustomFieldTextAreaAdmin
+        arguments: [~, Domain\BusinessBundle\Entity\CustomFields\BusinessCustomFieldTextArea, OxaSonataAdminBundle:CRUD]
+        tags:
+            - {name: sonata.admin, manager_type: orm, group: admin, label: Text Area}
+
+    domain_business.admin.text_area_collection:
+        class: Domain\BusinessBundle\Admin\CustomFields\BusinessCustomFieldTextAreaCollectionAdmin
+        arguments: [~, Domain\BusinessBundle\Entity\CustomFields\BusinessCustomFieldTextAreaCollection, OxaSonataAdminBundle:CRUD]
+        tags:
+            - {name: sonata.admin, manager_type: orm, group: admin, label: Text Area Collection}
+
+    domain_business.admin.business_custom_fields_radio_button:
+        class: Domain\BusinessBundle\Admin\CustomFields\BusinessCustomFieldRadioButtonAdmin
+        arguments: [~, Domain\BusinessBundle\Entity\CustomFields\BusinessCustomFieldRadioButton, OxaSonataAdminBundle:CRUD]
+        tags:
+            - {name: sonata.admin, manager_type: orm, group: admin, label: Radio Button}
+
+    domain_business.admin.business_custom_fields_radio_button_item:
+        class: Domain\BusinessBundle\Admin\CustomFields\BusinessCustomFieldRadioButtonItemAdmin
+        arguments: [~, Domain\BusinessBundle\Entity\CustomFields\BusinessCustomFieldRadioButtonItem, OxaSonataAdminBundle:CRUD]
+        tags:
+            - {name: sonata.admin, manager_type: orm, group: admin, label: Radio Button item}
+        calls:
+            - [setPositionService, ['@pix_sortable_behavior.position']]
+
+    domain_business.admin.radio_button_collection:
+        class: Domain\BusinessBundle\Admin\CustomFields\BusinessCustomFieldRadioButtonCollectionAdmin
+        arguments: [~, Domain\BusinessBundle\Entity\CustomFields\BusinessCustomFieldRadioButtonCollection, OxaSonataAdminBundle:CRUD]
+        tags:
+            - {name: sonata.admin, manager_type: orm, group: admin, label: Radio Button Collection}
+
+    domain_business.admin.business_custom_fields_list:
+        class: Domain\BusinessBundle\Admin\CustomFields\BusinessCustomFieldListAdmin
+        arguments: [~, Domain\BusinessBundle\Entity\CustomFields\BusinessCustomFieldList, OxaSonataAdminBundle:CRUD]
+        tags:
+            - {name: sonata.admin, manager_type: orm, group: admin, label: List}
+
+    domain_business.admin.business_custom_fields_list_item:
+        class: Domain\BusinessBundle\Admin\CustomFields\BusinessCustomFieldListItemAdmin
+        arguments: [~, Domain\BusinessBundle\Entity\CustomFields\BusinessCustomFieldListItem, OxaSonataAdminBundle:CRUD]
+        tags:
+            - {name: sonata.admin, manager_type: orm, group: admin, label: List item}
+        calls:
+            - [setPositionService, ['@pix_sortable_behavior.position']]
+
+    domain_business.admin.list_collection:
+        class: Domain\BusinessBundle\Admin\CustomFields\BusinessCustomFieldListCollectionAdmin
+        arguments: [~, Domain\BusinessBundle\Entity\CustomFields\BusinessCustomFieldListCollection, OxaSonataAdminBundle:CRUD]
+        tags:
+            - {name: sonata.admin, manager_type: orm, group: admin, label: List Collection}
+
+    domain_business.admin.homepage_carousel:
+        class: Domain\BusinessBundle\Admin\HomepageCarouselAdmin
+        arguments: [~, Domain\BusinessBundle\Entity\HomepageCarousel, DomainBusinessBundle:HomepageCarouselCRUD]
+        tags:
+            - {name: sonata.admin, manager_type: orm, group: admin, label: Homepage Carousel}
+        calls:
+            - [setPositionService, ['@pix_sortable_behavior.position']]

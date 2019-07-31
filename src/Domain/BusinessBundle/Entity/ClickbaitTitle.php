@@ -8,7 +8,6 @@ use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\ChangeStateTrait;
 use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
 use Gedmo\Mapping\Annotation as Gedmo;
-use Oxa\Sonata\MediaBundle\Entity\Media;
 use Sonata\TranslationBundle\Model\Gedmo\TranslatableInterface;
 use Sonata\TranslationBundle\Traits\Gedmo\PersonalTranslatable;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;

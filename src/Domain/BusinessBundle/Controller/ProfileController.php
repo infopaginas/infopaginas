@@ -5,11 +5,15 @@ namespace Domain\BusinessBundle\Controller;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Domain\BusinessBundle\Entity\BusinessProfilePhone;
 use Domain\BusinessBundle\Entity\Category;
+use Domain\BusinessBundle\Entity\CustomFields\BusinessCustomFieldListItem;
+use Domain\BusinessBundle\Entity\CustomFields\BusinessCustomFieldRadioButtonItem;
 use Domain\BusinessBundle\Form\Handler\BusinessClaimFormHandler;
 use Domain\BusinessBundle\Form\Type\BusinessClaimRequestType;
+use Domain\BusinessBundle\Manager\SectionManager;
 use Domain\BusinessBundle\Model\DayOfWeekModel;
 use Domain\BusinessBundle\Model\SubscriptionPlanInterface;
 use Domain\BusinessBundle\Util\BusinessProfileUtil;
+use Domain\PageBundle\Form\Type\FeedbackFormType;
 use Domain\ReportBundle\Model\BusinessOverviewModel;
 use Domain\SearchBundle\Model\Manager\SearchManager;
 use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
@@ -226,20 +230,37 @@ class ProfileController extends Controller
             $suggestedResult = [];
         }
 
+        $sections = [];
+
+        if ($businessProfile->getSubscriptionPlanCode() >= SubscriptionPlanInterface::CODE_PREMIUM_PLATINUM) {
+            $sections = $this->getSectionManager()->getCustomFieldsOrderedBySectionPosition(
+                $request->getLocale(),
+                $businessProfile
+            );
+        }
+
+        $contactForm = $this->createForm(
+            new FeedbackFormType(),
+            ['businessName' => $businessProfile->getName()],
+            ['isReportProblem' => true]
+        );
+
         return $this->render(':redesign:business-profile.html.twig', [
-            'businessProfile' => $businessProfile,
-            'seoData'         => $businessProfile,
-            'seoTags'         => BusinessProfileUtil::getSeoTags(BusinessProfileUtil::SEO_CLASS_PREFIX_PROFILE),
-            'photos'          => $photos,
-            'banners'         => $banners,
-            'dcDataDTO'       => $dcDataDTO,
-            'schemaJsonLD'    => $schema,
-            'markers'         => $locationMarkers,
-            'showClaimButton' => $showClaimBlock,
+            'businessProfile'   => $businessProfile,
+            'seoData'           => $businessProfile,
+            'seoTags'           => BusinessProfileUtil::getSeoTags(BusinessProfileUtil::SEO_CLASS_PREFIX_PROFILE),
+            'photos'            => $photos,
+            'banners'           => $banners,
+            'dcDataDTO'         => $dcDataDTO,
+            'schemaJsonLD'      => $schema,
+            'markers'           => $locationMarkers,
+            'showClaimButton'   => $showClaimBlock,
             'claimBusinessForm' => $claimBusinessForm,
-            'locale'          => $locale,
-            'trackingParams'  => $trackingParams,
-            'suggestedResult' => $suggestedResult,
+            'locale'            => $locale,
+            'trackingParams'    => $trackingParams,
+            'suggestedResult'   => $suggestedResult,
+            'sections'          => $sections,
+            'contactForm'       => $contactForm->createView(),
         ]);
     }
 
@@ -350,6 +371,44 @@ class ProfileController extends Controller
         );
 
         return new JsonResponse($results);
+    }
+
+    /**
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
+    public function radioValueListAction(Request $request)
+    {
+        $radioButtonValues = $this->getBusinessProfilesManager()->getCollectionItemValuesByIds(
+            $request->request->get('ids'),
+            BusinessCustomFieldRadioButtonItem::class
+        );
+
+        return new JsonResponse($radioButtonValues);
+    }
+
+    /**
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
+    public function listValueListAction(Request $request)
+    {
+        $listValues = $this->getBusinessProfilesManager()->getCollectionItemValuesByIds(
+            $request->request->get('ids'),
+            BusinessCustomFieldListItem::class
+        );
+
+        return new JsonResponse($listValues);
+    }
+
+    /**
+     * @return SectionManager
+     */
+    private function getSectionManager() : SectionManager
+    {
+        return $this->get('domain_business.manager.section_manager');
     }
 
     /**

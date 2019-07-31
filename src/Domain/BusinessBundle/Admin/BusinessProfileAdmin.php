@@ -78,7 +78,6 @@ class BusinessProfileAdmin extends OxaAdmin
         'validation_groups' => ['Default', 'Admin']
     ];
 
-    public $customMessage    = 'businessProfileList.infoMessage';
     public $imageHelpMessage = 'imageHelpMessage';
 
     /**
@@ -242,7 +241,8 @@ class BusinessProfileAdmin extends OxaAdmin
             ->add('name', null, [
                 'show_filter' => true,
             ])
-            ->add('city');
+            ->add('city')
+            ->add('email');
 
         foreach ($this->getOverviewFilters() as $overviewFilter) {
             $datagridMapper->add($overviewFilter, 'doctrine_orm_callback',
@@ -739,6 +739,9 @@ class BusinessProfileAdmin extends OxaAdmin
         $formMapper
             ->tab('Media')
                 ->with('Social Networks')
+                    ->add('linkedInURL', UrlType::class, [
+                        'required' => false,
+                    ])
                     ->add('twitterURL', UrlType::class, [
                         'required' => false,
                     ])
@@ -914,6 +917,73 @@ class BusinessProfileAdmin extends OxaAdmin
                 ->end()
             ;
         }
+
+        if ($businessProfile->getId() and $subscriptionPlanCode >= SubscriptionPlanInterface::CODE_PREMIUM_PLATINUM) {
+            $formMapper
+                ->tab('More Info')
+                    ->with('Checkboxes')
+                        ->add(
+                            'checkboxCollection',
+                            'sonata_type_collection',
+                            [
+                                'by_reference' => false,
+                                'required'     => false,
+                            ],
+                            [
+                                'edit'         => 'inline',
+                                'delete_empty' => false,
+                                'inline'       => 'table',
+                            ]
+                        )
+                    ->end()
+                    ->with('Text Areas')
+                        ->add(
+                            'textAreaCollection',
+                            'sonata_type_collection',
+                            [
+                                'by_reference' => false,
+                                'required'     => false,
+                            ],
+                            [
+                                'edit'         => 'inline',
+                                'delete_empty' => false,
+                                'inline'       => 'table',
+                            ]
+                        )
+                    ->end()
+                    ->with('Radio Buttons')
+                        ->add(
+                            'radioButtonCollection',
+                            'sonata_type_collection',
+                            [
+                                'by_reference' => false,
+                                'required'     => false,
+                            ],
+                            [
+                                'edit'         => 'inline',
+                                'delete_empty' => false,
+                                'inline'       => 'table',
+                            ]
+                        )
+                    ->end()
+                    ->with('Lists')
+                        ->add(
+                            'listCollection',
+                            'sonata_type_collection',
+                            [
+                                'by_reference' => false,
+                                'required'     => false,
+                            ],
+                            [
+                                'edit'         => 'inline',
+                                'delete_empty' => false,
+                                'inline'       => 'table',
+                            ]
+                        )
+                    ->end()
+                ->end()
+            ;
+        }
     }
 
     /**
@@ -1061,6 +1131,7 @@ class BusinessProfileAdmin extends OxaAdmin
         $showMapper
             ->tab('Media')
                 ->with('Social Networks')
+                    ->add('linkedInURL')
                     ->add('twitterURL')
                     ->add('facebookURL')
                     ->add('googleURL')

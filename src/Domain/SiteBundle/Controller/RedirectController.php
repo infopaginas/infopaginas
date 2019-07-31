@@ -64,6 +64,17 @@ class RedirectController extends Controller
         }
     }
 
+    public function businessAction($localitySlug)
+    {
+        $locality = $this->get('domain_search.manager.search')->searchCatalogLocalityByName($localitySlug);
+
+        if ($locality) {
+            return $this->handleRedirectToCatalog($locality->getSlug());
+        } else {
+            return $this->handleRedirectToCatalog(null);
+        }
+    }
+
     /**
      * @return Response
      */
@@ -156,5 +167,13 @@ class RedirectController extends Controller
         );
 
         return $redirectUrl;
+    }
+
+    private function handleRedirectToCatalog($locality)
+    {
+        return $this->redirectToRoute(
+            'domain_search_catalog',
+            ['localitySlug' => $locality]
+        );
     }
 }

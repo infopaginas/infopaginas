@@ -37,6 +37,8 @@ We can find everything!: ¡Podemos encontrar todo!
 Search whatever you need and find it instantly: Busca lo que necesites y lo encuentras al instante
 homepage.search_block.title: Encuentra lo que buscas al instante!
 What do you want to find?: ¿Qué está buscando?
+Report a Problem: Reporta un Problema
+Book Now: Reservar ahora
 I wanted you to see this site: Quería que vieras este sitio
 Search by: Buscar por
 business name: nombre de la empresa
@@ -52,7 +54,7 @@ Sort by: Organizar por
 Relevance: Relevancia
 Distance: Distancia
 Get Direction: Obtener Dirección
-Call: Telefono
+Call: Teléfono
 ActionButtonCall: Llamar
 WebsiteButton: Website
 Url: Url
@@ -199,6 +201,13 @@ Select Neighborhoods: Seleccione Vecindarios
 Select country: Seleccione el país
 Locality: Localidad
 Search: Buscar
+
+Search Box: Caja de búsqeda
+Close Search: Cerrar búsqueda
+Navigation Toggle: Palanca de navegación
+Navigation Close: Navegación Cerrar
+Search Location: Buscar Ubicación
+Remove Compare Item: Eliminar artículo de comparación
 
 Solicitors: Solicitantes
 Builders: Contratistas
@@ -350,6 +359,8 @@ Share on Facebook: Compartir en Facebook
 Share on Twitter: Compartir en Twitter
 Share on WhatsApp: Compartir en WhatsApp
 Share on Email: Compartir en Email
+Share on Sms: Compartir en Sms
+Open navigation app: Abrir la aplicación de navegación
 Business categories: Categorías de negocios
 Forgot password?: Se te olvidó tu contraseña?
 New to Infopáginas: Nuevo en Infopáginas
@@ -364,7 +375,7 @@ Log In with Google: Iniciar sesión con Google
 Old password: Contraseña anterior
 New password: Nueva contraseña
 
-Directions: Como&nbsp;Llegar
+Directions: Cómo&nbsp;Llegar
 Displayed Name: Nombre mostrado
 Go to homepage: Ir a la página de inicio
 Personal information: Informacion personal
@@ -503,6 +514,7 @@ interaction_report.button.add_compare: Añadir a Comparar
 interaction_report.button.remove_compare: Eliminar de Comparar
 interaction_report.share.facebook: Compartir Facebook
 interaction_report.share.twitter: Compartir Twitter
+interaction_report.visit.linked_in: Visita LinkedIn
 interaction_report.visit.facebook: Visita Facebook
 interaction_report.visit.twitter: Visita Twitter
 interaction_report.visit.google: Visite Google
@@ -595,6 +607,7 @@ form.collectionWorkingHours.blank: El tiempo no debe estar en blanco
 business_profile.category.required: Este campo es obligatorio
 business_profile.category.max: Este campo debe contener 3 elementos o menos
 business_profile.category.free_hint: Categorías (Máximo 3 categorías)
+business_custom_field_item.exist: Ya utilizado en los perfiles de negocios %businessProfiles%
 
 # reset password form
 user:
@@ -605,8 +618,8 @@ user:
   auth:
     validation_failure: Error de validación
     registration_success: Successfully registered. Please login with your credentials
-    reset_link_sent: Registrado exitosamente. Inicia sesión con tus credenciales
-    password_updated: Contraseña actualizada correctamente. Ahora puedes iniciar sesión con nuevas credenciales
+    reset_link_sent: Un enlace de cambio de contraseña ha sido enviado a su correo electrónico. Favor de verificar su correo electrónico.
+    password_updated: Contraseña actualizada correctamente. Ahora puedes iniciar sesión con los nuevos credenciales.
 business_profile:
   url:
     invalid: Este valor no es una URL válida.
@@ -673,7 +686,7 @@ contact:
       create_business: Quiero crear un perfil de negocio.
       other: Otro
     validation_failure: Error de validación.
-    send_success: Su mensaje fue enviado.
+    send_success: Gracias, su mensaje ha sido enviado exitosamente.
     instant_email: E-mail instantáneo
 
 business_profile.phone.tooltip:
@@ -690,7 +703,7 @@ emergency.load_more.button: Ver más
 emergency.label.category: Tipo
 emergency.label.address: Address
 emergency.label.working_hours: Horarios
-emergency.label.phone: Telefono
+emergency.label.phone: Teléfono
 emergency.label.payment: Pagar con
 emergency.label.services: Servicios addicionales
 emergency.label.distance: Distancia

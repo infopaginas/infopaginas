@@ -3,6 +3,7 @@
 namespace Domain\SiteBundle\Controller;
 
 use AntiMattr\GoogleBundle\Analytics\CustomVariable;
+use Domain\BusinessBundle\Manager\HomepageCarouselManager;
 use Domain\BusinessBundle\Manager\LandingPageShortCutManager;
 use Domain\PageBundle\Model\PageInterface;
 use Domain\SiteBundle\Form\Type\RegistrationType;
@@ -14,7 +15,6 @@ use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Domain\BannerBundle\Model\TypeInterface;
-use Symfony\Component\Security\Core\Role\RoleInterface;
 
 /**
  * Class HomeController
@@ -49,17 +49,23 @@ class HomeController extends Controller
         $landingPage = $this->get('domain_page.manager.page')->getPageByCode(PageInterface::CODE_LANDING);
         $seoData     = $this->get('domain_page.manager.page')->getPageSeoData($landingPage);
 
+        $homepageCarouselManager = $this->getHomepageCarouselManager();
+        $carouselBusinesses = $homepageCarouselManager->getCarouselBusinessesSortedByPosition();
+        $showCarousel = $homepageCarouselManager->isShowCarousel($carouselBusinesses);
+
         return $this->render(
             ':redesign:homepage.html.twig',
             [
-                'banners'       => $banners,
-                'articles'      => $articles,
-                'locale'        => $locale,
-                'schemaJsonLD'  => $schema,
-                'hideHeaderSearch' => true,
-                'landingPage'   => $landingPage,
-                'seoData'       => $seoData,
-                'page'          => $landingPage,
+                'banners'            => $banners,
+                'articles'           => $articles,
+                'locale'             => $locale,
+                'schemaJsonLD'       => $schema,
+                'hideHeaderSearch'   => true,
+                'landingPage'        => $landingPage,
+                'seoData'            => $seoData,
+                'page'               => $landingPage,
+                'carouselBusinesses' => $carouselBusinesses,
+                'showCarousel'       => $showCarousel,
             ]
         );
     }
@@ -107,5 +113,13 @@ class HomeController extends Controller
                 'resetPasswordForm'        => $resetPasswordForm->createView(),
             ]
         );
+    }
+
+    /**
+     * @return HomepageCarouselManager
+     */
+    protected function getHomepageCarouselManager() : HomepageCarouselManager
+    {
+        return $this->get('domain_business.manager.homepage_carousel_manager');
     }
 }

@@ -6,6 +6,7 @@ use Domain\ArticleBundle\Entity\Article;
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\Category;
 use Domain\BusinessBundle\Model\DataType\ReviewsResultsDTO;
+use Domain\BusinessBundle\Util\JsonUtil;
 use Domain\PageBundle\Entity\Page;
 use Domain\SearchBundle\Model\DataType\DCDataDTO;
 use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
@@ -133,7 +134,7 @@ class ArticleManager extends Manager
             $schema[] = $this->buildBaseArticleSchema($article);
         }
 
-        return json_encode($schema, JSON_UNESCAPED_SLASHES);
+        return JsonUtil::jsonHtmlEntitiesEncode(JsonUtil::htmlEntitiesEncode($schema));
     }
 
     /**

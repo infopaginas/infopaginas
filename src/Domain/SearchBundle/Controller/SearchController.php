@@ -99,9 +99,10 @@ class SearchController extends Controller
                 $trackingParams
             );
         } else {
-            $searchResultsDTO = null;
-            $dcDataDTO        = null;
-            $locationMarkers  = $this->getBusinessProfileManager()->getDefaultLocationMarkers();
+            return $this->forward(
+                'DomainSiteBundle:Redirect:business',
+                ['localitySlug' => $request->query->get('geo')]
+            );
         }
 
         $bannerManager  = $this->get('domain_banner.manager.banner');

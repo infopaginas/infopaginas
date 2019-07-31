@@ -1043,6 +1043,11 @@ select {
   }
 }
 
+.no-page-scroll {
+  overflow-x: hidden;
+  overflow-y: hidden;
+}
+
 //main container
 $bps-column-number: 7;
 $bps-border: 1px dotted #bcbcbc;
@@ -1454,17 +1459,18 @@ $bps-border: 1px dotted #bcbcbc;
 
 .main {
   height: auto;
-  padding-top: $padding-mb;
+  padding-top: 25px;
   padding-bottom: 30px;
   transition-duration: .4s;
   transition-property: width;
   transition-timing-function: ease-in-out;
 
   @media only screen and (min-width: 805px) {
-    height: calc(100vh - 45px);
+    height: calc(100vh - 132px);
     overflow-y: auto;
-    padding-top: 40px;
     width: 60%;
+    top: 86px;
+    padding-top: 0px;
 
     &.main-results-resize {
       padding-top: 52px;
@@ -1987,6 +1993,16 @@ $thumb-width-mb: 60px;
   }
 }
 
+.directions-map {
+  height: calc(100vh - 45px);
+  width: 100%;
+
+  @media only screen and (max-width: 804px) {
+    height: calc(100vh - 45px);
+    width: 100%;
+  }
+}
+
 .business-map {
   position: relative;
 }
@@ -2265,6 +2281,17 @@ $thumb-width-mb: 60px;
       margin: 10px 0;
     }
 
+    .homepage-carousel-video {
+      max-width: 222px;
+      margin-left: auto;
+      margin-right: auto;
+
+      .video-js {
+        height: 124px;
+        top: -9px;
+      }
+    }
+
     &.page-section--no-box {
       background: transparent;
       box-shadow: none;
@@ -2391,6 +2418,9 @@ $thumb-width-mb: 60px;
     list-style-type: none;
     margin: 0;
     padding: 0;
+  }
+  .section-ul {
+    list-style-type: disc;
   }
 
   @media only screen and (min-width: 805px) {
@@ -2762,13 +2792,24 @@ $thumb-width-mb: 60px;
 .map-socials {
   position: absolute;
   display: block;
-  right: 10px;
-  z-index: 99999;
+  right: 0px;
+  z-index: 1;
   overflow: hidden;
+
+  .sidebar__section {
+    margin: 0;
+
+    @media only screen and (min-width: 805px) {
+      &:first-child {
+        margin-top: 15px;
+      }
+    }
+  }
 }
 
 .social-medias .button {
   width: 36px;
+  border-radius: 0;
 }
 
 .social-medias .button span {
@@ -2781,7 +2822,9 @@ $thumb-width-mb: 60px;
 }
 
 .social-medias li {
-  margin: 2px;
+  @media only screen and (min-width: 805px) {
+    margin: 2px;
+  }
 }
 
 .section--social {
@@ -2832,8 +2875,16 @@ $thumb-width-mb: 60px;
     }
   }
 
+  .button-share--sms {
+    background: $sms;
+    &:hover {
+      background: darken($sms, 10%) !important;
+      color: $white !important;
+    }
+  }
+
   a.button-share--twitter[data-href], a.button-share--facebook[data-href],
-  a.button-share--whatsapp[data-href], a.button-share--email a.button[data-show-modal-id], {
+  a.button-share--whatsapp, a.button-share--email, a.button-share--sms, a.button[data-show-modal-id] {
     cursor: pointer;
   }
 }
@@ -3799,6 +3850,37 @@ a.tag {
 
 .modal__section {
   margin-bottom: 20px;
+}
+
+.report-problem-form {
+  .form__actions {
+    background: #f0f1f3;
+  }
+
+  .page-section {
+    background: none;
+  }
+
+  .form__section {
+    margin-bottom: 0px;
+    padding: 7px;
+  }
+
+  .feedback-business-row {
+    display: none;
+  }
+
+  label {
+    z-index: 1;
+  }
+
+  .language-title {
+    margin-bottom: 10px;
+  }
+
+  #feedbackButton {
+    margin: auto;
+  }
 }
 
 #emergency-pop-up .modal__content {
@@ -4882,7 +4964,6 @@ li.active {
   }
 
   li {
-    display: inline-block;
     padding-bottom: .3em;
 
     &:last-child {
@@ -5052,7 +5133,7 @@ li.active {
     margin-bottom: 0;
     @media only screen and (min-width: 805px) {
       position: fixed;
-      width: 60%;
+      width: 59%;
     }
   }
 
@@ -5097,7 +5178,7 @@ li.active {
   .pagination {
     @media only screen and (min-width: 805px) {
       position: fixed;
-      width: 25%;
+      width: 24%;
       min-width: 300px;;
     }
   }
@@ -5940,28 +6021,33 @@ input[type='radio'], input[type='checkbox'] {
   }
 }
 
+@media only screen and (min-width: 805px) {
+  .category-educacion {background-image: url('../redesign/img/category-backgrounds/bg_educacion.jpg')}
+  .category-computadoras-comunicaciones-y-electronica {background-image: url('../redesign/img/category-backgrounds/bg_computadora.jpg')}
+  .category-belleza-spa-y-cuidado-personal {background-image: url('../redesign/img/category-backgrounds/bg_belleza.jpg')}
+  .category-viajes-y-hospederias {background-image: url('../redesign/img/category-backgrounds/bg_viajes.jpg')}
+  .category-gobierno-servicios-publicos-y-medioambiente {background-image: url('../redesign/img/category-backgrounds/bg_gobierno.jpg')}
+  .category-restaurantes-comida-y-bebida {background-image: url('../redesign/img/category-backgrounds/bg_food_restaurantes.jpg')}
+  .category-servicios-profesionales-y-a-negocios {background-image: url('../redesign/img/category-backgrounds/bg_serviciosynegocios.jpg')}
+  .category-agricultura-pesca-y-forestal {background-image: url('../redesign/img/category-backgrounds/bg_agricultura.jpg')}
+  .category-autos-carros-camiones-y-motoras {background-image: url('../redesign/img/category-backgrounds/bg_auto.jpg')}
+  .category-bienes-raices-y-seguros {background-image: url('../redesign/img/category-backgrounds/bg_bienesraices.jpg')}
+  .category-casa-y-hogar {background-image: url('../redesign/img/category-backgrounds/bg_hogar.jpg')}
+  .category-comunidades-y-familia {background-image: url('../redesign/img/category-backgrounds/bg_familia.jpg')}
+  .category-construccion-y-reparaciones {background-image: url('../redesign/img/category-backgrounds/bg_contruction.jpg')}
+  .category-entretenimiento-y-medios {background-image: url('../redesign/img/category-backgrounds/bg_entretenimiento.jpg')}
+  .category-finanzas {background-image: url('../redesign/img/category-backgrounds/bg_finance.jpg')}
+  .category-recreacion-y-deportes {background-image: url('../redesign/img/category-backgrounds/bg_deportes.jpg')}
+  .category-salud-medicina-y-bienestar {background-image: url('../redesign/img/category-backgrounds/bg_salud.jpg')}
+  .category-servicios-y-efectos-industriales {background-image: url('../redesign/img/category-backgrounds/bg_industriales.jpg')}
+  .category-shopping-y-tiendas-de-especialidad {background-image: url('../redesign/img/category-backgrounds/bg_shopping.jpg')}
+  .category-transportacion {background-image: url('../redesign/img/category-backgrounds/bg_transportacion.jpg')}
+  .category-cementerios-y-funerarias {background-image: url('../redesign/img/category-backgrounds/bg_cementery.jpg')}
+}
 
-.category-educacion {background-image: url('../redesign/img/category-backgrounds/bg_educacion.jpg')}
-.category-computadoras-comunicaciones-y-electronica {background-image: url('../redesign/img/category-backgrounds/bg_computadora.jpg')}
-.category-belleza-spa-y-cuidado-personal {background-image: url('../redesign/img/category-backgrounds/bg_belleza.jpg')}
-.category-viajes-y-hospederias {background-image: url('../redesign/img/category-backgrounds/bg_viajes.jpg')}
-.category-gobierno-servicios-publicos-y-medioambiente {background-image: url('../redesign/img/category-backgrounds/bg_gobierno.jpg')}
-.category-restaurantes-comida-y-bebida {background-image: url('../redesign/img/category-backgrounds/bg_food_restaurantes.jpg')}
-.category-servicios-profesionales-y-a-negocios {background-image: url('../redesign/img/category-backgrounds/bg_serviciosynegocios.jpg')}
-.category-agricultura-pesca-y-forestal {background-image: url('../redesign/img/category-backgrounds/bg_agricultura.jpg')}
-.category-autos-carros-camiones-y-motoras {background-image: url('../redesign/img/category-backgrounds/bg_auto.jpg')}
-.category-bienes-raices-y-seguros {background-image: url('../redesign/img/category-backgrounds/bg_bienesraices.jpg')}
-.category-casa-y-hogar {background-image: url('../redesign/img/category-backgrounds/bg_hogar.jpg')}
-.category-comunidades-y-familia {background-image: url('../redesign/img/category-backgrounds/bg_familia.jpg')}
-.category-construccion-y-reparaciones {background-image: url('../redesign/img/category-backgrounds/bg_contruction.jpg')}
-.category-entretenimiento-y-medios {background-image: url('../redesign/img/category-backgrounds/bg_entretenimiento.jpg')}
-.category-finanzas {background-image: url('../redesign/img/category-backgrounds/bg_finance.jpg')}
-.category-recreacion-y-deportes {background-image: url('../redesign/img/category-backgrounds/bg_deportes.jpg')}
-.category-salud-medicina-y-bienestar {background-image: url('../redesign/img/category-backgrounds/bg_salud.jpg')}
-.category-servicios-y-efectos-industriales {background-image: url('../redesign/img/category-backgrounds/bg_industriales.jpg')}
-.category-shopping-y-tiendas-de-especialidad {background-image: url('../redesign/img/category-backgrounds/bg_shopping.jpg')}
-.category-transportacion {background-image: url('../redesign/img/category-backgrounds/bg_transportacion.jpg')}
-.category-cementerios-y-funerarias {background-image: url('../redesign/img/category-backgrounds/bg_cementery.jpg')}
+.business-pr-background-shadow {
+  margin: 0 auto;
+}
 
 .results__item--super_vm {
   background: lighten($blue, 50%);
@@ -6036,6 +6122,10 @@ input[type='radio'], input[type='checkbox'] {
   }
 }
 
+.results-top {
+  top: 53px;
+}
+
 #searchResults {
   &.main-results-resize {
     .att-icons {
@@ -6076,6 +6166,10 @@ input[type='radio'], input[type='checkbox'] {
     }
 
     padding-bottom: 0;
+  }
+
+  @media only screen and (min-width: 805px) {
+    position: relative;
   }
 }
 
@@ -6564,6 +6658,16 @@ span.no-js-warning-message {
   top: 0;
 }
 
+.modal--opened {
+  .report-problem-content {
+    @media only screen and (max-width: 705px) {
+      top: 40px;
+    }
+
+    padding-bottom: 0;
+  }
+}
+
 #chart_container {
   padding-bottom: 60px;
 }
@@ -6666,5 +6770,25 @@ span.no-js-warning-message {
   }
   40%, 100% {
     transform: rotateZ(0);
+  }
+}
+
+.section-title {
+  font-weight: 600;
+}
+
+.success-logo {
+  height: 120px;
+  width: 120px;
+  margin: 10px auto;
+  background-image: url(/redesign/img/infopaginas.svg);
+  background-repeat: no-repeat;
+}
+
+.form__actions {
+  .button-centered {
+    &:last-child {
+      margin: 0 auto;
+    }
   }
 }

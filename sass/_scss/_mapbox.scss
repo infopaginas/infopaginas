@@ -36,7 +36,7 @@
   left: 10px;
   bottom: 10px;
   text-indent: -9999px;
-  z-index: 99;
+  z-index: 4;
   overflow: hidden;
   background-image: url(/redesign/img/infopaginas.svg);
   background-repeat: no-repeat;
@@ -51,7 +51,7 @@
   left: 52px;
   bottom: 0px;
   text-indent: -9999px;
-  z-index: 99;
+  z-index: 4;
   overflow: hidden;
   background-image: url(/redesign/img/infopaginas-iso.svg);
   background-repeat: no-repeat;
@@ -68,6 +68,24 @@
 
 .default-menu {
   top: 10px;
+}
+
+.navigation-button {
+  left: 160px;
+  margin-left: 10px;
+  background-image: url(/redesign/img/navigation-button.png);
+  width: 35px;
+  z-index: 1;
+  position: absolute;
+  height: 37px;
+  background-size: 35px 37px;
+}
+
+.directions-navigation-button {
+  .navigation-button {
+    top: 87px;
+    left: 0;
+  }
 }
 
 #directions-menu {
@@ -87,7 +105,7 @@
 
 @media (max-width: 804px) {
   #directions-menu {
-    top: 40px;
+    top: 41px;
   }
 }
 

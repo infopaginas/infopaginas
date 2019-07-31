@@ -37,6 +37,8 @@ We can find everything!: We can find everything!
 Search whatever you need and find it instantly: Search whatever you need and find it instantly
 homepage.search_block.title: Find what you are looking for instantly!
 What do you want to find?: What do you want to find?
+Report a Problem: Report a Problem
+Book Now: Book Now
 I wanted you to see this site: I wanted you to see this site
 Search by: Search by
 business name: business name
@@ -200,6 +202,13 @@ Select country: Select country
 Locality: Locality
 Search: Search
 
+Search Box: Search Box
+Close Search: Close Search
+Navigation Toggle: Navigation Toggle
+Navigation Close: Navigation Close
+Search Location: Search Location
+Remove Compare Item: Remove Compare Item
+
 Solicitors: Solicitors
 Builders: Builders
 Pharmacies: Pharmacies
@@ -350,6 +359,8 @@ Share on Facebook: Share on Facebook
 Share on Twitter: Share on Twitter
 Share on WhatsApp: Share on WhatsApp
 Share on Email: Share on Email
+Share on Sms: Share on Sms
+Open navigation app: Open navigation app
 Business categories: Business categories
 Forgot password?: Forgot password?
 New to Infopáginas: New to Infopáginas
@@ -503,6 +514,7 @@ interaction_report.button.add_compare: Add to Compare
 interaction_report.button.remove_compare: Remove from Compare
 interaction_report.share.facebook: Share Facebook
 interaction_report.share.twitter: Share Twitter
+interaction_report.visit.linked_in: Visit LinkedIn
 interaction_report.visit.facebook: Visit Facebook
 interaction_report.visit.twitter: Visit Twitter
 interaction_report.visit.google: Visit Google
@@ -595,6 +607,7 @@ form.collectionWorkingHours.blank: Time should not be blank
 business_profile.category.required: This field is required
 business_profile.category.max: This field should contain 3 elements or less
 business_profile.category.free_hint: Categories (Maximum 3 categories)
+business_custom_field_item.exist: Already used in business profiles %businessProfiles%
 
 # reset password form
 user:
@@ -605,8 +618,8 @@ user:
   auth:
     validation_failure: Validation failure
     registration_success: Successfully registered. Please login with your credentials
-    reset_link_sent: Reset password link sent to your email. Please check it
-    password_updated: Successfully updated password. You can login with new credentials now
+    reset_link_sent: Reset password link sent to your email. Please verify your email.
+    password_updated: Successfully updated password. You can login with new credentials now.
 business_profile:
   url:
     invalid: This value is not a valid URL.
@@ -673,7 +686,7 @@ contact:
       create_business: I want to create a business
       other: Others
     validation_failure: Validation failure
-    send_success: Your message has been sent successfully.
+    send_success: Thank you, your message has been sent successfully.
     instant_email: Instant e-mail
 
 business_profile.phone.tooltip:

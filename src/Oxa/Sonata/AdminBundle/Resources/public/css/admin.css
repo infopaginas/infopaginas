@@ -373,7 +373,11 @@ div.single-media-preview-block img {
     margin-left: 20%;
 }
 
-.grid-list-info-message {
-    color: red;
-    margin-left: 20%;
+.custom-radio {
+    display: block;
+}
+
+.highlighted-text {
+    font-weight: bold;
+    text-decoration: underline;
 }
