@@ -3,6 +3,7 @@
 namespace Oxa\Sonata\MediaBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Domain\ArticleBundle\Entity\Media\ArticleGallery;
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\Coupon;
@@ -529,6 +530,40 @@ class Media extends BaseMedia implements
     public function getArticles()
     {
         return $this->articles;
+    }
+
+    /**
+     * Add homepageCarousel
+     *
+     * @param HomepageCarousel $homepageCarousel
+     *
+     * @return Media
+     */
+    public function addHomepageCarousel(HomepageCarousel $homepageCarousel)
+    {
+        $this->homepageCarousel[] = $homepageCarousel;
+
+        return $this;
+    }
+
+    /**
+     * Remove homepageCarousel
+     *
+     * @param HomepageCarousel $homepageCarousel
+     */
+    public function removeHomepageCarousel(HomepageCarousel $homepageCarousel)
+    {
+        $this->homepageCarousel->removeElement($homepageCarousel);
+    }
+
+    /**
+     * Get homepageCarousel
+     *
+     * @return Collection
+     */
+    public function getHomepageCarousel()
+    {
+        return $this->homepageCarousel;
     }
 
     /**
