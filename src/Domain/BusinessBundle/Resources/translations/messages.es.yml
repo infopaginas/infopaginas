@@ -4,4 +4,5 @@ business_profile_media_url:
     facebook: Facebook
     twitter: Twitter
 
-social_network: Red social
+social_network_feeds: Feeds de Redes Sociales
+social_feed: %name% Feed

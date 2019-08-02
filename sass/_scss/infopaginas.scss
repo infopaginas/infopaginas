@@ -6792,3 +6792,56 @@ span.no-js-warning-message {
     }
   }
 }
+
+.social-feeds-column {
+  margin-top: 45px;
+
+  @media screen and (max-width: 768px) {
+    margin: auto;
+    max-width: 500px;
+    text-align: center;
+
+    h2 {
+      font-size: 1.5rem;
+    }
+  }
+  .social-feed {
+    margin-bottom: 30px;
+
+    h3 {
+      color: white;
+      margin: 0;
+      padding: 10px;
+    }
+  }
+
+  .instagram-feed {
+
+    h3 {
+      background-color: #E1306C;
+    }
+
+    .posts-wrapper {
+      height: 700px;
+      overflow: auto;
+
+      .instagram-media {
+        min-width: 270px !important;
+      }
+    }
+  }
+
+  .facebook-feed {
+    width: 100%;
+
+    h3 {
+      background-color: #3C5A99;
+    }
+  }
+
+  .twitter-feed {
+    h3 {
+      background-color: #1DA1F2;
+    }
+  }
+}

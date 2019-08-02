@@ -12,4 +12,5 @@ business_profile_media_url:
   facebook: Facebook
   twitter: Twitter
 
-social_network: Social network
+social_network_feeds: Social Networks Feeds
+social_feed: %name% Feed

@@ -168,3 +168,8 @@ twig:
 
         REPORT_EVENT_TYPE:
             VIDEO_WATCHED: 'videoWatched'
+
+        SOCIAL_FEED:
+            INSTAGRAM: 'instagram'
+            FACEBOOK: 'facebook'
+            TWITTER: 'twitter'

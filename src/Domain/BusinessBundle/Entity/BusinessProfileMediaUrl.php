@@ -13,7 +13,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
  *        @UniqueConstraint(name="type_unique",
  *            columns={"business_profile_id", "type"})
  *    })
- * @ORM\Entity(repositoryClass="Domain\BusinessBundle\Repository\BusinessProfileRepository")
+ * @ORM\Entity()
  */
 class BusinessProfileMediaUrl
 {
@@ -64,9 +64,17 @@ class BusinessProfileMediaUrl
     protected $position;
 
     /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->getUrl() ?: '';
+    }
+
+    /**
      * @return int
      */
-    public function getId(): int
+    public function getId()
     {
         return $this->id;
     }

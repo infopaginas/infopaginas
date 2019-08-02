@@ -3114,6 +3114,38 @@ class BusinessProfile implements
     /**
      * @return string
      */
+    public function getExportSocialFeedUrls()
+    {
+        $socialFeedList = [];
+        $socialFeeds = $this->getMediaUrls();
+
+        foreach ($socialFeeds as $socialFeed) {
+            $socialFeedList[] = $socialFeed->getUrl();
+        }
+
+        return implode(', ', $socialFeedList);
+    }
+
+    /**
+     * @return string
+     */
+    public function getExportSocialNetworkUrls()
+    {
+        $socialNetworkUrlList = [];
+        $socialNetworkUrlList[] = $this->getInstagramURL();
+        $socialNetworkUrlList[] = $this->getGoogleURL();
+        $socialNetworkUrlList[] = $this->getFacebookURL();
+        $socialNetworkUrlList[] = $this->getTwitterURL();
+        $socialNetworkUrlList[] = $this->getYoutubeURL();
+        $socialNetworkUrlList[] = $this->getLinkedInURL();
+        $socialNetworkUrlList[] = $this->getTripAdvisorURL();
+
+        return implode(', ', array_filter($socialNetworkUrlList));
+    }
+
+    /**
+     * @return string
+     */
     public function getExportPhones()
     {
         $phoneList = [];

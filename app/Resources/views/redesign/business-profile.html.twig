@@ -382,6 +382,17 @@
                         </div>
 
                         {% include ':redesign/blocks/modals:report_problem.html.twig' %}
+
+                        {% if businessProfile.subscriptionPlanCode > SUBSCRIPTION.CODE.FREE %}
+                            <div class="social-feeds-column">
+                                {% if businessProfile.mediaUrls | length %}
+                                    <h2>{{ 'social_network_feeds' | trans }}</h2>
+                                    {% for socialFeed in businessProfile.mediaUrls %}
+                                        {% include ':redesign/blocks/businessProfile/view:social-feeds.html.twig' %}
+                                    {% endfor %}
+                                {% endif %}
+                            </div>
+                        {% endif %}
                     </aside>
                 </div><!-- container -->
             </div><!-- profile-body_-container -->
@@ -392,7 +403,6 @@
 
 {% block scripts %}
     <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.js'></script>
-
     {{ parent() }}
 
     <script type="text/javascript">
@@ -401,9 +411,13 @@
         requirejs(['{{ absolute_url(asset("assetic/require_common_js.js")) }}'], function(common) {
             requirejs([
                 '{{ absolute_url(asset("assetic/require_business_profile_view_js.js")) }}'
-            ], function(businessProfileView, interactionsReport) {
+            ], function (businessProfileView, interactionsReport) {
                 var businessProfileView = new businessProfileView();
-            })
+            });
+            requirejs(['{{ absolute_url(asset("assetic/require_business_profile_social_feeds_js.js")) }}'
+            ], function (socialFeeds) {
+                var socialFeeds = new socialFeeds();
+            });
         });
     </script>
 

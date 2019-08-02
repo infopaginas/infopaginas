@@ -66,6 +66,11 @@ assetic:
                 - '@DomainBusinessBundle/Resources/public/scripts/modules/businessProfile.js'
             filters:
                 - jsqueeze
+        require_business_profile_social_feeds_js:
+            inputs:
+                - '@DomainBusinessBundle/Resources/public/scripts/modules/businessProfileSocialFeeds.js'
+            filters:
+                - jsqueeze
         require_emergency_business_js:
             inputs:
                 - '@DomainEmergencyBundle/Resources/public/scripts/businessDraft.js'
