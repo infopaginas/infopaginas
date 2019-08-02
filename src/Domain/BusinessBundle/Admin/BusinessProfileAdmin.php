@@ -360,6 +360,7 @@ class BusinessProfileAdmin extends OxaAdmin
             ->tab('Media')->end()
             ->tab('Others')->end()
             ->tab('Legacy URLs')->end()
+            ->tab('Social Feeds')->end()
         ;
 
         // define block
@@ -917,6 +918,27 @@ class BusinessProfileAdmin extends OxaAdmin
                 ->end()
             ;
         }
+
+        $formMapper
+            ->tab('Social Feeds')
+                ->with('Social Networks')
+                    ->add(
+                        'mediaUrls',
+                        'sonata_type_collection',
+                        [
+                            'by_reference'  => false,
+                            'required'      => false,
+                        ],
+                        [
+                            'edit'          => 'inline',
+                            'delete_empty'  => false,
+                            'inline'        => 'table',
+                            'sortable'      => 'position',
+                        ]
+                    )
+                ->end()
+            ->end()
+        ;
 
         if ($businessProfile->getId() and $subscriptionPlanCode >= SubscriptionPlanInterface::CODE_PREMIUM_PLATINUM) {
             $formMapper

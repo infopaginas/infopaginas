@@ -28,6 +28,8 @@ business_profile:
     not_blank: Error the field cannot be blank.
     max_length: Error the maximum number of symbols is {{ limit }}.
     invalid: Slug invalid.
+  media_url:
+    type_not_unique: Media type should be unique
 
 media.max_size: Media max size is {{ limit }} Mb
 

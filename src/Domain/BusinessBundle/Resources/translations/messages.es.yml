@@ -1,0 +1,7 @@
+business_profile_media_url:
+  type:
+    instagram: Instagram
+    facebook: Facebook
+    twitter: Twitter
+
+social_network: Red social
