@@ -7,7 +7,7 @@
 
 {% block body %}
     <span data-target-coordinates="{{ targetCoordinates }}"></span>
-    <div id="directions-menu">
+    <div id="directions-menu" class="hide-mobile">
         {% include ':redesign/blocks/mapbox:mapMenu.html.twig' %}
     </div>
     <div class="directions-navigation-button">
