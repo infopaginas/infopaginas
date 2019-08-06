@@ -1,0 +1,8 @@
+business_profile_media_url:
+  type:
+    instagram: Instagram
+    facebook: Facebook
+    twitter: Twitter
+
+social_network_feeds: Feeds de Redes Sociales
+social_feed: %name% Feed

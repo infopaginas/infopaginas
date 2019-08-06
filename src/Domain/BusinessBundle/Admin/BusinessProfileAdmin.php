@@ -360,6 +360,7 @@ class BusinessProfileAdmin extends OxaAdmin
             ->tab('Media')->end()
             ->tab('Others')->end()
             ->tab('Legacy URLs')->end()
+            ->tab('Social Networks')->end()
         ;
 
         // define block
@@ -384,7 +385,6 @@ class BusinessProfileAdmin extends OxaAdmin
                 ->with('Category')->end()
             ->end()
             ->tab('Media')
-                ->with('Social Networks')->end()
                 ->with('Gallery')->end()
                 ->with('Panorama')->end()
             ->end()
@@ -737,7 +737,7 @@ class BusinessProfileAdmin extends OxaAdmin
         // Media tab
         // Social Networks Block
         $formMapper
-            ->tab('Media')
+            ->tab('Social Networks')
                 ->with('Social Networks')
                     ->add('linkedInURL', UrlType::class, [
                         'required' => false,
@@ -918,6 +918,30 @@ class BusinessProfileAdmin extends OxaAdmin
             ;
         }
 
+        if ($businessProfile->getSubscriptionPlanCode() > SubscriptionPlanInterface::CODE_FREE) {
+            //Social Feeds Tab
+            $formMapper
+                ->tab('Social Networks')
+                    ->with('Social Networks Feeds')
+                        ->add(
+                            'mediaUrls',
+                            'sonata_type_collection',
+                            [
+                                'by_reference'  => false,
+                                'required'      => false,
+                            ],
+                            [
+                                'edit'          => 'inline',
+                                'delete_empty'  => false,
+                                'inline'        => 'table',
+                                'sortable'      => 'position',
+                            ]
+                        )
+                    ->end()
+                ->end()
+            ;
+        }
+
         if ($businessProfile->getId() and $subscriptionPlanCode >= SubscriptionPlanInterface::CODE_PREMIUM_PLATINUM) {
             $formMapper
                 ->tab('More Info')
@@ -991,12 +1015,16 @@ class BusinessProfileAdmin extends OxaAdmin
      */
     protected function configureShowFields(ShowMapper $showMapper)
     {
+        /** @var BusinessProfile $businessProfile */
+        $businessProfile = $this->getSubject();
+
         // define tabs
         $showMapper
             ->tab('Main')->end()
             ->tab('Media')->end()
             ->tab('Others')->end()
             ->tab('Legacy URLs')->end()
+            ->tab('Social Networks')->end()
             ->tab('Reviews')->end()
         ;
 
@@ -1126,22 +1154,6 @@ class BusinessProfileAdmin extends OxaAdmin
             ->end()
         ;
 
-        // Media tab
-        // Social Networks Block
-        $showMapper
-            ->tab('Media')
-                ->with('Social Networks')
-                    ->add('linkedInURL')
-                    ->add('twitterURL')
-                    ->add('facebookURL')
-                    ->add('googleURL')
-                    ->add('youtubeURL')
-                    ->add('instagramURL')
-                    ->add('tripAdvisorURL')
-                ->end()
-            ->end()
-        ;
-
         // Gallery Block
         $showMapper
             ->tab('Media')
@@ -1227,6 +1239,34 @@ class BusinessProfileAdmin extends OxaAdmin
             ->end()
         ;
 
+        //Social Networks Tab
+        $showMapper
+            ->tab('Social Networks')
+                ->with('Social Networks')
+                    ->add('linkedInURL')
+                    ->add('twitterURL')
+                    ->add('facebookURL')
+                    ->add('googleURL')
+                    ->add('youtubeURL')
+                    ->add('instagramURL')
+                    ->add('tripAdvisorURL')
+                ->end()
+            ->end()
+        ;
+
+        if ($businessProfile->getId() &&
+            $businessProfile->getSubscriptionPlanCode() > SubscriptionPlanInterface::CODE_FREE) {
+            $showMapper
+                ->tab('Social Networks')
+                    ->with('Social Networks Feeds')
+                        ->add('mediaUrls', null, [
+                            'template' => 'OxaSonataAdminBundle:ShowFields:show_orm_one_to_many.html.twig',
+                        ])
+                    ->end()
+                ->end()
+            ;
+        }
+
         // Review Tab
         $showMapper
             ->tab('Reviews')
@@ -1244,7 +1284,7 @@ class BusinessProfileAdmin extends OxaAdmin
         ;
 
         // Report tabs
-        if ($this->getSubject()->getId()) {
+        if ($businessProfile->getId()) {
             $dateRange = DatesUtil::getDateRangeValueObjectFromRangeType(DatesUtil::RANGE_LAST_MONTH);
 
             $showMapper
@@ -1321,7 +1361,7 @@ class BusinessProfileAdmin extends OxaAdmin
                 ->end()
             ;
 
-            if ($this->getSubject()->getDcOrderId()) {
+            if ($businessProfile->getDcOrderId()) {
                 $showMapper
                     ->tab('Reports')
                         ->with('Preview')
@@ -1541,6 +1581,9 @@ class BusinessProfileAdmin extends OxaAdmin
         $exportFields['userName']   = 'user.fullName';
         $exportFields['userAccountUpdateDate']   = 'user.updatedAt';
         $exportFields['userAccountCreationDate'] = 'user.createdAt';
+
+        $exportFields['socialFeedUrls']    = 'exportSocialFeedUrls';
+        $exportFields['socialNetworkUrls'] = 'exportSocialNetworkUrls';
 
         return $exportFields;
     }

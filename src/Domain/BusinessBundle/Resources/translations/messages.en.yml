@@ -5,3 +5,12 @@ media_upload_error_message:
 
 media_preview_error_message:
  not_found: Not found
+
+business_profile_media_url:
+ type:
+  instagram: Instagram
+  facebook: Facebook
+  twitter: Twitter
+
+social_network_feeds: Social Networks Feeds
+social_feed: %name% Feed

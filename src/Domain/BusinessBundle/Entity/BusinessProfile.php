@@ -42,6 +42,7 @@ use Domain\SiteBundle\Validator\Constraints as DomainAssert;
 use Domain\BusinessBundle\Validator\Constraints\ServiceAreaType as ServiceAreaTypeValidator;
 use Domain\BusinessBundle\Validator\Constraints\BusinessProfilePhoneType as BusinessProfilePhoneTypeValidator;
 use Domain\BusinessBundle\Validator\Constraints\BusinessProfileWorkingHourType as BusinessProfileWorkingHourTypeValidator;
+use Domain\BusinessBundle\Validator\Constraints\BusinessProfileMediaUrlType as BusinessProfileMediaUrlTypeValidator;
 
 /**
  * BusinessProfile
@@ -53,6 +54,7 @@ use Domain\BusinessBundle\Validator\Constraints\BusinessProfileWorkingHourType a
  * @ServiceAreaTypeValidator(groups={"Admin"})
  * @BusinessProfilePhoneTypeValidator()
  * @BusinessProfileWorkingHourTypeValidator()
+ * @BusinessProfileMediaUrlTypeValidator()
  */
 class BusinessProfile implements
     DefaultEntityInterface,
@@ -732,6 +734,20 @@ class BusinessProfile implements
     protected $aliases;
 
     /**
+     * @var BusinessProfileMediaUrl[] - Business Profile Media URLs
+     *
+     * @ORM\OneToMany(
+     *     targetEntity="Domain\BusinessBundle\Entity\BusinessProfileMediaUrl",
+     *     mappedBy="businessProfile",
+     *     cascade={"persist", "remove"},
+     *     orphanRemoval=true
+     *     )
+     * @Assert\Valid
+     * @ORM\OrderBy({"position" = "ASC"})
+     */
+    protected $mediaUrls;
+
+    /**
      * @ORM\Column(name="uid", type="string")
      */
     protected $uid;
@@ -1081,6 +1097,7 @@ class BusinessProfile implements
         $this->keywords                 = new ArrayCollection();
         $this->aliases                  = new ArrayCollection();
         $this->tasks                    = new ArrayCollection();
+        $this->mediaUrls                = new ArrayCollection();
 
         $this->isClosed  = false;
         $this->isUpdated = true;
@@ -2640,6 +2657,42 @@ class BusinessProfile implements
     }
 
     /**
+     * Add mediaUrl
+     *
+     * @param BusinessProfileMediaUrl $mediaUrl
+     *
+     * @return BusinessProfile
+     */
+    public function addMediaUrl(BusinessProfileMediaUrl $mediaUrl)
+    {
+        $this->mediaUrls[] = $mediaUrl;
+
+        if ($mediaUrl) {
+            $mediaUrl->setBusinessProfile($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Remove MediaUrl
+     *
+     * @param BusinessProfileMediaUrl $mediaUrl
+     */
+    public function removeMediaUrl(BusinessProfileMediaUrl $mediaUrl)
+    {
+        $this->mediaUrls->removeElement($mediaUrl);
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getMediaUrls()
+    {
+        return $this->mediaUrls;
+    }
+
+    /**
      * Set discount
      *
      * @param string $discount
@@ -3056,6 +3109,38 @@ class BusinessProfile implements
         }
 
         return implode(', ', $categoryList);
+    }
+
+    /**
+     * @return string
+     */
+    public function getExportSocialFeedUrls()
+    {
+        $socialFeedList = [];
+        $socialFeeds = $this->getMediaUrls();
+
+        foreach ($socialFeeds as $socialFeed) {
+            $socialFeedList[] = $socialFeed->getUrl();
+        }
+
+        return implode(', ', $socialFeedList);
+    }
+
+    /**
+     * @return string
+     */
+    public function getExportSocialNetworkUrls()
+    {
+        $socialNetworkUrlList = [];
+        $socialNetworkUrlList[] = $this->getInstagramURL();
+        $socialNetworkUrlList[] = $this->getGoogleURL();
+        $socialNetworkUrlList[] = $this->getFacebookURL();
+        $socialNetworkUrlList[] = $this->getTwitterURL();
+        $socialNetworkUrlList[] = $this->getYoutubeURL();
+        $socialNetworkUrlList[] = $this->getLinkedInURL();
+        $socialNetworkUrlList[] = $this->getTripAdvisorURL();
+
+        return implode(', ', array_filter($socialNetworkUrlList));
     }
 
     /**
