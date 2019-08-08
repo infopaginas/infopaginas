@@ -26,6 +26,10 @@ body {
     background: $white;
   }
 
+  @media only screen and (max-width: 804px) {
+    padding-top: $bar-height-mobile-mb;
+  }
+
   &.body--no-scroll {
     overflow-y: hidden;
   }
@@ -113,7 +117,7 @@ h5 {
   background: $blue--dark;
   box-shadow: 0 0 0 transparentize($black, .8);
   display: flex;
-  height: $bar-height-mb;
+  height: $bar-height-mobile-mb;
   justify-content: center;
   // overflow: hidden;
   position: fixed;
@@ -183,14 +187,14 @@ $side-padding-mb: 16px;
 }
 
 .nav__toggle {
-  height: $bar-height-mb;
-  line-height: $bar-height-mb;
+  height: $bar-height-mobile-mb;
+  line-height: $bar-height-mobile-mb;
   padding: 0;
   position: absolute;
   right: 0;
   text-align: center;
   top: 0;
-  width: calc(#{$bar-height-mb} + #{$header-margin});
+  width: calc(#{$bar-height-mobile-mb} + #{$header-margin});
   z-index: 2;
 
   @media only screen and (min-width: 805px) {
@@ -708,7 +712,7 @@ $side-padding-mb: 16px;
   display: flex;
   flex-direction: column;
   position: fixed;
-  top: $bar-height-mb;
+  top: $bar-height-mobile-mb;
   transition-duration: .4s;
   transition-property: width;
   transition-timing-function: ease-in-out;
