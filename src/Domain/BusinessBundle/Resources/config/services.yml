@@ -294,3 +294,7 @@ services:
     domain_business.manager.homepage_carousel_manager:
         class: Domain\BusinessBundle\Manager\HomepageCarouselManager
         arguments: ['@doctrine.orm.entity_manager']
+
+    domain_business.manager.csv_import_file_manager:
+        class: Domain\BusinessBundle\Manager\CSVImportFileManager
+        arguments: [ '@service_container', '@doctrine.orm.entity_manager' ]

@@ -48,6 +48,7 @@ sonata_admin:
                     - domain_business.admin.neighborhood
                     - domain_business.admin.payment_method
                     - domain_business.admin.address.country
+                    - domain_business.admin.csv_import_file
             domain.admin.group.business_custom_fields:
                 label: Business Custom Fields
                 icon: <i class="fa fa-list"></i>

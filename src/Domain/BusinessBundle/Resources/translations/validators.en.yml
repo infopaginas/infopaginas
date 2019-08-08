@@ -30,6 +30,8 @@ business_profile:
     invalid: Slug invalid.
   media_url:
     type_not_unique: Media type should be unique
+  mass_import:
+    not_valid_csv: CSV file is not valid
 
 media.max_size: Media max size is {{ limit }} Mb
 
