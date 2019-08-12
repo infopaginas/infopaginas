@@ -25,8 +25,9 @@ class CSVImportFileTypeValidator extends ConstraintValidator
 
             if ($data !== false) {
                 $isValid = true;
-                foreach (CSVImportFile::getBusinessProfileRequiredFields() as $field) {
-                    if (!in_array($field, $data)) {
+                $fieldsMapping = json_decode($csvImportFile->getFieldsMappingJSON(), true);
+                foreach (CSVImportFile::getBusinessProfileRequiredFields() as $field => $label) {
+                    if (!in_array($fieldsMapping[$field], $data)) {
                         $isValid = false;
                         break;
                     }
