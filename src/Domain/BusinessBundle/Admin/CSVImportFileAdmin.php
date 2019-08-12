@@ -2,6 +2,8 @@
 
 namespace Domain\BusinessBundle\Admin;
 
+use Domain\BusinessBundle\Entity\CSVImportFile;
+use Domain\BusinessBundle\Form\Type\TestType;
 use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
 use Oxa\Sonata\AdminBundle\Util\Helpers\AdminHelper;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
@@ -10,9 +12,20 @@ use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Route\RouteCollection;
 use Sonata\AdminBundle\Show\ShowMapper;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 class CSVImportFileAdmin extends OxaAdmin
 {
+    /**
+     * @param string $name
+     * @param string $template
+     */
+    public function setTemplate($name, $template)
+    {
+        $this->templates['edit'] = 'DomainBusinessBundle:Admin:csv_import_edit.html.twig';
+    }
+
     /**
      * @param DatagridMapper $datagridMapper
      */
@@ -20,6 +33,7 @@ class CSVImportFileAdmin extends OxaAdmin
     {
         $datagridMapper
             ->add('id')
+            ->add('description')
             ->add('createdUser')
             ->add('createdAt')
             ->add('isProcessed')
@@ -33,12 +47,26 @@ class CSVImportFileAdmin extends OxaAdmin
     {
         $listMapper
             ->add('id')
+            ->add('description')
             ->add('createdUser')
             ->add('createdAt')
             ->add('isProcessed')
         ;
 
         $this->addGridActions($listMapper);
+    }
+
+    public function getNewInstance()
+    {
+        $instance = parent::getNewInstance();
+        $businessProfileMappingFields = CSVImportFile::getBusinessProfileMappingFields();
+
+        foreach ($businessProfileMappingFields as $key => $value) {
+            $businessProfileMappingFields[$key] = '';
+        }
+
+        $instance->setFieldsMappingJSON(json_encode($businessProfileMappingFields));
+        return $instance;
     }
 
     /**
@@ -53,8 +81,21 @@ class CSVImportFileAdmin extends OxaAdmin
                     'accept' => implode(',', AdminHelper::getFormCSVFileAccept()),
                 ],
             ])
-            ->add('delimiter', null, ['required' => false])
+            ->add('delimiter', null, [
+                'required' => false,
+                'attr' => [
+                    'class' => 'delimiter',
+                ]
+            ])
             ->add('enclosure', null, ['required' => false])
+            ->add('description', TextType::class, ['required' => false])
+            ->add('fieldsMappingJSON', HiddenType::class, [
+                'required' => true,
+                'attr' => [
+                    'hidden' => true,
+                    'class' => 'mapping-info'
+                ]
+            ])
         ;
     }
 
@@ -65,6 +106,7 @@ class CSVImportFileAdmin extends OxaAdmin
     {
         $showMapper
             ->add('id')
+            ->add('description')
             ->add('createdUser')
             ->add('createdAt')
             ->add('file', null, [

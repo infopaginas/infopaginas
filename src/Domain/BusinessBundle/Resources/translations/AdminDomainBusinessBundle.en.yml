@@ -34,6 +34,11 @@ business_profile:
     logo: The target block size is "120px X 120px", accepted image formats are "png, jpeg, jpg, gif", max image size is "10 Mb".
     background: The target block size is "1500px X 600px", accepted image formats are "png, jpeg, jpg, gif", max image size is "1 Mb".
     gallery: The target block size is "500px X 375px", accepted image formats are "png, jpeg, jpg, gif", max image size is "10 Mb".
+  fields:
+    name: Name
+    discount: Discount
+    panorama_id: Panorama ID
+    description: Description
 
 filter.label_categories.en: Categories En
 filter.label_categories.es: Categories Es

@@ -58,6 +58,21 @@ class CSVImportFile implements DefaultEntityInterface
     protected $enclosure = '"';
 
     /**
+     * @var string - JSON for csv file fields mapping
+     *
+     * @ORM\Column(name="fields_mapping_json", type="text")
+     * @Assert\NotBlank()
+     */
+    protected $fieldsMappingJSON;
+
+    /**
+     * @var string - Upload File Description
+     *
+     * @ORM\Column(name="description", type="string", nullable=true, length=255)
+     */
+    protected $description;
+
+    /**
      * @var boolean
      *
      * @ORM\Column(name="is_processed", type="boolean", options={"default" : 0})
@@ -66,7 +81,7 @@ class CSVImportFile implements DefaultEntityInterface
 
     public function __toString()
     {
-        return $this->getFile() ?: '';
+        return $this->getDescription() ?: '';
     }
 
     /**
@@ -157,10 +172,61 @@ class CSVImportFile implements DefaultEntityInterface
         return $this;
     }
 
+    /**
+     * @return string
+     */
+    public function getFieldsMappingJSON()
+    {
+        return $this->fieldsMappingJSON;
+    }
+
+    /**
+     * @param string $fieldsMappingJSON
+     *
+     * @return CSVImportFile
+     */
+    public function setFieldsMappingJSON(string $fieldsMappingJSON)
+    {
+        $this->fieldsMappingJSON = $fieldsMappingJSON;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    /**
+     * @param string $description
+     *
+     * @return CSVImportFile
+     */
+    public function setDescription(string $description)
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
     public static function getBusinessProfileRequiredFields()
     {
         return [
-            'Name',
+            'name' => 'business_profile.fields.name',
         ];
+    }
+
+    public static function getBusinessProfileMappingFields()
+    {
+        $importFields = [
+            'discount' => 'business_profile.fields.discount',
+            'panorama_id' => 'business_profile.fields.panorama_id',
+            'description' => 'business_profile.fields.description',
+        ];
+
+        return array_merge(CSVImportFile::getBusinessProfileRequiredFields(), $importFields);
     }
 }

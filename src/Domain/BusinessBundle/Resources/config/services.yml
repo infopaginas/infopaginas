@@ -74,6 +74,12 @@ services:
         calls:
             - [ setBusinessProfileManager, [ '@domain_business.manager.business_profile' ] ]
 
+    domain_business.twig_extension.csv_import_file:
+        class: Domain\BusinessBundle\Twig\Extension\CSVImportFile
+        public: false
+        tags:
+            -  { name: twig.extension }
+
     #form types section
     domain_business.form.type.google_map:
         class: Domain\BusinessBundle\Form\Type\GoogleMapType

@@ -1,0 +1,15 @@
+{% trans_default_domain 'AdminDomainBusinessBundle' %}
+
+<div class="hidden" id="csv-mapping">
+    <h3>CSV fields mapping</h3>
+    {% for field, fieldLabel in mappingFields %}
+        <div class="form-group csv-mapping-field">
+            <div class="sonata-ba-field sonata-ba-field-standard-natural">
+                <p data-field="{{ field }}">{{ fieldLabel | trans }}</p>
+            </div>
+            <div class="test">
+                <select class="file-field" id="field-{{ field }}"></select>
+            </div>
+        </div>
+    {% endfor %}
+</div>
