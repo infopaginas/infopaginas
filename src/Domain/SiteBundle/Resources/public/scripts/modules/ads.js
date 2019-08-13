@@ -39,7 +39,6 @@ define(['jquery'], function ( $ ) {
 
         $( document ).ready(function() {
             self.initAds();
-            self.bindEvents();
         });
     };
 
