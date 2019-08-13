@@ -3,9 +3,9 @@
 namespace Domain\BusinessBundle\Admin;
 
 use Domain\BusinessBundle\Entity\CSVImportFile;
-use Domain\BusinessBundle\Form\Type\TestType;
 use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
 use Oxa\Sonata\AdminBundle\Util\Helpers\AdminHelper;
+use RuntimeException;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
@@ -85,16 +85,20 @@ class CSVImportFileAdmin extends OxaAdmin
                 'required' => false,
                 'attr' => [
                     'class' => 'delimiter',
-                ]
+                ],
+                'data' => CSVImportFile::DEFAULT_DELIMITER,
             ])
-            ->add('enclosure', null, ['required' => false])
+            ->add('enclosure', null, [
+                'required' => false,
+                'data' => CSVImportFile::DEFAULT_ENCLOSURE,
+            ])
             ->add('description', TextType::class, ['required' => false])
             ->add('fieldsMappingJSON', HiddenType::class, [
                 'required' => true,
                 'attr' => [
                     'hidden' => true,
-                    'class' => 'mapping-info'
-                ]
+                    'class' => 'mapping-info',
+                ],
             ])
         ;
     }
@@ -112,6 +116,9 @@ class CSVImportFileAdmin extends OxaAdmin
             ->add('file', null, [
                 'template' => 'DomainBusinessBundle:Admin:CSVMassImport/show_file.html.twig',
             ])
+            ->add('validEntriesCount')
+            ->add('invalidEntriesCount')
+            ->add('invalidEntriesNumbers')
             ->add('isProcessed')
         ;
     }
@@ -132,7 +139,7 @@ class CSVImportFileAdmin extends OxaAdmin
         if ($uploadedFileData['status']) {
             $csvImportFile->setFile($uploadedFileData['link']);
         } else {
-            throw new \RuntimeException();
+            throw new RuntimeException('Could not upload file');
         }
     }
 

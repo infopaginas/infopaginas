@@ -4,6 +4,7 @@ namespace Domain\BusinessBundle\Form\Handler;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
+use Domain\BusinessBundle\DBAL\Types\TaskType;
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\Category;
 use Domain\BusinessBundle\Entity\Media\BusinessGallery;
@@ -149,7 +150,10 @@ class BusinessProfileFormHandler extends BaseFormHandler implements BusinessForm
             $this->businessProfileManager->saveProfile($this->businessProfileNew);
             $message = self::MESSAGE_BUSINESS_PROFILE_CREATED;
 
-            $this->tasksManager->createNewProfileConfirmationRequest($this->businessProfileNew);
+            $this->tasksManager->createNewProfileConfirmationRequest(
+                $this->businessProfileNew,
+                TaskType::TASK_PROFILE_CREATE
+            );
         } else {
             //create 'Update Business Profile' Task for Admin / CM
             $this->tasksManager->createUpdateProfileConfirmationRequest(

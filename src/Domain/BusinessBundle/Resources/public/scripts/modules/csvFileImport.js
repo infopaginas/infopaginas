@@ -7,6 +7,7 @@ $( document ).ready( function () {
     var delimiterInput = '.delimiter';
 
     var headers = [];
+    var defaultDelimiter = ',';
 
     $( fileInput ).on( 'change', handleFileUpload );
     $( 'form' ).on( 'submit', handleFormSubmission );
@@ -19,7 +20,7 @@ $( document ).ready( function () {
             mappingInfo[ field ] = $( '#field-' + field ).val();
         }
         $( mappingInfoInputClass ).val( JSON.stringify( mappingInfo ) );
-        $( this )[0].submit();
+        $( this )[ 0 ].submit();
     }
 
     function setMappingOptions() {
@@ -54,9 +55,9 @@ $( document ).ready( function () {
         var reader = new FileReader();
         reader.readAsArrayBuffer( file );
 
-        reader.onloadend = function ( evt ) {
+        reader.onloadend = function ( e ) {
             // Get the Array Buffer
-            var data = evt.target.result;
+            var data = e.target.result;
             var byteLength = data.byteLength;
             var ui8a = new Uint8Array( data, 0 );
             // Used to store each character that makes up CSV header
@@ -78,6 +79,6 @@ $( document ).ready( function () {
     }
 
     function getDelimiter() {
-        return $( delimiterInput ).val();
+        return $( delimiterInput ).val() ? $( delimiterInput ).val() : defaultDelimiter;
     }
 } );

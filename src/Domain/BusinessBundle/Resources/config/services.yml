@@ -74,12 +74,6 @@ services:
         calls:
             - [ setBusinessProfileManager, [ '@domain_business.manager.business_profile' ] ]
 
-    domain_business.twig_extension.csv_import_file:
-        class: Domain\BusinessBundle\Twig\Extension\CSVImportFileExtension
-        public: false
-        tags:
-            -  { name: twig.extension }
-
     #form types section
     domain_business.form.type.google_map:
         class: Domain\BusinessBundle\Form\Type\GoogleMapType
@@ -303,4 +297,8 @@ services:
 
     domain_business.manager.csv_import_file_manager:
         class: Domain\BusinessBundle\Manager\CSVImportFileManager
-        arguments: [ '@service_container', '@doctrine.orm.entity_manager' ]
+        arguments:
+            - '@doctrine.orm.entity_manager'
+            - '@mass_import_storage_filesystem'
+            - '@validator'
+            - '@service_container'

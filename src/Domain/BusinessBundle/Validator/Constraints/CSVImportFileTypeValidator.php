@@ -8,7 +8,7 @@ use Symfony\Component\Validator\ConstraintValidator;
 
 class CSVImportFileTypeValidator extends ConstraintValidator
 {
-    const LENGTH = 1000;
+    const LENGTH = 0;
     public $notValidBusinessProfileCSVFile = 'business_profile.mass_import.not_valid_csv';
 
     /**
@@ -19,23 +19,22 @@ class CSVImportFileTypeValidator extends ConstraintValidator
     {
         $filename = $csvImportFile->getFile();
         $isValid = false;
+        $handle = fopen($filename, 'r');
 
-        if (($handle = fopen($filename, "r")) !== false) {
+        if ($handle) {
             $data = fgetcsv($handle, self::LENGTH, $csvImportFile->getDelimiter(), $csvImportFile->getEnclosure());
 
             if ($data !== false) {
-                $isValid = true;
                 $fieldsMapping = json_decode($csvImportFile->getFieldsMappingJSON(), true);
-                foreach (CSVImportFile::getBusinessProfileRequiredFields() as $field => $label) {
-                    if (!in_array($fieldsMapping[$field], $data)) {
-                        $isValid = false;
-                        break;
-                    }
+
+                $fieldsMapping = array_filter($fieldsMapping);
+                if (!array_diff_key(CSVImportFile::getBusinessProfileRequiredFields(), $fieldsMapping)) {
+                    $isValid = true;
                 }
             }
-            fclose($handle);
         }
 
+        fclose($handle);
         if (!$isValid) {
             $this->context->buildViolation($this->notValidBusinessProfileCSVFile)
                 ->atPath('file')

@@ -1,7 +1,9 @@
 {% extends 'OxaSonataAdminBundle:CRUD:edit.html.twig' %}
 
 {% block sonata_post_fieldsets %}
-    {{ get_business_profile_csv_mapping_html() }}
+    {% include 'redesign/blocks/csvImport/mapping_fields.html.twig' with {
+        'mappingFields' : admin.subject.getBusinessProfileMappingFields
+    }  %}
     {{ parent() }}
 {% endblock %}
 

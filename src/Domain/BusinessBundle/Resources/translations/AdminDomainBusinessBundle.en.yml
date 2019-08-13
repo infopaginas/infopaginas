@@ -39,6 +39,35 @@ business_profile:
     discount: Discount
     panorama_id: Panorama ID
     description: Description
+    descriptionEn: Description English
+    descriptionEs: Description Spanish
+    nameEn: Name English
+    nameEs: Name Spanish
+    phone_main: Main Phone
+    phone_secondary: Secondary Phone
+    phone_fax: Fax
+    website: Website
+    email: Email
+    product: Product
+    brands: Brands
+    streetAddress: Street Address
+    streetNumber: Street Number
+    extendedAddress: Extended Address
+    crossStreet: Cross Street
+    state: State
+    city: City
+    zipCode: Zip code
+    customAddress: Custom Address
+    hideAddress: Hide Address
+    hideMap: Hide Map
+    linkedInURL: Linkedin URL
+    twitterURL: Twitter URL
+    facebookURL: Facebook URL
+    googleURL: Google URL
+    youtubeURL: YouTube URL
+    instagramURL: Instagram URL
+    tripAdvisorURL: TripAdvisor URL
+    slogan: Slogan
 
 filter.label_categories.en: Categories En
 filter.label_categories.es: Categories Es
