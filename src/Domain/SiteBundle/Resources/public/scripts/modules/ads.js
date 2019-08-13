@@ -119,12 +119,6 @@ define(['jquery'], function ( $ ) {
         });
     };
 
-    ads.prototype.bindEvents = function () {
-        window.addEventListener( 'resize', function() {
-            googletag.pubads().refresh();
-        });
-    };
-
     ads.prototype.getResponsiveCommonSizeMapping = function ( googletag ) {
         return googletag.sizeMapping().
             addSize( [0, 0], [] ).
