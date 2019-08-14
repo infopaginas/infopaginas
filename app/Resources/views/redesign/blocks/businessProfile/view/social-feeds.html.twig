@@ -1,7 +1,9 @@
 {% if socialFeed.type == SOCIAL_FEED.INSTAGRAM %}
 
     <div class="social-feed instagram-feed" data-instagram-url="{{ socialFeed.url }}">
-        <h3>{{ 'social_feed' | trans({'%name%': 'business_profile_media_url.type.instagram' | trans}) }}</h3>
+        <div class="social-feed-header">
+            <i class="fa fa-lg fa-instagram"></i>
+        </div>
         <div class="posts-wrapper"></div>
     </div>
     <script src="https://www.instagram.com/embed.js"></script>
@@ -12,8 +14,9 @@
     <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v4.0"></script>
 
     <div class="social-feed facebook-feed">
-        <h3>{{ 'social_feed' | trans({'%name%': 'business_profile_media_url.type.facebook' | trans}) }}</h3>
-
+        <div class="social-feed-header">
+            <i class="fa fa-lg fa-facebook-f"></i>
+        </div>
         <div class="fb-page" data-href="{{ socialFeed.url }}" data-tabs="timeline" data-width="500"
              data-small-header="false" data-adapt-container-width="true" data-hide-cover="false" data-show-facepile="true">
             <blockquote cite="{{ socialFeed.url }}" class="fb-xfbml-parse-ignore">
@@ -25,8 +28,9 @@
 {% elseif socialFeed.type == SOCIAL_FEED.TWITTER %}
 
     <div class="social-feed twitter-feed">
-        <h3>{{ 'social_feed' | trans({'%name%': 'business_profile_media_url.type.twitter' | trans}) }}</h3>
-
+        <div class="social-feed-header">
+            <i class="fa fa-lg fa-twitter"></i>
+        </div>
         <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
         <a class="twitter-timeline" data-height="700" data-link-color="#2B7BB9"
            href="{{ socialFeed.url }}">

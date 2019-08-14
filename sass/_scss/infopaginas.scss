@@ -6808,7 +6808,7 @@ span.no-js-warning-message {
   .social-feed {
     margin-bottom: 30px;
 
-    h3 {
+    .social-feed-header {
       color: white;
       margin: 0;
       padding: 10px;
@@ -6817,13 +6817,14 @@ span.no-js-warning-message {
 
   .instagram-feed {
 
-    h3 {
+    .social-feed-header {
       background-color: #E1306C;
     }
 
     .posts-wrapper {
       height: 700px;
-      overflow: auto;
+      overflow-y: scroll;
+      -webkit-overflow-scrolling: touch;
 
       .instagram-media {
         min-width: 270px !important;
@@ -6834,13 +6835,14 @@ span.no-js-warning-message {
   .facebook-feed {
     width: 100%;
 
-    h3 {
+    .social-feed-header {
       background-color: #3C5A99;
     }
   }
 
   .twitter-feed {
-    h3 {
+    width: 100%;
+    .social-feed-header {
       background-color: #1DA1F2;
     }
   }
