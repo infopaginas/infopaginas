@@ -11,6 +11,7 @@ use Domain\ReportBundle\Util\DatesUtil;
 use Domain\SiteBundle\Form\Handler\PasswordUpdateFormHandler;
 use Domain\SiteBundle\Form\Handler\UserProfileFormHandler;
 use FOS\UserBundle\Model\UserInterface;
+use Oxa\GeolocationBundle\Model\Geolocation\GeolocationManager;
 use Oxa\Sonata\UserBundle\Manager\UsersManager;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\FormInterface;
@@ -29,6 +30,10 @@ class UserController extends Controller
     const SUCCESS_PASSWORD_UPDATE_MESSAGE = 'Successfully updated password';
 
     const ERROR_VALIDATION_FAILURE = 'Validation failure';
+
+    const SUCCESS_GEOLOCATION_SAVE = 'Successfully saved geolocation information';
+
+    const ERROR_GEOLOCATION_SAVE = 'An error occurred trying to save the geolocation information';
 
     /**
      * @return \Symfony\Component\HttpFoundation\Response
@@ -111,6 +116,31 @@ class UserController extends Controller
         }
 
         return $this->getFailureResponse(self::ERROR_VALIDATION_FAILURE, $formHandler->getErrors());
+    }
+
+    /**
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
+    public function saveUserGeoLocationAction(Request $request) : JsonResponse
+    {
+        $longitude = $request->query->get('longitude');
+        $latitude = $request->query->get('latitude');
+
+        try {
+            $result = $this->get('mongodb.manager')->insertOne(
+                GeolocationManager::GEOLOCATION_COLLECTION_NAME,
+                array('longitude' => $longitude, 'latitude' => $latitude)
+            );
+            if ($result) {
+                return $this->getSuccessResponse(self::SUCCESS_GEOLOCATION_SAVE);
+            }
+        } catch (\Exception $e) {
+            return $this->getFailureResponse(self::ERROR_GEOLOCATION_SAVE, [$e->getMessage()]);
+        }
+
+        return $this->getFailureResponse(self::ERROR_GEOLOCATION_SAVE);
     }
 
     /**
