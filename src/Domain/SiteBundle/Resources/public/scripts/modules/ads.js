@@ -39,7 +39,6 @@ define(['jquery'], function ( $ ) {
 
         $( document ).ready(function() {
             self.initAds();
-            self.bindEvents();
         });
     };
 
@@ -116,12 +115,6 @@ define(['jquery'], function ( $ ) {
                     googletag.display( item.htmlId );
                 });
             }
-        });
-    };
-
-    ads.prototype.bindEvents = function () {
-        window.addEventListener( 'resize', function() {
-            googletag.pubads().refresh();
         });
     };
 
