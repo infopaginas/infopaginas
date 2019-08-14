@@ -80,7 +80,7 @@ class CSVImportFileManager extends Manager
 
             $data = $this->getDataFromFile($csvImportFile, $fieldsMapping);
             foreach ($data as $index => $entry) {
-                if ($this->validateData($entry, $fieldsMapping)) {
+                if ($this->validateData($entry)) {
                     /** @var BusinessProfile $businessProfile */
                     $businessProfile = $normalizer->denormalize($entry, BusinessProfile::class, 'array');
                     $businessProfile->setIsActive(false);
@@ -132,11 +132,7 @@ class CSVImportFileManager extends Manager
         $translatableFields = BusinessProfile::getTranslatableFields();
 
         foreach ($translatableFields as $field) {
-            if (array_key_exists($field, $data)) {
-                foreach (LocaleHelper::getLocaleList() as $locale => $name) {
-                    LocaleHelper::addBusinessTranslation($businessProfile, $field, $data[$field], $locale);
-                }
-            }
+            LocaleHelper::handleTranslations($businessProfile, $field, $data);
         }
     }
 
@@ -160,7 +156,7 @@ class CSVImportFileManager extends Manager
         return $data;
     }
 
-    protected function validateData($data, $fieldsMapping)
+    protected function validateData($data)
     {
         $metadata = $this->validator->getMetadataFor(BusinessProfile::class);
         foreach ($data as $field => $value) {

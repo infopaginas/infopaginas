@@ -2,6 +2,7 @@
 
 namespace Domain\BusinessBundle\Entity;
 
+use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -310,16 +311,7 @@ class CSVImportFile implements DefaultEntityInterface
     public static function getBusinessProfileMappingFields()
     {
         $importFields = [
-            BusinessProfile::BUSINESS_PROFILE_FIELD_NAME_EN => 'business_profile.fields.nameEn',
-            BusinessProfile::BUSINESS_PROFILE_FIELD_NAME_ES => 'business_profile.fields.nameEs',
-            BusinessProfile::BUSINESS_PROFILE_FIELD_DESCRIPTION => 'business_profile.fields.description',
-            BusinessProfile::BUSINESS_PROFILE_FIELD_DESCRIPTION_EN => 'business_profile.fields.descriptionEn',
-            BusinessProfile::BUSINESS_PROFILE_FIELD_DESCRIPTION_ES => 'business_profile.fields.descriptionEs',
-            BusinessProfile::BUSINESS_PROFILE_FIELD_DISCOUNT => 'business_profile.fields.discount',
             BusinessProfile::BUSINESS_PROFILE_FIELD_PANORAMA_ID => 'business_profile.fields.panorama_id',
-            BusinessProfile::BUSINESS_PROFILE_FIELD_SLOGAN => 'business_profile.fields.slogan',
-            BusinessProfile::BUSINESS_PROFILE_FIELD_PRODUCT => 'business_profile.fields.product',
-            BusinessProfile::BUSINESS_PROFILE_FIELD_BRANDS => 'business_profile.fields.brands',
             BusinessProfile::BUSINESS_PROFILE_FIELD_WEBSITE => 'business_profile.fields.website',
             BusinessProfile::BUSINESS_PROFILE_FIELD_EMAIL => 'business_profile.fields.email',
             BusinessProfile::BUSINESS_PROFILE_FIELD_STREET_ADDRESS => 'business_profile.fields.streetAddress',
@@ -344,6 +336,23 @@ class CSVImportFile implements DefaultEntityInterface
             self::BUSINESS_PROFILE_PHONE_FAX => 'business_profile.fields.phone_fax',
         ];
 
-        return array_merge(CSVImportFile::getBusinessProfileRequiredFields(), $importFields);
+        $requiredFields = self::getBusinessProfileRequiredFields();
+        $translatableFields = self::getBusinessProfileTranslatableFields();
+
+        return array_merge($requiredFields, $importFields, $translatableFields);
+    }
+
+    public static function getBusinessProfileTranslatableFields()
+    {
+        $fields = [];
+
+        foreach (BusinessProfile::getTranslatableFields() as $field) {
+            foreach (LocaleHelper::getLocaleList() as $locale => $name) {
+                $fieldKey = $field . LocaleHelper::getLangPostfix($locale);
+                $fields[$fieldKey] = 'business_profile.fields.' . $fieldKey;
+            }
+        }
+
+        return $fields;
     }
 }

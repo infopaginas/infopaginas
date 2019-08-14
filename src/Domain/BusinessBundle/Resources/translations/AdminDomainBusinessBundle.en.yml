@@ -36,20 +36,20 @@ business_profile:
     gallery: The target block size is "500px X 375px", accepted image formats are "png, jpeg, jpg, gif", max image size is "10 Mb".
   fields:
     name: Name
-    discount: Discount
+    discountEn: Discount English
+    discountEs: Discount Spanish
     panorama_id: Panorama ID
-    description: Description
     descriptionEn: Description English
     descriptionEs: Description Spanish
-    nameEn: Name English
-    nameEs: Name Spanish
     phone_main: Main Phone
     phone_secondary: Secondary Phone
     phone_fax: Fax
     website: Website
     email: Email
-    product: Product
-    brands: Brands
+    productEn: Product English
+    productEs: Product Spanish
+    brandsEn: Brands English
+    brandsEs: Brands Spanish
     streetAddress: Street Address
     streetNumber: Street Number
     extendedAddress: Extended Address
@@ -67,7 +67,8 @@ business_profile:
     youtubeURL: YouTube URL
     instagramURL: Instagram URL
     tripAdvisorURL: TripAdvisor URL
-    slogan: Slogan
+    sloganEn: Slogan English
+    sloganEs: Slogan Spanish
 
 filter.label_categories.en: Categories En
 filter.label_categories.es: Categories Es
