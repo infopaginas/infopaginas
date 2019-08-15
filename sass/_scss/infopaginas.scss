@@ -2458,6 +2458,12 @@ $thumb-width-mb: 60px;
       font-weight: bold;
     }
 
+    @media only screen and (min-width: 805px) {
+      &.main-phone {
+        margin-bottom: 15px;
+      }
+    }
+
     i.fa {
       width: 20px;
     }
