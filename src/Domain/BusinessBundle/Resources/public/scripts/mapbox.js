@@ -62,6 +62,9 @@ document.addEventListener( 'jQueryLoaded', function() {
     if ( $( '[data-target-coordinates]' ).data( 'targetCoordinates' ) ) {
         if ( navigator.geolocation ) {
             navigator.geolocation.getCurrentPosition(function( position ) {
+                if (!getCookie('geolocation')) {
+                    saveLocationToDatabase(position.coords);
+                }
                 foundLocation( position, self );
             }, notAllowedLocation);
 
@@ -76,6 +79,43 @@ document.addEventListener( 'jQueryLoaded', function() {
         } else {
             getDirections( [sanJuanCoordinates] );
         }
+    }
+
+    function saveLocationToDatabase(coords) {
+        var coordsObject = { 'latitude' : coords.latitude, 'longitude' : coords.longitude };
+        var geolocationRoute = Routing.generate('domain_site_user_geolocation_save');
+        $.ajax({
+            url : geolocationRoute,
+            type : 'POST',
+            data : coordsObject,
+            dataType: 'json',
+            success: function(response) {
+                setGeolocationCookie();
+            },
+            error: function(error) {
+                console.log(error);
+            }
+        });
+    }
+
+    function setGeolocationCookie(){
+        document.cookie = 'geolocation=' + new Date().toGMTString();
+    }
+
+    function getCookie(cname) {
+        var name = cname + "=";
+        var decodedCookie = decodeURIComponent(document.cookie);
+        var ca = decodedCookie.split(';');
+        for(var i = 0; i < ca.length; i++) {
+            var cookie = ca[i];
+            while (cookie.charAt(0) === ' ') {
+                cookie = cookie.substring(1);
+            }
+            if (cookie.indexOf(name) === 0) {
+                return cookie.substring(name.length, cookie.length);
+            }
+        }
+        return "";
     }
 
     function bindFilterEvents() {
