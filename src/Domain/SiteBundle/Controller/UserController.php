@@ -125,8 +125,8 @@ class UserController extends Controller
      */
     public function saveUserGeoLocationAction(Request $request) : JsonResponse
     {
-        $longitude = $request->query->get('longitude');
-        $latitude = $request->query->get('latitude');
+        $longitude = $request->get('longitude');
+        $latitude = $request->get('latitude');
 
         try {
             $result = $this->get('mongodb.manager')->insertOne(
