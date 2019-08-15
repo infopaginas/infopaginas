@@ -312,6 +312,13 @@ knp_gaufrette:
                 options:
                     create:     true
                     directory:  '%amazon_aws_report_directory%'
+        mass_import_storage:
+            aws_s3:
+                service_id:     aws.s3
+                bucket_name:    %amazon_aws_bucket_name%
+                options:
+                    create:     true
+                    directory:  '%amazon_aws_mass_import_directory%'
     filesystems:
         ipgn:
             adapter:    video_storage
@@ -319,6 +326,9 @@ knp_gaufrette:
         export:
             adapter:    report_storage
             alias:      report_storage_filesystem
+        import:
+            adapter:    mass_import_storage
+            alias:      mass_import_storage_filesystem
 
 dubture_f_fmpeg:
     ffmpeg_binary: /usr/bin/ffmpeg

@@ -108,18 +108,21 @@ class BusinessProfile implements
     const DISTANCE_TO_BUSINESS_PRECISION = 1;
 
     // translatable fields
-    const BUSINESS_PROFILE_FIELD_NAME           = 'name';
     const BUSINESS_PROFILE_FIELD_DESCRIPTION    = 'description';
     const BUSINESS_PROFILE_FIELD_DESCRIPTION_EN = 'descriptionEn';
     const BUSINESS_PROFILE_FIELD_DESCRIPTION_ES = 'descriptionEs';
     const BUSINESS_PROFILE_FIELD_PRODUCT        = 'product';
     const BUSINESS_PROFILE_FIELD_BRANDS         = 'brands';
     const BUSINESS_PROFILE_FIELD_SLOGAN         = 'slogan';
-    const BUSINESS_PROFILE_FIELD_PANORAMA_ID    = 'panoramaId';
+    const BUSINESS_PROFILE_FIELD_DISCOUNT       = 'discount';
 
     // common fields
-    const BUSINESS_PROFILE_FIELD_WEBSITE    = 'website';
-    const BUSINESS_PROFILE_FIELD_EMAIL      = 'email';
+    const BUSINESS_PROFILE_FIELD_NAME        = 'name';
+    const BUSINESS_PROFILE_FIELD_NAME_EN     = 'nameEn';
+    const BUSINESS_PROFILE_FIELD_NAME_ES     = 'nameEs';
+    const BUSINESS_PROFILE_FIELD_PANORAMA_ID = 'panoramaId';
+    const BUSINESS_PROFILE_FIELD_WEBSITE     = 'website';
+    const BUSINESS_PROFILE_FIELD_EMAIL       = 'email';
 
     const BUSINESS_PROFILE_FIELD_SERVICE_AREAS_TYPE     = 'serviceAreasType';
     const BUSINESS_PROFILE_FIELD_MILES_OF_MY_BUSINESS   = 'milesOfMyBusiness';
@@ -141,6 +144,7 @@ class BusinessProfile implements
     const BUSINESS_PROFILE_FIELD_YOUTUBE_URL    = 'youtubeURL';
     const BUSINESS_PROFILE_FIELD_INSTAGRAM_URL  = 'instagramURL';
     const BUSINESS_PROFILE_FIELD_TRIP_ADVISOR_URL = 'tripAdvisorURL';
+    const BUSINESS_PROFILE_FIELD_TRIP_LINKEDIN_URL = 'linkedInURL';
 
     const BUSINESS_PROFILE_FIELD_SEO_TITLE       = 'seoTitle';
     const BUSINESS_PROFILE_FIELD_SEO_DESCRIPTION = 'seoDescription';
@@ -901,6 +905,13 @@ class BusinessProfile implements
      *     )
      */
     protected $listCollection;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="is_draft", type="boolean", options={"default" : 0})
+     */
+    protected $isDraft = false;
 
     /* @var string */
     private $statusForUser;
@@ -3434,6 +3445,7 @@ class BusinessProfile implements
             self::BUSINESS_PROFILE_FIELD_PRODUCT,
             self::BUSINESS_PROFILE_FIELD_BRANDS,
             self::BUSINESS_PROFILE_FIELD_SLOGAN,
+            self::BUSINESS_PROFILE_FIELD_DISCOUNT,
         ];
     }
 
@@ -3653,5 +3665,25 @@ class BusinessProfile implements
         }
 
         return false;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isDraft()
+    {
+        return $this->isDraft;
+    }
+
+    /**
+     * @param bool $isDraft
+     *
+     * @return BusinessProfile
+     */
+    public function setIsDraft(bool $isDraft)
+    {
+        $this->isDraft = $isDraft;
+
+        return $this;
     }
 }

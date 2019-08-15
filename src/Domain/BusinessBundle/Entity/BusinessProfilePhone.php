@@ -45,6 +45,7 @@ class BusinessProfilePhone implements ChangeStateInterface
      *
      * @ORM\Column(name="phone", type="string", length=15)
      * @Assert\NotBlank()
+     * @Assert\Length(max=BusinessProfilePhone::MAX_PHONE_LENGTH)
      */
     private $phone;
 

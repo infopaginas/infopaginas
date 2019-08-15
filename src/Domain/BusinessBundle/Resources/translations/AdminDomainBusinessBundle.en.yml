@@ -34,6 +34,41 @@ business_profile:
     logo: The target block size is "120px X 120px", accepted image formats are "png, jpeg, jpg, gif", max image size is "10 Mb".
     background: The target block size is "1500px X 600px", accepted image formats are "png, jpeg, jpg, gif", max image size is "1 Mb".
     gallery: The target block size is "500px X 375px", accepted image formats are "png, jpeg, jpg, gif", max image size is "10 Mb".
+  fields:
+    name: Name
+    discountEn: Discount English
+    discountEs: Discount Spanish
+    panorama_id: Panorama ID
+    descriptionEn: Description English
+    descriptionEs: Description Spanish
+    phone_main: Main Phone
+    phone_secondary: Secondary Phone
+    phone_fax: Fax
+    website: Website
+    email: Email
+    productEn: Product English
+    productEs: Product Spanish
+    brandsEn: Brands English
+    brandsEs: Brands Spanish
+    streetAddress: Street Address
+    streetNumber: Street Number
+    extendedAddress: Extended Address
+    crossStreet: Cross Street
+    state: State
+    city: City
+    zipCode: Zip code
+    customAddress: Custom Address
+    hideAddress: Hide Address
+    hideMap: Hide Map
+    linkedInURL: Linkedin URL
+    twitterURL: Twitter URL
+    facebookURL: Facebook URL
+    googleURL: Google URL
+    youtubeURL: YouTube URL
+    instagramURL: Instagram URL
+    tripAdvisorURL: TripAdvisor URL
+    sloganEn: Slogan English
+    sloganEs: Slogan Spanish
 
 filter.label_categories.en: Categories En
 filter.label_categories.es: Categories Es
