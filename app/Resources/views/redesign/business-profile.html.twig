@@ -383,7 +383,7 @@
                         {% if businessProfile.subscriptionPlanCode > SUBSCRIPTION.CODE.FREE %}
                             <div class="social-feeds-column">
                                 {% if businessProfile.mediaUrls | length %}
-                                    <h2>{{ 'social_network_feeds' | trans }}</h2>
+                                    <h3>{{ 'social_network_feeds' | trans }}</h3>
                                     {% for socialFeed in businessProfile.mediaUrls %}
                                         {% include ':redesign/blocks/businessProfile/view:social-feeds.html.twig' %}
                                     {% endfor %}
