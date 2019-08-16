@@ -413,7 +413,7 @@ class OxaAdmin extends BaseAdmin
             case UserActionModel::TYPE_ACTION_UPDATE:
             case UserActionModel::TYPE_ACTION_RESTORE:
             case UserActionModel::TYPE_ACTION_DRAFT_REJECT:
-                if ($entity and $entity->getId()) {
+                if ($entity and $entity->getId() and $this->hasRoute(self::SONATA_URL_TYPE_EDIT)) {
                     $url = $this->generateUrl(
                         self::SONATA_URL_TYPE_EDIT,
                         [

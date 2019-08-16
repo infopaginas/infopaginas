@@ -238,6 +238,16 @@ class AdminHelper
     /**
      * @return array
      */
+    public static function getFormCSVFileAccept()
+    {
+        return [
+            '.csv',
+        ];
+    }
+
+    /**
+     * @return array
+     */
     public static function getFormVideoFileConstrain()
     {
         return [

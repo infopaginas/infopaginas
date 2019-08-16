@@ -29,6 +29,12 @@ services:
         tags:
             - {name: sonata.admin, manager_type: orm, group: admin, label: Payment Methods}
 
+    domain_business.admin.csv_import_file:
+        class: Domain\BusinessBundle\Admin\CSVImportFileAdmin
+        arguments: [~, Domain\BusinessBundle\Entity\CSVImportFile, OxaSonataAdminBundle:CRUD]
+        tags:
+            - {name: sonata.admin, manager_type: orm, group: admin, label: CSV Mass Import}
+
     domain_business.admin.subscription:
         class: Domain\BusinessBundle\Admin\SubscriptionAdmin
         arguments: [~, Domain\BusinessBundle\Entity\Subscription, OxaSonataAdminBundle:CRUD]

@@ -286,7 +286,7 @@ class BusinessProfileAdmin extends OxaAdmin
             ])
             ->add('tasks.type', 'doctrine_orm_callback', [
                 'label'      => $this->trans('filter.label_created_by_user', [], $this->getTranslationDomain()),
-                'callback'   => function($queryBuilder, $alias, $field, $value) {
+                'callback'   => function ($queryBuilder, $alias, $field, $value) {
                     if (!$value['value']) {
                         return false;
                     }
@@ -298,6 +298,7 @@ class BusinessProfileAdmin extends OxaAdmin
                 },
                 'field_type' => 'checkbox',
             ])
+            ->add('isDraft');
         ;
     }
 
@@ -337,6 +338,7 @@ class BusinessProfileAdmin extends OxaAdmin
             ->add('isDeleted', null, [
                 'label' => 'Scheduled for deletion',
             ])
+            ->add('isDraft')
         ;
 
         $this->addGridActions($listMapper);
@@ -1501,7 +1503,23 @@ class BusinessProfileAdmin extends OxaAdmin
     {
         //If you swap those 2 lines, the title will be saved half the time
         $this->preSave($entity);
+        if ($entity->isDraft()) {
+            $this->createConfirmationTask($entity);
+            $entity->setIsDraft(false);
+            $entity->setIsActive(false);
+        }
         parent::preUpdate($entity);
+    }
+
+    private function createConfirmationTask($entity)
+    {
+        $container = $this->getConfigurationPool()->getContainer();
+        $taskManager = $container->get('domain_business.manager.tasks');
+
+        $taskManager->createNewProfileConfirmationRequest(
+            $entity,
+            TaskType::TASK_PROFILE_BULK
+        );
     }
 
     /**
