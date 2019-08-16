@@ -4,7 +4,7 @@
         <div class="social-feed-header">
             <i class="fa fa-lg fa-instagram"></i>
         </div>
-        <div class="posts-wrapper"></div>
+        <div class="posts-wrapper lazy"></div>
     </div>
     <script src="https://www.instagram.com/embed.js"></script>
 
@@ -17,11 +17,8 @@
         <div class="social-feed-header">
             <i class="fa fa-lg fa-facebook-f"></i>
         </div>
-        <div class="fb-page" data-href="{{ socialFeed.url }}" data-tabs="timeline" data-width="500"
+        <div class="lazy" id="fb-page-placeholder" data-href="{{ socialFeed.url }}" data-tabs="timeline" data-width="500"
              data-small-header="false" data-adapt-container-width="true" data-hide-cover="false" data-show-facepile="true">
-            <blockquote cite="{{ socialFeed.url }}" class="fb-xfbml-parse-ignore">
-                <a href="{{ socialFeed.url }}"></a>
-            </blockquote>
         </div>
     </div>
 
@@ -32,7 +29,7 @@
             <i class="fa fa-lg fa-twitter"></i>
         </div>
         <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-        <a class="twitter-timeline" data-height="700" data-link-color="#2B7BB9"
+        <a id="twitter-timeline-placeholder" class="lazy" data-height="700" data-link-color="#2B7BB9"
            href="{{ socialFeed.url }}">
         </a>
     </div>
