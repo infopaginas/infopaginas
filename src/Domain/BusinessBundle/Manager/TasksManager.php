@@ -76,14 +76,16 @@ class TasksManager
      * Create new 'Create Business Profile' task
      *
      * @access public
+     *
      * @param BusinessProfile $businessProfile
+     * @param $type
      *
      * @return array
      */
-    public function createNewProfileConfirmationRequest(BusinessProfile $businessProfile) : array
+    public function createNewProfileConfirmationRequest(BusinessProfile $businessProfile, $type) : array
     {
-        $task = TasksFactory::create(TaskType::TASK_PROFILE_CREATE, $businessProfile);
-        return $this->save($task);
+        $task = TasksFactory::create($type, $businessProfile);
+        return $this->save($task, $type != TaskType::TASK_PROFILE_BULK);
     }
 
     /**
@@ -235,7 +237,7 @@ class TasksManager
         $businessProfile = $task->getBusinessProfile();
         $mailer = $this->getMailer();
 
-        if ($task->getType() == TaskType::TASK_PROFILE_CREATE) {
+        if ($task->getType() == TaskType::TASK_PROFILE_CREATE || $task->getType() == TaskType::TASK_PROFILE_BULK) {
             $this->getBusinessProfileManager()->activate($businessProfile);
 
             if ($businessProfile->getUser()) {

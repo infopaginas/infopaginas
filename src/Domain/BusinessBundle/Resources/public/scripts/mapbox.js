@@ -440,10 +440,12 @@ document.addEventListener( 'jQueryLoaded', function() {
         var ua = navigator.userAgent.toLowerCase();
         var url = '';
 
-        if (ua.indexOf('android') > -1) {
-            url = 'google.navigation:q=' + latitude + ',' + longitude;
+        if ( (navigator.platform.indexOf( 'iPhone' ) !== -1) ||
+            (navigator.platform.indexOf( 'iPad' ) !== -1) ||
+            (navigator.platform.indexOf( 'iPod' ) !== -1) ) {
+            url = 'maps://maps.google.com/maps?daddr=' + latitude + ',' + longitude + '&amp;ll=';
         } else {
-            url = 'http://maps.apple.com/?saddr=My+Location&daddr=' + latitude + ',' + longitude;
+            url = 'https://maps.google.com/maps?daddr=' + latitude + ',' + longitude + '&amp;ll=';
         }
 
         var a = document.getElementById( 'navigation-button' );
