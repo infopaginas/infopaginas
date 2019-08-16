@@ -43,6 +43,7 @@ use Domain\BusinessBundle\Validator\Constraints\ServiceAreaType as ServiceAreaTy
 use Domain\BusinessBundle\Validator\Constraints\BusinessProfilePhoneType as BusinessProfilePhoneTypeValidator;
 use Domain\BusinessBundle\Validator\Constraints\BusinessProfileWorkingHourType as BusinessProfileWorkingHourTypeValidator;
 use Domain\BusinessBundle\Validator\Constraints\BusinessProfileMediaUrlType as BusinessProfileMediaUrlTypeValidator;
+use Domain\BusinessBundle\VO\Url;
 
 /**
  * BusinessProfile
@@ -286,9 +287,9 @@ class BusinessProfile implements
 
     /**
      * Related to BUSINESS_PROFILE_URL_MAX_LENGTH
-     * @var string - Website
+     * @var Url - Website
      *
-     * @ORM\Column(name="website", type="string", length=1000, nullable=true)
+     * @ORM\Column(name="website", type="url", length=1000, nullable=true)
      * @Assert\Url()
      * @Assert\Length(max=1000, maxMessage="business_profile.max_length")
      */
@@ -1195,11 +1196,11 @@ class BusinessProfile implements
     /**
      * Set website
      *
-     * @param string $website
+     * @param Url $website
      *
      * @return BusinessProfile
      */
-    public function setWebsite($website)
+    public function setWebsite(Url $website)
     {
         $this->website = $website;
 
