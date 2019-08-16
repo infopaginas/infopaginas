@@ -53,29 +53,39 @@ define( [ 'jquery' ], function ( $ ) {
     };
 
     socialFeeds.prototype.showFeedsIfVisible = function () {
-        var instagramWrapper = $( this.html.instagramFeedClass + ' ' + this.html.instagramPostsWrapperClass );
-        var FBWrapper = $( this.html.FBPagePlaceholder );
+        var instagramPlaceholder = $( this.html.instagramFeedClass + ' ' + this.html.instagramPostsWrapperClass );
+        var facebookPlaceholder = $( this.html.FBPagePlaceholder );
         var twitterPlaceholder = $( this.html.twitterPlaceholder );
 
-        if ( instagramWrapper.hasClass( this.html.lazyloadElementClass ) && this.isScrolledIntoView( instagramWrapper ) ) {
-            this.insertInstagramPosts( this.instagramURL );
-            instagramWrapper.removeClass( this.html.lazyloadElementClass );
-        }
-
-        if ( FBWrapper.hasClass( this.html.lazyloadElementClass ) && this.isScrolledIntoView( FBWrapper ) ) {
-            this.initFBPlugin();
-            FBWrapper.removeClass( this.html.lazyloadElementClass );
-        }
-
-        if ( twitterPlaceholder.hasClass( this.html.lazyloadElementClass ) && this.isScrolledIntoView( twitterPlaceholder ) ) {
-            twitterPlaceholder.removeClass( this.html.lazyloadElementClass ).addClass( this.html.twitterTimelineClass );
-            twttr.widgets.load();
-        }
+        this.showFacebookFeed( facebookPlaceholder );
+        this.showInstagramFeed( instagramPlaceholder );
+        this.showTwitterFeed( twitterPlaceholder );
 
         if ( $( '.' + this.html.lazyloadElementClass ).length === 0 ) {
             window.removeEventListener( 'scroll', this.showFeedsIfVisibleProxy );
             window.removeEventListener( 'resize', this.showFeedsIfVisibleProxy );
             window.removeEventListener( 'orientationChange', this.showFeedsIfVisibleProxy );
+        }
+    };
+
+    socialFeeds.prototype.showFacebookFeed = function ( facebookPlaceholder ) {
+        if ( facebookPlaceholder.hasClass( this.html.lazyloadElementClass ) && this.isScrolledIntoView( facebookPlaceholder ) ) {
+            this.initFBPlugin();
+            facebookPlaceholder.removeClass( this.html.lazyloadElementClass );
+        }
+    };
+
+    socialFeeds.prototype.showInstagramFeed = function ( instagramPlaceholder ) {
+        if ( instagramPlaceholder.hasClass( this.html.lazyloadElementClass ) && this.isScrolledIntoView( instagramPlaceholder ) ) {
+            this.insertInstagramPosts( this.instagramURL );
+            instagramPlaceholder.removeClass( this.html.lazyloadElementClass );
+        }
+    };
+
+    socialFeeds.prototype.showTwitterFeed = function ( twitterPlaceholder ) {
+        if ( twitterPlaceholder.hasClass( this.html.lazyloadElementClass ) && this.isScrolledIntoView( twitterPlaceholder ) ) {
+            twitterPlaceholder.removeClass( this.html.lazyloadElementClass ).addClass( this.html.twitterTimelineClass );
+            twttr.widgets.load();
         }
     };
 
