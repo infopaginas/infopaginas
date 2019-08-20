@@ -1,5 +1,6 @@
 $( document ).ready( function() {
     var currentId = businessProfileId;
+    var mapPinUpdated = false;
 
     if ( parentId && !businessProfileId ) {
         businessProfileId = parentId
@@ -45,6 +46,16 @@ $( document ).ready( function() {
         applyPhoneMask();
     });
 
+    $( 'div[ id $= "' + formId + '_latitude" ]' ).on( 'change', function( event ) {
+        mapPinUpdated = true;
+        handleBusinessProfileMapPinChange();
+    });
+
+    $( 'div[ id $= "' + formId + '_longitude" ]' ).on( 'change', function( event ) {
+        mapPinUpdated = true;
+        handleBusinessProfileMapPinChange();
+    });
+
     $( document ).on( 'ifChecked ifUnchecked', 'input[ id *= "_phones_" ]', function() {
         handleBusinessProfilePhoneTypeChange();
     });
@@ -53,6 +64,13 @@ $( document ).ready( function() {
         if ( handleBusinessProfilePhoneTypeChange() ) {
             $( 'html, body' ).animate({
                 scrollTop: $( 'div[ id $= "' + formId + '_phones" ]' ).first().offset().top
+            }, 2000);
+
+            return false;
+        }
+        if ( handleBusinessProfileMapPinChange() ) {
+            $( 'html, body' ).animate({
+                scrollTop: $( 'div[ id $= "' + formId + '_latitude" ]' ).first().offset().top
             }, 2000);
 
             return false;
@@ -149,6 +167,19 @@ $( document ).ready( function() {
         handlePhoneValidationError( errorBlock, errors );
 
         return errors.length;
+    }
+
+    function handleBusinessProfileMapPinChange() {
+        var errorBlock = $( '#google-map' );
+        var errors = [];
+
+        if (!currentId && !mapPinUpdated) {
+            errors.push( errorList.phones.no_main );
+        }
+
+        handlePhoneValidationError( errorBlock, errors );
+
+        return !currentId && !mapPinUpdated;
     }
 
     function handleServiceAreaTypeChange( elem ) {
