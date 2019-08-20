@@ -6813,18 +6813,20 @@ span.no-js-warning-message {
     margin-bottom: 30px;
 
     .social-feed-header {
+      background: $blue;
+      opacity: 0.6;
       color: white;
       margin: 0;
       padding: 10px;
+
+      i {
+        display: block;
+        text-align: center;
+      }
     }
   }
 
   .instagram-feed {
-
-    .social-feed-header {
-      background-color: #E1306C;
-    }
-
     .posts-wrapper {
       height: 700px;
       overflow-y: scroll;
@@ -6839,16 +6841,9 @@ span.no-js-warning-message {
   .facebook-feed {
     width: 100%;
     min-height: 400px;
-
-    .social-feed-header {
-      background-color: #3C5A99;
-    }
   }
 
   .twitter-feed {
     width: 100%;
-    .social-feed-header {
-      background-color: #1DA1F2;
-    }
   }
 }
