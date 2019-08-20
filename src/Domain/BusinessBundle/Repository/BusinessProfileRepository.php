@@ -8,6 +8,7 @@ use Doctrine\ORM\Query;
 use Doctrine\ORM\Query\Expr;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\Tools\Pagination\Paginator;
+use Domain\BusinessBundle\Admin\BusinessProfileAdmin;
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\Subscription;
 use Domain\BusinessBundle\Model\SubscriptionPlanInterface;
@@ -510,6 +511,36 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
             ->where('bp.isActive = :true')
             ->setParameter('true', true)
             ->orderBy('bp.id');
+
+        return $qb->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @param string $name
+     * @param string $city
+     * @param int    $id
+     *
+     * @return array
+     */
+    public function getSimilarBusinesses($name, $city, $id)
+    {
+        $qb = $this->createQueryBuilder('bp');
+
+        $qb
+            ->select('bp')
+            ->where($qb->expr()->neq('bp.id', ':id'))
+            ->andWhere($qb->expr()->like('lower(bp.name)', ':name'))
+            ->setParameter('id', $id)
+            ->setParameter('name', '%' . mb_strtolower($name) . '%')
+            ->setMaxResults(BusinessProfileAdmin::MAX_VALIDATION_RESULT)
+            ->orderBy('bp.id');
+
+        if ($city) {
+            $qb
+                ->andWhere($qb->expr()->like('lower(bp.city)', ':city'))
+                ->setParameter('city', '%' . mb_strtolower($city) . '%');
+        }
 
         return $qb->getQuery()
             ->getResult();

@@ -26,6 +26,7 @@ use Domain\BusinessBundle\Model\DayOfWeekModel;
 use Domain\BusinessBundle\Model\StatusInterface;
 use Domain\BusinessBundle\Model\SubscriptionPlanInterface;
 use Domain\BusinessBundle\Repository\BusinessGalleryRepository;
+use Domain\BusinessBundle\Repository\BusinessProfileRepository;
 use Domain\BusinessBundle\Repository\BusinessReviewRepository;
 use Domain\BusinessBundle\Util\ChangeSetCalculator;
 use Domain\BusinessBundle\Util\JsonUtil;
@@ -70,6 +71,8 @@ use Domain\SearchBundle\Model\DataType\DCDataDTO;
 /**
  * Class BusinessProfileManager
  * @package Domain\BusinessBundle\Manager
+ *
+ * @method BusinessProfileRepository getRepository()
  */
 class BusinessProfileManager extends Manager
 {
@@ -3936,5 +3939,19 @@ class BusinessProfileManager extends Manager
         }
 
         return $values;
+    }
+
+    /**
+     * @param string $name
+     * @param string $city
+     * @param int    $id
+     *
+     * @return BusinessProfile[]
+     */
+    public function getSimilarBusinesses($name, $city, $id)
+    {
+        $items = $this->getRepository()->getSimilarBusinesses($name, $city, $id);
+
+        return $items;
     }
 }

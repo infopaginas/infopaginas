@@ -56,6 +56,8 @@ class BusinessProfileAdmin extends OxaAdmin
     CONST FILTER_DIRECTIONS  = 'directions';
     CONST FILTER_CALL_MOBILE = 'callsMobile';
 
+    const MAX_VALIDATION_RESULT = 5;
+
     /**
      * @var bool
      */
