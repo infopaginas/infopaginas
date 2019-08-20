@@ -1,4 +1,5 @@
 $( document ).ready( function() {
+    var currentId = businessProfileId;
 
     if ( parentId && !businessProfileId ) {
         businessProfileId = parentId
@@ -81,6 +82,12 @@ $( document ).ready( function() {
             return;
         }
 
+        var id = 0;
+
+        if (currentId) {
+            id = currentId;
+        }
+
         businessNameAjax.queue = setTimeout(function() {
             var data = {
                 businessName: nameField.val(),
@@ -88,7 +95,7 @@ $( document ).ready( function() {
             };
 
             businessNameAjax.request = $.ajax({
-                url: Routing.generate( 'domain_business_admin_validation_business_name', { id: businessProfileId } ),
+                url: Routing.generate( 'domain_business_admin_validation_business_name', { id: id } ),
                 type: 'POST',
                 dataType: 'JSON',
                 data: data,
