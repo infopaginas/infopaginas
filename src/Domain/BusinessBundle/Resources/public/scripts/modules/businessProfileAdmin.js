@@ -174,7 +174,7 @@ $( document ).ready( function() {
         var errors = [];
 
         if (!currentId && !mapPinUpdated) {
-            errors.push( errorList.phones.no_main );
+            errors.push( errorList.map.pin_not_moved );
         }
 
         handlePhoneValidationError( errorBlock, errors );
