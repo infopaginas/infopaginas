@@ -41,6 +41,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Validator\Constraints\Length;
 use Ivory\CKEditorBundle\Form\Type\CKEditorType;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 /**
  * Class BusinessProfileAdmin
@@ -796,6 +797,9 @@ class BusinessProfileAdmin extends OxaAdmin
                         [
                             'required' => false,
                             'help'     => 'business_profile.help.logo',
+                            'constraints' => [
+                                new NotBlank(),
+                            ],
                         ],
                         [
                             'link_parameters' => [
