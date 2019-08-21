@@ -5,3 +5,7 @@ domain_business_search_closest_businesses:
 domain_business_panorama_add:
      path:     /business/panorama/add
      defaults: { _controller: DomainBusinessBundle:Api:addBusinessPanorama }
+
+domain_business_update_social_click:
+     path: /business/social-button/add/{socialNetwork}/{businessProfileId}
+     defaults: { _controller: DomainBusinessBundle:Api:updateSocialButtonClickAction }

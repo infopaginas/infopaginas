@@ -195,4 +195,14 @@ class BusinessApiManager
 
         return $result;
     }
+
+    /**
+     * @param string $socialNetwork
+     * @param BusinessProfile $businessProfile
+     */
+    public function updateSocialButtonLink($socialNetwork, BusinessProfile $businessProfile)
+    {
+        $businessProfile->updateClicksBySocialNetwork($socialNetwork);
+        $this->businessProfileManager->update($businessProfile);
+    }
 }

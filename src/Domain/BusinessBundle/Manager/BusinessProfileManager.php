@@ -420,6 +420,14 @@ class BusinessProfileManager extends Manager
     /**
      * @param BusinessProfile $businessProfile
      */
+    public function update(BusinessProfile $businessProfile)
+    {
+        $this->commit($businessProfile);
+    }
+
+    /**
+     * @param BusinessProfile $businessProfile
+     */
     public function activate(BusinessProfile $businessProfile)
     {
         $businessProfile->setIsActive(true);

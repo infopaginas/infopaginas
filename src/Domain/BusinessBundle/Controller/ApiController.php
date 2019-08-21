@@ -2,7 +2,9 @@
 
 namespace Domain\BusinessBundle\Controller;
 
+use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Manager\BusinessApiManager;
+use Domain\BusinessBundle\Util\Traits\JsonResponseBuilderTrait;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -13,6 +15,12 @@ use Domain\ReportBundle\Manager\BusinessReportApiManager;
  */
 class ApiController extends Controller
 {
+    use JsonResponseBuilderTrait;
+
+    const SUCCESS_SOCIAL_NETWORK_CLICK_UPDATE = 'Successfully updated social network button click';
+
+    const ERROR_SOCIAL_NETWORK_CLICK_UPDATE = 'An error occurred trying to update social network button click';
+
     /**
      * @param Request $request
      *
@@ -65,6 +73,26 @@ class ApiController extends Controller
         $result = $this->getBusinessApiManager()->addBusinessPanorama($params);
 
         return new JsonResponse($result);
+    }
+
+    /**
+     * @param $socialNetwork
+     * @param $businessProfileId
+     * @return JsonResponse
+     */
+    public function updateSocialButtonClickAction($socialNetwork, $businessProfileId)
+    {
+        /** @var BusinessProfile $businessProfile */
+        $businessProfile = $this->getDoctrine()
+            ->getRepository(BusinessProfile::class)
+            ->find($businessProfileId);
+
+        try {
+            $this->getBusinessApiManager()->updateSocialButtonLink($socialNetwork, $businessProfile);
+            return $this->getSuccessResponse(self::SUCCESS_SOCIAL_NETWORK_CLICK_UPDATE);
+        } catch (\Exception $e) {
+            return $this->getFailureResponse(self::ERROR_SOCIAL_NETWORK_CLICK_UPDATE);
+        }
     }
 
     /**
