@@ -107,3 +107,6 @@ interaction_report:
     click: Emails
   sum:
     interaction: Interactions
+
+validation_warnings:
+  business_name: 'This business profile may already exist.'

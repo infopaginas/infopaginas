@@ -127,6 +127,9 @@ $.getScript( 'https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.js', f
             if( latitudeInput && longitudeInput ) {
                 latitudeInput.value = lat;
                 longitudeInput.value = lon;
+
+                $( latitudeInput ).change();
+                $( longitudeInput ).change();
             }
         }
 

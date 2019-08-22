@@ -50,7 +50,7 @@ class HomeController extends Controller
         $seoData     = $this->get('domain_page.manager.page')->getPageSeoData($landingPage);
 
         $homepageCarouselManager = $this->getHomepageCarouselManager();
-        $carouselBusinesses = $homepageCarouselManager->getCarouselBusinessesSortedByPosition();
+        $carouselBusinesses = $homepageCarouselManager->getCarouselBusinessesSortedByRandom();
         $showCarousel = $homepageCarouselManager->isShowCarousel($carouselBusinesses);
 
         return $this->render(

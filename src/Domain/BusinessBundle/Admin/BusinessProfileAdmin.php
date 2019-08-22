@@ -41,6 +41,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Validator\Constraints\Length;
 use Ivory\CKEditorBundle\Form\Type\CKEditorType;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 /**
  * Class BusinessProfileAdmin
@@ -55,6 +56,8 @@ class BusinessProfileAdmin extends OxaAdmin
     CONST FILTER_IMPRESSIONS = 'impressions';
     CONST FILTER_DIRECTIONS  = 'directions';
     CONST FILTER_CALL_MOBILE = 'callsMobile';
+
+    const MAX_VALIDATION_RESULT = 5;
 
     /**
      * @var bool
@@ -766,6 +769,14 @@ class BusinessProfileAdmin extends OxaAdmin
             ->end()
         ;
 
+        if ($subscriptionPlanCode > SubscriptionPlanInterface::CODE_PRIORITY) {
+            $logoConstraints = [
+                new NotBlank(),
+            ];
+        } else {
+            $logoConstraints = [];
+        }
+
         // Gallery Block
         $formMapper
             ->tab('Media')
@@ -794,6 +805,7 @@ class BusinessProfileAdmin extends OxaAdmin
                         [
                             'required' => false,
                             'help'     => 'business_profile.help.logo',
+                            'constraints' => $logoConstraints,
                         ],
                         [
                             'link_parameters' => [

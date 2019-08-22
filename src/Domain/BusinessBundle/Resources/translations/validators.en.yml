@@ -37,3 +37,4 @@ media.max_size: Media max size is {{ limit }} Mb
 
 business_profile_phone.not_unique_main: Error there cannot be more than one main phone
 business_profile_phone.no_main: Error at least one phone should be marked as "main"
+business_profile.map.pin_not_moved: Map pin position should be updated
