@@ -1,7 +1,7 @@
 {% set socialLinksExists = item.facebookURL or item.googleURL or item.twitterURL or item.youtubeURL or item.getInstagramURL or item.tripAdvisorURL %}
 
 {% if socialLinksExists %}
-    <div class="share" data-bw-gtm-component="social-buttons">
+    <div class="share" data-bw-gtm-component="social-buttons" data-business-profile-id="{{ businessProfile.id }}">
         {% if item.linkedInURL %}
             <div class="share__item linked-in">
                 <a data-href="{{ item.linkedInURL }}" class="redirect-event" data-id="{{ item.id }}" data-type="linkedInVisit" title="{% trans %}Visit business profile on...{% endtrans %}" data-bw-gtm-event-click data-bw-gtm-label="linkedIn::{{ item.linkedInURL }}"><i class="fa fa-linkedin"></i></a>

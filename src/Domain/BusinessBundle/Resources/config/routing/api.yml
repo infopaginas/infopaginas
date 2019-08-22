@@ -8,4 +8,6 @@ domain_business_panorama_add:
 
 domain_business_update_social_click:
      path: /business/social-button/add/{socialNetwork}/{businessProfileId}
-     defaults: { _controller: DomainBusinessBundle:Api:updateSocialButtonClickAction }
+     defaults: { _controller: DomainBusinessBundle:Api:updateSocialButtonClick }
+     options:
+          expose: true
