@@ -769,6 +769,14 @@ class BusinessProfileAdmin extends OxaAdmin
             ->end()
         ;
 
+        if ($subscriptionPlanCode > SubscriptionPlanInterface::CODE_PRIORITY) {
+            $logoConstraints = [
+                new NotBlank(),
+            ];
+        } else {
+            $logoConstraints = [];
+        }
+
         // Gallery Block
         $formMapper
             ->tab('Media')
@@ -797,9 +805,7 @@ class BusinessProfileAdmin extends OxaAdmin
                         [
                             'required' => false,
                             'help'     => 'business_profile.help.logo',
-                            'constraints' => [
-                                new NotBlank(),
-                            ],
+                            'constraints' => $logoConstraints,
                         ],
                         [
                             'link_parameters' => [
