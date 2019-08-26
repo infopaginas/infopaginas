@@ -44,7 +44,6 @@ define( ['jquery', 'bootstrap', 'business/tools/interactions', 'tools/select', '
         this.handleReviewCreation();
         this.handleBusinessClaim();
         this.handlePrintableCoupons();
-        this.handleSocialButtonsClicks();
     };
 
     //build form field id
@@ -187,19 +186,6 @@ define( ['jquery', 'bootstrap', 'business/tools/interactions', 'tools/select', '
             } );
 
             event.preventDefault();
-        });
-    };
-
-    businessProfileView.prototype.handleSocialButtonsClicks = function() {
-        $( document ).on( 'click' , '.share a', function() {
-            var socialNetwork = $(this).children('i').attr('class').split('-')[1];
-            $.ajax({
-                type: 'POST',
-                url: Routing.generate( 'domain_business_update_social_click', {
-                    socialNetwork : socialNetwork,
-                    businessProfileId : $(this).parent().parent().data('business-profile-id')
-                })
-            });
         });
     };
 
