@@ -3833,23 +3833,4 @@ class BusinessProfile implements
 
         return $this;
     }
-
-    public function updateClicksBySocialNetwork($socialNetwork)
-    {
-        if ($socialNetwork == 'facebook') {
-            $this->facebookURLClicks += 1;
-        } else if ($socialNetwork == 'twitter') {
-            $this->twitterURLClicks += 1;
-        } else if ($socialNetwork == 'google') {
-            $this->googleURLClicks += 1;
-        } else if ($socialNetwork == 'tripadvisor') {
-            $this->tripAdvisorURLClicks += 1;
-        } else if ($socialNetwork == 'linkedin') {
-            $this->linkedInURLClicks += 1;
-        } else if ($socialNetwork == 'youtube') {
-            $this->youtubeURLClicks += 1;
-        } else if ($socialNetwork == 'instagram') {
-            $this->instagramURLClicks += 1;
-        }
-    }
 }
