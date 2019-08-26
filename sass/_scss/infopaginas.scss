@@ -2461,6 +2461,12 @@ $thumb-width-mb: 60px;
       font-weight: bold;
     }
 
+    @media only screen and (min-width: 805px) {
+      &.main-phone {
+        margin-bottom: 15px;
+      }
+    }
+
     i.fa {
       width: 20px;
     }
@@ -5884,9 +5890,10 @@ input[type='radio'], input[type='checkbox'] {
   background-size: cover;
   filter: opacity(0.6);
   background-position: center;
-  background-color: #f0f1f3;
+  background-color: $white;
   @media only screen and (min-width: 805px) {
     display: none;
+    background-color: #f0f1f3;
   }
 }
 
@@ -5954,6 +5961,7 @@ input[type='radio'], input[type='checkbox'] {
   @media only screen and (max-width: 768px){
     max-width: 100%;
     padding: 10px;
+    background-color: $white;
   }
   .profile-header {
     box-shadow: none;
