@@ -3,12 +3,13 @@
 namespace Domain\ReportBundle\Manager;
 
 use Domain\BusinessBundle\Entity\BusinessProfile;
+use Domain\ReportBundle\Model\BusinessOverviewModel;
 use Domain\ReportBundle\Model\DataType\ReportDatesRangeVO;
 use Domain\ReportBundle\Util\DatesUtil;
 use Oxa\MongoDbBundle\Manager\MongoDbManager;
 
 /**
- * Class KeywordsReportManager
+ * Class SocialNetworksReportManager
  * @package Domain\ReportBundle\Manager
  */
 class SocialNetworksReportManager
@@ -16,26 +17,13 @@ class SocialNetworksReportManager
     /** @var MongoDbManager $mongoDbManager */
     protected $mongoDbManager;
 
-    const KEYWORDS_PER_PAGE_COUNT = [
-        5   => 5,
-        10  => 10,
-        15  => 15,
-        20  => 20,
-        25  => 25,
-        50  => 50,
-        100 => 100,
-        500 => 500,
-    ];
+    const MONGO_DB_COLLECTION_NAME_RAW       = 'overview_raw';
+    const MONGO_DB_COLLECTION_NAME_AGGREGATE = 'overview_aggregate';
 
-    const DEFAULT_KEYWORDS_COUNT = 15;
+    const MONGO_DB_COLLECTION_NAME_ARCHIVE_RAW       = 'overview_archive_raw';
+    const MONGO_DB_COLLECTION_NAME_ARCHIVE_AGGREGATE = 'overview_archive_aggregate';
 
-    const MONGO_DB_COLLECTION_NAME_RAW       = 'keyword_raw';
-    const MONGO_DB_COLLECTION_NAME_AGGREGATE = 'keyword_aggregate';
-
-    const MONGO_DB_COLLECTION_NAME_ARCHIVE_RAW       = 'keyword_archive_raw';
-    const MONGO_DB_COLLECTION_NAME_ARCHIVE_AGGREGATE = 'keyword_archive_aggregate';
-
-    const MONGO_DB_FIELD_KEYWORD     = 'keyword';
+    const MONGO_DB_FIELD_ACTION    = 'action';
     const MONGO_DB_FIELD_BUSINESS_ID = 'business_id';
     const MONGO_DB_FIELD_COUNT       = 'count';
     const MONGO_DB_FIELD_DATE_TIME   = 'datetime';
@@ -53,14 +41,14 @@ class SocialNetworksReportManager
      *
      * @return array
      */
-    public function getKeywordsData(array $params = [])
+    public function getSocialNetworkData(array $params = [])
     {
-        $stats = $this->getKeywordsDataFromMongoDb($params);
+        $stats = $this->getSocialNetworksDataFromMongoDb($params);
 
         $keywordsData = [
             'results'  => $stats,
-            'keywords' => array_keys($stats),
-            'searches' => array_values($stats),
+            'socialNetworks' => array_keys($stats),
+            'clicks' => array_values($stats),
         ];
 
         return $keywordsData;
@@ -88,7 +76,7 @@ class SocialNetworksReportManager
     {
         $keywords = mb_strtolower($search);
 
-        $data = $this->buildBusinessKeywords($keywords, $businessIds);
+        $data = $this->buildBusinessSocialNetworks($keywords, $businessIds);
 
         $this->insertBusinessKeywords($data);
     }
@@ -98,14 +86,14 @@ class SocialNetworksReportManager
      *
      * @return mixed
      */
-    protected function getKeywordsDataFromMongoDb(array $params)
+    protected function getSocialNetworksDataFromMongoDb(array $params)
     {
         $params['dateObject'] = DatesUtil::getDateRangeVOFromDateString(
             $params['date']['start'],
             $params['date']['end']
         );
 
-        return $this->getBusinessKeywordsData($params);
+        return $this->getBusinessSocialNetworksData($params);
     }
 
     /**
@@ -113,14 +101,27 @@ class SocialNetworksReportManager
      *
      * @return array
      */
-    protected function getBusinessKeywordsData($params)
+    protected function getBusinessSocialNetworksData($params)
     {
+        $socialNetworksActions = array(
+            BusinessOverviewModel::TYPE_CODE_FACEBOOK_VISIT,
+            BusinessOverviewModel::TYPE_CODE_INSTAGRAM_VISIT,
+            BusinessOverviewModel::TYPE_CODE_YOUTUBE_VISIT,
+            BusinessOverviewModel::TYPE_CODE_GOOGLE_VISIT,
+            BusinessOverviewModel::TYPE_CODE_LINKED_IN_VISIT,
+            BusinessOverviewModel::TYPE_CODE_TWITTER_VISIT,
+            BusinessOverviewModel::TYPE_CODE_TRIP_ADVISOR_VISIT,
+        );
+
         $cursor = $this->mongoDbManager->aggregateData(
             self::MONGO_DB_COLLECTION_NAME_AGGREGATE,
             [
                 [
                     '$match' => [
                         self::MONGO_DB_FIELD_BUSINESS_ID => (int)$params['businessProfileId'],
+                        self::MONGO_DB_FIELD_ACTION => [
+                            '$in' => $socialNetworksActions
+                        ],
                         self::MONGO_DB_FIELD_DATE_TIME => [
                             '$gte' => $this->mongoDbManager->typeUTCDateTime($params['dateObject']->getStartDate()),
                             '$lte' => $this->mongoDbManager->typeUTCDateTime($params['dateObject']->getEndDate()),
@@ -129,7 +130,7 @@ class SocialNetworksReportManager
                 ],
                 [
                     '$group' => [
-                        '_id' => '$' . self::MONGO_DB_FIELD_KEYWORD,
+                        '_id' => '$' . self::MONGO_DB_FIELD_ACTION,
                         self::MONGO_DB_FIELD_COUNT => [
                             '$sum' => '$' . self::MONGO_DB_FIELD_COUNT,
                         ],
@@ -147,7 +148,6 @@ class SocialNetworksReportManager
         );
 
         $result = [];
-
         foreach ($cursor as $document) {
             $result[$document['_id']] = $document[self::MONGO_DB_FIELD_COUNT];
         }
@@ -157,16 +157,16 @@ class SocialNetworksReportManager
 
     /**
      * @param int       $businessId
-     * @param string    $keyword
+     * @param string    $socialNetwork
      * @param MongoDB\BSON\UTCDateTime $date
      *
      * @return array
      */
-    protected function buildSingleBusinessKeyword($businessId, $keyword, $date)
+    protected function buildSingleBusinessSocialNetwork($businessId, $socialNetwork, $date)
     {
         $data = [
             self::MONGO_DB_FIELD_BUSINESS_ID => (int)$businessId,
-            self::MONGO_DB_FIELD_KEYWORD     => $keyword,
+            self::MONGO_DB_FIELD_ACTION     => $socialNetwork,
             self::MONGO_DB_FIELD_DATE_TIME   => $date,
         ];
 
@@ -179,16 +179,16 @@ class SocialNetworksReportManager
      *
      * @return array
      */
-    protected function buildBusinessKeywords($keywords, $businessIds)
+    protected function buildBusinessSocialNetworks($socialNetwork, $businessIds)
     {
         $data = [];
         $date = $this->mongoDbManager->typeUTCDateTime(new \DateTime());
 
         foreach ($businessIds as $businessId) {
-            $data[] = $this->buildSingleBusinessKeyword($businessId, $keywords, $date);
+            $data[] = $this->buildSingleBusinessSocialNetwork($businessId, $socialNetwork, $date);
         }
 
-        $data[] = $this->buildSingleBusinessKeyword(0, $keywords, $date);
+        $data[] = $this->buildSingleBusinessSocialNetwork(0, $socialNetwork, $date);
 
         return $data;
     }
@@ -207,7 +207,7 @@ class SocialNetworksReportManager
     /**
      * @param ReportDatesRangeVO $period
      */
-    public function aggregateBusinessKeywords($period)
+    public function aggregateBusinessSocialNetworks($period)
     {
         $this->mongoDbManager->createIndex(self::MONGO_DB_COLLECTION_NAME_AGGREGATE, [
             self::MONGO_DB_FIELD_BUSINESS_ID => MongoDbManager::INDEX_TYPE_ASC,
@@ -231,7 +231,7 @@ class SocialNetworksReportManager
                 [
                     '$project' => [
                         'query' => [
-                            'keyword' => '$' . self::MONGO_DB_FIELD_KEYWORD,
+                            'action' => '$' . self::MONGO_DB_FIELD_ACTION,
                             'bid'     => '$' . self::MONGO_DB_FIELD_BUSINESS_ID,
                         ],
                     ]
@@ -251,7 +251,7 @@ class SocialNetworksReportManager
         $insert = [];
 
         foreach ($cursor as $document) {
-            $document[self::MONGO_DB_FIELD_KEYWORD]     = $document['_id']['keyword'];
+            $document[self::MONGO_DB_FIELD_ACTION]     = $document['_id']['action'];
             $document[self::MONGO_DB_FIELD_BUSINESS_ID] = $document['_id']['bid'];
             $document[self::MONGO_DB_FIELD_DATE_TIME]   = $aggregateStartDate;
 
@@ -275,7 +275,7 @@ class SocialNetworksReportManager
     /**
      * @param \Datetime $date
      */
-    public function archiveRawBusinessKeywords($date)
+    public function archiveRawBusinessSocialNetworks($date)
     {
         $this->mongoDbManager->archiveCollection(
             self::MONGO_DB_COLLECTION_NAME_RAW,
@@ -288,7 +288,7 @@ class SocialNetworksReportManager
     /**
      * @param \Datetime $date
      */
-    public function archiveAggregatedBusinessKeywords($date)
+    public function archiveAggregatedBusinessSocialNetworks($date)
     {
         $this->mongoDbManager->archiveCollection(
             self::MONGO_DB_COLLECTION_NAME_AGGREGATE,
@@ -301,7 +301,7 @@ class SocialNetworksReportManager
     /**
      * @param \Datetime $date
      */
-    public function deleteArchivedRawKeywordData($date)
+    public function deleteArchivedRawSocialNetworksData($date)
     {
         $this->mongoDbManager->deleteOldData(
             self::MONGO_DB_COLLECTION_NAME_ARCHIVE_RAW,
