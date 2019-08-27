@@ -769,14 +769,6 @@ class BusinessProfileAdmin extends OxaAdmin
             ->end()
         ;
 
-        if ($subscriptionPlanCode > SubscriptionPlanInterface::CODE_PRIORITY) {
-            $logoConstraints = [
-                new NotBlank(),
-            ];
-        } else {
-            $logoConstraints = [];
-        }
-
         // Gallery Block
         $formMapper
             ->tab('Media')
@@ -805,7 +797,6 @@ class BusinessProfileAdmin extends OxaAdmin
                         [
                             'required' => false,
                             'help'     => 'business_profile.help.logo',
-                            'constraints' => $logoConstraints,
                         ],
                         [
                             'link_parameters' => [
@@ -1465,6 +1456,17 @@ class BusinessProfileAdmin extends OxaAdmin
                     ->end()
                 ;
             }
+        }
+
+        if ($object->getSubscriptionPlanCode() > SubscriptionPlanInterface::CODE_PRIORITY && !$object->getLogo()) {
+            $errorElement->with('logo')
+                ->addViolation($this->getTranslator()->trans(
+                    'form.business.logo_required',
+                    [],
+                    $this->getTranslationDomain()
+                ))
+                ->end()
+            ;
         }
     }
 
