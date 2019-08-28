@@ -21,9 +21,3 @@ domain_site_user_profile_upgrade:
     defaults: { _controller: DomainSiteBundle:User:processUpgrade }
     options:
         expose: true
-
-domain_site_user_geolocation_save:
-    path:     /geolocation/save
-    defaults: { _controller: DomainSiteBundle:User:saveUserGeoLocation }
-    options:
-        expose: true

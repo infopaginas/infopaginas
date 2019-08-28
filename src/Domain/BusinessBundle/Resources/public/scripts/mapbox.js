@@ -78,22 +78,6 @@ document.addEventListener( 'jQueryLoaded', function() {
         }
     }
 
-    function getCookie(cname) {
-        var name = cname + "=";
-        var decodedCookie = decodeURIComponent(document.cookie);
-        var ca = decodedCookie.split(';');
-        for(var i = 0; i < ca.length; i++) {
-            var cookie = ca[i];
-            while (cookie.charAt(0) === ' ') {
-                cookie = cookie.substring(1);
-            }
-            if (cookie.indexOf(name) === 0) {
-                return cookie.substring(name.length, cookie.length);
-            }
-        }
-        return "";
-    }
-
     function bindFilterEvents() {
         $( '#filter-category, #filter-Neighborhood' ).on( 'change', function( e ) {
             var route = $( e.currentTarget ).find( 'option:selected' ).data( 'route' );

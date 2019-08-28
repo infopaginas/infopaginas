@@ -15,8 +15,6 @@ use Domain\BusinessBundle\Manager\LocalityManager;
 
 class GeolocationManager extends Manager
 {
-    const GEOLOCATION_COLLECTION_NAME = 'geolocation';
-
     protected $confingService;
 
     /**

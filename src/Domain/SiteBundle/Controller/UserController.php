@@ -119,31 +119,6 @@ class UserController extends Controller
     }
 
     /**
-     * @param Request $request
-     *
-     * @return JsonResponse
-     */
-    public function saveUserGeoLocationAction(Request $request) : JsonResponse
-    {
-        $longitude = $request->get('longitude');
-        $latitude = $request->get('latitude');
-
-        try {
-            $result = $this->get('mongodb.manager')->insertOne(
-                GeolocationManager::GEOLOCATION_COLLECTION_NAME,
-                array('longitude' => $longitude, 'latitude' => $latitude)
-            );
-            if ($result) {
-                return $this->getSuccessResponse(self::SUCCESS_GEOLOCATION_SAVE);
-            }
-        } catch (\Exception $e) {
-            return $this->getFailureResponse(self::ERROR_GEOLOCATION_SAVE, [$e->getMessage()]);
-        }
-
-        return $this->getFailureResponse(self::ERROR_GEOLOCATION_SAVE);
-    }
-
-    /**
      * @return JsonResponse
      */
     public function processUpgradeAction()
