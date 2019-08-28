@@ -27,10 +27,12 @@ class GeolocationManager extends DefaultManager
      */
     public function registerGeolocationEvent($value)
     {
-        return $this->mongoDbManager->insertOne(
+        $result = $this->mongoDbManager->insertOne(
             self::GEOLOCATION_COLLECTION_NAME,
             array('longitude' => $value['longitude'], 'latitude' => $value['latitude'])
         );
+
+        return $result ? true : false;
     }
 
 }
