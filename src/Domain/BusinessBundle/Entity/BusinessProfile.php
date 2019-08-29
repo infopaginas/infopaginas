@@ -913,6 +913,13 @@ class BusinessProfile implements
      */
     protected $isDraft = false;
 
+    /**
+     * @var $csvImportFile CSVImportFile
+     * @ORM\ManyToOne(targetEntity="Domain\BusinessBundle\Entity\CSVImportFile")
+     * @ORM\JoinColumn(name="import_file_id", referencedColumnName="id", nullable=true)
+     */
+    protected $csvImportFile;
+
     /* @var string */
     private $statusForUser;
 
@@ -3683,6 +3690,26 @@ class BusinessProfile implements
     public function setIsDraft(bool $isDraft)
     {
         $this->isDraft = $isDraft;
+
+        return $this;
+    }
+
+    /**
+     * @return CSVImportFile
+     */
+    public function getCsvImportFile()
+    {
+        return $this->csvImportFile;
+    }
+
+    /**
+     * @param CSVImportFile $csvImportFile
+     *
+     * @return BusinessProfile
+     */
+    public function setCsvImportFile(CSVImportFile $csvImportFile)
+    {
+        $this->csvImportFile = $csvImportFile;
 
         return $this;
     }

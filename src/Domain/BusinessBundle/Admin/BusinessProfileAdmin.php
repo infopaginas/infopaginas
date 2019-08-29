@@ -301,7 +301,12 @@ class BusinessProfileAdmin extends OxaAdmin
                 },
                 'field_type' => 'checkbox',
             ])
-            ->add('isDraft');
+            ->add('isDraft', null, [
+                'label' => $this->trans('filter.label_is_draft', [], $this->getTranslationDomain()),
+            ], null, [
+                'placeholder' => 'All',
+            ])
+            ->add('csvImportFile')
         ;
     }
 

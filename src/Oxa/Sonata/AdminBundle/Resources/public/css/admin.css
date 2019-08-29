@@ -402,3 +402,13 @@ div.single-media-preview-block img {
         width: 100%;
     }
 }
+
+.spinner-wrapper {
+    display: flex;
+    height: 20px;
+}
+
+.spinner-wrapper img {
+    height: 100%;
+    margin-right: 10px;
+}

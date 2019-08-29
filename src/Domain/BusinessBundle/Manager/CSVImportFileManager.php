@@ -85,6 +85,7 @@ class CSVImportFileManager extends Manager
                     $businessProfile = $normalizer->denormalize($entry, BusinessProfile::class, 'array');
                     $businessProfile->setIsActive(false);
                     $businessProfile->setIsDraft(true);
+                    $businessProfile->setCsvImportFile($csvImportFile);
                     $this->addTranslations($businessProfile, $entry);
 
                     if (array_key_exists(CSVImportFile::BUSINESS_PROFILE_PHONE_MAIN, $entry)) {
