@@ -1537,23 +1537,10 @@ class BusinessProfileAdmin extends OxaAdmin
     {
         //If you swap those 2 lines, the title will be saved half the time
         $this->preSave($entity);
-        if ($entity->isDraft()) {
-            $this->createConfirmationTask($entity);
+        if ($entity->getIsActive()) {
             $entity->setIsDraft(false);
-            $entity->setIsActive(false);
         }
         parent::preUpdate($entity);
-    }
-
-    private function createConfirmationTask($entity)
-    {
-        $container = $this->getConfigurationPool()->getContainer();
-        $taskManager = $container->get('domain_business.manager.tasks');
-
-        $taskManager->createNewProfileConfirmationRequest(
-            $entity,
-            TaskType::TASK_PROFILE_BULK
-        );
     }
 
     /**

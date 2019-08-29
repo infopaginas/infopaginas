@@ -16,7 +16,7 @@ class CSVImportFileController extends Controller
         $csvImportFile = $this->getDoctrine()->getRepository(CSVImportFile::class)->find($id);
 
         $data = [
-            'status' => $csvImportFile->isProcessed(),
+            'status' => $csvImportFile ? $csvImportFile->isProcessed() : null,
         ];
 
         return new JsonResponse($data);

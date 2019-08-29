@@ -23,7 +23,6 @@ final class TaskType extends AbstractEnumType
     const TASK_PROFILE_CLOSE  = 'PROFILE_CLOSE';
     const TASK_REVIEW_APPROVE = 'REVIEW_APPROVE';
     const TASK_PROFILE_CLAIM  = 'PROFILE_CLAIM';
-    const TASK_PROFILE_BULK   = 'PROFILE_BULK';
 
     protected static $choices = [
         self::TASK_PROFILE_CREATE => 'Create Profile',
@@ -31,6 +30,5 @@ final class TaskType extends AbstractEnumType
         self::TASK_PROFILE_CLOSE  => 'Close Profile',
         self::TASK_REVIEW_APPROVE => 'Business Review',
         self::TASK_PROFILE_CLAIM  => 'Business Claim',
-        self::TASK_PROFILE_BULK   => 'Bulk Import Profile',
     ];
 }
