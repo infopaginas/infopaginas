@@ -70,7 +70,7 @@
                 </div>
             {% endif %}
 
-            {% if item.websiteItem %}
+            {% if item.websiteItem and item.websiteItem.url %}
                 <div class="highlights__item highlights__item_phone-row highlights__item_fixed-height highlights__item--phone">
                     <h3>{% trans %}WebsiteButton{% endtrans %}</h3>
                     <ul>
@@ -117,13 +117,13 @@
                 </div>
             {% endif %}
 
-            {% set socialLinksExists = item.getFacebookURLItem()
-                or item.linkedInURLItem()
-                or item.getGoogleURLItem()
-                or item.getTwitterURLItem()
-                or item.getYoutubeURLItem()
-                or item.getInstagramURLItem()
-                or item.getTripAdvisorURLItem()
+            {% set socialLinksExists = (item.linkedInURLItem and item.linkedInURLItem.url)
+                or (item.facebookURLItem and item.facebookURLItem.url)
+                or (item.twitterURLItem and item.twitterURLItem.url)
+                or (item.googleURLItem and item.googleURLItem.url)
+                or (item.youtubeURLItem and item.youtubeURLItem.url)
+                or (item.instagramURLItem and item.instagramURLItem.url)
+                or (item.tripAdvisorURLItem and item.tripAdvisorURLItem.url)
             %}
 
             {% if socialLinksExists %}

@@ -1,8 +1,15 @@
-{% set socialLinksExists = item.linkedInURLItem or item.facebookURLItem or item.googleURLItem or item.twitterURLItem or item.youtubeURLItem or item.getInstagramURLItem or item.tripAdvisorURLItem %}
+{% set socialLinksExists = (item.linkedInURLItem and item.linkedInURLItem.url)
+    or (item.facebookURLItem and item.facebookURLItem.url)
+    or (item.twitterURLItem and item.twitterURLItem.url)
+    or (item.googleURLItem and item.googleURLItem.url)
+    or (item.youtubeURLItem and item.youtubeURLItem.url)
+    or (item.instagramURLItem and item.instagramURLItem.url)
+    or (item.tripAdvisorURLItem and item.tripAdvisorURLItem.url)
+%}
 
 {% if socialLinksExists %}
     <div class="share" data-bw-gtm-component="social-buttons">
-        {% if item.linkedInURLItem %}
+        {% if item.linkedInURLItem and item.linkedInURLItem.url %}
             <div class="share__item linked-in">
                 <a
                         data-href="{{ item.linkedInURLItem.url }}"
@@ -16,7 +23,7 @@
                 ><i class="fa fa-linkedin"></i></a>
             </div><!-- share__item -->
         {% endif %}
-        {% if item.facebookURLItem %}
+        {% if item.facebookURLItem and item.facebookURLItem.url %}
             <div class="share__item facebook">
                 <a
                         data-href="{{ item.facebookURLItem.url }}"
@@ -30,7 +37,7 @@
                 ><i class="fa fa-facebook"></i></a>
             </div><!-- share__item -->
         {% endif %}
-        {% if item.twitterURLItem %}
+        {% if item.twitterURLItem and item.twitterURLItem.url %}
             <div class="share__item twitter">
                 <a
                         data-href="{{ item.twitterURLItem.url }}"
@@ -43,7 +50,7 @@
                 ><i class="fa fa-twitter"></i></a>
             </div><!-- share__item -->
         {% endif %}
-        {% if item.googleURLItem %}
+        {% if item.googleURLItem and item.googleURLItem.url %}
             <div class="share__item google-plus">
                 <a
                         data-href="{{ item.googleURLItem.url }}"
@@ -57,7 +64,7 @@
                 ><i class="fa fa-google-plus"></i></a>
             </div><!-- share__item -->
         {% endif %}
-        {% if item.youtubeURLItem %}
+        {% if item.youtubeURLItem and item.youtubeURLItem.url %}
             <div class="share__item youtube">
                 <a
                         data-href="{{ item.youtubeURLItem.url }}"
@@ -71,7 +78,7 @@
                 ><i class="fa fa-youtube"></i></a>
             </div><!-- share__item -->
         {% endif %}
-        {% if item.instagramURLItem %}
+        {% if item.instagramURLItem and item.instagramURLItem.url %}
             <div class="share__item instagram">
                 <a
                         data-href="{{ item.instagramURLItem.url }}"
@@ -84,7 +91,7 @@
                 ><i class="fa fa-instagram"></i></a>
             </div><!-- share__item -->
         {% endif %}
-        {% if item.tripAdvisorURLItem %}
+        {% if item.tripAdvisorURLItem and item.tripAdvisorURLItem.url %}
             <div class="share__item tripadvisor">
                 <a
                         data-href="{{ item.tripAdvisorURLItem.url }}"

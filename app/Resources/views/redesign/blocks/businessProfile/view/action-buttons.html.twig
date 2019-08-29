@@ -15,7 +15,7 @@
         <span>{% trans %}Directions{% endtrans %}</span>
     </a>
 {% endif %}
-{% if item.actionUrlItem %}
+{% if item.actionUrlItem and item.actionUrlItem.url %}
     <a
             class="button button--small button--opentable redirect-event link-pointer vertical-left-separator buttons-width"
             data-href="{{ item.actionUrlItem.url }}"

@@ -91,7 +91,7 @@
                                         </ul>
                                     </div><!-- highlights__item -->
                                 {% endif %}
-                                {% if businessProfile.websiteItem %}
+                                {% if businessProfile.websiteItem and businessProfile.websiteItem.url %}
                                     <div class="highlights__item">
                                         <h3>{% trans %}WebsiteButton{% endtrans %}</h3>
                                         <ul>
