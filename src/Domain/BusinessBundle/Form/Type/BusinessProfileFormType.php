@@ -73,7 +73,7 @@ class BusinessProfileFormType extends AbstractType
                 'label'    => 'Name of Business',
                 'required' => true,
             ])
-            ->add('website', TextType::class, [
+            ->add('websiteItem', CustomUrlType::class, [
                 'attr' => [
                     'class' => 'form-control',
                     'placeholder' => 'website.example.placeholder',

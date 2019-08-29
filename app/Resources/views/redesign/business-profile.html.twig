@@ -91,7 +91,7 @@
                                         </ul>
                                     </div><!-- highlights__item -->
                                 {% endif %}
-                                {% if businessProfile.getWebsite() %}
+                                {% if businessProfile.websiteItem %}
                                     <div class="highlights__item">
                                         <h3>{% trans %}WebsiteButton{% endtrans %}</h3>
                                         <ul>
@@ -99,13 +99,14 @@
                                                 <i class="fa fa-link"></i>
                                                 <a
                                                     class="redirect-event link-pointer"
-                                                    data-href="{{ businessProfile.getWebsite() }}"
+                                                    data-href="{{ businessProfile.websiteItem.url }}"
                                                     data-id="{{ businessProfile.id }}"
                                                     data-type="webActionButton"
                                                     data-bw-gtm-event-click
-                                                    data-bw-gtm-label="{{ businessProfile.getWebsite() }}"
+                                                    data-bw-gtm-label="{{ businessProfile.websiteItem.url }}"
+                                                    rel="{% if businessProfile.websiteItem.relNoFollow %}nofollow{% endif %} {% if businessProfile.websiteItem.relNoOpener %}noopener{% endif %} {% if businessProfile.websiteItem.relNoReferrer %}noreferrer{% endif %}"
                                                 >
-                                                    {{ businessProfile.getWebsite() |truncate(profile_action_url_span_length) }}
+                                                    {{ businessProfile.websiteItem.url |truncate(profile_action_url_span_length) }}
                                                 </a>
                                             </li>
                                         </ul>
