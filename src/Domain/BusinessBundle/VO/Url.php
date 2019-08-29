@@ -3,41 +3,37 @@
 
 namespace Domain\BusinessBundle\VO;
 
+use Domain\BusinessBundle\DBAL\Types\UrlType;
+use Symfony\Component\Validator\Constraints as Assert;
 
 class Url
 {
     /**
      * @var string
+     * @Assert\Url()
+     * @Assert\Length(max=1000, maxMessage="business_profile.max_length")
      */
     private $url;
 
     /**
      * @var bool
      */
-    private $relNoFollow;
+    private $relNoFollow = true;
 
     /**
      * @var bool
      */
-    private $relNoOpener;
+    private $relNoOpener = true;
 
     /**
      * @var bool
      */
-    private $relNoReferrer;
-
-    public function __construct($url, $relNoFollow, $relNoOpener, $relNoReferrer)
-    {
-        $this->url  = $url;
-        $this->relNoFollow = $relNoFollow;
-        $this->relNoOpener = $relNoOpener;
-        $this->relNoReferrer = $relNoReferrer;
-    }
+    private $relNoReferrer = true;
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getUrl(): string
+    public function getUrl()
     {
         return $this->url;
     }
@@ -45,15 +41,15 @@ class Url
     /**
      * @param string $url
      */
-    public function setUrl(string $url)
+    public function setUrl($url)
     {
         $this->url = $url;
     }
 
     /**
-     * @return bool
+     * @return bool|null
      */
-    public function isRelNoFollow(): bool
+    public function isRelNoFollow()
     {
         return $this->relNoFollow;
     }
@@ -61,15 +57,15 @@ class Url
     /**
      * @param bool $relNoFollow
      */
-    public function setRelNoFollow(bool $relNoFollow)
+    public function setRelNoFollow($relNoFollow)
     {
         $this->relNoFollow = $relNoFollow;
     }
 
     /**
-     * @return bool
+     * @return bool|null
      */
-    public function isRelNoOpener(): bool
+    public function isRelNoOpener()
     {
         return $this->relNoOpener;
     }
@@ -77,15 +73,15 @@ class Url
     /**
      * @param bool $relNoOpener
      */
-    public function setRelNoOpener(bool $relNoOpener)
+    public function setRelNoOpener($relNoOpener)
     {
         $this->relNoOpener = $relNoOpener;
     }
 
     /**
-     * @return bool
+     * @return bool|null
      */
-    public function isRelNoReferrer(): bool
+    public function isRelNoReferrer()
     {
         return $this->relNoReferrer;
     }
@@ -93,9 +89,23 @@ class Url
     /**
      * @param bool $relNoReferrer
      */
-    public function setRelNoReferrer(bool $relNoReferrer)
+    public function setRelNoReferrer($relNoReferrer)
     {
         $this->relNoReferrer = $relNoReferrer;
     }
 
+    public function toArray()
+    {
+        return [
+            UrlType::URL_NAME        => $this->getUrl(),
+            UrlType::REL_NO_FOLLOW   => $this->isRelNoFollow(),
+            UrlType::REL_NO_OPENER   => $this->isRelNoOpener(),
+            UrlType::REL_NO_REFERRER => $this->isRelNoReferrer(),
+        ];
+    }
+
+    public function __toString()
+    {
+        return json_encode($this->toArray());
+    }
 }

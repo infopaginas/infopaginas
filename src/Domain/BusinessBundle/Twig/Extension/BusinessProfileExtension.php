@@ -2,6 +2,7 @@
 
 namespace Domain\BusinessBundle\Twig\Extension;
 
+use Domain\BusinessBundle\DBAL\Types\UrlType;
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\BusinessProfilePhone;
 use Domain\BusinessBundle\Entity\BusinessProfileWorkingHour;
@@ -113,6 +114,16 @@ class BusinessProfileExtension extends \Twig_Extension
             'get_business_profile_related_entity_changes_html' => new \Twig_Function_Method(
                 $this,
                 'renderBusinessProfileRelatedEntityChanges',
+                [
+                    'needs_environment' => true,
+                    'is_safe' => [
+                        'html',
+                    ],
+                ]
+            ),
+            'get_business_profile_url_changes_html' => new \Twig_Function_Method(
+                $this,
+                'renderBusinessProfileUrlChanges',
                 [
                     'needs_environment' => true,
                     'is_safe' => [
@@ -453,6 +464,52 @@ class BusinessProfileExtension extends \Twig_Extension
                 } else {
                     $data[$key]['value'] = $item->value;
                 }
+            }
+        }
+
+        $html = $environment->render(
+            ':redesign/blocks/task:related_entity_changes.html.twig',
+            [
+                'data' => $data,
+            ]
+        );
+
+        return $html;
+    }
+
+    public function renderBusinessProfileUrlChanges(\Twig_Environment $environment, $json)
+    {
+        $data = [];
+        $properties = json_decode($json);
+        $key = 'value';
+
+        if ($properties) {
+            foreach ($properties as $item => $value) {
+                switch ($item) {
+                    case UrlType::URL_NAME:
+                        $name = 'Url';
+
+                        break;
+                    case UrlType::REL_NO_FOLLOW:
+                        $name = 'No Follow';
+
+                        break;
+                    case UrlType::REL_NO_REFERRER:
+                        $name = 'No Referrer';
+
+                        break;
+                    case UrlType::REL_NO_OPENER:
+                        $name = 'No opener';
+
+                        break;
+                    default:
+                        $name = $item;
+
+                        break;
+
+                }
+
+                $data[$key][$name] = $value;
             }
         }
 

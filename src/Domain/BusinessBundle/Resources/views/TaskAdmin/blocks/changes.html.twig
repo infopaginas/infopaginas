@@ -115,6 +115,13 @@
                     <td>{{ render_task_images_link(oldData) }}</td>
                     <td>{{ render_task_images_link(newData) }}</td>
                 </tr>
+            {% elseif row.action == CHANGE_SET_TYPE.CHANGE_RELATION_URL_TYPE %}
+                <tr class="sonata-ba-view-container">
+                    <td>{{ normalize_task_fieldname_label(row.fieldName)|trans }}</td>
+                    <td>{{ normalize_task_changeaction_label(row.action) }}</td>
+                    <td>{{ get_business_profile_url_changes_html(row.oldValue) }}</td>
+                    <td>{{ get_business_profile_url_changes_html(row.newValue) }}</td>
+                </tr>
             {% endif %}
         {% endfor %}
         </tbody>

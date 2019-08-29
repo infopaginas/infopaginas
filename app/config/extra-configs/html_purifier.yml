@@ -1,0 +1,6 @@
+exercise_html_purifier:
+    default:
+        Attr.AllowedRel:
+            - 'nofollow'
+            - 'noopener'
+            - 'noreferrer'

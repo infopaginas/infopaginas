@@ -44,6 +44,7 @@ class NormalizerUtil
             ChangeSetCalculator::CHANGE_RELATION_MANY_TO_MANY        => 'Relation changed',
             ChangeSetCalculator::CHANGE_MEDIA_RELATION_MANY_TO_ONE   => 'Media Relation changed',
             ChangeSetCalculator::CHANGE_MEDIA_RELATION_ONE_TO_MANY   => 'Media Relation changed',
+            ChangeSetCalculator::CHANGE_RELATION_URL_TYPE            => 'Url changed',
         ];
 
         return $translator->trans($actionLabels[$action]);
