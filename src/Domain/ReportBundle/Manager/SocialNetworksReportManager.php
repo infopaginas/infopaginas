@@ -17,8 +17,6 @@ class SocialNetworksReportManager
     /** @var MongoDbManager $mongoDbManager */
     protected $mongoDbManager;
 
-    const MONGO_DB_COLLECTION_NAME_AGGREGATE = 'overview_aggregate';
-
     /**
      * @param MongoDbManager $mongoDbManager
      */
@@ -78,7 +76,7 @@ class SocialNetworksReportManager
         );
 
         $cursor = $this->mongoDbManager->aggregateData(
-            self::MONGO_DB_COLLECTION_NAME_AGGREGATE,
+            BusinessOverviewReportManager::MONGO_DB_COLLECTION_NAME_AGGREGATE,
             [
                 [
                     '$match' => [
