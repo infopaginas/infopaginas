@@ -4063,7 +4063,7 @@ class BusinessProfile implements
     }
 
     /**
-     * @return CSVImportFile
+     * @return CSVImportFile|null
      */
     public function getCsvImportFile()
     {
@@ -4071,11 +4071,11 @@ class BusinessProfile implements
     }
 
     /**
-     * @param CSVImportFile $csvImportFile
+     * @param $csvImportFile
      *
      * @return BusinessProfile
      */
-    public function setCsvImportFile(CSVImportFile $csvImportFile)
+    public function setCsvImportFile($csvImportFile)
     {
         $this->csvImportFile = $csvImportFile;
 

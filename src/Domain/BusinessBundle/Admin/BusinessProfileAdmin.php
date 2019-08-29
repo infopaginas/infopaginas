@@ -305,7 +305,7 @@ class BusinessProfileAdmin extends OxaAdmin
             ->add('isDraft', null, [
                 'label' => $this->trans('filter.label_is_draft', [], $this->getTranslationDomain()),
             ], null, [
-                'placeholder' => 'All',
+                'placeholder' => $this->trans('all', [], 'AdminReportBundle'),
             ])
             ->add('csvImportFile')
         ;
