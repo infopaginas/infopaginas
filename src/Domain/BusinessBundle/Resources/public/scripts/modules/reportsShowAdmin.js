@@ -45,14 +45,16 @@ $( document ).ready( function() {
     };
 
     var chartType = {
-        keywords:    'keyword',
-        ads:         'ads',
-        impressions: 'impressions'
+        keywords       : 'keyword',
+        ads            : 'ads',
+        socialNetworks : 'social_networks',
+        impressions    : 'impressions'
     };
 
     var reportUrls = {
         businessOverviewDataAction: Routing.generate( 'domain_business_admin_reports_business_overview_data' ),
         keywordsDataAction:         Routing.generate( 'domain_business_admin_reports_keywords_data' ),
+        socialNetworksDataAction:   Routing.generate( 'domain_business_admin_reports_social_networks_data' ),
         adUsageDataAction:          Routing.generate( 'domain_business_admin_reports_ad_usage_data' )
     };
 
@@ -113,6 +115,8 @@ $( document ).ready( function() {
 
         if ( data.chartType === chartType.keywords ) {
             url = reportUrls.keywordsDataAction;
+        } else if ( data.chartType === chartType.socialNetworks) {
+            url = reportUrls.socialNetworksDataAction;
         } else if ( data.chartType === chartType.ads ) {
             url = reportUrls.adUsageDataAction;
         } else {
@@ -141,6 +145,8 @@ $( document ).ready( function() {
                 if ( data.chartType === chartType.keywords ) {
                     chartBlock.parent().find( html.containers.hintBlock ).html( response.stats );
                     loadKeywordsChart( chartBlock, response.keywords, response.searches );
+                } else if ( data.chartType === chartType.socialNetworks ) {
+                    loadSocialNetworksChart( chartBlock, response.socialNetworks, response.clicks );
                 } else if ( data.chartType === chartType.ads ) {
                     loadAdUsageChart( chartBlock, response.dates, response.clicks, response.impressions );
                 } else {
@@ -222,6 +228,41 @@ $( document ).ready( function() {
             series: [{
                 name: 'Keywords',
                 data: searches
+            }]
+        });
+    }
+
+    function loadSocialNetworksChart( chartBlock, socialNetworks, clicks ) {
+        chartBlock.highcharts({
+            chart: {
+                type: 'column'
+            },
+            title: {
+                text: 'Social Networks'
+            },
+            xAxis: {
+                categories: formatSocialNetworkNames(socialNetworks)
+            },
+            yAxis: {
+                allowDecimals: false,
+                min: 0,
+                title: {
+                    text: 'Count'
+                }
+            },
+            tooltip: {
+                formatter: function () {
+                    return '<b>' + this.x + '</b><br/>' + this.point.stackTotal;
+                }
+            },
+            plotOptions: {
+                column: {
+                    stacking: 'normal'
+                }
+            },
+            series: [{
+                name: 'Clicks',
+                data: clicks
             }]
         });
     }
@@ -429,5 +470,20 @@ $( document ).ready( function() {
 
     function getChartType( chartBlock ) {
         return chartBlock.data( html.data.chartType );
+    }
+
+    function formatSocialNetworkNames(socialNetworks) {
+        socialNetworks.forEach(function(socialNetwork, index) {
+            socialNetworks[index] = getSocialNetworkName(socialNetwork);
+        });
+        return socialNetworks;
+    }
+
+    function getSocialNetworkName(socialNetworkVisit) {
+        return jsUcfirst(socialNetworkVisit.split('V')[0]);
+    }
+
+    function jsUcfirst(string) {
+        return string.charAt(0).toUpperCase() + string.slice(1);
     }
 });

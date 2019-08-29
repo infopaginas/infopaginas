@@ -1328,6 +1328,11 @@ class BusinessProfileAdmin extends OxaAdmin
                             'eventType'     => BusinessOverviewModel::TYPE_CODE_VIEW,
                             'template' => 'DomainBusinessBundle:Admin:BusinessProfile/report_data.html.twig',
                         ])
+                        ->add('socialNetworks', null, [
+                            'label'     => 'Social Networks',
+                            'eventType'     => BusinessOverviewModel::TYPE_CODE_SOCIAL_NETWORKS,
+                            'template' => 'DomainBusinessBundle:Admin:BusinessProfile/report_data.html.twig',
+                        ])
                         ->add('directions', null, [
                             'label'     => 'Directions',
                             'eventType'     => BusinessOverviewModel::TYPE_CODE_DIRECTION_BUTTON,

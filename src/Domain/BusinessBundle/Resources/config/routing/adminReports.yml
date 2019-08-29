@@ -10,6 +10,12 @@ domain_business_admin_reports_keywords_data:
     options:
         expose: true
 
+domain_business_admin_reports_social_networks_data:
+    path:     /data/socialNetworks
+    defaults: { _controller: DomainBusinessBundle:Reports:socialNetworksAdmin }
+    options:
+        expose: true
+
 domain_business_admin_reports_ad_usage_data:
     path:     /data/adUsage
     defaults: { _controller: DomainBusinessBundle:Reports:adUsageAdmin }
