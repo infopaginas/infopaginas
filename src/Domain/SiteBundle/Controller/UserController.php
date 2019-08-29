@@ -31,10 +31,6 @@ class UserController extends Controller
 
     const ERROR_VALIDATION_FAILURE = 'Validation failure';
 
-    const SUCCESS_GEOLOCATION_SAVE = 'Successfully saved geolocation information';
-
-    const ERROR_GEOLOCATION_SAVE = 'An error occurred trying to save the geolocation information';
-
     /**
      * @return \Symfony\Component\HttpFoundation\Response
      */

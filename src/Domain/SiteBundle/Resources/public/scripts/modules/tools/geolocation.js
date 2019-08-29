@@ -87,16 +87,6 @@ define(['jquery', 'underscore',  'abstract/view', 'js-cookie', 'jquery-ui'], fun
         }};
 
         $( document ).trigger( 'trackingMapResult', coordsObject );
-        
-        // $.ajax({
-        //     url : geolocationRoute,
-        //     type : 'POST',
-        //     data : coordsObject,
-        //     dataType: 'json',
-        //     error: function(error) {
-        //         console.log(error);
-        //     }
-        // });
     };
 
     geolocation.prototype.setToForm = function () {
