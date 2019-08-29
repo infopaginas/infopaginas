@@ -10,6 +10,7 @@ use Domain\BusinessBundle\Form\Type\BusinessCloseRequestType;
 use Domain\BusinessBundle\Form\Type\BusinessReportFilterType;
 use Domain\BusinessBundle\Manager\BusinessProfileManager;
 use Domain\ReportBundle\Manager\CategoryOverviewReportManager;
+use Domain\ReportBundle\Manager\SocialNetworksReportManager;
 use Domain\ReportBundle\Model\BusinessOverviewModel;
 use Domain\ReportBundle\Google\Analytics\DataFetcher;
 use Domain\ReportBundle\Manager\AdUsageReportManager;
@@ -160,6 +161,19 @@ class ReportsController extends Controller
     {
         $params = $this->prepareReportParameters($request->request->all());
         $data   = $this->prepareKeywordsResponse($params);
+
+        return new JsonResponse($data);
+    }
+
+    /**
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
+    public function socialNetworksAdminAction(Request $request)
+    {
+        $params = $this->prepareReportParameters($request->request->all());
+        $data   = $this->prepareSocialNetworksResponse($params);
 
         return new JsonResponse($data);
     }
@@ -507,6 +521,22 @@ class ReportsController extends Controller
      *
      * @return array
      */
+    protected function prepareSocialNetworksResponse($params)
+    {
+        $socialNetworksReportManager = $this->getSocialNetworksReportManager();
+        $socialNetworksData = $socialNetworksReportManager->getSocialNetworkData($params);
+
+        return [
+            'socialNetworks' => $socialNetworksData['socialNetworks'],
+            'clicks' => $socialNetworksData['clicks'],
+        ];
+    }
+
+    /**
+     * @param array $params
+     *
+     * @return array
+     */
     protected function prepareAdUsageResponse($params)
     {
         $adUsageData = $this->getAdUsageReportManager()->getAdUsageData($params);
@@ -564,6 +594,14 @@ class ReportsController extends Controller
     protected function getKeywordsReportManager() : KeywordsReportManager
     {
         return $this->get('domain_report.manager.keywords_report_manager');
+    }
+
+    /**
+     * @return SocialNetworksReportManager
+     */
+    protected function getSocialNetworksReportManager() : SocialNetworksReportManager
+    {
+        return $this->get('domain_report.manager.social_networks_report_manager');
     }
 
     /**

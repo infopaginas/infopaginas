@@ -43,6 +43,7 @@ use Domain\BusinessBundle\Validator\Constraints\ServiceAreaType as ServiceAreaTy
 use Domain\BusinessBundle\Validator\Constraints\BusinessProfilePhoneType as BusinessProfilePhoneTypeValidator;
 use Domain\BusinessBundle\Validator\Constraints\BusinessProfileWorkingHourType as BusinessProfileWorkingHourTypeValidator;
 use Domain\BusinessBundle\Validator\Constraints\BusinessProfileMediaUrlType as BusinessProfileMediaUrlTypeValidator;
+use Domain\BusinessBundle\VO\Url;
 
 /**
  * BusinessProfile
@@ -121,7 +122,6 @@ class BusinessProfile implements
     const BUSINESS_PROFILE_FIELD_NAME_EN     = 'nameEn';
     const BUSINESS_PROFILE_FIELD_NAME_ES     = 'nameEs';
     const BUSINESS_PROFILE_FIELD_PANORAMA_ID = 'panoramaId';
-    const BUSINESS_PROFILE_FIELD_WEBSITE     = 'website';
     const BUSINESS_PROFILE_FIELD_EMAIL       = 'email';
 
     const BUSINESS_PROFILE_FIELD_SERVICE_AREAS_TYPE     = 'serviceAreasType';
@@ -138,13 +138,15 @@ class BusinessProfile implements
     const BUSINESS_PROFILE_FIELD_HIDE_ADDRESS       = 'hideAddress';
     const BUSINESS_PROFILE_FIELD_HIDE_MAP           = 'hideMap';
 
-    const BUSINESS_PROFILE_FIELD_TWITTER_URL    = 'twitterURL';
-    const BUSINESS_PROFILE_FIELD_FACEBOOK_URL   = 'facebookURL';
-    const BUSINESS_PROFILE_FIELD_GOOGLE_URL     = 'googleURL';
-    const BUSINESS_PROFILE_FIELD_YOUTUBE_URL    = 'youtubeURL';
-    const BUSINESS_PROFILE_FIELD_INSTAGRAM_URL  = 'instagramURL';
-    const BUSINESS_PROFILE_FIELD_TRIP_ADVISOR_URL = 'tripAdvisorURL';
-    const BUSINESS_PROFILE_FIELD_TRIP_LINKEDIN_URL = 'linkedInURL';
+    const BUSINESS_PROFILE_FIELD_WEBSITE_TYPE = 'websiteItem';
+    const BUSINESS_PROFILE_FIELD_ACTION_URL_TYPE  = 'actionUrlItem';
+    const BUSINESS_PROFILE_FIELD_TWITTER_URL_TYPE = 'twitterURLItem';
+    const BUSINESS_PROFILE_FIELD_FACEBOOK_URL_TYPE   = 'facebookURLItem';
+    const BUSINESS_PROFILE_FIELD_GOOGLE_URL_TYPE     = 'googleURLItem';
+    const BUSINESS_PROFILE_FIELD_YOUTUBE_URL_TYPE    = 'youtubeURLItem';
+    const BUSINESS_PROFILE_FIELD_INSTAGRAM_URL_TYPE  = 'instagramURLItem';
+    const BUSINESS_PROFILE_FIELD_TRIP_ADVISOR_URL_TYPE = 'tripAdvisorURLItem';
+    const BUSINESS_PROFILE_FIELD_TRIP_LINKEDIN_URL_TYPE = 'linkedInURLItem';
 
     const BUSINESS_PROFILE_FIELD_SEO_TITLE       = 'seoTitle';
     const BUSINESS_PROFILE_FIELD_SEO_DESCRIPTION = 'seoDescription';
@@ -295,6 +297,15 @@ class BusinessProfile implements
     protected $website;
 
     /**
+     * Related to BUSINESS_PROFILE_URL_MAX_LENGTH
+     * @var Url - Website
+     *
+     * @ORM\Column(name="websiteItem", type="urlType", length=1000, nullable=true)
+     * @Assert\Valid()
+     */
+    protected $websiteItem;
+
+    /**
      * @var string - action url
      *
      * @ORM\Column(name="action_url", type="string", length=1000, nullable=true)
@@ -302,6 +313,14 @@ class BusinessProfile implements
      * @Assert\Length(max=1000, maxMessage="business_profile.max_length")
      */
     protected $actionUrl;
+
+    /**
+     * @var Url|null
+     *
+     * @ORM\Column(name="action_url_item", type="urlType", length=1000, nullable=true)
+     * @Assert\Valid()
+     */
+    protected $actionUrlItem;
 
     /**
      * @var string
@@ -600,12 +619,28 @@ class BusinessProfile implements
     protected $linkedInURL;
 
     /**
+     * @var Url|null
+     *
+     * @ORM\Column(name="linkedin_url_item", type="urlType", length=1000, nullable=true)
+     * @Assert\Valid()
+     */
+    protected $linkedInURLItem;
+
+    /**
      * Related to BUSINESS_PROFILE_URL_MAX_LENGTH
      * @ORM\Column(name="twitter_url", type="string", nullable=true, length=1000)
      * @Assert\Length(max=1000, maxMessage="business_profile.max_length")
      * @Assert\Url()
      */
     protected $twitterURL;
+
+    /**
+     * @var Url|null
+     *
+     * @ORM\Column(name="twitter_url_item", type="urlType", length=1000, nullable=true)
+     * @Assert\Valid()
+     */
+    protected $twitterURLItem;
 
     /**
      * Related to BUSINESS_PROFILE_URL_MAX_LENGTH
@@ -616,12 +651,28 @@ class BusinessProfile implements
     protected $facebookURL;
 
     /**
+     * @var Url|null
+     *
+     * @ORM\Column(name="facebook_url_item", type="urlType", length=1000, nullable=true)
+     * @Assert\Valid()
+     */
+    protected $facebookURLItem;
+
+    /**
      * Related to BUSINESS_PROFILE_URL_MAX_LENGTH
      * @ORM\Column(name="google_url", type="string", nullable=true, length=1000)
      * @Assert\Length(max=1000, maxMessage="business_profile.max_length")
      * @Assert\Url()
      */
     protected $googleURL;
+
+    /**
+     * @var Url|null
+     *
+     * @ORM\Column(name="google_url_item", type="urlType", length=1000, nullable=true)
+     * @Assert\Valid()
+     */
+    protected $googleURLItem;
 
     /**
      * Related to BUSINESS_PROFILE_URL_MAX_LENGTH
@@ -632,7 +683,15 @@ class BusinessProfile implements
     protected $youtubeURL;
 
     /**
-     * Related to BUSINESS_PROFILE_FIELD_INSTAGRAM_URL
+     * @var Url|null
+     *
+     * @ORM\Column(name="youtube_url_item", type="urlType", length=1000, nullable=true)
+     * @Assert\Valid()
+     */
+    protected $youtubeURLItem;
+
+    /**
+     * Related to BUSINESS_PROFILE_FIELD_INSTAGRAM_URL_TYPE
      * @ORM\Column(name="instagram_url", type="string", nullable=true, length=1000)
      * @Assert\Length(max=1000, maxMessage="business_profile.max_length")
      * @Assert\Url()
@@ -640,12 +699,28 @@ class BusinessProfile implements
     protected $instagramURL;
 
     /**
-     * Related to BUSINESS_PROFILE_FIELD_TRIP_ADVISOR_URL
+     * @var Url|null
+     *
+     * @ORM\Column(name="instagram_url_item", type="urlType", length=1000, nullable=true)
+     * @Assert\Valid()
+     */
+    protected $instagramURLItem;
+
+    /**
+     * Related to BUSINESS_PROFILE_FIELD_TRIP_ADVISOR_URL_TYPE
      * @ORM\Column(name="trip_advisor_url", type="string", nullable=true, length=1000)
      * @Assert\Length(max=1000, maxMessage="business_profile.max_length")
      * @Assert\Url()
      */
     protected $tripAdvisorURL;
+
+    /**
+     * @var Url|null
+     *
+     * @ORM\Column(name="trip_advisor_url_item", type="urlType", length=1000, nullable=true)
+     * @Assert\Valid()
+     */
+    protected $tripAdvisorURLItem;
 
     /**
      * Field related to const BUSINESS_PROFILE_FIELD_COUNTRY
@@ -1224,19 +1299,139 @@ class BusinessProfile implements
     }
 
     /**
+     * Set websiteItem
+     *
+     * @param Url|null $websiteItem
+     *
+     * @return BusinessProfile
+     */
+    public function setWebsiteItem($websiteItem)
+    {
+        $this->websiteItem = $websiteItem;
+
+        return $this;
+    }
+
+    /**
+     * Get websiteItem
+     *
+     * @return Url
+     */
+    public function getWebsiteItem()
+    {
+        return $this->websiteItem;
+    }
+
+    /**
      * Get website final link
      *
      * @return string
      */
     public function getWebsiteLink()
     {
+        return $this->getUrlLink($this->getWebsiteItem());
+    }
+
+    /**
+     * Get website final link
+     *
+     * @return string
+     */
+    public function getActionLink()
+    {
+        return $this->getUrlLink($this->getActionUrlItem());
+    }
+
+    /**
+     * Get website final link
+     *
+     * @return string
+     */
+    public function getLinkedInLink()
+    {
+        return $this->getUrlLink($this->getLinkedInURLItem());
+    }
+
+    /**
+     * Get website final link
+     *
+     * @return string
+     */
+    public function getTwitterLink()
+    {
+        return $this->getUrlLink($this->getTwitterURLItem());
+    }
+
+    /**
+     * Get website final link
+     *
+     * @return string
+     */
+    public function getFacebookLink()
+    {
+        return $this->getUrlLink($this->getFacebookURLItem());
+    }
+
+    /**
+     * Get website final link
+     *
+     * @return string
+     */
+    public function getGoogleLink()
+    {
+        return $this->getUrlLink($this->getGoogleURLItem());
+    }
+
+    /**
+     * Get website final link
+     *
+     * @return string
+     */
+    public function getYoutubeLink()
+    {
+        return $this->getUrlLink($this->getYoutubeURLItem());
+    }
+
+    /**
+     * Get website final link
+     *
+     * @return string
+     */
+    public function getInstagramLink()
+    {
+        return $this->getUrlLink($this->getInstagramURLItem());
+    }
+
+    /**
+     * Get website final link
+     *
+     * @return string
+     */
+    public function getTripAdvisorLink()
+    {
+        return $this->getUrlLink($this->getTripAdvisorURLItem());
+    }
+
+    /**
+     * @param Url $url
+     *
+     * @return string
+     */
+    public function getUrlLink($url)
+    {
         $http = 'http';
 
-        if (preg_match('/^' . $http . '/', $this->getWebsite())) {
-            return $this->getWebsite();
+        if ($url) {
+            $link = $url->getUrl();
+        } else {
+            $link = '';
         }
 
-        return $http . '://' . $this->getWebsite();
+        if (preg_match('/^' . $http . '/', $link)) {
+            return $link;
+        }
+
+        return $http . '://' . $link;
     }
 
     /**
@@ -2123,6 +2318,24 @@ class BusinessProfile implements
     }
 
     /**
+     * @return Url|null
+     */
+    public function getLinkedInURLItem()
+    {
+        return $this->linkedInURLItem;
+    }
+
+    /**
+     * @param Url|null $linkedInURLItem
+     * @return BusinessProfile
+     */
+    public function setLinkedInURLItem($linkedInURLItem)
+    {
+        $this->linkedInURLItem = $linkedInURLItem;
+        return $this;
+    }
+
+    /**
      * @return mixed
      */
     public function getTwitterURL()
@@ -2132,11 +2345,30 @@ class BusinessProfile implements
 
     /**
      * @param mixed $twitterURL
-     * @return User
+     * @return BusinessProfile
      */
     public function setTwitterURL($twitterURL)
     {
         $this->twitterURL = $twitterURL;
+        return $this;
+    }
+
+    /**
+     * @return Url|null
+     */
+    public function getTwitterURLItem()
+    {
+        return $this->twitterURLItem;
+    }
+
+    /**
+     * @param Url|null $twitterURLItem
+     * @return BusinessProfile
+     */
+    public function setTwitterURLItem($twitterURLItem)
+    {
+        $this->twitterURLItem = $twitterURLItem;
+
         return $this;
     }
 
@@ -2150,11 +2382,28 @@ class BusinessProfile implements
 
     /**
      * @param mixed $facebookURL
-     * @return User
+     * @return BusinessProfile
      */
     public function setFacebookURL($facebookURL)
     {
         $this->facebookURL = $facebookURL;
+        return $this;
+    }
+
+    /**
+     * @return Url|null
+     */
+    public function getFacebookURLItem()
+    {
+        return $this->facebookURLItem;
+    }
+    /**
+     * @param Url|null $facebookURLItem
+     * @return BusinessProfile
+     */
+    public function setFacebookURLItem($facebookURLItem)
+    {
+        $this->facebookURLItem = $facebookURLItem;
         return $this;
     }
 
@@ -2168,11 +2417,30 @@ class BusinessProfile implements
 
     /**
      * @param mixed $googleURL
-     * @return User
+     * @return BusinessProfile
      */
     public function setGoogleURL($googleURL)
     {
         $this->googleURL = $googleURL;
+        return $this;
+    }
+
+    /**
+     * @return Url|null
+     */
+    public function getGoogleURLItem()
+    {
+        return $this->googleURLItem;
+    }
+
+    /**
+     * @param Url|null $googleURLItem
+     * @return BusinessProfile
+     */
+    public function setGoogleURLItem($googleURLItem)
+    {
+        $this->googleURLItem = $googleURLItem;
+        return $this;
     }
 
     /**
@@ -2252,6 +2520,24 @@ class BusinessProfile implements
     }
 
     /**
+     * @return Url|null
+     */
+    public function getYoutubeURLItem()
+    {
+        return $this->youtubeURLItem;
+    }
+
+    /**
+     * @param Url|null $youtubeURLItem
+     * @return BusinessProfile
+     */
+    public function setYoutubeURLItem($youtubeURLItem)
+    {
+        $this->youtubeURLItem = $youtubeURLItem;
+        return $this;
+    }
+
+    /**
      * @return mixed
      */
     public function getInstagramURL()
@@ -2272,6 +2558,24 @@ class BusinessProfile implements
     }
 
     /**
+     * @return Url|null
+     */
+    public function getInstagramURLItem()
+    {
+        return $this->instagramURLItem;
+    }
+
+    /**
+     * @param Url|null $instagramURLItem
+     * @return BusinessProfile
+     */
+    public function setInstagramURLItem($instagramURLItem)
+    {
+        $this->instagramURLItem = $instagramURLItem;
+        return $this;
+    }
+
+    /**
      * @return mixed
      */
     public function getTripAdvisorURL()
@@ -2288,6 +2592,24 @@ class BusinessProfile implements
     {
         $this->tripAdvisorURL = $tripAdvisorURL;
 
+        return $this;
+    }
+
+    /**
+     * @return Url|null
+     */
+    public function getTripAdvisorURLItem()
+    {
+        return $this->tripAdvisorURLItem;
+    }
+
+    /**
+     * @param Url|null $tripAdvisorURLItem
+     * @return BusinessProfile
+     */
+    public function setTripAdvisorURLItem($tripAdvisorURLItem)
+    {
+        $this->tripAdvisorURLItem = $tripAdvisorURLItem;
         return $this;
     }
 
@@ -2929,6 +3251,25 @@ class BusinessProfile implements
     }
 
     /**
+     * @return Url|null
+     */
+    public function getActionUrlItem()
+    {
+        return $this->actionUrlItem;
+    }
+
+    /**
+     * @param Url|null $actionUrlItem
+     * @return BusinessProfile
+     */
+    public function setActionUrlItem($actionUrlItem)
+    {
+        $this->actionUrlItem = $actionUrlItem;
+
+        return $this;
+    }
+
+    /**
      * @param string $actionUrlType
      *
      * @return BusinessProfile
@@ -3150,13 +3491,13 @@ class BusinessProfile implements
     public function getExportSocialNetworkUrls()
     {
         $socialNetworkUrlList = [];
-        $socialNetworkUrlList[] = $this->getInstagramURL();
-        $socialNetworkUrlList[] = $this->getGoogleURL();
-        $socialNetworkUrlList[] = $this->getFacebookURL();
-        $socialNetworkUrlList[] = $this->getTwitterURL();
-        $socialNetworkUrlList[] = $this->getYoutubeURL();
-        $socialNetworkUrlList[] = $this->getLinkedInURL();
-        $socialNetworkUrlList[] = $this->getTripAdvisorURL();
+        $socialNetworkUrlList[] = $this->getInstagramLink();
+        $socialNetworkUrlList[] = $this->getGoogleLink();
+        $socialNetworkUrlList[] = $this->getFacebookLink();
+        $socialNetworkUrlList[] = $this->getTwitterLink();
+        $socialNetworkUrlList[] = $this->getYoutubeLink();
+        $socialNetworkUrlList[] = $this->getLinkedInLink();
+        $socialNetworkUrlList[] = $this->getTripAdvisorLink();
 
         return implode(', ', array_filter($socialNetworkUrlList));
     }
@@ -3484,7 +3825,6 @@ class BusinessProfile implements
 //            don't track field via business owner task
 //            self::BUSINESS_PROFILE_FIELD_PANORAMA_ID,
 
-            self::BUSINESS_PROFILE_FIELD_WEBSITE,
             self::BUSINESS_PROFILE_FIELD_EMAIL,
 
             self::BUSINESS_PROFILE_FIELD_SERVICE_AREAS_TYPE,
@@ -3510,6 +3850,34 @@ class BusinessProfile implements
     {
         return [
             self::BUSINESS_PROFILE_FIELD_CATALOG_LOCALITY,
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public static function getTaskUrlRelations()
+    {
+        return [
+            self::BUSINESS_PROFILE_FIELD_WEBSITE_TYPE,
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public static function getCSVImportUrlRelations()
+    {
+        return [
+            self::BUSINESS_PROFILE_FIELD_WEBSITE_TYPE,
+            self::BUSINESS_PROFILE_FIELD_ACTION_URL_TYPE,
+            self::BUSINESS_PROFILE_FIELD_TWITTER_URL_TYPE,
+            self::BUSINESS_PROFILE_FIELD_FACEBOOK_URL_TYPE,
+            self::BUSINESS_PROFILE_FIELD_GOOGLE_URL_TYPE,
+            self::BUSINESS_PROFILE_FIELD_YOUTUBE_URL_TYPE,
+            self::BUSINESS_PROFILE_FIELD_INSTAGRAM_URL_TYPE,
+            self::BUSINESS_PROFILE_FIELD_TRIP_ADVISOR_URL_TYPE,
+            self::BUSINESS_PROFILE_FIELD_TRIP_LINKEDIN_URL_TYPE,
         ];
     }
 

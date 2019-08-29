@@ -5,11 +5,13 @@ namespace Domain\BusinessBundle\Manager;
 use Doctrine\ORM\EntityManager;
 use Domain\BusinessBundle\Entity\BusinessProfilePhone;
 use Domain\BusinessBundle\Entity\CSVImportFile;
+use Domain\BusinessBundle\VO\Url;
 use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
 use Gaufrette\Filesystem;
 use Oxa\ManagerArchitectureBundle\Model\Manager\Manager;
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
@@ -80,13 +82,14 @@ class CSVImportFileManager extends Manager
 
             $data = $this->getDataFromFile($csvImportFile, $fieldsMapping);
             foreach ($data as $index => $entry) {
-                if ($this->validateData($entry)) {
+                $denormalizable = $this->getDenormalizableItems($entry);
+
+                if ($this->validateData($denormalizable)) {
                     /** @var BusinessProfile $businessProfile */
-                    $businessProfile = $normalizer->denormalize($entry, BusinessProfile::class, 'array');
+                    $businessProfile = $normalizer->denormalize($denormalizable, BusinessProfile::class, 'array');
                     $businessProfile->setIsActive(false);
                     $businessProfile->setIsDraft(true);
-                    $businessProfile->setCsvImportFile($csvImportFile);
-                    $this->addTranslations($businessProfile, $entry);
+                    $this->addTranslations($businessProfile, $denormalizable);
 
                     if (array_key_exists(CSVImportFile::BUSINESS_PROFILE_PHONE_MAIN, $entry)) {
                         $this->setPhone(
@@ -112,6 +115,16 @@ class CSVImportFileManager extends Manager
                         );
                     }
 
+                    foreach (BusinessProfile::getCSVImportUrlRelations() as $urlField) {
+                        if (array_key_exists($urlField, $entry)) {
+                            $this->setUrlField(
+                                $businessProfile,
+                                $entry[$urlField],
+                                $urlField
+                            );
+                        }
+                    }
+
                     $this->em->persist($businessProfile);
                     $validEntriesCount++;
                 } else {
@@ -126,6 +139,15 @@ class CSVImportFileManager extends Manager
 
             $this->em->flush();
         }
+    }
+
+    protected function getDenormalizableItems($entry)
+    {
+        foreach (BusinessProfile::getCSVImportUrlRelations() as $urlField) {
+            unset($entry[$urlField]);
+        }
+
+        return $entry;
     }
 
     protected function addTranslations(BusinessProfile $businessProfile, $data)
@@ -196,6 +218,27 @@ class CSVImportFileManager extends Manager
             $this->em->persist($businessProfilePhone);
 
             $businessProfile->addPhone($businessProfilePhone);
+        }
+    }
+
+    protected function setUrlField(BusinessProfile $businessProfile, $url, $field)
+    {
+        $metadata = $this->validator->getMetadataFor(Url::class);
+
+        if ($metadata->getPropertyMetadata('url')) {
+            $constraints = $metadata->getPropertyMetadata('url')[0]->getConstraints();
+
+            if (count($this->validator->validate($url, $constraints))) {
+                return;
+            }
+        }
+
+        if ($url) {
+            $value = new Url();
+            $value->setUrl($url);
+
+            $accessor = PropertyAccess::createPropertyAccessor();
+            $accessor->setValue($businessProfile, $field, $value);
         }
     }
 

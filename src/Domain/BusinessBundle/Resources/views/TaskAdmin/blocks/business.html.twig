@@ -45,22 +45,22 @@
         </tr>
         <tr class="sonata-ba-view-container">
             <td>{{ admin.trans('Website') }}</td>
-            <td>{{ business.getWebsite() }}</td>
+            <td>{{ business.websiteItem.url }}</td>
         </tr>
         <tr class="sonata-ba-view-container">
             <td>{{ admin.trans('Social networks') }}</td>
             <td>
-                {% if business.getTwitterURL() %}
-                    {{ business.getTwitterURL() }}<br>
+                {% if business.twitterURLItem %}
+                    {{ business.twitterURLItem.url }}<br>
                 {% endif %}
-                {% if business.getFacebookURL() %}
-                    {{ business.getFacebookURL() }}<br>
+                {% if business.facebookURLItem %}
+                    {{ business.facebookURLItem.url }}<br>
                 {% endif %}
-                {% if business.getGoogleURL() %}
-                    {{ business.getGoogleURL() }}<br>
+                {% if business.googleURLItem %}
+                    {{ business.googleURLItem.url }}<br>
                 {% endif %}
-                {% if business.getYoutubeURL() %}
-                    {{ business.getYoutubeURL() }}
+                {% if business.youtubeURLItem %}
+                    {{ business.youtubeURLItem.url }}
                 {% endif %}
             </td>
         </tr>

@@ -1,40 +1,108 @@
-{% set socialLinksExists = item.facebookURL or item.googleURL or item.twitterURL or item.youtubeURL or item.getInstagramURL or item.tripAdvisorURL %}
+{% set socialLinksExists = (item.linkedInURLItem and item.linkedInURLItem.url)
+    or (item.facebookURLItem and item.facebookURLItem.url)
+    or (item.twitterURLItem and item.twitterURLItem.url)
+    or (item.googleURLItem and item.googleURLItem.url)
+    or (item.youtubeURLItem and item.youtubeURLItem.url)
+    or (item.instagramURLItem and item.instagramURLItem.url)
+    or (item.tripAdvisorURLItem and item.tripAdvisorURLItem.url)
+%}
 
 {% if socialLinksExists %}
     <div class="share" data-bw-gtm-component="social-buttons">
-        {% if item.linkedInURL %}
+        {% if item.linkedInURLItem and item.linkedInURLItem.url %}
             <div class="share__item linked-in">
-                <a data-href="{{ item.linkedInURL }}" class="redirect-event" data-id="{{ item.id }}" data-type="linkedInVisit" title="{% trans %}Visit business profile on...{% endtrans %}" data-bw-gtm-event-click data-bw-gtm-label="linkedIn::{{ item.linkedInURL }}"><i class="fa fa-linkedin"></i></a>
+                <a
+                        data-href="{{ item.linkedInURLItem.url }}"
+                        class="redirect-event"
+                        data-id="{{ item.id }}"
+                        data-type="linkedInVisit"
+                        title="{% trans %}Visit business profile on...{% endtrans %}"
+                        data-bw-gtm-event-click
+                        data-bw-gtm-label="linkedIn::{{ item.linkedInURLItem.url }}"
+                        rel="{% if item.linkedInURLItem.relNoFollow %}nofollow{% endif %} {% if item.linkedInURLItem.relNoOpener %}noopener{% endif %} {% if item.linkedInURLItem.relNoReferrer %}noreferrer{% endif %}"
+                ><i class="fa fa-linkedin"></i></a>
             </div><!-- share__item -->
         {% endif %}
-        {% if item.facebookURL %}
+        {% if item.facebookURLItem and item.facebookURLItem.url %}
             <div class="share__item facebook">
-                <a data-href="{{ item.facebookURL }}" class="redirect-event" data-id="{{ item.id }}" data-type="facebookVisit" title="{% trans %}Visit business profile on...{% endtrans %}" data-bw-gtm-event-click data-bw-gtm-label="facebook::{{ item.facebookURL }}"><i class="fa fa-facebook"></i></a>
+                <a
+                        data-href="{{ item.facebookURLItem.url }}"
+                        class="redirect-event"
+                        data-id="{{ item.id }}"
+                        data-type="facebookVisit"
+                        title="{% trans %}Visit business profile on...{% endtrans %}"
+                        data-bw-gtm-event-click
+                        data-bw-gtm-label="facebook::{{ item.facebookURLItem.url }}"
+                        rel="{% if item.facebookURLItem.relNoFollow %}nofollow{% endif %} {% if item.facebookURLItem.relNoOpener %}noopener{% endif %} {% if item.facebookURLItem.relNoReferrer %}noreferrer{% endif %}"
+                ><i class="fa fa-facebook"></i></a>
             </div><!-- share__item -->
         {% endif %}
-        {% if item.twitterURL %}
+        {% if item.twitterURLItem and item.twitterURLItem.url %}
             <div class="share__item twitter">
-                <a data-href="{{ item.twitterURL }}" class="redirect-event" data-id="{{ item.id }}" data-type="twitterVisit" title="{% trans %}Visit business profile on...{% endtrans %}" data-bw-gtm-event-click data-bw-gtm-label="twitter::{{ item.twitterURL }}"><i class="fa fa-twitter"></i></a>
+                <a
+                        data-href="{{ item.twitterURLItem.url }}"
+                        class="redirect-event"
+                        data-id="{{ item.id }}"
+                        data-type="twitterVisit"
+                        title="{% trans %}Visit business profile on...{% endtrans %}"
+                        data-bw-gtm-event-click data-bw-gtm-label="twitter::{{ item.twitterURLItem.url }}"
+                        rel="{% if item.twitterURLItem.relNoFollow %}nofollow{% endif %} {% if item.twitterURLItem.relNoOpener %}noopener{% endif %} {% if item.twitterURLItem.relNoReferrer %}noreferrer{% endif %}"
+                ><i class="fa fa-twitter"></i></a>
             </div><!-- share__item -->
         {% endif %}
-        {% if item.googleURL %}
+        {% if item.googleURLItem and item.googleURLItem.url %}
             <div class="share__item google-plus">
-                <a data-href="{{ item.googleURL }}" class="redirect-event" data-id="{{ item.id }}" data-type="googleVisit" title="{% trans %}Visit business profile on...{% endtrans %}" data-bw-gtm-event-click data-bw-gtm-label="google-plus::{{ item.googleURL }}"><i class="fa fa-google-plus"></i></a>
+                <a
+                        data-href="{{ item.googleURLItem.url }}"
+                        class="redirect-event"
+                        data-id="{{ item.id }}"
+                        data-type="googleVisit"
+                        title="{% trans %}Visit business profile on...{% endtrans %}"
+                        data-bw-gtm-event-click
+                        data-bw-gtm-label="google-plus::{{ item.googleURLItem.url }}"
+                        rel="{% if item.googleURLItem.relNoFollow %}nofollow{% endif %} {% if item.googleURLItem.relNoOpener %}noopener{% endif %} {% if item.googleURLItem.relNoReferrer %}noreferrer{% endif %}"
+                ><i class="fa fa-google-plus"></i></a>
             </div><!-- share__item -->
         {% endif %}
-        {% if item.youtubeURL %}
+        {% if item.youtubeURLItem and item.youtubeURLItem.url %}
             <div class="share__item youtube">
-                <a data-href="{{ item.youtubeURL }}" class="redirect-event" data-id="{{ item.id }}" data-type="youtubeVisit" title="{% trans %}Visit business profile on...{% endtrans %}" data-bw-gtm-event-click data-bw-gtm-label="youtube::{{ item.youtubeURL }}"><i class="fa fa-youtube"></i></a>
+                <a
+                        data-href="{{ item.youtubeURLItem.url }}"
+                        class="redirect-event"
+                        data-id="{{ item.id }}"
+                        data-type="youtubeVisit"
+                        title="{% trans %}Visit business profile on...{% endtrans %}"
+                        data-bw-gtm-event-click
+                        data-bw-gtm-label="youtube::{{ item.youtubeURLItem.url }}"
+                        rel="{% if item.youtubeURLItem.relNoFollow %}nofollow{% endif %} {% if item.youtubeURLItem.relNoOpener %}noopener{% endif %} {% if item.youtubeURLItem.relNoReferrer %}noreferrer{% endif %}"
+                ><i class="fa fa-youtube"></i></a>
             </div><!-- share__item -->
         {% endif %}
-        {% if item.instagramURL %}
+        {% if item.instagramURLItem and item.instagramURLItem.url %}
             <div class="share__item instagram">
-                <a data-href="{{ item.instagramURL }}" class="redirect-event" data-id="{{ item.id }}" data-type="instagramVisit" title="{% trans %}Visit business profile on...{% endtrans %}" data-bw-gtm-event-click data-bw-gtm-label="instagram::{{ item.instagramURL }}"><i class="fa fa-instagram"></i></a>
+                <a
+                        data-href="{{ item.instagramURLItem.url }}"
+                        class="redirect-event" data-id="{{ item.id }}"
+                        data-type="instagramVisit"
+                        title="{% trans %}Visit business profile on...{% endtrans %}"
+                        data-bw-gtm-event-click
+                        data-bw-gtm-label="instagram::{{ item.instagramURLItem.url }}"
+                        rel="{% if item.instagramURLItem.relNoFollow %}nofollow{% endif %} {% if item.instagramURLItem.relNoOpener %}noopener{% endif %} {% if item.instagramURLItem.relNoReferrer %}noreferrer{% endif %}"
+                ><i class="fa fa-instagram"></i></a>
             </div><!-- share__item -->
         {% endif %}
-        {% if item.tripAdvisorURL %}
+        {% if item.tripAdvisorURLItem and item.tripAdvisorURLItem.url %}
             <div class="share__item tripadvisor">
-                <a data-href="{{ item.tripAdvisorURL }}" class="redirect-event" data-id="{{ item.id }}" data-type="tripAdvisorVisit" title="{% trans %}Visit business profile on...{% endtrans %}" data-bw-gtm-event-click data-bw-gtm-label="tripadvisor::{{ item.tripAdvisorURL }}"><i class="fa fa-tripadvisor"></i></a>
+                <a
+                        data-href="{{ item.tripAdvisorURLItem.url }}"
+                        class="redirect-event"
+                        data-id="{{ item.id }}"
+                        data-type="tripAdvisorVisit"
+                        title="{% trans %}Visit business profile on...{% endtrans %}"
+                        data-bw-gtm-event-click
+                        data-bw-gtm-label="tripadvisor::{{ item.tripAdvisorURL }}"
+                        rel="{% if item.tripAdvisorURLItem.relNoFollow %}nofollow{% endif %} {% if item.tripAdvisorURLItem.relNoOpener %}noopener{% endif %} {% if item.tripAdvisorURLItem.relNoReferrer %}noreferrer{% endif %}"
+                ><i class="fa fa-tripadvisor"></i></a>
             </div><!-- share__item -->
         {% endif %}
     </div>

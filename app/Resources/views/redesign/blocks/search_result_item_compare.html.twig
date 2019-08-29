@@ -70,7 +70,7 @@
                 </div>
             {% endif %}
 
-            {% if item.getWebsite() %}
+            {% if item.websiteItem and item.websiteItem.url %}
                 <div class="highlights__item highlights__item_phone-row highlights__item_fixed-height highlights__item--phone">
                     <h3>{% trans %}WebsiteButton{% endtrans %}</h3>
                     <ul>
@@ -78,13 +78,14 @@
                             <i class="fa fa-link"></i>
                             <a
                                     class="redirect-event link-pointer"
-                                    data-href="{{ item.getWebsite() }}"
+                                    data-href="{{ item.websiteItem.url }}"
                                     data-id="{{ item.id }}"
                                     data-type="webActionButton"
                                     data-bw-gtm-event-click
-                                    data-bw-gtm-label="{{ item.getWebsite() }}"
+                                    data-bw-gtm-label="{{ item.websiteItem.url }}"
+                                    rel="{% if item.websiteItem.relNoFollow %}nofollow{% endif %} {% if item.websiteItem.relNoOpener %}noopener{% endif %} {% if item.websiteItem.relNoReferrer %}noreferrer{% endif %}"
                             >
-                                {{ item.getWebsite()|truncate(profile_action_url_span_length) }}
+                                {{ item.websiteItem.url|truncate(profile_action_url_span_length) }}
                             </a>
                         </li>
                     </ul>
@@ -116,12 +117,13 @@
                 </div>
             {% endif %}
 
-            {% set socialLinksExists = item.getFacebookURL()
-                or item.getGoogleURL()
-                or item.getTwitterURL()
-                or item.getYoutubeURL()
-                or item.getInstagramURL()
-                or item.getTripAdvisorURL()
+            {% set socialLinksExists = (item.linkedInURLItem and item.linkedInURLItem.url)
+                or (item.facebookURLItem and item.facebookURLItem.url)
+                or (item.twitterURLItem and item.twitterURLItem.url)
+                or (item.googleURLItem and item.googleURLItem.url)
+                or (item.youtubeURLItem and item.youtubeURLItem.url)
+                or (item.instagramURLItem and item.instagramURLItem.url)
+                or (item.tripAdvisorURLItem and item.tripAdvisorURLItem.url)
             %}
 
             {% if socialLinksExists %}

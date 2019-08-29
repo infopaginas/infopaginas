@@ -10,6 +10,7 @@ use Domain\BusinessBundle\Entity\Media\BusinessGallery;
 use Domain\BusinessBundle\Entity\Subscription;
 use Domain\BusinessBundle\Entity\SubscriptionPlan;
 use Domain\BusinessBundle\Form\Type\BusinessGalleryAdminType;
+use Domain\BusinessBundle\Form\Type\CustomUrlType;
 use Domain\BusinessBundle\Model\StatusInterface;
 use Domain\BusinessBundle\Model\SubscriptionPlanInterface;
 use Domain\BusinessBundle\Validator\Constraints\BusinessProfilePhoneTypeValidator;
@@ -479,8 +480,9 @@ class BusinessProfileAdmin extends OxaAdmin
         $formMapper
             ->tab('Main')
                 ->with('Main')
-                    ->add('website', UrlType::class, [
+                    ->add('websiteItem', CustomUrlType::class, [
                         'required' => false,
+                        'by_reference'  => false,
                     ])
                     ->add('actionUrlType', ChoiceType::class, [
                         'choices'  => BusinessProfile::getActionUrlTypes(),
@@ -489,8 +491,9 @@ class BusinessProfileAdmin extends OxaAdmin
                         'required' => true,
                         'translation_domain' => 'AdminDomainBusinessBundle',
                     ])
-                    ->add('actionUrl', UrlType::class, [
+                    ->add('actionUrlItem', CustomUrlType::class, [
                         'required' => false,
+                        'by_reference'  => false,
                     ])
                     ->add('email', EmailType::class, [
                         'required' => false,
@@ -749,26 +752,33 @@ class BusinessProfileAdmin extends OxaAdmin
         $formMapper
             ->tab('Social Networks')
                 ->with('Social Networks')
-                    ->add('linkedInURL', UrlType::class, [
+                    ->add('linkedInURLItem', CustomUrlType::class, [
                         'required' => false,
+                        'by_reference'  => false,
                     ])
-                    ->add('twitterURL', UrlType::class, [
+                    ->add('twitterURLItem', CustomUrlType::class, [
                         'required' => false,
+                        'by_reference'  => false,
                     ])
-                    ->add('facebookURL', UrlType::class, [
+                    ->add('facebookURLItem', CustomUrlType::class, [
                         'required' => false,
+                        'by_reference'  => false,
                     ])
-                    ->add('googleURL', UrlType::class, [
+                    ->add('googleURLItem', CustomUrlType::class, [
                         'required' => false,
+                        'by_reference'  => false,
                     ])
-                    ->add('youtubeURL', UrlType::class, [
+                    ->add('youtubeURLItem', CustomUrlType::class, [
                         'required' => false,
+                        'by_reference'  => false,
                     ])
-                    ->add('instagramURL', UrlType::class, [
+                    ->add('instagramURLItem', CustomUrlType::class, [
                         'required' => false,
+                        'by_reference'  => false,
                     ])
-                    ->add('tripAdvisorURL', UrlType::class, [
+                    ->add('tripAdvisorURLItem', CustomUrlType::class, [
                         'required' => false,
+                        'by_reference'  => false,
                     ])
                 ->end()
             ->end()
@@ -1076,9 +1086,9 @@ class BusinessProfileAdmin extends OxaAdmin
                     ->add('user', null, [
                         'template' => 'OxaSonataAdminBundle:ShowFields:show_orm_many_to_one.html.twig',
                     ])
-                    ->add('website')
+                    ->add('websiteLink')
                     ->add('actionUrlType')
-                    ->add('actionUrl')
+                    ->add('getActionLink')
                     ->add('email')
                     ->add('slug')
                     ->add('collectionWorkingHours', null, [
@@ -1253,13 +1263,13 @@ class BusinessProfileAdmin extends OxaAdmin
         $showMapper
             ->tab('Social Networks')
                 ->with('Social Networks')
-                    ->add('linkedInURL')
-                    ->add('twitterURL')
-                    ->add('facebookURL')
-                    ->add('googleURL')
-                    ->add('youtubeURL')
-                    ->add('instagramURL')
-                    ->add('tripAdvisorURL')
+                    ->add('linkedInLink')
+                    ->add('twitterLink')
+                    ->add('facebookLink')
+                    ->add('googleLink')
+                    ->add('youtubeLink')
+                    ->add('instagramLink')
+                    ->add('tripAdvisorLink')
                 ->end()
             ->end()
         ;
@@ -1331,6 +1341,11 @@ class BusinessProfileAdmin extends OxaAdmin
                         ->add('impressions', null, [
                             'label'     => 'Impressions',
                             'eventType'     => BusinessOverviewModel::TYPE_CODE_VIEW,
+                            'template' => 'DomainBusinessBundle:Admin:BusinessProfile/report_data.html.twig',
+                        ])
+                        ->add('socialNetworks', null, [
+                            'label'     => 'Social Networks',
+                            'eventType'     => BusinessOverviewModel::TYPE_CODE_SOCIAL_NETWORKS,
                             'template' => 'DomainBusinessBundle:Admin:BusinessProfile/report_data.html.twig',
                         ])
                         ->add('directions', null, [
