@@ -41,7 +41,7 @@ class UrlUpdateCommand extends ContainerAwareCommand
 
         $this->updateUrls();
 
-        foreach ($this->getUrlFieds() as $oldField => $newField) {
+        foreach ($this->getUrlFields() as $oldField => $newField) {
             if (array_key_exists($oldField, $this->items)) {
                 $result = $this->items[$oldField];
             } else {
@@ -65,7 +65,7 @@ class UrlUpdateCommand extends ContainerAwareCommand
             /* @var BusinessProfile $business */
             $business = $row[0];
 
-            foreach ($this->getUrlFieds() as $oldField => $newField) {
+            foreach ($this->getUrlFields() as $oldField => $newField) {
                 $this->updateUrlField($business, $oldField, $newField);
             }
 
@@ -114,7 +114,7 @@ class UrlUpdateCommand extends ContainerAwareCommand
         return $url;
     }
 
-    private function getUrlFieds()
+    private function getUrlFields()
     {
         return [
             'website' => BusinessProfile::BUSINESS_PROFILE_FIELD_WEBSITE_TYPE,

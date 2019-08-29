@@ -47,7 +47,7 @@
                             <i class="fa fa-location-arrow"></i>
                             <span class="hide-mobile">{% trans %}Directions{% endtrans %}</span>
                         </a>
-                        {% if carouselBusiness.businessProfile.actionUrlItem %}
+                        {% if carouselBusiness.businessProfile.actionUrlItem and carouselBusiness.businessProfile.actionUrlItem.url %}
                             <a
                                     class="homepage-opentable-button slide-button button button--small button--featured redirect-event link-pointer homepage-carousel-action"
                                     data-href="{{ carouselBusiness.businessProfile.actionUrlItem.url }}"
