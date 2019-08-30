@@ -74,6 +74,8 @@ business_profile:
 filter.label_categories.en: Categories En
 filter.label_categories.es: Categories Es
 filter.label_created_by_user: Created By User
+filter:
+  label_is_draft: Draft
 
 # interaction report
 interaction_report:

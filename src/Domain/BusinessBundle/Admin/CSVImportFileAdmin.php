@@ -24,6 +24,7 @@ class CSVImportFileAdmin extends OxaAdmin
     public function setTemplate($name, $template)
     {
         $this->templates['edit'] = 'DomainBusinessBundle:Admin:csv_import_edit.html.twig';
+        $this->templates['show'] = 'DomainBusinessBundle:Admin:csv_import_show.html.twig';
     }
 
     /**
@@ -119,8 +120,34 @@ class CSVImportFileAdmin extends OxaAdmin
             ->add('validEntriesCount')
             ->add('invalidEntriesCount')
             ->add('invalidEntriesNumbers')
-            ->add('isProcessed')
+            ->add('isProcessed', null, [
+                'template' => 'DomainBusinessBundle:Admin:CSVMassImport/show_is_processed.html.twig',
+            ])
+
         ;
+
+        if ($this->getSubject()->isProcessed()) {
+            $showMapper
+                ->add('Created Profiles', null, [
+                    'data'     => $this->getLinkedBusinessProfilesListUrl(),
+                    'template' => 'DomainBusinessBundle:Admin:CSVMassImport/show_created_profiles_link.html.twig',
+                ])
+            ;
+        }
+    }
+
+    protected function getLinkedBusinessProfilesListUrl()
+    {
+        $router = $this->getConfigurationPool()->getContainer()->get('router');
+
+        return $router->generate(
+            'admin_domain_business_businessprofile_list',
+            [
+                'filter[_page]' => 1,
+                'filter[_per_page]' => $this->getMaxPerPage(),
+                'filter[csvImportFile][value]' => $this->getSubject()->getId(),
+            ]
+        );
     }
 
     public function prePersist($csvImportFile)

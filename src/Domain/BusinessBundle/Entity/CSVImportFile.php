@@ -110,7 +110,7 @@ class CSVImportFile implements DefaultEntityInterface
 
     public function __toString()
     {
-        return $this->getDescription() ?: '';
+        return 'id: ' . $this->getId() . ($this->getDescription() ? ', ' . $this->getDescription() : '');
     }
 
     /**
