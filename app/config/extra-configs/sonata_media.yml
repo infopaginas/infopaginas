@@ -109,6 +109,7 @@ sonata_media:
             allowed_extensions: ['jpg', 'png', 'gif', 'jpeg']
             allowed_mime_types: ['image/pjpeg','image/jpeg','image/png','image/x-png', 'image/gif']
             thumbnail: sonata.media.thumbnail.format
+            resizer: oxa.sonata.admin.resizer.webp
         file:
             # the resizer must be set to false, otherwhise this can delete icon files from the fs
             resizer:    false
