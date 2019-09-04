@@ -67,4 +67,4 @@ services:
 
     oxa.sonata.admin.resizer.webp:
         class: Oxa\Sonata\AdminBundle\Resizer\WebpResizer
-        arguments: ['@sonata.media.adapter.image.gd', 'outbound', '@sonata.media.metadata.proxy']
+        arguments: ['@sonata.media.adapter.image.imagick', 'outbound', '@sonata.media.metadata.proxy']

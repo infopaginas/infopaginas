@@ -3,15 +3,18 @@
 namespace Oxa\Sonata\AdminBundle\Resizer;
 
 use Gaufrette\File;
+use Imagick;
 use Imagine\Exception\InvalidArgumentException;
 use Imagine\Exception\RuntimeException;
+use Imagine\Imagick\Image;
 use Sonata\MediaBundle\Model\MediaInterface;
 use Sonata\MediaBundle\Resizer\SimpleResizer;
 
 class WebpResizer extends SimpleResizer
 {
-    const SUPPORTED_FORMATS = ['webp', 'jpg', 'png', 'gif', 'jpeg'];
+    const SUPPORTED_FORMATS = ['webp', 'jpg', 'png', 'gif', 'jpeg', 'jp2'];
     const DEFAULT_QUALITY = 80;
+    const DEFAULT_FORMAT = 'webp';
 
     /**
      * {@inheritdoc}
@@ -25,15 +28,8 @@ class WebpResizer extends SimpleResizer
                 $media->getProviderName()
             ));
         }
-        $image = $this->adapter->load($in->getContent());
-        $thumbnail = $image->thumbnail($this->getBox($media, $settings), $this->mode);
 
-        $resource = $thumbnail->getGdResource();
-        $quality = self::DEFAULT_QUALITY;
-
-        ob_start();
-        $format = strtolower($format);
-
+        $format = isset($settings['format']) ? strtolower($settings['format']) : self::DEFAULT_FORMAT;
         if (!$this->supported($format)) {
             throw new InvalidArgumentException(sprintf(
                 'Saving image in "%s" format is not supported, please use one of the following extensions: "%s"',
@@ -42,27 +38,21 @@ class WebpResizer extends SimpleResizer
             ));
         }
 
-        if (!isset($settings['webp_quality'])) {
-            if (isset($settings['quality'])) {
-                $settings['webp_quality'] = $settings['quality'];
-            }
-        }
-        if (isset($settings['webp_quality'])) {
-            if ($settings['webp_quality'] < 0 || $settings['webp_quality'] > 100) {
-                throw new InvalidArgumentException('webp_quality option should be an integer from 0 to 100');
-            }
-            $quality = $settings['webp_quality'];
-        }
+        $image = $this->adapter->load($in->getContent());
 
-        $this->setExceptionHandler();
+//        $content = $image->thumbnail($this->getBox($media, $settings), $this->mode)->get($format, $settings);
 
-        if (false === imagewebp($resource, null, $quality)) {
-            throw new RuntimeException('Save operation failed');
-        }
+        /** @var Image $thumbnail */
+        $thumbnail = $image->thumbnail($this->getBox($media, $settings), $this->mode);
 
-        $this->resetExceptionHandler();
+        $format = 'jp2';
+        $im = $thumbnail->getImagick();
 
-        $content = ob_get_clean();
+        $im->setFormat($format);
+        $im->setCompressionQuality(50);
+        $im->setImageFormat($format);
+
+        $content = $im->getImageBlob();
 
         $out->setContent($content, $this->metadata->get($media, $out->getName()));
     }
