@@ -1,0 +1,7 @@
+domain_business_admin_csv_import_file_status:
+  path:     /status/{id}
+  defaults: { _controller: DomainBusinessBundle:CSVImportFile:getStatus }
+  requirements:
+    id: \d+
+  options:
+    expose: true

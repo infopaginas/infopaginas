@@ -1561,13 +1561,21 @@ transition-timing-function: ease-in-out;
 
 $thumb-width-mb: 60px;
 
+.mapboxgl-popup-content {
+  display: flex;
+}
+
 .item__img {
   float: left;
   transition-duration: .4s;
   transition-property: width;
   transition-timing-function: ease-in-out;
   max-width: $thumb-width-mb;
-  margin-bottom: 6px;
+  margin-bottom: 0;
+
+  a {
+    margin: auto;
+  }
 
   img {
     max-height: 60px;
@@ -1576,16 +1584,11 @@ $thumb-width-mb: 60px;
 
   @media only screen and (min-width: 805px) {
     max-width: 80px;
-    margin-bottom: 12px;
 
     img {
       max-height: 80px;
       max-width: 80px;
     }
-  }
-
-  @media only screen and (max-width: 375px) {
-    margin-bottom: 22px;
   }
 }
 
@@ -2456,6 +2459,12 @@ $thumb-width-mb: 60px;
   li {
     &.main-phone {
       font-weight: bold;
+    }
+
+    @media only screen and (min-width: 805px) {
+      &.main-phone {
+        margin-bottom: 15px;
+      }
     }
 
     i.fa {
@@ -5881,9 +5890,10 @@ input[type='radio'], input[type='checkbox'] {
   background-size: cover;
   filter: opacity(0.6);
   background-position: center;
-  background-color: #f0f1f3;
+  background-color: $white;
   @media only screen and (min-width: 805px) {
     display: none;
+    background-color: #f0f1f3;
   }
 }
 
@@ -5951,6 +5961,7 @@ input[type='radio'], input[type='checkbox'] {
   @media only screen and (max-width: 768px){
     max-width: 100%;
     padding: 10px;
+    background-color: $white;
   }
   .profile-header {
     box-shadow: none;
@@ -6813,18 +6824,20 @@ span.no-js-warning-message {
     margin-bottom: 30px;
 
     .social-feed-header {
+      background: $blue;
+      opacity: 0.6;
       color: white;
       margin: 0;
       padding: 10px;
+
+      i {
+        display: block;
+        text-align: center;
+      }
     }
   }
 
   .instagram-feed {
-
-    .social-feed-header {
-      background-color: #E1306C;
-    }
-
     .posts-wrapper {
       height: 700px;
       overflow-y: scroll;
@@ -6839,16 +6852,9 @@ span.no-js-warning-message {
   .facebook-feed {
     width: 100%;
     min-height: 400px;
-
-    .social-feed-header {
-      background-color: #3C5A99;
-    }
   }
 
   .twitter-feed {
     width: 100%;
-    .social-feed-header {
-      background-color: #1DA1F2;
-    }
   }
 }

@@ -2,6 +2,7 @@
 
 namespace Domain\BusinessBundle\Admin;
 
+use Domain\BusinessBundle\Form\Type\CustomUrlType;
 use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
 use Oxa\Sonata\MediaBundle\Model\OxaMediaInterface;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
@@ -51,7 +52,10 @@ class ClickbaitTitleAdmin extends OxaAdmin
                 ->add('locality', null, ['required' => true])
                 ->add('isActive')
                 ->add('title')
-                ->add('url', null, ['required' => true])
+                ->add('urlItem', CustomUrlType::class, [
+                    'required' => true,
+                    'by_reference'  => false,
+                ])
             ->end()
         ;
     }
@@ -66,8 +70,7 @@ class ClickbaitTitleAdmin extends OxaAdmin
             ->add('locality')
             ->add('isActive')
             ->add('title')
-            ->add('url')
-            ->add('image', null, ['template' => 'DomainArticleBundle:Admin:show_image.html.twig'])
+            ->add('urlItemLink')
         ;
     }
 }

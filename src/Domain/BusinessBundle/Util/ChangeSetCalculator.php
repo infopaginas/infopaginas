@@ -10,6 +10,7 @@ use Domain\BusinessBundle\Entity\Locality;
 use Domain\BusinessBundle\Entity\Media\BusinessGallery;
 use Domain\BusinessBundle\Entity\Neighborhood;
 use Domain\BusinessBundle\Entity\Translation\BusinessProfileTranslation;
+use Domain\BusinessBundle\VO\Url;
 use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
 use Oxa\Sonata\MediaBundle\Entity\Media;
 use Oxa\VideoBundle\Entity\VideoMedia;
@@ -46,6 +47,7 @@ class ChangeSetCalculator
     const CHANGE_COMMON_PROPERTY            = 'CHANGE_COMMON_PROPERTY';
     const CHANGE_TRANSLATION                = 'CHANGE_TRANSLATION';
     const CHANGE_RELATION_MANY_TO_ONE       = 'CHANGE_RELATION_MANY_TO_ONE';
+    const CHANGE_RELATION_URL_TYPE          = 'CHANGE_RELATION_URL_TYPE';
     const CHANGE_RELATION_ONE_TO_MANY       = 'CHANGE_RELATION_ONE_TO_MANY';
     const CHANGE_RELATION_MANY_TO_MANY      = 'CHANGE_RELATION_MANY_TO_MANY';
     const CHANGE_MEDIA_RELATION_MANY_TO_ONE = 'CHANGE_MEDIA_RELATION_MANY_TO_ONE';
@@ -88,6 +90,11 @@ class ChangeSetCalculator
             $entityNew,
             $entityOld
         );
+        $urlFieldsChangeSetEntries = self::getUrlRelationsChangeSetEntries(
+            $entityNew,
+            $entityOld,
+            $em
+        );
 
         $changeSetEntries = array_merge(
             $commonFieldsChangeSetEntries,
@@ -97,7 +104,8 @@ class ChangeSetCalculator
             $mediaManyToOneRelationsChangeSetEntries,
             $mediaOneToManyRelationsChangeSetEntries,
             $translatableFieldsChangeSetEntries,
-            $seoFieldsChangeSetEntries
+            $seoFieldsChangeSetEntries,
+            $urlFieldsChangeSetEntries
         );
 
         $changeSet = new ChangeSet();
@@ -286,6 +294,30 @@ class ChangeSetCalculator
                     self::serializeEntityValue($valueNew),
                     self::CHANGE_RELATION_MANY_TO_ONE,
                     $class
+                );
+            }
+        }
+
+        return $changeSetEntries;
+    }
+
+    public static function getUrlRelationsChangeSetEntries($entityNew, $entityOld, EntityManagerInterface $em)
+    {
+        $accessor = PropertyAccess::createPropertyAccessor();
+
+        $changeSetEntries = [];
+
+        foreach (BusinessProfile::getTaskUrlRelations() as $field) {
+            $valueNew = $accessor->getValue($entityNew, $field);
+            $valueOld = $accessor->getValue($entityOld, $field);
+
+            if ((string)$valueNew != (string)$valueOld) {
+                $changeSetEntries[] = self::buildChangeSetEntryObject(
+                    $field,
+                    (string)$valueOld,
+                    (string)$valueNew,
+                    self::CHANGE_RELATION_URL_TYPE,
+                    Url::class
                 );
             }
         }

@@ -297,6 +297,10 @@
       max-width: unset;
     }
   }
+
+  &.homepage-carousel-block {
+    margin-top: 35px;
+  }
 }
 
 .suggested-slider {
@@ -413,6 +417,11 @@
 
       .homepage-opentable-button {
         background: $red;
+        color: $white;
+      }
+
+      .homepage-call-mobile-button {
+        background: $blue;
         color: $white;
       }
 

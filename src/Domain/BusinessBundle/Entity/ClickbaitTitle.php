@@ -3,6 +3,7 @@
 namespace Domain\BusinessBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Domain\BusinessBundle\VO\Url;
 use Oxa\Sonata\AdminBundle\Model\ChangeStateInterface;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\ChangeStateTrait;
@@ -58,6 +59,14 @@ class ClickbaitTitle implements DefaultEntityInterface, TranslatableInterface, C
      * @Assert\NotBlank()
      */
     protected $url;
+
+    /**
+     * @var Url|null
+     *
+     * @ORM\Column(name="url_item", type="urlType", length=1000, nullable=true)
+     * @Assert\Valid()
+     */
+    protected $urlItem;
 
     /**
      * Constructor
@@ -140,5 +149,37 @@ class ClickbaitTitle implements DefaultEntityInterface, TranslatableInterface, C
         $this->url = $url;
 
         return $this;
+    }
+
+    /**
+     * @return Url|null
+     */
+    public function getUrlItem()
+    {
+        return $this->urlItem;
+    }
+
+    /**
+     * @param Url|null $urlItem
+     * @return ClickbaitTitle
+     */
+    public function setUrlItem($urlItem)
+    {
+        $this->urlItem = $urlItem;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUrlItemLink()
+    {
+        $urlItem = $this->getUrlItem();
+
+        if ($urlItem && $urlItem->getUrl()) {
+            return $urlItem->getUrl();
+        }
+
+        return '';
     }
 }

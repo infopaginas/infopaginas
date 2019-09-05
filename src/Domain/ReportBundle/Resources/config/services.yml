@@ -35,6 +35,10 @@ services:
         class: Domain\ReportBundle\Manager\KeywordsReportManager
         arguments: [ '@mongodb.manager' ]
 
+    domain_report.manager.social_networks_report_manager:
+        class: Domain\ReportBundle\Manager\SocialNetworksReportManager
+        arguments: [ '@mongodb.manager' ]
+
     # export services
     domain_report.exporter:
         class: Domain\ReportBundle\Service\Export\Exporter

@@ -8,6 +8,7 @@ class BusinessOverviewModel implements ReportInterface
     const TYPE_CODE_VIEW       = 'views';
     const TYPE_CODE_KEYWORD    = 'keyword';
     const TYPE_CODE_ADS        = 'ads';
+    const TYPE_CODE_SOCIAL_NETWORKS = 'social_networks';
     const TYPE_CODE_CATEGORY_BUSINESS   = 'category_business';
     const TYPE_CODE_CATEGORY_CATALOG    = 'category_catalog';
     const TYPE_CODE_GEOLOCATION = 'geolocation';

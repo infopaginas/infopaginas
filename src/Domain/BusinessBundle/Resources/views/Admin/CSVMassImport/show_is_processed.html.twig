@@ -1,0 +1,12 @@
+{% extends 'SonataAdminBundle:CRUD:show_boolean.html.twig' %}
+
+{% block field %}
+    {% if value %}
+        {{ parent() }}
+    {% else %}
+        <div class="spinner-wrapper" data-id="{{ object.id }}">
+            <img src="{{ asset('assets/images/spinner-empty-background.gif') }}" alt="processing">
+            <p>{{ 'file_is_processing' | trans({}, 'SonataAdminBundle') }}</p>
+        </div>
+    {% endif %}
+{% endblock %}

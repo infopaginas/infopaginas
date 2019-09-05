@@ -43,3 +43,5 @@ media_max_size_message: Max file size is
 media_invalid_extension_files_message: Invalid file extension
 imageHelpMessage: Use keywords for the picture names. Use <span class="highlighted-text">hyphens</span> between two keywords. Example: <span class="highlighted-text">Plantas-Ornamentales.png</span>
 homepageCarouselImageRatioHelpMessage: For a better quality image should have aspect ratio about 888:492
+file_is_processing: File is Processing. It will take about one minute
+link_filters: Columns Filter

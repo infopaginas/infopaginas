@@ -206,8 +206,20 @@
 
         <div class="form__row vertical__row">
             <div class="form__field field--website">
-                {{ custom_form_label.widget(businessProfileForm.website) }}
-                {{ form_widget(businessProfileForm.website, {'attr': {'placeholder': ''}}) }}
+                {{ custom_form_label.widget(businessProfileForm.websiteItem.url) }}
+                {{ form_widget(businessProfileForm.websiteItem.url, {'attr': {'placeholder': ''}}) }}
+            </div>
+            <div class="form__field field--website field-active-time">
+                {{ custom_form_label.widget(businessProfileForm.websiteItem.relNoFollow) }}
+                {{ form_widget(businessProfileForm.websiteItem.relNoFollow, {'attr': {'placeholder': ''}}) }}
+            </div>
+            <div class="form__field field--website field-active-time">
+                {{ custom_form_label.widget(businessProfileForm.websiteItem.relNoOpener) }}
+                {{ form_widget(businessProfileForm.websiteItem.relNoOpener, {'attr': {'placeholder': ''}}) }}
+            </div>
+            <div class="form__field field--website field-active-time">
+                {{ custom_form_label.widget(businessProfileForm.websiteItem.relNoReferrer) }}
+                {{ form_widget(businessProfileForm.websiteItem.relNoReferrer, {'attr': {'placeholder': ''}}) }}
             </div>
         </div>
 

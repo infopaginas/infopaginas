@@ -150,10 +150,7 @@ class BusinessProfileFormHandler extends BaseFormHandler implements BusinessForm
             $this->businessProfileManager->saveProfile($this->businessProfileNew);
             $message = self::MESSAGE_BUSINESS_PROFILE_CREATED;
 
-            $this->tasksManager->createNewProfileConfirmationRequest(
-                $this->businessProfileNew,
-                TaskType::TASK_PROFILE_CREATE
-            );
+            $this->tasksManager->createNewProfileConfirmationRequest($this->businessProfileNew);
         } else {
             //create 'Update Business Profile' Task for Admin / CM
             $this->tasksManager->createUpdateProfileConfirmationRequest(

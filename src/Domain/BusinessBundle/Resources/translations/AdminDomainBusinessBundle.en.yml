@@ -6,6 +6,7 @@ filter.label_name: Name
 filter.label_subscription_plan: Subscription Plan
 filter.label_phone: Phones
 form.business.max_images: Only max_images_per_business images quantity allowed per one business profile, please, delete extra
+form.business.logo_required: This field is required
 form.business_gallery.max_images: Business business_profile already has max_images_per_business images in gallery, this is the max quantity per one business
 form.business.empty_images: Images in gallery must not contain empty value in Media field
 form.subscription.start_date: Start Date cannot be in the future
@@ -73,6 +74,8 @@ business_profile:
 filter.label_categories.en: Categories En
 filter.label_categories.es: Categories Es
 filter.label_created_by_user: Created By User
+filter:
+  label_is_draft: Draft
 
 # interaction report
 interaction_report:
@@ -107,3 +110,6 @@ interaction_report:
     click: Emails
   sum:
     interaction: Interactions
+
+validation_warnings:
+  business_name: 'This business profile may already exist.'

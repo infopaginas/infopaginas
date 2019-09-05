@@ -1,0 +1,76 @@
+<div class="suggested-slider-section hide-before homepage-carousel-block" data-bw-gtm-component="business-profile-suggested">
+    <span class="arrow prev slick-arrow">
+        <i class="fa fa-chevron-circle-left" aria-hidden="true"></i>
+    </span>
+    <section class="page-section photos slider suggested-slider homepage-slider-main section--slider hide-before">
+        {% for carouselBusiness in carouselBusinesses %}
+            {% if carouselBusiness.businessProfile.isActive %}
+                <div class="slider__item homepage-slider__item">
+                    <a href="{{ absolute_url(path('domain_business_profile_view', { 'citySlug' : carouselBusiness.businessProfile.citySlug, slug: carouselBusiness.businessProfile.slug })) }}" title="{{ carouselBusiness.businessProfile.name }}" class="suggested-link" target="_blank" data-bw-gtm-event-click data-bw-gtm-label="item-suggested::{{ carouselBusiness.businessProfile.name }}::{{ absolute_url(path('domain_business_profile_view', { 'citySlug' : carouselBusiness.businessProfile.citySlug, slug: carouselBusiness.businessProfile.slug })) }}">
+                        <div class="slide-title homepage-slide-title">
+                            <h3>{{ carouselBusiness.businessProfile.name|truncate(suggested_title_max_length) }}</h3>
+                        </div>
+                        {% if not carouselBusiness.getVideo() %}
+                            <div class="">
+                                <img src="{% path carouselBusiness.image, 'normal' %}" alt="{{ carouselBusiness.businessProfile.name }}">
+                            </div>
+                        {% endif %}
+                    </a>
+                    <div class="slide-image slide-image-homepage-carousel">
+                        {% if carouselBusiness.getVideo() %}
+                            <section class="page-section video homepage-carousel-video">
+                                {{ render_video_embed(carouselBusiness.getVideo()) }}
+                            </section>
+                        {% endif %}
+                    </div>
+                    <div class="slide-actions homepage-actions">
+                        {% if not carouselBusiness.businessProfile.phones.empty %}
+                            {% set hasPhone = true %}
+                            {% if carouselBusiness.businessProfile.mainPhone %}
+                                {% set phoneToCall = carouselBusiness.businessProfile.mainPhone.phone %}
+                            {% else %}
+                                {% set phoneToCall = carouselBusiness.businessProfile.phones.first.phone %}
+                            {% endif %}
+
+                            <a href="tel:{{ phoneToCall }}" class="slide-button homepage-carousel-action button button--small homepage-call-mobile-button hide-desktop phone-call {% if carouselBusiness.businessProfile.isAd %}svm-callmobile{% endif %}" data-id="{{ carouselBusiness.businessProfile.id }}" data-type="callMobButton" data-bw-gtm-event-click data-bw-gtm-label="{{ phoneToCall }}" data-bname="{{ carouselBusiness.businessProfile.name }}">
+                                <i class="fa fa-phone"></i>
+                                <span class="hide-mobile">{% trans %}ActionButtonCall{% endtrans %}</span>
+                            </a>
+                            <button class="btn btn-default dropdown-call-button phone-call link-pointer {% if carouselBusiness.businessProfile.isAd %}svm-calldesktop{% endif %} hide-mobile" type="button" data-id="{{ carouselBusiness.businessProfile.id }}" data-type="callDeskButton" data-bw-gtm-event-click data-bw-gtm-label="{{ phoneToCall }}" data-bname="{{ carouselBusiness.businessProfile.name }}">
+                                <i class="fa fa-phone"></i>
+                                {{ phoneToCall }}
+                            </button>
+                        {% else %}
+                            {% set hasPhone = false %}
+                        {% endif %}
+                        <a class="slide-button get-dir homepage-carousel-action redirect-event button button--small button--featured link-pointer {% if carouselBusiness.businessProfile.isAd %}svm-getdir{% endif %}" data-href="{{ path('domain_search_show_directions', {'slug': carouselBusiness.businessProfile.slug }) }}" data-id="{{ carouselBusiness.businessProfile.id }}" data-latlng="{{ carouselBusiness.businessProfile.latLng }}" data-type="directionButton" data-bw-gtm-event-click data-bw-gtm-label="{% trans %}Directions{% endtrans %}" data-bname="{{ carouselBusiness.businessProfile.name }}">
+                            <i class="fa fa-location-arrow"></i>
+                            <span class="hide-mobile">{% trans %}Directions{% endtrans %}</span>
+                        </a>
+                        {% if carouselBusiness.businessProfile.actionUrlItem and carouselBusiness.businessProfile.actionUrlItem.url %}
+                            <a
+                                    class="homepage-opentable-button slide-button button button--small button--featured redirect-event link-pointer homepage-carousel-action"
+                                    data-href="{{ carouselBusiness.businessProfile.actionUrlItem.url }}"
+                                    data-id="{{ carouselBusiness.businessProfile.id }}"
+                                    data-type="webActionButton"
+                                    data-bw-gtm-event-click
+                                    data-bw-gtm-label="{{ carouselBusiness.businessProfile.actionUrlItem.url }}"
+                                    rel="{% if carouselBusiness.businessProfile.actionUrlItem.relNoFollow %}nofollow{% endif %} {% if carouselBusiness.businessProfile.actionUrlItem.relNoOpener %}noopener{% endif %} {% if carouselBusiness.businessProfile.actionUrlItem.relNoReferrer %}noreferrer{% endif %}"
+                            >
+                                {% if carouselBusiness.businessProfile.actionUrlType in BUSINESS_PROFILE.ACTION_TYPE %}
+                                    {% set path = 'redesign/img/icons/' ~ carouselBusiness.businessProfile.actionUrlType ~ '.svg' %}
+
+                                    <img class="homepage-opentable-image" src="{{ absolute_url(asset(path)) }}" alt="{{ carouselBusiness.businessProfile.actionUrlTypes[carouselBusiness.businessProfile.actionUrlType]|trans|purify }}">
+                                {% endif %}
+                                <span class="hide-mobile">{{ carouselBusiness.businessProfile.actionUrlTypes[carouselBusiness.businessProfile.actionUrlType]|trans|purify }}</span>
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endif %}
+        {% endfor %}
+    </section>
+    <span class="arrow next slick-arrow">
+        <i class="fa fa-chevron-circle-right" aria-hidden="true"></i>
+    </span>
+</div>
