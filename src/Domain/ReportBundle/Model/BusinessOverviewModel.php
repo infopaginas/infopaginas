@@ -11,6 +11,7 @@ class BusinessOverviewModel implements ReportInterface
     const TYPE_CODE_SOCIAL_NETWORKS = 'social_networks';
     const TYPE_CODE_CATEGORY_BUSINESS   = 'category_business';
     const TYPE_CODE_CATEGORY_CATALOG    = 'category_catalog';
+    const TYPE_CODE_GEOLOCATION = 'geolocation';
 
     const TYPE_CODE_DIRECTION_BUTTON       = 'directionButton';
     const TYPE_CODE_MAP_SHOW_BUTTON        = 'mapShowButton';
