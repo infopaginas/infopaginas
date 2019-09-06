@@ -10,6 +10,7 @@ use Domain\BusinessBundle\Form\Type\BusinessCloseRequestType;
 use Domain\BusinessBundle\Form\Type\BusinessReportFilterType;
 use Domain\BusinessBundle\Manager\BusinessProfileManager;
 use Domain\ReportBundle\Manager\CategoryOverviewReportManager;
+use Domain\ReportBundle\Manager\GeolocationManager;
 use Domain\ReportBundle\Model\BusinessOverviewModel;
 use Domain\ReportBundle\Google\Analytics\DataFetcher;
 use Domain\ReportBundle\Manager\AdUsageReportManager;
@@ -198,6 +199,9 @@ class ReportsController extends Controller
                 case BusinessOverviewModel::TYPE_CODE_IMPRESSION:
                 case BusinessOverviewModel::TYPE_CODE_VIEW:
                     $result = $this->getBusinessOverviewReportManager()->registerBusinessEvent($key, $value);
+                    break;
+                case BusinessOverviewModel::TYPE_CODE_GEOLOCATION:
+                    $result = $this->getGeolocationManager()->registerGeolocationEvent($value);
                     break;
                 case BusinessOverviewModel::TYPE_CODE_KEYWORD:
                     $result = $this->getKeywordsReportManager()->registerBusinessKeywordEvent($value);
@@ -588,6 +592,14 @@ class ReportsController extends Controller
     protected function getBusinessOverviewReportManager() : BusinessOverviewReportManager
     {
         return $this->get('domain_report.manager.business_overview_report_manager');
+    }
+
+    /**
+     * @return GeolocationManager
+     */
+    protected function getGeolocationManager() : GeolocationManager
+    {
+        return $this->get('domain_report.manager.geolocation_manager');
     }
 
     /**

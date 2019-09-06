@@ -61,6 +61,7 @@ define(['jquery', 'underscore',  'abstract/view', 'js-cookie', 'jquery-ui'], fun
     geolocation.prototype.onLocationsNameByLatLngSuccess = function ( data ) {
         this.extractAddress(data);
         this.setToCookie();
+        this.saveLocationToDatabase();
         this.setToForm();
     }
 
@@ -72,12 +73,21 @@ define(['jquery', 'underscore',  'abstract/view', 'js-cookie', 'jquery-ui'], fun
             coords:
                 {
                     latitude: this.position.coords.latitude,
-                    longitude: this.position.coords.longitude,
+                    longitude: this.position.coords.longitude
                 }
         };
 
         cookie.set( this.options.cookieKey, JSON.stringify(cookieString), { expires: expiresDate } );
     }
+
+    geolocation.prototype.saveLocationToDatabase = function () {
+        var coordsObject = { 'geolocation' : {
+            'latitude' : this.position.coords.latitude,
+            'longitude' : this.position.coords.longitude
+        }};
+
+        $( document ).trigger( 'trackingMapResult', coordsObject );
+    };
 
     geolocation.prototype.setToForm = function () {
         // set to form fields coordinates and address

@@ -11,6 +11,7 @@ use Domain\ReportBundle\Util\DatesUtil;
 use Domain\SiteBundle\Form\Handler\PasswordUpdateFormHandler;
 use Domain\SiteBundle\Form\Handler\UserProfileFormHandler;
 use FOS\UserBundle\Model\UserInterface;
+use Oxa\GeolocationBundle\Model\Geolocation\GeolocationManager;
 use Oxa\Sonata\UserBundle\Manager\UsersManager;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\FormInterface;
