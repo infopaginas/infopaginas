@@ -10,7 +10,7 @@
 
 {% block styles %}
     {{ parent() }}
-    <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.css" />
+    <link rel="preload" href="https://api.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.css" as="style" onload="this.rel='stylesheet'" />
 {% endblock %}
 
 {% block bodyClass %}results-list{% endblock %}
@@ -91,7 +91,7 @@
 {% endblock %}
 
 {% block scripts %}
-    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.js'></script>
+    <script src='{{ absolute_url(asset('assetic/js/modules/mapbox-gl.min.js')) }}'></script>
 
     {{ parent() }}
 

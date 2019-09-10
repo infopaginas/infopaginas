@@ -1,16 +1,12 @@
 {% extends "redesign/layout/base.html.twig" %}
 
-{% block videoJs %}
-    {% include ':redesign/layout/widgets:video-js.html.twig' %}
-{% endblock %}
-
 {% block breadcrumbs %}
     {% include ':redesign/blocks:breadcrumbs.html.twig' with {'catalogLocality': businessProfile.catalogLocality, 'category': businessProfile.categories|first} %}
 {% endblock %}
 
 {% block styles %}
     {{ parent() }}
-    <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.css" />
+    <link rel="preload" href="https://api.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.css" as="style" onload="this.rel='stylesheet'" />
 
     {% if businessProfile.getBackground() and hasSubscription(businessProfile, "CODE_PREMIUM_PLUS") %}
         <style>
@@ -400,7 +396,7 @@
 {% endblock %}
 
 {% block scripts %}
-    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.js'></script>
+    <script src='{{ absolute_url(asset('assetic/js/modules/mapbox-gl.min.js')) }}'></script>
     {{ parent() }}
 
     <script type="text/javascript">
@@ -416,6 +412,7 @@
             ], function (socialFeeds) {
                 var socialFeeds = new socialFeeds();
             });
+            require(['{{ absolute_url(asset("assetic/js/modules/tools/videojsCustomize.min.js")) }}'], function () {});
         });
     </script>
 

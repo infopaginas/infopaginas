@@ -3,11 +3,7 @@
 {% block styles %}
     {{ parent() }}
     <link rel="stylesheet" href="{{ absolute_url(asset('assets/styles/bootstrap-datetimepicker-standalone.css')) }}" />
-    <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.css"/>
-{% endblock %}
-
-{% block videoJs %}
-    {% include ':redesign/layout/widgets:video-js.html.twig' %}
+    <link rel="preload" href="https://api.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.css" as="style" onload="this.rel='stylesheet'" />
 {% endblock %}
 
 {% block googleTagManagerScript %}{% endblock %}
@@ -96,7 +92,7 @@
 {% endblock %}
 
 {% block scripts %}
-    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.js'></script>
+    <script src='{{ absolute_url(asset('assetic/js/modules/mapbox-gl.min.js')) }}'></script>
 
     {{ parent() }}
 
@@ -104,7 +100,8 @@
         requirejs(['{{ absolute_url(asset("assetic/require_common_js.js")) }}'], function(common) {
             requirejs(['{{ absolute_url(asset("assetic/require_business_profile_js.js")) }}'], function(businessProfile) {
                 var profile = new businessProfile();
-            })
+            });
+            require(['{{ absolute_url(asset("assetic/js/modules/tools/videojsCustomize.min.js")) }}'], function () {});
         })
     </script>
 {% endblock%}
