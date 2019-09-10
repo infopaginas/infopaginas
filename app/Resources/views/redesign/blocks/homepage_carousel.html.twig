@@ -12,7 +12,10 @@
                         </div>
                         {% if not carouselBusiness.getVideo() %}
                             <div class="">
-                                <img src="{% path carouselBusiness.image, 'normal' %}" alt="{{ carouselBusiness.businessProfile.name }}">
+                                <img data-src="{% path carouselBusiness.image, 'normal' %}"
+                                     alt="{{ carouselBusiness.businessProfile.name }}"
+                                     class="lazyload"
+                                >
                             </div>
                         {% endif %}
                     </a>

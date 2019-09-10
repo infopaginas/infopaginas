@@ -178,10 +178,11 @@
                                         <li>
                                             {% if paymentMethod.type in PAYMENT_METHOD_TYPE %}
                                                 {% set path = 'redesign/img/payment/' ~ paymentMethod.type ~ '.svg' %}
-
-                                                <img src="{{ absolute_url(asset(path)) }}" alt="{{ paymentMethod.getName }}">
+                                                <img data-src="{{ absolute_url(asset(path)) }}"
+                                                     alt="{{ paymentMethod.getName }}"
+                                                     class="lazyload"
+                                                >
                                             {% endif %}
-
                                             <span>{{ paymentMethod.getName }}</span>
                                         </li>
                                     {% endfor %}
@@ -201,7 +202,10 @@
                             <section class="page-section photos slider section--slider hide-before">
                                 {% for photo in photos %}
                                     <div class="slider__item">
-                                        <img src="{% path photo.getMedia(), 'normal' %}" alt="{% if photo.description %}{{ photo.description }}{% else %}{{ businessProfile.getName() }}{% endif %}">
+                                        <img data-src="{% path photo.getMedia(), 'normal' %}"
+                                             alt="{% if photo.description %}{{ photo.description }}{% else %}{{ businessProfile.getName() }}{% endif %}"
+                                             class="lazyload"
+                                        >
                                     </div>
                                 {% endfor %}
                             </section>
@@ -225,7 +229,9 @@
                                                 </div>
                                                 <div class="slide-image">
                                                     {% if suggestedBusiness.logo %}
-                                                        <img src="{% path suggestedBusiness.logo, 'preview' %}" alt="{{ suggestedBusiness.name }}">
+                                                        <img data-src="{% path suggestedBusiness.logo, 'preview' %}"
+                                                             alt="{{ suggestedBusiness.name }}" class="lazyload"
+                                                        >
                                                     {% else %}
                                                         <span class="default-image"><i class="fa fa-camera" aria-hidden="true"></i></span>
                                                     {% endif %}
