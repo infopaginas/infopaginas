@@ -65,6 +65,6 @@ services:
             tags:
                 - { name: form.type, alias: sonata_type_model_autocomplete }
 
-    oxa.sonata.admin.resizer.webp:
-        class: Oxa\Sonata\AdminBundle\Resizer\WebpResizer
+    oxa.sonata.admin.resizer.format_conversion:
+        class: Oxa\Sonata\AdminBundle\Resizer\FormatConversionResizer
         arguments: ['@sonata.media.adapter.image.imagick', 'outbound', '@sonata.media.metadata.proxy']
