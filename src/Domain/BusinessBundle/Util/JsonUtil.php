@@ -10,7 +10,7 @@ class JsonUtil
             if (is_array($value)) {
                 $data[$key] = self::htmlEntitiesEncode($value);
             } else {
-                $data[$key] = htmlentities($value);
+                $data[$key] = htmlentities($value, ENT_NOQUOTES);
             }
         }
 
