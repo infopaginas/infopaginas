@@ -18,7 +18,7 @@ class FormatConversionResizer extends SimpleResizer
     /**
      * {@inheritdoc}
      */
-    public function resize(MediaInterface $media, File $in, File $out, $format, array $settings)
+    public function resize(MediaInterface $media, File $in, File $out, $referenceFormat, array $settings)
     {
         if (!isset($settings['width'])) {
             throw new \RuntimeException(sprintf(
@@ -28,7 +28,8 @@ class FormatConversionResizer extends SimpleResizer
             ));
         }
 
-        $format = isset($settings['format']) ? strtolower($settings['format']) : $format;
+        $format = (empty($settings['format']) || $settings['format'] == 'reference') ?
+            $referenceFormat : strtolower($settings['format']);
         if (!$this->supported($format)) {
             throw new InvalidArgumentException(sprintf(
                 'Saving image in "%s" format is not supported, please use one of the following extensions: "%s"',
@@ -43,15 +44,20 @@ class FormatConversionResizer extends SimpleResizer
         $thumbnail = $image->thumbnail($this->getBox($media, $settings), $this->mode);
 
         $im = $thumbnail->getImagick();
-        $im->setFormat($format);
-
         if ($format == 'jp2') {
-            $im->setImageCompressionQuality(self::JP2_QUALITY);
-            $im->setCompression(imagick::COMPRESSION_JPEG2000);
+            $quality = self::JP2_QUALITY;
         } else {
             $quality = isset($settings['quality']) ? $settings['quality'] : self::DEFAULT_QUALITY;
-            $im->setImageCompressionQuality($quality);
         }
+
+        if ($format != $referenceFormat) {
+            if ($format == 'jp2') {
+                $im->setCompression(imagick::COMPRESSION_JPEG2000);
+            }
+            $im->setFormat($format);
+        }
+
+        $im->setImageCompressionQuality($quality);
 
         $out->setContent($im->getImageBlob(), $this->metadata->get($media, $out->getName()));
     }

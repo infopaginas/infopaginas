@@ -67,4 +67,4 @@ services:
 
     oxa.sonata.admin.resizer.format_conversion:
         class: Oxa\Sonata\AdminBundle\Resizer\FormatConversionResizer
-        arguments: ['@sonata.media.adapter.image.imagick', 'outbound', '@sonata.media.metadata.proxy']
+        arguments: ['@sonata.media.adapter.image.imagick', 'inset', '@sonata.media.metadata.proxy']
