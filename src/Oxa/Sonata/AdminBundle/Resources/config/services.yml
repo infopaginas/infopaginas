@@ -68,3 +68,7 @@ services:
     oxa.sonata.admin.resizer.format_conversion:
         class: Oxa\Sonata\AdminBundle\Resizer\FormatConversionResizer
         arguments: ['@sonata.media.adapter.image.imagick', 'inset', '@sonata.media.metadata.proxy']
+
+    oxa.sonata.admin.thumbnail.extension:
+        class: Oxa\Sonata\AdminBundle\Thumbnail\ExtensionThumbnail
+        arguments: ['jpg']

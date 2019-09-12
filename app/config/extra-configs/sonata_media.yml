@@ -22,8 +22,8 @@ sonata_media:
                 normal:       { width: 300, height: 300, quality: 70, format: 'reference'}
                 preview_webp: { width: 120, height: 120, quality: 70, format: 'webp'}
                 normal_webp:  { width: 300, height: 300, quality: 70, format: 'webp'}
-                preview_jp2:  { width: 120, height: 120, quality: 70, format: 'jp2'}
-                normal_jp2:   { width: 300, height: 300, quality: 70, format: 'jp2'}
+                preview_jp2:  { width: 120, height: 120, quality: 40, format: 'jp2'}
+                normal_jp2:   { width: 300, height: 300, quality: 40, format: 'jp2'}
         business_profile_images:
             download:
                 mode: http
@@ -34,8 +34,8 @@ sonata_media:
                 normal:       { width: 500, height: 500, quality: 70, format: 'reference'}
                 preview_webp: { width: 150, height: 150, quality: 70, format: 'webp'}
                 normal_webp:  { width: 500, height: 500, quality: 70, format: 'webp'}
-                preview_jp2:  { width: 150, height: 150, quality: 70, format: 'jp2'}
-                normal_jp2:   { width: 500, height: 500, quality: 70, format: 'jp2'}
+                preview_jp2:  { width: 150, height: 150, quality: 40, format: 'jp2'}
+                normal_jp2:   { width: 500, height: 500, quality: 40, format: 'jp2'}
         business_profile_background:
             download:
                 mode: http
@@ -46,8 +46,8 @@ sonata_media:
                 normal:       { width: 500, height: 500, quality: 70, format: 'reference'}
                 preview_webp: { width: 150, height: 150, quality: 70, format: 'webp'}
                 normal_webp:  { width: 500, height: 500, quality: 70, format: 'webp'}
-                preview_jp2:  { width: 150, height: 150, quality: 70, format: 'jp2'}
-                normal_jp2:   { width: 500, height: 500, quality: 70, format: 'jp2'}
+                preview_jp2:  { width: 150, height: 150, quality: 40, format: 'jp2'}
+                normal_jp2:   { width: 500, height: 500, quality: 40, format: 'jp2'}
         coupon:
             download:
                 mode: http
@@ -70,10 +70,10 @@ sonata_media:
                 homepage_webp: { width: 312, height: 260, quality: 70, format: 'webp'}
                 list_webp:     { width: 500, height: 170, quality: 70, format: 'webp'}
                 normal_webp:   { width: 500, height: 500, quality: 100, format: 'webp'}
-                preview_jp2:   { width: 150, height: 150, quality: 70, format: 'jp2'}
-                homepage_jp2:  { width: 312, height: 260, quality: 70, format: 'jp2'}
-                list_jp2:      { width: 500, height: 170, quality: 70, format: 'jp2'}
-                normal_jp2:    { width: 500, height: 500, quality: 100, format: 'jp2'}
+                preview_jp2:   { width: 150, height: 150, quality: 40, format: 'jp2'}
+                homepage_jp2:  { width: 312, height: 260, quality: 40, format: 'jp2'}
+                list_jp2:      { width: 500, height: 170, quality: 40, format: 'jp2'}
+                normal_jp2:    { width: 500, height: 500, quality: 45, format: 'jp2'}
         article_images:
             download:
                 mode: http
@@ -84,8 +84,8 @@ sonata_media:
                 normal:       { width: 500, height: 500, quality: 100, format: 'reference'}
                 preview_webp: { width: 150, height: 150, quality: 100, format: 'webp'}
                 normal_webp:  { width: 500, height: 500, quality: 100, format: 'webp'}
-                preview_jp2:  { width: 150, height: 150, quality: 100, format: 'jp2'}
-                normal_jp2:   { width: 500, height: 500, quality: 100, format: 'jp2'}
+                preview_jp2:  { width: 150, height: 150, quality: 45, format: 'jp2'}
+                normal_jp2:   { width: 500, height: 500, quality: 45, format: 'jp2'}
         page_background:
             download:
                 mode: http
@@ -96,8 +96,8 @@ sonata_media:
                 normal:       { width: 1400, height: 700, quality: 70, format: 'reference'}
                 preview_webp: { width: 140, height: 70, quality: 70, format: 'webp'}
                 normal_webp:  { width: 1400, height: 700, quality: 70, format: 'webp'}
-                preview_jp2:  { width: 140, height: 70, quality: 70, format: 'jp2'}
-                normal_jp2:   { width: 1400, height: 700, quality: 70, format: 'jp2'}
+                preview_jp2:  { width: 140, height: 70, quality: 40, format: 'jp2'}
+                normal_jp2:   { width: 1400, height: 700, quality: 40, format: 'jp2'}
         video_poster:
             download:
                 mode: http
@@ -108,17 +108,17 @@ sonata_media:
                 normal:       { width: 500, height: 500, quality: 70, format: 'reference'}
                 preview_webp: { width: 75, height: 75, quality: 100, format: 'webp'}
                 normal_webp:  { width: 500, height: 500, quality: 70, format: 'webp'}
-                preview_jp2:  { width: 75, height: 75, quality: 100, format: 'jp2'}
-                normal_jp2:   { width: 500, height: 500, quality: 70, format: 'jp2'}
+                preview_jp2:  { width: 75, height: 75, quality: 45, format: 'jp2'}
+                normal_jp2:   { width: 500, height: 500, quality: 40, format: 'jp2'}
         homepage_carousel:
             download:
                 mode: http
             providers:
                 - sonata.media.provider.image
             formats:
-                normal:       { width: 444, height: 246, quality: 70, format: 'reference'}
+                normal:       { width: 444, height: 246, format: 'reference'}
                 normal_webp:  { width: 444, height: 246, quality: 70, format: 'webp'}
-                normal_jp2:   { width: 444, height: 246, quality: 70, format: 'jp2'}
+                normal_jp2:   { width: 444, height: 246, quality: 40, format: 'jp2'}
     cdn:
         #define the public base url for the uploaded media
         server:
@@ -141,7 +141,7 @@ sonata_media:
             filesystem: sonata.media.filesystem.s3
             allowed_extensions: ['jpg', 'png', 'gif', 'jpeg']
             allowed_mime_types: ['image/pjpeg','image/jpeg','image/png','image/x-png', 'image/gif']
-            thumbnail: sonata.media.thumbnail.format
+            thumbnail: oxa.sonata.admin.thumbnail.extension
             resizer: oxa.sonata.admin.resizer.format_conversion
         file:
             # the resizer must be set to false, otherwhise this can delete icon files from the fs
