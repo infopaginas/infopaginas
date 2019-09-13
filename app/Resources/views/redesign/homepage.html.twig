@@ -2,10 +2,6 @@
 
 {% block bodyClass %}index{% endblock %}
 
-{% block videoJs %}
-    {% include ':redesign/layout/widgets:video-js.html.twig' %}
-{% endblock %}
-
 {% block breadcrumbs %}{% endblock %}
 
 {% block searchBlock %}{% endblock %}
@@ -59,6 +55,7 @@
             require(['{{ absolute_url(asset("assetic/js/modules/tools/redirect.min.js")) }}'], function(redirect) {
                 var redirect = new redirect();
             });
+            require(['{{ absolute_url(asset("assetic/js/modules/tools/videojsCustomize.min.js")) }}'], function () {});
         });
     </script>
 {% endblock%}

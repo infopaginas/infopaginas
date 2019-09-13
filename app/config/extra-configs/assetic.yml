@@ -101,6 +101,12 @@ assetic:
                 - '@DomainSiteBundle/Resources/public/scripts/modules/tools/userProfile.js'
             filters:
                 - jsqueeze
+        require_videojs_customize:
+            inputs:
+                - '@DomainSiteBundle/Resources/public/scripts/modules/tools/videojsCustomize.js'
+            output: 'assetic/js/modules/tools/videojsCustomize.min.js'
+            filters:
+                - jsqueeze
         video_share_js:
             inputs:
                 - 'assets/scripts/video-js-social-share.js'
@@ -272,5 +278,23 @@ assetic:
             inputs:
                 - '@DomainBusinessBundle/Resources/public/scripts/modules/tools/videos.js'
             output: 'assetic/js/modules/tools/videos.min.js'
+            filters:
+                - jsqueeze
+        mapbox_js:
+            inputs:
+                - '@DomainBusinessBundle/Resources/public/scripts/mapbox.js'
+            output: 'assetic/js/modules/mapbox.min.js'
+            filters:
+                - jsqueeze
+        mapbox_gl_directions:
+            inputs:
+                - '@DomainSiteBundle/Resources/public/scripts/vendors/mapbox-gl-directions.js'
+            output: 'assetic/js/modules/mapbox-gl-directions.min.js'
+            filters:
+                - jsqueeze
+        mapbox_gl:
+            inputs:
+                - '@DomainSiteBundle/Resources/public/scripts/vendors/mapbox-gl.js'
+            output: 'assetic/js/modules/mapbox-gl.min.js'
             filters:
                 - jsqueeze

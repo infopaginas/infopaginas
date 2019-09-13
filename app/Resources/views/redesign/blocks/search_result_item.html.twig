@@ -7,7 +7,7 @@
         <div class="item__img">
             {% if (hasSubscription(item, "CODE_PREMIUM_PLUS") and item.getLogo()) %}
                 <a href="{{ absolute_url(path('domain_business_profile_view', { 'citySlug' : item.citySlug, 'slug' : item.slug })) }}" title="{% trans %}Go to information page{% endtrans %}" data-bw-gtm-event-click data-bw-gtm-label="item-image::{{ item.name }}::{{ absolute_url(path('domain_business_profile_view', { 'citySlug' : item.citySlug, 'slug' : item.slug })) }}">
-                    <img width="80" src="{% path item.getLogo(), 'preview' %}" alt="{{ item.name }}">
+                    <img width="80" data-src="{% path item.getLogo(), 'preview' %}" alt="{{ item.name }}" class="lazyload">
                 </a>
             {% endif %}
         </div>

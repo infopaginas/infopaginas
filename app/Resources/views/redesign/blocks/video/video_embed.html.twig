@@ -5,28 +5,3 @@
       <a href="http://videojs.com/html5-video-support/" target="_blank">{% trans %}supports HTML5 video{% endtrans %}</a>
     </p>
 </video>
-
-<script>
-    'use strict';
-
-    var video = videojs('video-{{ media.id }}');
-    video.volume( 0.5 );
-
-    video.socialShare({
-        facebook: {},
-        twitter: {}
-    });
-
-    var medias = Array.prototype.slice.apply( document.querySelectorAll( 'video' ) );
-
-    medias.forEach( function( media ) {
-        media.addEventListener( 'play', function( event ) {
-            medias.forEach(function( media ) {
-                if ( event.target != media ) {
-                    media.pause();
-                }
-            });
-        });
-    });
-
-</script>

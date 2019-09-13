@@ -1,16 +1,12 @@
 {% extends "redesign/layout/base.html.twig" %}
 
-{% block videoJs %}
-    {% include ':redesign/layout/widgets:video-js.html.twig' %}
-{% endblock %}
-
 {% block breadcrumbs %}
     {% include ':redesign/blocks:breadcrumbs.html.twig' with {'catalogLocality': businessProfile.catalogLocality, 'category': businessProfile.categories|first} %}
 {% endblock %}
 
 {% block styles %}
     {{ parent() }}
-    <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.css" />
+    <link rel="preload" href="https://api.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.css" as="style" onload="this.rel='stylesheet'" />
 
     {% if businessProfile.getBackground() and hasSubscription(businessProfile, "CODE_PREMIUM_PLUS") %}
         <style>
@@ -182,10 +178,11 @@
                                         <li>
                                             {% if paymentMethod.type in PAYMENT_METHOD_TYPE %}
                                                 {% set path = 'redesign/img/payment/' ~ paymentMethod.type ~ '.svg' %}
-
-                                                <img src="{{ absolute_url(asset(path)) }}" alt="{{ paymentMethod.getName }}">
+                                                <img data-src="{{ absolute_url(asset(path)) }}"
+                                                     alt="{{ paymentMethod.getName }}"
+                                                     class="lazyload"
+                                                >
                                             {% endif %}
-
                                             <span>{{ paymentMethod.getName }}</span>
                                         </li>
                                     {% endfor %}
@@ -205,7 +202,10 @@
                             <section class="page-section photos slider section--slider hide-before">
                                 {% for photo in photos %}
                                     <div class="slider__item">
-                                        <img src="{% path photo.getMedia(), 'normal' %}" alt="{% if photo.description %}{{ photo.description }}{% else %}{{ businessProfile.getName() }}{% endif %}">
+                                        <img data-src="{% path photo.getMedia(), 'normal' %}"
+                                             alt="{% if photo.description %}{{ photo.description }}{% else %}{{ businessProfile.getName() }}{% endif %}"
+                                             class="lazyload"
+                                        >
                                     </div>
                                 {% endfor %}
                             </section>
@@ -229,7 +229,9 @@
                                                 </div>
                                                 <div class="slide-image">
                                                     {% if suggestedBusiness.logo %}
-                                                        <img src="{% path suggestedBusiness.logo, 'preview' %}" alt="{{ suggestedBusiness.name }}">
+                                                        <img data-src="{% path suggestedBusiness.logo, 'preview' %}"
+                                                             alt="{{ suggestedBusiness.name }}" class="lazyload"
+                                                        >
                                                     {% else %}
                                                         <span class="default-image"><i class="fa fa-camera" aria-hidden="true"></i></span>
                                                     {% endif %}
@@ -400,7 +402,7 @@
 {% endblock %}
 
 {% block scripts %}
-    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.js'></script>
+    <script src='{{ absolute_url(asset('assetic/js/modules/mapbox-gl.min.js')) }}'></script>
     {{ parent() }}
 
     <script type="text/javascript">
@@ -416,6 +418,7 @@
             ], function (socialFeeds) {
                 var socialFeeds = new socialFeeds();
             });
+            require(['{{ absolute_url(asset("assetic/js/modules/tools/videojsCustomize.min.js")) }}'], function () {});
         });
     </script>
 
