@@ -101,6 +101,11 @@ twig:
             ARTICLE_PAGE_BOTTOM:    13
             VIDEO_PAGE_BOTTOM:      14
             SEARCH_FLOAT_BOTTOM:    15
+            LANDING_PAGE_RIGHT_LARGE:  16
+            BUSINESS_PAGE_RIGHT_LARGE: 17
+            ARTICLE_PAGE_RIGHT_LARGE:  18
+            VIDEO_PAGE_RIGHT_LARGE:    19
+            PORTAL_RIGHT_LARGE:        20
 
         SECURITY_ROLE:
             ADMINISTRATOR: ROLE_ADMINISTRATOR
