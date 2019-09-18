@@ -1,0 +1,10 @@
+{% macro picture(object, format, lazy = false, alt = '', class = '') %}
+    <picture>
+        <source type="image/webp" {% if lazy %}data-{% endif %}srcset="{% path object, format ~ '_webp' %}">
+        <source type="image/jp2" {% if lazy %}data-{% endif %}srcset="{% path object, format ~ '_jp2' %}">
+        <img {% if lazy %}data-{% endif %}src="{% path object, format %}"
+             class="{% if lazy %}lazyload {% endif %} {{ class }}"
+             alt="{{ alt }}"
+        >
+    </picture>
+{% endmacro %}

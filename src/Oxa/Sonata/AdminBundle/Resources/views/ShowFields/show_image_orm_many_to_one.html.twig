@@ -1,7 +1,8 @@
 {% extends 'SonataAdminBundle:CRUD:base_show_field.html.twig' %}
+{% from 'widgets/picture_macros.html.twig' import picture %}
 
 {% block field %}
     {% if value %}
-        <img src="{% path value, 'preview' %}" alt="{{ value.name }}">
+        {{ picture(value, 'preview', false, value.name) }}
     {% endif %}
 {% endblock %}
