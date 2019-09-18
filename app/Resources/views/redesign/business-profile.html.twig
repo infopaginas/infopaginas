@@ -7,6 +7,7 @@
 {% block styles %}
     {{ parent() }}
     <link rel="preload" href="https://api.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.css" as="style" onload="this.rel='stylesheet'" />
+    <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.css" />
 
     {% if businessProfile.getBackground() and hasSubscription(businessProfile, "CODE_PREMIUM_PLUS") %}
         <style>
