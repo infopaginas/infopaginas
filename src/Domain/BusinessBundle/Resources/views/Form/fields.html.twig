@@ -2,6 +2,7 @@
 
 {% block google_map_widget %}
     <link rel="preload" href="https://api.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.css" as="style" onload="this.rel='stylesheet'" />
+    <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.css" />
     <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v3.1.0/mapbox-gl-geocoder.css" type="text/css" />
     {% set attr = attr|merge({'class': attr.class|default('') ~ ' form-control'}) %}
     {%- set type = type|default('text') -%}
