@@ -401,23 +401,42 @@ $side-padding-mb: 16px;
 .about-infopaginas {
   align-items: center;
   display: flex;
-  flex-direction: column;
-  font-size: .75em;
-  padding: 10px 5px 10px;
+  flex-direction: row;
+  font-size: 1em;
   text-align: center;
-  min-height: 60px;
+  min-height: 40px;
   background: $blue--dark;
-
-  @media only screen and (min-width: 805px) {
-    padding: 10px 10px 20px;
-  }
+  justify-content: space-around;
 
   span {
     color: $white;
   }
 
-  a {
+  a, i {
     color: $green;
+  }
+
+  i {
+    margin-right: 5px;
+  }
+
+  @media only screen and (max-width: 1440px) {
+    font-size: 0.7em;
+
+    i {
+      margin: 0;
+    }
+  }
+
+  @media only screen and (max-width: 805px) {
+    font-size: 1em;
+    padding: 0 20px 0;
+  }
+
+  @media only screen and (min-width: 1440px) {
+    .about__item.copyright a {
+      margin-left: 20px;
+    }
   }
 }
 
@@ -2068,10 +2087,6 @@ $thumb-width-mb: 60px;
     top: 100px;
     width: 10em;
 
-    &.button--hide-map {
-      top: 55px;
-    }
-
     &.button--show-map {
       transform: translateX(500px) translateY(0px);
     }
@@ -2174,8 +2189,13 @@ $thumb-width-mb: 60px;
 }
 
 @media only screen and (max-width: 804px) {
-  .button--show-map, .button--hide-map {
+  .button--hide-map {
     right: 50px;
+  }
+
+  .button--show-map {
+    right: 10px;
+    bottom: 45px;
   }
 }
 

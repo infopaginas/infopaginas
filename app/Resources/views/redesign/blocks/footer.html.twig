@@ -1,15 +1,31 @@
-<div class="about-infopaginas">
+<footer class="about-infopaginas">
     <div class="about__item copyright">
         <span>
-          © {{ 'now'|date(year_date_format) }} <a href="{{ absolute_url(path('domain_site_home_index')) }}"
-                                                  target="_blank" title="Go to Infopaginas site"
-                                                  data-bw-gtm-event-click
-                                                  data-bw-gtm-label="Infopáginas::{{ absolute_url(path('domain_site_home_index')) }}">{% trans %}Infopáginas{% endtrans %}</a>
+            {% trans with { '%date%': 'now'|date(year_date_format) } %}infopaginos.copyright{% endtrans %}
+            <a href="{{ absolute_url(path('domain_site_home_index')) }}"
+               target="_blank" title="Go to Infopaginas site"
+               data-bw-gtm-event-click
+               data-bw-gtm-label="Infopáginas::{{ absolute_url(path('domain_site_home_index')) }}">
+                {% trans %}Infopáginas{% endtrans %}
+            </a>
         </span>
     </div>
-    <div class="about__item address">
+    <div class="about__item phone">
+        <i class="fa fa-phone"></i>
         <span>
-            {% trans %}90 Calle San Martin Rodval Bldg. Suite 201 Guaynabo{% endtrans %}, {% trans %}PR{% endtrans %}
+            {{ config(CONFIG.FOOTER_PHONE_NUMBER) }}
         </span>
     </div>
-</div>
+    <div class="about__item email hide-mobile">
+        <i class="fa fa-envelope"></i>
+        <span>
+            {{ config(CONFIG.FOOTER_EMAIL) }}
+        </span>
+    </div>
+    <div class="about__item address hide-mobile">
+        <i class="fa fa-map-marker"></i>
+        <span>
+            {% trans %}infopaginos.address{% endtrans %}
+        </span>
+    </div>
+</footer>
