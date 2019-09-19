@@ -9,6 +9,7 @@ sonata_media:
         media:              Oxa\Sonata\MediaBundle\Entity\Media
         gallery:            Oxa\Sonata\MediaBundle\Entity\Gallery
         gallery_has_media:  Oxa\Sonata\MediaBundle\Entity\GalleryHasMedia
+    admin_format:   { width: 200 , quality: 90, format: 'reference'}
     contexts:
         # when you add a new one or edit context name,
         # edit OxaMediaInterface constans
@@ -133,7 +134,7 @@ sonata_media:
             region:         '%amazon_aws_region%' # change if not using US Standard region
             directory:      'uploads/media/%sonata_media.cdn.folder%'
             acl:            public
-            cache_control:  max-age=5184000 # 60 days
+            cache_control:  max-age=31536000 # 1 year
 
     providers:
         image:
