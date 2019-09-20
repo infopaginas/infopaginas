@@ -101,6 +101,7 @@ h5 {
 .container {
   margin: 0 auto;
   max-width: 92%;
+  position: relative;
 
   @media only screen and (min-width: 805px) {
     margin-left: auto;
@@ -1076,6 +1077,9 @@ $bps-border: 1px dotted #bcbcbc;
 .main__container {
   @media only screen and (min-width: 805px) {
     display: flex;
+    &.no-page-scroll {
+      max-height: 100vh;
+    }
   }
 
   .form__row-bps {
@@ -1486,6 +1490,9 @@ $bps-border: 1px dotted #bcbcbc;
   transition-timing-function: ease-in-out;
 
   @media only screen and (min-width: 805px) {
+    &#searchResults {
+      height: calc(100vh - 132px);
+    }
     overflow-y: auto;
     width: 60%;
     top: 86px;
@@ -2253,6 +2260,10 @@ $thumb-width-mb: 60px;
   @media only screen and (min-width: 805px) {
     width: 30%;
     padding-left: 20px;
+    position: absolute;
+    top: 0;
+    bottom: 100px;
+    right: 0;
   }
 }
 
@@ -2821,6 +2832,15 @@ $thumb-width-mb: 60px;
 
     &:first-child {
       margin-top: 30px;
+    }
+  }
+}
+
+.section--ad {
+  &.sticky {
+    @media only screen and (min-width: 805px) {
+      position: sticky;
+      top: 110px;
     }
   }
 }

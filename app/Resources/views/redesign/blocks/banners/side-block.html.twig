@@ -1,11 +1,12 @@
-<div class="sidebar__section section--ad">
-    <ul>
-        <li>
-            <div class="ad ad-sidebar">
-                {% if banners is not null and bannerType is defined and banners[bannerType] is defined %}
-                    {% include 'DomainSiteBundle:Layout:widgets/banner_double_click_widget.html.twig' with {'banner': banners[bannerType]} %}
-                {% endif %}
-            </div>
-        </li>
-    </ul>
+{% if sticky is defined and sticky == false %}
+    {% set sticky = '' %}
+{% else %}
+    {% set sticky = 'sticky' %}
+{% endif %}
+<div class="sidebar__section section--ad {{ sticky }}">
+    <div class="ad ad-sidebar">
+        {% if banners is not null and bannerType is defined and banners[bannerType] is defined %}
+            {% include 'DomainSiteBundle:Layout:widgets/banner_double_click_widget.html.twig' with {'banner': banners[bannerType]} %}
+        {% endif %}
+    </div>
 </div>
