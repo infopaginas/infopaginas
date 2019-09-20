@@ -29,9 +29,10 @@ define(['jquery'], function ( $ ) {
                 slugTargeting:          'dfp-targeting-slug'
             },
             type: {
-                resizable:      'resizable',
-                resizableBlock: 'resizableBlock',
-                default:        'default'
+                resizable:          'resizable',
+                resizableBlock:     'resizableBlock',
+                resizableSideBlock: 'resizableSideBlock',
+                default:            'default'
             }
         };
 
@@ -62,8 +63,9 @@ define(['jquery'], function ( $ ) {
 
         googletag.cmd.push(function() {
             // init header
-            var googleResponsiveCommonSize = self.getResponsiveCommonSizeMapping( googletag );
-            var googleResponsiveBlockSize  = self.getResponsiveBlockSizeMapping( googletag );
+            var googleResponsiveCommonSize    = self.getResponsiveCommonSizeMapping( googletag );
+            var googleResponsiveBlockSize     = self.getResponsiveBlockSizeMapping( googletag );
+            var googleResponsiveSideBlockSize = self.getResponsiveSideBlockSizeMapping( googletag );
 
             $.each( self.options.adsData, function() {
                 var item = this;
@@ -75,6 +77,8 @@ define(['jquery'], function ( $ ) {
                         slot.defineSizeMapping( googleResponsiveCommonSize );
                     } else if ( item.type == self.options.type.resizableBlock && googleResponsiveBlockSize ) {
                         slot.defineSizeMapping( googleResponsiveBlockSize );
+                    } else if ( item.type == self.options.type.resizableSideBlock ) {
+                        slot.defineSizeMapping( googleResponsiveSideBlockSize );
                     }
 
                     slot.addService( googletag.pubads() );
@@ -151,6 +155,17 @@ define(['jquery'], function ( $ ) {
         }
 
         return googleResponsiveBlockSize;
+    };
+
+    ads.prototype.getResponsiveSideBlockSizeMapping = function ( googletag ) {
+        var googleResponsiveSideBlockSize = googletag.sizeMapping().addSize( [ 0, 0 ], [] );
+        if ( window.innerWidth < BASE_BREAK_POINT ) {
+            googleResponsiveSideBlockSize.addSize( [ 300, 0 ], [ 300, 250 ] );
+        } else {
+            googleResponsiveSideBlockSize.addSize( [ 300, 0 ], [ 300, 600 ] );
+        }
+
+        return googleResponsiveSideBlockSize.build();
     };
 
     return ads;
