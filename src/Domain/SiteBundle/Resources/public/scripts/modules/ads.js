@@ -10,6 +10,7 @@ define(['jquery'], function ( $ ) {
     var BANNER_BREAK_POINT_728x90 = 740;
     var BANNER_BREAK_POINT_468x60 = 480;
     var BANNER_BREAK_POINT_320x50 = 320;
+    var BANNER_BREAK_POINT_300 = 300;
 
     var BASE_BREAK_POINT = 805;
     var RESPONSIVE_ADS_BLOCK_SIZE = 0.6;
@@ -17,6 +18,8 @@ define(['jquery'], function ( $ ) {
     var BANNER_SIZE_728x90 = [728, 90];
     var BANNER_SIZE_468x60 = [468, 60];
     var BANNER_SIZE_320x50 = [320, 50];
+    var BANNER_SIZE_300x250 = [300, 250];
+    var BANNER_SIZE_300x600 = [300, 600];
 
     ads.prototype.init = function () {
         this.options = {
@@ -160,9 +163,9 @@ define(['jquery'], function ( $ ) {
     ads.prototype.getResponsiveSideBlockSizeMapping = function ( googletag ) {
         var googleResponsiveSideBlockSize = googletag.sizeMapping().addSize( [ 0, 0 ], [] );
         if ( window.innerWidth < BASE_BREAK_POINT ) {
-            googleResponsiveSideBlockSize.addSize( [ 300, 0 ], [ 300, 250 ] );
+            googleResponsiveSideBlockSize.addSize( [ BANNER_BREAK_POINT_300, 0 ], BANNER_SIZE_300x250 );
         } else {
-            googleResponsiveSideBlockSize.addSize( [ 300, 0 ], [ 300, 600 ] );
+            googleResponsiveSideBlockSize.addSize( [ BANNER_BREAK_POINT_300, 0 ], BANNER_SIZE_300x600 );
         }
 
         return googleResponsiveSideBlockSize.build();
