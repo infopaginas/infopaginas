@@ -2091,11 +2091,15 @@ $thumb-width-mb: 60px;
     font-size: 14px;
     height: 2.4em !important;
     line-height: 2.2em;
-    top: 100px;
+    top: 70px;
     width: 10em;
 
     &.button--show-map {
       transform: translateX(500px) translateY(0px);
+    }
+
+    &.button--hide-map {
+      top: 25px;
     }
 
     span {

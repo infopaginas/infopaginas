@@ -98,22 +98,14 @@ define(['jquery', 'spin'], function( $, _spin ) {
                 self.mapReady = true;
                 self.mapLoadingEnd();
             });
+
+            map.once( 'load', function () {
+                self.autoSearch = true;
+            });
         });
 
         $( document ).on( 'searchRequestReady', function() {
             self.requestReady = true;
-            self.mapLoadingEnd();
-        });
-
-        $( document ).on( 'autoSearchRequestEnabled', function() {
-            self.autoSearch = true;
-            self.mapLoadingEnd();
-
-            $( document ).trigger( 'autoSearchRequestTriggered' );
-        });
-
-        $( document ).on( 'autoSearchRequestDisabled', function() {
-            self.autoSearch = false;
             self.mapLoadingEnd();
         });
     };
@@ -124,7 +116,7 @@ define(['jquery', 'spin'], function( $, _spin ) {
             this.spinnerOn = true;
         }
 
-        if ( this.autoSearch ) {
+        if ( this.autoSearch && typeof autoSearchEnabled !== 'undefined' && autoSearchEnabled) {
             $( document ).trigger( 'autoSearchRequestTriggered' );
         }
 
