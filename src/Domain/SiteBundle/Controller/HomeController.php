@@ -36,7 +36,7 @@ class HomeController extends Controller
         $banners        = $bannerManager->getBanners(
             [
                 TypeInterface::CODE_HOME_VERTICAL,
-                TypeInterface::CODE_LANDING_PAGE_RIGHT,
+                TypeInterface::CODE_LANDING_PAGE_RIGHT_LARGE,
             ]
         );
 

@@ -15,7 +15,7 @@
 
 {% block body %}
     <div class="main__container no-page-scroll">
-        <section class="main" id="searchResults" data-bw-gtm-component="search-results">
+        <section class="main search-page" id="searchResults" data-bw-gtm-component="search-results">
             <div class="results {% if not disableFilters %}active__toggle{% endif %}">
                 <div id="searchContainer">
                     {% include ':redesign/blocks:search_result_item_block.html.twig' %}
@@ -29,16 +29,6 @@
         </section><!-- main -->
 
         <section class="results-map" data-bw-gtm-component="search-results-map">
-            <button id="redo-search-in-map" type="button" class="button-like-google button--redo-search-in-map" data-bw-gtm-event-click data-bw-gtm-label="{% trans %}search.control.redo{% endtrans %}">
-                <i class="fa fa-search"></i>
-                <span>{% trans %}search.control.redo{% endtrans %}</span>
-            </button>
-
-            <button id="auto-search-in-map" type="button" class="button-like-google button--auto-search-in-map" data-bw-gtm-event-click data-bw-gtm-label="{% trans %}search.control.auto{% endtrans %}">
-                <i class="fa fa-square-o"></i>
-                <span>{% trans %}search.control.auto{% endtrans %}</span>
-            </button>
-
             <button id="hide-map" type="button" class="button button-round button--hide-map" data-bw-gtm-event-click data-bw-gtm-label="{% trans %}List view{% endtrans %}">
                 <i class="fa fa-list"></i>
                 <span>{% trans %}List view{% endtrans %}</span>
@@ -54,6 +44,7 @@
 
         {% include ':redesign/blocks/banners:search-page-float.html.twig' with { 'bannerType': BANNER_CODE.SEARCH_FLOAT_BOTTOM } %}
     </div><!-- main container -->
+    {% include':redesign/blocks:footer.html.twig' %}
 {% endblock %}
 
 {% block scripts %}
@@ -63,6 +54,8 @@
     {{ parent() }}
 
     <script type="text/javascript">
+        var autoSearchEnabled = true;
+
         requirejs(['{{ absolute_url(asset("assetic/require_common_js.js")) }}'], function(common) {
             require(['{{ absolute_url(asset("assetic/js/modules/tools/mapSpin.min.js")) }}'], function(spin) {
                 var spin = new spin('map');
