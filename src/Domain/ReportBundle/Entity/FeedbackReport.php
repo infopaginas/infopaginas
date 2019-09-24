@@ -42,4 +42,12 @@ class FeedbackReport implements ReportInterface, PostponeExportInterface
             self::FORMAT_CSV => self::FORMAT_CSV,
         ];
     }
+
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return (string)$this->getId() ?: '';
+    }
 }
