@@ -204,10 +204,6 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
     var hideMap = $( '#hide-map' );
     var adBottom = $( '.ad--bottom' );
 
-    // search in map controls
-    var autoSearchMap = $( '#auto-search-in-map' );
-    var redoSearchMap = $( '#redo-search-in-map' );
-
     function getMapTranslateY() {
         var toolBar    = $( '.toolbar' );
         var translateY = toolBar.position().top + toolBar.height() - resultsMap.position().top;
@@ -620,10 +616,6 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
         mapState = 'default';
     });
 
-    autoSearchMap.on( 'click', function() {
-        switchAutoSearchInMapControl();
-    });
-
     $( window ).resize(function() {
         var mediaQuery = window.matchMedia( "(min-width: 804px)" );
         var mediaQueryTablet = window.matchMedia( "(min-width: 740px)" );
@@ -767,74 +759,6 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
         $( '.suggested-slider-section' ).removeClass( 'hide-before' );
         $( '.panorama-frame' ).removeClass( 'hide-before' );
     });
-
-    // map controls
-    $( document ).on( 'disableAutoSearchInMap', function() {
-        disableAutoSearchInMap();
-    });
-
-    function showDeviceMapControlButtons() {
-        autoSearchMap.css( 'transform', 'translateX(0px) translateY(45px)' );
-        redoSearchMap.css( 'transform', 'translateX(0px) translateY(45px)' );
-
-        autoSearchMap.removeClass( 'hidden' );
-
-        if ( !checkAutoSearchInMapEnabled() ) {
-            redoSearchMap.removeClass( 'hidden' );
-        }
-    }
-
-    function showDesktopMapControlButtons() {
-        autoSearchMap.css( 'transform', 'translateX(0px) translateY(0px)' );
-        redoSearchMap.css( 'transform', 'translateX(0px) translateY(0px)' );
-
-        autoSearchMap.removeClass( 'hidden' );
-
-        if ( !checkAutoSearchInMapEnabled() ) {
-            redoSearchMap.removeClass( 'hidden' );
-        }
-    }
-
-    function hideMapControlButtons() {
-        autoSearchMap.addClass( 'hidden' );
-        redoSearchMap.addClass( 'hidden' );
-    }
-
-    function switchAutoSearchInMapControl() {
-        if ( checkAutoSearchInMapEnabled() ) {
-            disableAutoSearchInMap();
-        } else {
-            enableAutoSearchInMap();
-        }
-    }
-
-    function enableAutoSearchInMap() {
-        var checker = autoSearchMap.find( 'i' );
-
-        checker.removeClass( 'fa-square-o' );
-        checker.addClass( 'fa-check' );
-
-        redoSearchMap.addClass( 'hidden' );
-
-        $( document ).trigger( 'autoSearchRequestEnabled' );
-    }
-
-    function disableAutoSearchInMap() {
-        var checker = autoSearchMap.find( 'i' );
-
-        checker.removeClass( 'fa-check' );
-        checker.addClass( 'fa-square-o' );
-
-        redoSearchMap.removeClass( 'hidden' );
-
-        $( document ).trigger( 'autoSearchRequestDisabled' );
-    }
-
-    function checkAutoSearchInMapEnabled() {
-        var checker = autoSearchMap.find( 'i' );
-
-        return checker.hasClass( 'fa-check' );
-    }
 
 //    background
     updateBackgroundElements();
