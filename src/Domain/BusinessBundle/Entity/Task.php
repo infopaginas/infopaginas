@@ -4,6 +4,7 @@ namespace Domain\BusinessBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Domain\BusinessBundle\Model\Task\TaskInterface;
+use Domain\ReportBundle\Model\ReportInterface;
 use Oxa\Sonata\AdminBundle\Model\ChangeStateInterface;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\ChangeStateTrait;
@@ -22,7 +23,7 @@ use JMS\Serializer\Annotation\MaxDepth;
  * @ORM\Table(name="task")
  * @ORM\Entity(repositoryClass="Domain\BusinessBundle\Repository\TaskRepository")
  */
-class Task implements DefaultEntityInterface, TaskInterface, ChangeStateInterface
+class Task implements DefaultEntityInterface, TaskInterface, ChangeStateInterface, ReportInterface
 {
     use DefaultEntityTrait;
     use ChangeStateTrait;
@@ -338,6 +339,17 @@ class Task implements DefaultEntityInterface, TaskInterface, ChangeStateInterfac
         $this->contentDeleted = $contentDeleted;
 
         return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public static function getExportFormats()
+    {
+        return [
+            self::FORMAT_CSV => self::FORMAT_CSV,
+            self::FORMAT_EXCEL => self::FORMAT_EXCEL,
+        ];
     }
 
     /**
