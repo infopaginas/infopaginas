@@ -184,3 +184,9 @@ services:
         calls:
             - [ setBusinessProfileManager, [ '@domain_business.manager.business_profile' ]]
             - [ setTranslator, [ '@translator.default' ]]
+
+    domain_report.exporter.feedback_report_csv_exporter:
+        class: Domain\ReportBundle\Service\Export\FeedbackReportCsvExporter
+        calls:
+            - [ setFeedbackReportManager, [ '@domain_report.manager.feedback_report_manager' ]]
+            - [ setTranslator, [ '@translator.default' ]]

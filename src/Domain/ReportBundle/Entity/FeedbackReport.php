@@ -12,7 +12,7 @@ use Domain\ReportBundle\Model\ReportInterface;
  * @ORM\Table(name="feedback_report")
  * @ORM\Entity(repositoryClass="Domain\ReportBundle\Repository\FeedbackReportRepository")
  */
-class FeedbackReport implements ReportInterface, PostponeExportInterface
+class FeedbackReport implements ReportInterface
 {
     /**
      * @var int

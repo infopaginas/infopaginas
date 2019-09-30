@@ -4,6 +4,7 @@ namespace Domain\ReportBundle\Service\Export;
 
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\ReportBundle\Entity\CategoryReport;
+use Domain\ReportBundle\Entity\FeedbackReport;
 use Domain\ReportBundle\Entity\SubscriptionReport;
 use Domain\ReportBundle\Entity\UserActionReport;
 use Domain\ReportBundle\Entity\ViewAndImpressionReport;
@@ -92,6 +93,13 @@ class Exporter
                         break;
                 }
 
+                break;
+            case FeedbackReport::class:
+                switch ($format) {
+                    case ReportInterface::FORMAT_CSV:
+                        $response = $this->getFeedbackReportCsvExporter()->getResponse($parameters);
+                        break;
+                }
                 break;
         }
 
@@ -203,5 +211,13 @@ class Exporter
     protected function getBusinessProfileCsvExporter()
     {
         return $this->container->get('domain_report.exporter.business_profile_csv_exporter');
+    }
+
+    /**
+     * @return FeedbackReportCsvExporter
+     */
+    protected function getFeedbackReportCsvExporter()
+    {
+        return $this->container->get('domain_report.exporter.feedback_report_csv_exporter');
     }
 }

@@ -3,6 +3,7 @@
 namespace Domain\ReportBundle\Admin;
 
 use Domain\PageBundle\Entity\Page;
+use Domain\ReportBundle\Entity\FeedbackReport;
 use Domain\ReportBundle\Manager\FeedbackReportManager;
 use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
 use Oxa\Sonata\AdminBundle\Util\Helpers\AdminHelper;
@@ -44,6 +45,14 @@ class FeedbackReportAdmin extends ReportAdmin
                 500,
             ]
         );
+    }
+
+    /**
+     * @return array
+     */
+    public function getExportFormats()
+    {
+        return FeedbackReport::getExportFormats();
     }
 
     /**
@@ -123,18 +132,6 @@ class FeedbackReportAdmin extends ReportAdmin
         $this->feedbacks = $this->getFeedbackReportManager()->getFeedbackReportData($filterParam);
         $this->locales = LocaleHelper::getLocaleList();
         $this->subjects = Page::getAllSubjects();
-    }
-
-    /**
-     * Add additional routes
-     *
-     * @param RouteCollection $collection
-     */
-    protected function configureRoutes(RouteCollection $collection)
-    {
-        $collection
-            ->remove('export')
-        ;
     }
 
     /**
