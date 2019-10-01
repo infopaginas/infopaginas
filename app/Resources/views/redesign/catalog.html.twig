@@ -1,4 +1,6 @@
 {% extends "redesign/layout/base.html.twig" %}
+{% set showLinkCompareView = results.resultSet is defined and results.resultSet is not empty and results.resultSet is not null %}
+{% set catalogView = true %}
 
 {% block breadcrumbs %}
     {% embed ':redesign/blocks:breadcrumbs.html.twig' with {'catalogLocality': currentLocality, 'category': currentCategory} %}

@@ -259,7 +259,7 @@ class SearchController extends Controller
                 $seoType = BusinessProfileUtil::SEO_CLASS_PREFIX_COMPARE_MAP;
             }
 
-            $searchResultsDTO   = $searchManager->search($searchDTO);
+            $searchResultsDTO = $searchManager->search($searchDTO);
 
             $schema = $this->getBusinessProfileManager()->buildBusinessProfilesSchema($searchResultsDTO->resultSet);
 
@@ -296,6 +296,85 @@ class SearchController extends Controller
         $pageRouter = $this->container->get('request')->attributes->get('_route');
 
         $seoData = $this->getBusinessProfileManager()->getBusinessProfileSearchSeoData($locationName, $seoCategories);
+
+        return $this->render(
+            ':redesign:search-results-compare.html.twig',
+            [
+                'search'            => $searchDTO,
+                'results'           => $searchResultsDTO,
+                'seoData'           => $seoData,
+                'seoTags'           => BusinessProfileUtil::getSeoTags($seoType),
+                'banners'           => $banners,
+                'searchData'        => $searchData,
+                'pageRouter'        => $pageRouter,
+                'schemaJsonLD'      => $schema,
+                'noFollowRelevance' => SearchDataUtil::ORDER_BY_RELEVANCE != SearchDataUtil::DEFAULT_ORDER_BY_VALUE,
+                'noFollowDistance'  => SearchDataUtil::ORDER_BY_DISTANCE  != SearchDataUtil::DEFAULT_ORDER_BY_VALUE,
+                'searchRelevance'   => SearchDataUtil::ORDER_BY_RELEVANCE,
+                'searchDistance'    => SearchDataUtil::ORDER_BY_DISTANCE,
+                'locale'            => $locale,
+                'trackingParams'    => $trackingParams,
+            ]
+        );
+    }
+
+    /**
+     * @param Request $request
+     * @param string $localitySlug
+     * @param string $categorySlug
+     *
+     * @return Response
+     */
+    public function compareCatalogAction(Request $request, $localitySlug, $categorySlug)
+    {
+        $searchManager = $this->get('domain_search.manager.search');
+
+        $locality = $searchManager->searchCatalogLocality($localitySlug);
+        $category = $searchManager->searchCatalogCategory($categorySlug);
+
+        if (!$locality || !$category) {
+            throw $this->createNotFoundException();
+        }
+        $searchDTO = $searchManager->getSearchCatalogDTO($request, $locality, $category);
+
+        $searchData = [];
+        $trackingParams = [];
+        $seoType = BusinessProfileUtil::SEO_CLASS_PREFIX_COMPARE;
+        $locale = LocaleHelper::getLocale($request->getLocale());
+        $seoCategory = '';
+
+        if ($searchDTO) {
+            $searchResultsDTO = $searchManager->searchCatalog($searchDTO);
+
+            $schema = $this->getBusinessProfileManager()->buildBusinessProfilesSchema($searchResultsDTO->resultSet);
+
+            $seoCategory = $category->getName();
+
+            $this->setRequestAttributes($request, $locality, $category);
+            $searchData = $this->getSearchDataByRequest($request);
+
+            $trackingParams = BusinessProfileUtil::getTrackingImpressionParamsData($searchResultsDTO->resultSet);
+            $trackingParams = BusinessProfileUtil::getTrackingKeywordsParamsData(
+                $searchData['q'],
+                $searchResultsDTO->resultSet,
+                $trackingParams
+            );
+        } else {
+            $searchResultsDTO = null;
+            $schema           = null;
+        }
+
+        $bannerManager  = $this->get('domain_banner.manager.banner');
+        $banners        = $bannerManager->getBanners(
+            [
+                TypeInterface::CODE_COMPARE_PAGE_BOTTOM,
+                TypeInterface::CODE_COMPARE_PAGE_TOP,
+            ]
+        );
+
+        $pageRouter = $this->container->get('request')->attributes->get('_route');
+
+        $seoData = $this->getBusinessProfileManager()->getBusinessProfileCatalogSeoData($locality, $seoCategory);
 
         return $this->render(
             ':redesign:search-results-compare.html.twig',
@@ -486,16 +565,12 @@ class SearchController extends Controller
         $request->attributes->set('q', $localitySlug);
 
         if ($locality) {
-            $request->attributes->set('catalogLocality', $locality->getName());
-            $request->attributes->set('geo', $locality->getName());
-            $request->attributes->set('q', $locality->getName());
-
             $category = $searchManager->searchCatalogCategory($categorySlug);
 
+            $this->setRequestAttributes($request, $locality, $category);
             $seoLocation = $locality;
 
             if ($category) {
-                $request->attributes->set('q', $category->getName());
                 $showCatalog = false;
 
                 $showResults = true;
@@ -724,5 +799,22 @@ class SearchController extends Controller
                 'redirected' => true,
             ]
         );
+    }
+
+    /**
+     * @param Request $request
+     * @param Locality|null $locality
+     * @param Category|null $category
+     */
+    private function setRequestAttributes(Request $request, Locality $locality = null, Category $category = null)
+    {
+        if ($locality) {
+            $request->attributes->set('catalogLocality', $locality->getName());
+            $request->attributes->set('geo', $locality->getName());
+            $request->attributes->set('q', $locality->getName());
+            if ($category) {
+                $request->attributes->set('q', $category->getName());
+            }
+        }
     }
 }
