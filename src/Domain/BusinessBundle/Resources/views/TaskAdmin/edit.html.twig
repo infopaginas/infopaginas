@@ -132,5 +132,13 @@
 
 {% block javascripts %}
     {{ parent() }}
+    <script>
+        var messages = {
+            'phoneNotUnique': '{{ 'validation_warnings.phone.not_unique'|trans({}, 'AdminDomainBusinessBundle') }}',
+            'phonesCheckNotComplete': '{{ 'validation_warnings.phone.check_not_complete'|trans({}, 'AdminDomainBusinessBundle') }}',
+        };
+    </script>
+    <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
+    <script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
     <script src="{{ asset('bundles/domainbusiness/scripts/modules/tools/tasks.js') }}"></script>
 {% endblock %}

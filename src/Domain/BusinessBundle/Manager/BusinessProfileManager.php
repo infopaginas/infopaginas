@@ -3985,4 +3985,17 @@ class BusinessProfileManager extends Manager
 
         return $items;
     }
+
+    /**
+     * @param array $phones
+     * @param int   $id
+     *
+     * @return BusinessProfile[]
+     */
+    public function getSimilarBusinessesByPhones($phones, $id)
+    {
+        $items = $this->getRepository()->getSimilarBusinessesByPhones($phones, $id);
+
+        return $items;
+    }
 }

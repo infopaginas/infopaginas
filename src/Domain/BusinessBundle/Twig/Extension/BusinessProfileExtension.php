@@ -162,6 +162,10 @@ class BusinessProfileExtension extends \Twig_Extension
                 $this,
                 'getBusinessGalleryMedia'
             ),
+            'get_business_profile_phones_json' => new \Twig_Function_Method(
+                $this,
+                'getBusinessProfilePhonesJson'
+            ),
         ];
     }
 
@@ -636,6 +640,25 @@ class BusinessProfileExtension extends \Twig_Extension
         }
 
         return json_encode($categoriesData);
+    }
+
+    /**
+     * @param string $changeSetEntryValue
+     *
+     * @return false|string
+     */
+    public function getBusinessProfilePhonesJson(string $changeSetEntryValue)
+    {
+        if (!$this->isJson($changeSetEntryValue)) {
+            return $changeSetEntryValue;
+        }
+
+        $data = [];
+        foreach (json_decode($changeSetEntryValue) as $phone) {
+            $data[] = json_decode($phone->value)->value;
+        }
+
+        return json_encode($data);
     }
 
     /**
