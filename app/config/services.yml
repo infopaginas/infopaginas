@@ -5,3 +5,22 @@ parameters:
 services:
     dynamicDomainSessionStorage:
         class: Domain\SiteBundle\Utils\DynamicDomainSessionStorage
+
+    app.aws.credentials:
+        class:      Aws\Credentials\Credentials
+        arguments:
+            - "%amazon_aws_key%"
+            - "%amazon_aws_secret_key%"
+
+    app.cloudwatch_logs.client:
+        class:      Aws\CloudWatchLogs\CloudWatchLogsClient
+        arguments:
+            - {version: "latest", credentials: "@app.aws.credentials", region: "%amazon_aws_region%"}
+
+    app.monolog.handler.cloudwatch:
+        class:      Maxbanton\Cwh\Handler\CloudWatch
+        arguments:
+            - "@app.cloudwatch_logs.client"
+            - "%aws_sdk_cloudwatch_group%"
+            - "%aws_sdk_cloudwatch_stream%"
+            - "%aws_sdk_cloudwatch_retention%"

@@ -25,9 +25,10 @@ monolog:
             action_level: error
             handler:      nested
         nested:
-            type:  stream
-            path:  "%kernel.logs_dir%/%kernel.environment%.log"
+            type: service
             level: debug
+            channels: [!event]
+            id: "app.monolog.handler.cloudwatch"
         console:
             type:  console
 
