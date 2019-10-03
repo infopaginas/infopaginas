@@ -60,9 +60,11 @@ class LandingPageShortCutManager
             if (!$item->getUseAllLocation() and $item->getLocality()) {
                 $localityTitle  = $item->getLocality()->getName();
                 $localitySearch = $localityTitle;
+                $localitySlug = $item->getLocality()->getSlug();
             } else {
                 $localityTitle  = Locality::ALL_LOCALITY_NAME;
                 $localitySearch = Locality::ALL_LOCALITY;
+                $localitySlug = '';
             }
 
             $itemsData = [];
@@ -79,6 +81,7 @@ class LandingPageShortCutManager
 
             $data[] = [
                 'title' => $localityTitle,
+                'localitySlug' => $localitySlug,
                 'data' => $itemsData,
             ];
         }
