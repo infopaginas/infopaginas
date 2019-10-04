@@ -441,6 +441,41 @@ class ProfileController extends Controller
     }
 
     /**
+     * @param Request $request
+     * @param mixed   $id
+     *
+     * @return JsonResponse
+     */
+    public function phoneValidationAction(Request $request, $id)
+    {
+        $businesses = $this->getBusinessProfilesManager()->getSimilarBusinessesByPhones(
+            $request->request->get('phones'),
+            $id
+        );
+
+        $matches = [];
+
+        foreach ($businesses as $business) {
+            $matches[] = [
+                'id' => $business->getId(),
+                'url' => $this->generateUrl('admin_domain_business_businessprofile_edit', [
+                    'id' => $business->getId(),
+                ]),
+                'name' => $business->getName(),
+            ];
+        }
+
+        return new JsonResponse([
+            'matches' => $matches,
+            'message' => $this->get('translator')->trans(
+                'validation_warnings.business_phones',
+                [],
+                'AdminDomainBusinessBundle'
+            ),
+        ]);
+    }
+
+    /**
      * @return SectionManager
      */
     private function getSectionManager() : SectionManager

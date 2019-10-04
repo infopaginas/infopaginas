@@ -23,7 +23,13 @@
                 {% endfor %}
             </td>
         </tr>
-        <tr class="sonata-ba-view-container">
+        <tr class="sonata-ba-view-container"
+            {% if (object.type == TASK.PROFILE_CREATE) %}
+                id="phones"
+                data-bp-id="{{ business.getId() }}"
+                data-phones="{{ business.getPhonesJSON() }}"
+            {% endif %}
+        >
             <td>{{ admin.trans('Phone') }}</td>
             <td>
                 {% for phone in business.getPhones() %}
