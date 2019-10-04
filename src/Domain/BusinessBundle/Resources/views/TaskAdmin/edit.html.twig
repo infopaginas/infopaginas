@@ -1,5 +1,10 @@
 {% extends 'OxaSonataAdminBundle:CRUD:edit.html.twig' %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.css" />
+{% endblock %}
+
 {% block form %}
     {% set business = object.businessProfile %}
 
@@ -131,6 +136,9 @@
 {% endblock %}
 
 {% block javascripts %}
+    <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
+    <script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
+    <script src='{{ absolute_url(asset('assetic/js/modules/mapbox-gl.min.js')) }}'></script>
     {{ parent() }}
     <script>
         var messages = {
@@ -141,4 +149,13 @@
     <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
     <script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
     <script src="{{ asset('bundles/domainbusiness/scripts/modules/tools/tasks.js') }}"></script>
+    <script type="text/javascript">
+        var map;
+        $( document ).ready( function() {
+            var event = new CustomEvent( 'jQueryLoaded' );
+            document.dispatchEvent( event );
+        });
+    </script>
+    <script src="{{ asset('bundles/domainsite/scripts/vendors/underscore-min.js') }}"></script>
+    {% include ':widgets:mapbox_script.html.twig' %}
 {% endblock %}

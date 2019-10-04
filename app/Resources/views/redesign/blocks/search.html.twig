@@ -38,12 +38,38 @@
 
 {% if showLinkListView is defined and showLinkListView %}
     <div class="views">
-        <a id="searchListView" href="{{ absolute_url(path('domain_search_index', app.request.query.all)) }}" class="button" data-bw-gtm-event-click data-bw-gtm-label="{% trans %}List view{% endtrans %}">{% trans %}List view{% endtrans %}</a>
+        {% set listHref %}
+            {% if app.request.attributes.get('localitySlug') and app.request.attributes.get('categorySlug') %}
+                {{ absolute_url(path('domain_search_catalog', {
+                    'localitySlug' : app.request.attributes.get('localitySlug'),
+                    'categorySlug' : app.request.attributes.get('categorySlug'),
+                })) }}
+            {% else %}
+                {{ absolute_url(path('domain_search_index', app.request.query.all)) }}
+            {% endif %}
+        {% endset %}
+        <a id="searchListView" href="{{ listHref }}"
+           class="button" data-bw-gtm-event-click data-bw-gtm-label="{% trans %}List view{% endtrans %}">
+            {% trans %}List view{% endtrans %}
+        </a>
     </div><!-- views -->
 {% endif %}
 
 {% if showLinkCompareView is defined and showLinkCompareView %}
     <div class="views">
-        <a id="compareListView" href="{{ absolute_url(path('domain_search_compare', app.request.query.all)) }}" class="button" data-bw-gtm-event-click data-bw-gtm-label="{% trans %}compare.view{% endtrans %}">{% trans %}compare.view{% endtrans %}</a>
+        {% set compareHref %}
+            {% if catalogView is defined and catalogView %}
+                {{ absolute_url(path('domain_search_compare_catalog', {
+                    'localitySlug' : app.request.attributes.get('localitySlug'),
+                    'categorySlug' : app.request.attributes.get('categorySlug'),
+                })) }}
+            {% else %}
+                {{ absolute_url(path('domain_search_compare', app.request.query.all)) }}
+            {% endif %}
+        {% endset %}
+        <a id="compareListView" href="{{ compareHref }}"
+           class="button" data-bw-gtm-event-click data-bw-gtm-label="{% trans %}compare.view{% endtrans %}">
+            {% trans %}compare.view{% endtrans %}
+        </a>
     </div><!-- views -->
 {% endif %}
