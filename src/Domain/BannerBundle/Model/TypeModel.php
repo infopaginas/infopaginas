@@ -125,8 +125,6 @@ class TypeModel implements TypeInterface
             $resizableType = self::BANNER_TYPE_RESIZABLE;
         } elseif (in_array($code, TypeModel::getBannerResizableInBlock())) {
             $resizableType = self::BANNER_TYPE_RESIZABLE_BLOCK;
-        } elseif (in_array($code, self::getBannerResizableSideBlock())) {
-            $resizableType = self::BANNER_TYPE_RESIZABLE_SIDE_BLOCK;
         } else {
             $resizableType = self::BANNER_TYPE_DEFAULT;
         }
@@ -185,17 +183,6 @@ class TypeModel implements TypeInterface
         return [
             self::CODE_SEARCH_PAGE_TOP,
             self::CODE_SEARCH_PAGE_BOTTOM,
-        ];
-    }
-
-    public static function getBannerResizableSideBlock() : array
-    {
-        return [
-            self::CODE_LANDING_PAGE_RIGHT_LARGE,
-            self::CODE_BUSINESS_PAGE_RIGHT_LARGE,
-            self::CODE_ARTICLE_PAGE_RIGHT_LARGE,
-            self::CODE_VIDEO_PAGE_RIGHT_LARGE,
-            self::CODE_PORTAL_RIGHT_LARGE,
         ];
     }
 

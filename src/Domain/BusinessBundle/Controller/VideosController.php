@@ -128,7 +128,7 @@ class VideosController extends Controller
         $bannerManager  = $this->get('domain_banner.manager.banner');
         $banners        = $bannerManager->getBanners(
             [
-                TypeInterface::CODE_VIDEO_PAGE_RIGHT_LARGE,
+                TypeInterface::CODE_VIDEO_PAGE_RIGHT,
                 TypeInterface::CODE_VIDEO_PAGE_BOTTOM,
             ]
         );
