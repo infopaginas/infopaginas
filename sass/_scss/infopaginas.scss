@@ -420,6 +420,29 @@ $side-padding-mb: 16px;
   a {
     color: $green;
   }
+
+  i {
+    margin-right: 5px;
+  }
+
+  @media only screen and (max-width: 1440px) {
+    font-size: 0.7em;
+
+    i {
+      margin: 0;
+    }
+  }
+
+  @media only screen and (max-width: 805px) {
+    font-size: 1em;
+    padding: 0 20px 0;
+  }
+
+  @media only screen and (min-width: 1440px) {
+    .about__item.copyright a {
+      margin-left: 20px;
+    }
+  }
 }
 
 .google-badge {
