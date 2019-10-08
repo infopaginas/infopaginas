@@ -25,11 +25,11 @@ class TypeModel implements TypeInterface
             self::CODE_COMPARE_PAGE_TOP          => self::SIZE_320_50,
             self::CODE_COMPARE_PAGE_BOTTOM       => self::SIZE_320_50,
             self::CODE_SEARCH_FLOAT_BOTTOM       => self::SIZE_320_50,
-            self::CODE_LANDING_PAGE_RIGHT_LARGE  => self::SIZE_AUTO_SIDEBLOCK,
-            self::CODE_BUSINESS_PAGE_RIGHT_LARGE => self::SIZE_AUTO_SIDEBLOCK,
-            self::CODE_ARTICLE_PAGE_RIGHT_LARGE  => self::SIZE_AUTO_SIDEBLOCK,
-            self::CODE_VIDEO_PAGE_RIGHT_LARGE    => self::SIZE_AUTO_SIDEBLOCK,
-            self::CODE_PORTAL_RIGHT_LARGE        => self::SIZE_AUTO_SIDEBLOCK,
+            self::CODE_LANDING_PAGE_RIGHT_LARGE  => self::SIZE_300_600,
+            self::CODE_BUSINESS_PAGE_RIGHT_LARGE => self::SIZE_300_600,
+            self::CODE_ARTICLE_PAGE_RIGHT_LARGE  => self::SIZE_300_600,
+            self::CODE_VIDEO_PAGE_RIGHT_LARGE    => self::SIZE_300_600,
+            self::CODE_PORTAL_RIGHT_LARGE        => self::SIZE_300_600,
         ];
     }
 
@@ -92,23 +92,18 @@ class TypeModel implements TypeInterface
                 self::SIZE_DATA_320_50,
             ],
             self::CODE_LANDING_PAGE_RIGHT_LARGE => [
-                self::SIZE_DATA_300_250,
                 self::SIZE_DATA_300_600,
             ],
             self::CODE_BUSINESS_PAGE_RIGHT_LARGE => [
-                self::SIZE_DATA_300_250,
                 self::SIZE_DATA_300_600,
             ],
             self::CODE_ARTICLE_PAGE_RIGHT_LARGE => [
-                self::SIZE_DATA_300_250,
                 self::SIZE_DATA_300_600,
             ],
             self::CODE_VIDEO_PAGE_RIGHT_LARGE => [
-                self::SIZE_DATA_300_250,
                 self::SIZE_DATA_300_600,
             ],
             self::CODE_PORTAL_RIGHT_LARGE => [
-                self::SIZE_DATA_300_250,
                 self::SIZE_DATA_300_600,
             ],
         ];
@@ -323,42 +318,42 @@ class TypeModel implements TypeInterface
             ],
             [
                 'code'      => TypeInterface::CODE_LANDING_PAGE_RIGHT_LARGE,
-                'name'      => 'Landing Page 300x250 and 300x600',
+                'name'      => 'Landing Page 300x600',
                 'placement' => 'Landing Page',
                 'comment'   => 'Ad block in the right column of Landing Page',
-                'htmlId'    => 'div-gpt-ad-1568730199302-0',
+                'htmlId'    => 'div-gpt-ad-1568651305335-0',
                 'slotId'    => '/101238367/landing_page_right_large',
             ],
             [
                 'code'      => TypeInterface::CODE_BUSINESS_PAGE_RIGHT_LARGE,
-                'name'      => 'Business Profile Page 300x250 and 300x600',
+                'name'      => 'Business Profile Page 300x600',
                 'placement' => 'Business Profile Pages',
                 'comment'   => 'Ad block in the right column of Business Profile Pages',
-                'htmlId'    => 'div-gpt-ad-1568730717834-0',
+                'htmlId'    => 'div-gpt-ad-1568652513717-0',
                 'slotId'    => '/101238367/business_page_right_large',
             ],
             [
                 'code'      => TypeInterface::CODE_ARTICLE_PAGE_RIGHT_LARGE,
-                'name'      => 'Articles 300x250 and 300x600',
+                'name'      => 'Articles 300x600',
                 'placement' => 'Article List and Article Page',
                 'comment'   => 'Ad block in the right column of Article List and Article Page',
-                'htmlId'    => 'div-gpt-ad-1568730474743-0',
+                'htmlId'    => 'div-gpt-ad-1568652733574-0',
                 'slotId'    => '/101238367/article_page_right_large',
             ],
             [
                 'code'      => TypeInterface::CODE_VIDEO_PAGE_RIGHT_LARGE,
-                'name'      => 'Videos 300x250 and 300x600',
+                'name'      => 'Videos 300x600',
                 'placement' => 'Video List',
                 'comment'   => 'Ad block in the right column of Video List',
-                'htmlId'    => 'div-gpt-ad-1568730350035-0',
+                'htmlId'    => 'div-gpt-ad-1568653256207-0',
                 'slotId'    => '/101238367/video_page_right_large',
             ],
             [
                 'code'      => TypeInterface::CODE_PORTAL_RIGHT_LARGE,
-                'name'      => 'Static 300x250 and 300x600',
+                'name'      => 'Static 300x600',
                 'placement' => 'Static pages (advertise, contact us, terms, privacy)',
                 'comment'   => 'Ad block in the right column of Static pages',
-                'htmlId'    => 'div-gpt-ad-1568730392474-0',
+                'htmlId'    => 'div-gpt-ad-1568653352095-0',
                 'slotId'    => '/101238367/static_page_right_large',
             ],
         ];

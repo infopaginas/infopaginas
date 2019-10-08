@@ -30,7 +30,7 @@ interface TypeInterface
     const CODE_PORTAL_RIGHT_LARGE        = 20;
 
     const SIZE_300_250 = '300x250';
-    const SIZE_AUTO_SIDEBLOCK = '300x250, 300x600';
+    const SIZE_300_600 = '300x600';
     const SIZE_320_50  = '320x50';
     const SIZE_AUTO_STATIC = '320x50, 728x90';
 

@@ -29,18 +29,18 @@ class Version20190916151948 extends AbstractMigration  implements ContainerAware
     public function up(Schema $schema)
     {
         $qb = $this->em->createQueryBuilder()
-            ->select('b.code')
+            ->select('b.htmlId')
             ->from('DomainBannerBundle:Banner', 'b')
         ;
-        $codes = $qb->getQuery()->getResult();
+        $htmlIds = $qb->getQuery()->getResult();
 
-        foreach ($codes as $i => $code) {
-            $codes[$i] = $codes[$i]['code'];
+        foreach ($htmlIds as $i => $htmlId) {
+            $htmlIds[$i] = $htmlIds[$i]['htmlId'];
         }
 
         $banners = TypeModel::getDefaultBannerSettings();
         foreach ($banners as $item) {
-            if (!in_array($item['code'], $codes)) {
+            if (!in_array($item['htmlId'], $htmlIds)) {
                 $banner = new Banner();
 
                 $banner->setTitle($item['name']);
