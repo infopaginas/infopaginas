@@ -11,6 +11,7 @@ interface ConfigInterface
     const DEFAULT_TITLE                     = 'DEFAULT_TITLE';
     const DEFAULT_META_DESCRIPTION          = 'META_DESCRIPTION';
     const DEFAULT_META_KEYWORDS             = 'META_KEYWORDS';
+    const FOOTER_CONTENT                    = 'FOOTER_CONTENT';
     const DEFAULT_EMAIL_ADDRESS             = 'DEFAULT_EMAIL_ADDRESS';
     const MAIL_REGISTRATION_TEMPLATE        = 'MAIL_REGISTRATION_TEMPLATE';
     const MAIL_NEW_MERCHANT_TEMPLATE        = 'MAIL_NEW_MERCHANT_TEMPLATE';
@@ -56,6 +57,4 @@ interface ConfigInterface
     const EXCEPTION_ERROR_EMAIL_ADDRESS         = 'EXCEPTION_ERROR_EMAIL_ADDRESS';
     const EXCEPTION_ERROR_EMAIL_SUBJECT         = 'EXCEPTION_ERROR_EMAIL_SUBJECT';
     const HOMEPAGE_CAROUSEL_MAX_ELEMENT_COUNT   = 'HOMEPAGE_CAROUSEL_MAX_ELEMENT_COUNT';
-    const FOOTER_EMAIL                          = 'FOOTER_EMAIL';
-    const FOOTER_PHONE_NUMBER                   = 'FOOTER_PHONE_NUMBER';
 }
