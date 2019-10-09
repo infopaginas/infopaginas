@@ -7,6 +7,7 @@ use AntiMattr\GoogleBundle\Analytics\Impression;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
+use Domain\BusinessBundle\DBAL\Types\UrlType;
 use Domain\BusinessBundle\Entity\Area;
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\BusinessProfileExtraSearch;
@@ -26,6 +27,7 @@ use Domain\BusinessBundle\Model\DayOfWeekModel;
 use Domain\BusinessBundle\Model\StatusInterface;
 use Domain\BusinessBundle\Model\SubscriptionPlanInterface;
 use Domain\BusinessBundle\Repository\BusinessGalleryRepository;
+use Domain\BusinessBundle\Repository\BusinessProfileRepository;
 use Domain\BusinessBundle\Repository\BusinessReviewRepository;
 use Domain\BusinessBundle\Util\ChangeSetCalculator;
 use Domain\BusinessBundle\Util\JsonUtil;
@@ -34,6 +36,7 @@ use Domain\BusinessBundle\Util\SlugUtil;
 use Domain\BusinessBundle\Util\Task\RelationChangeSetUtil;
 use Domain\BusinessBundle\Util\Task\TranslationChangeSetUtil;
 use Domain\BusinessBundle\Util\Task\WorkingHoursChangeSetUtil;
+use Domain\BusinessBundle\VO\Url;
 use Domain\EmergencyBundle\Entity\EmergencyBusiness;
 use Domain\EmergencyBundle\Manager\EmergencyManager;
 use Domain\PageBundle\Entity\Page;
@@ -70,6 +73,8 @@ use Domain\SearchBundle\Model\DataType\DCDataDTO;
 /**
  * Class BusinessProfileManager
  * @package Domain\BusinessBundle\Manager
+ *
+ * @method BusinessProfileRepository getRepository()
  */
 class BusinessProfileManager extends Manager
 {
@@ -567,6 +572,34 @@ class BusinessProfileManager extends Manager
 
                         $accessor->setValue($businessProfile, $change->getFieldName(), null);
                     }
+
+                    break;
+                case ChangeSetCalculator::CHANGE_RELATION_URL_TYPE:
+                    $newValue = json_decode($change->getNewValue(), true);
+
+                    if ($newValue) {
+                        $value = new Url();
+
+                        if (array_key_exists(UrlType::URL_NAME, $newValue)) {
+                            $value->setUrl($newValue[UrlType::URL_NAME]);
+                        }
+
+                        if (array_key_exists(UrlType::REL_NO_OPENER, $newValue)) {
+                            $value->setRelNoOpener((bool)$newValue[UrlType::REL_NO_OPENER]);
+                        }
+
+                        if (array_key_exists(UrlType::REL_NO_FOLLOW, $newValue)) {
+                            $value->setRelNoFollow((bool)$newValue[UrlType::REL_NO_FOLLOW]);
+                        }
+
+                        if (array_key_exists(UrlType::REL_NO_REFERRER, $newValue)) {
+                            $value->setRelNoReferrer((bool)$newValue[UrlType::REL_NO_REFERRER]);
+                        }
+                    } else {
+                        $value = null;
+                    }
+
+                    $accessor->setValue($businessProfile, $change->getFieldName(), $value);
 
                     break;
                 case ChangeSetCalculator::CHANGE_MEDIA_RELATION_ONE_TO_MANY:
@@ -1215,12 +1248,13 @@ class BusinessProfileManager extends Manager
                     $schemaItem['description'] = strip_tags($description);
                 }
 
-                $sameAs = $this->addSameAsUrl([], $businessProfile->getFacebookURL());
-                $sameAs = $this->addSameAsUrl($sameAs, $businessProfile->getTwitterURL());
-                $sameAs = $this->addSameAsUrl($sameAs, $businessProfile->getGoogleURL());
-                $sameAs = $this->addSameAsUrl($sameAs, $businessProfile->getYoutubeURL());
-                $sameAs = $this->addSameAsUrl($sameAs, $businessProfile->getInstagramURL());
-                $sameAs = $this->addSameAsUrl($sameAs, $businessProfile->getTripAdvisorURL());
+                $sameAs = $this->addSameAsUrl([], $businessProfile->getFacebookLink());
+                $sameAs = $this->addSameAsUrl($sameAs, $businessProfile->getTwitterLink());
+                $sameAs = $this->addSameAsUrl($sameAs, $businessProfile->getGoogleLink());
+                $sameAs = $this->addSameAsUrl($sameAs, $businessProfile->getYoutubeLink());
+                $sameAs = $this->addSameAsUrl($sameAs, $businessProfile->getInstagramLink());
+                $sameAs = $this->addSameAsUrl($sameAs, $businessProfile->getTripAdvisorLink());
+                $sameAs = $this->addSameAsUrl($sameAs, $businessProfile->getLinkedInLink());
 
                 $photos = $this->getBusinessProfilePhotoImages($businessProfile);
 
@@ -1311,7 +1345,7 @@ class BusinessProfileManager extends Manager
         }
 
         $url = $this->getBusinessProfileUrl($businessProfile);
-        if ($businessProfile->getWebsite()) {
+        if ($businessProfile->getWebsiteItem()) {
             $schemaItem['url']    = $businessProfile->getWebsiteLink();
             $schemaItem['sameAs'] = $url;
         } else {
@@ -3936,5 +3970,19 @@ class BusinessProfileManager extends Manager
         }
 
         return $values;
+    }
+
+    /**
+     * @param string $name
+     * @param string $city
+     * @param int    $id
+     *
+     * @return BusinessProfile[]
+     */
+    public function getSimilarBusinesses($name, $city, $id)
+    {
+        $items = $this->getRepository()->getSimilarBusinesses($name, $city, $id);
+
+        return $items;
     }
 }

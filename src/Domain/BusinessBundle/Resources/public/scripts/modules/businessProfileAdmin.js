@@ -1,4 +1,6 @@
 $( document ).ready( function() {
+    var currentId = businessProfileId;
+    var mapPinUpdated = false;
 
     if ( parentId && !businessProfileId ) {
         businessProfileId = parentId
@@ -10,6 +12,8 @@ $( document ).ready( function() {
     var addRadioButtonCollection = false;
     var addListCollection = false;
 
+    var nameField           = $( '#' + formId + '_name' );
+    var cityField           = $( '#' + formId + '_city' );
     var categoryField       = $( '#' + formId + '_categories' );
     var areasField          = $( '#' + formId + '_areas' );
     var localitiesField     = $( '#' + formId + '_localities' );
@@ -18,6 +22,12 @@ $( document ).ready( function() {
     var keywordSelectors = '#sonata-ba-field-container-' + formId + '_keywords input[ id *= "_value" ]';
 
     var openAllTimeCheckboxes = $( '[ id *= "_openAllTime" ]' );
+
+    var businessNameAjax = {
+        request: null,
+        queue: false,
+        delay: 500,
+    };
 
     $( 'input[ id *= "_serviceAreasType_" ]' ).each(function() {
         if ( $( this ).prop( 'checked' ) ) {
@@ -36,6 +46,16 @@ $( document ).ready( function() {
         applyPhoneMask();
     });
 
+    $( 'div[ id $= "' + formId + '_latitude" ]' ).on( 'change', function( event ) {
+        mapPinUpdated = true;
+        handleBusinessProfileMapPinChange();
+    });
+
+    $( 'div[ id $= "' + formId + '_longitude" ]' ).on( 'change', function( event ) {
+        mapPinUpdated = true;
+        handleBusinessProfileMapPinChange();
+    });
+
     $( document ).on( 'ifChecked ifUnchecked', 'input[ id *= "_phones_" ]', function() {
         handleBusinessProfilePhoneTypeChange();
     });
@@ -48,7 +68,59 @@ $( document ).ready( function() {
 
             return false;
         }
+        if ( handleBusinessProfileMapPinChange() ) {
+            $( 'html, body' ).animate({
+                scrollTop: $( 'div[ id $= "' + formId + '_latitude" ]' ).first().offset().top
+            }, 2000);
+
+            return false;
+        }
     });
+
+    validateBusinessName();
+
+    nameField.on( 'input', function() {
+        validateBusinessName();
+    });
+
+    cityField.on( 'input', function() {
+        validateBusinessName();
+    });
+
+    function validateBusinessName() {
+        if ( businessNameAjax.queue ) {
+            clearTimeout( businessNameAjax.queue );
+        }
+
+        if ( businessNameAjax.request ) {
+            businessNameAjax.request.abort();
+        }
+
+        if ( !nameField.val() ) {
+            return;
+        }
+
+        var id = 0;
+
+        if (currentId) {
+            id = currentId;
+        }
+
+        businessNameAjax.queue = setTimeout(function() {
+            var data = {
+                businessName: nameField.val(),
+                businessCity: cityField.val()
+            };
+
+            businessNameAjax.request = $.ajax({
+                url: Routing.generate( 'domain_business_admin_validation_business_name', { id: id } ),
+                type: 'POST',
+                dataType: 'JSON',
+                data: data,
+                success: handleBusinessNameError
+            });
+        }, businessNameAjax.delay);
+    }
 
     applyPhoneMask();
 
@@ -95,6 +167,19 @@ $( document ).ready( function() {
         handlePhoneValidationError( errorBlock, errors );
 
         return errors.length;
+    }
+
+    function handleBusinessProfileMapPinChange() {
+        var errorBlock = $( '#google-map' );
+        var errors = [];
+
+        if (!currentId && !mapPinUpdated) {
+            errors.push( errorList.map.pin_not_moved );
+        }
+
+        handlePhoneValidationError( errorBlock, errors );
+
+        return !currentId && !mapPinUpdated;
     }
 
     function handleServiceAreaTypeChange( elem ) {
@@ -720,6 +805,36 @@ $( document ).ready( function() {
             errorHtml += '</ul></div>';
 
             parent.addClass( 'has-error' );
+            input.after( errorHtml );
+        }
+    }
+
+    function handleBusinessNameError( response ) {
+        var errors = response.errors;
+        var message = response.message;
+
+        handleBusinessNotUniqueError( errors, message, nameField );
+        handleBusinessNotUniqueError( errors, message, cityField );
+    }
+
+    function handleBusinessNotUniqueError( errors, message, input ) {
+        var parent = input.parent();
+
+        parent.find( '.sonata-ba-field-error-messages' ).remove();
+        parent.removeClass( 'has-warning' );
+
+        if ( errors.length ) {
+            var errorHtml = '<div class="help-inline sonata-ba-field-error-messages"><ul class="list-unstyled">';
+            errorHtml += '<li><i class="fa fa-exclamation-circle" aria-hidden="true"></i> ' + message + '</li>';
+
+            $.each(errors, function( index, value ) {
+                var link = '<a href="' + value.url + '" target="_blank">' + value.name + ', ' + value.city + '</a>';
+                errorHtml += '<li><i class="fa fa-exclamation-circle" aria-hidden="true"></i> ' + value.id + ': ' + link + '</li>';
+            });
+
+            errorHtml += '</ul></div>';
+
+            parent.addClass( 'has-warning' );
             input.after( errorHtml );
         }
     }

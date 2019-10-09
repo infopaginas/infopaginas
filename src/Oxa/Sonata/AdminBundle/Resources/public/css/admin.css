@@ -381,3 +381,34 @@ div.single-media-preview-block img {
     font-weight: bold;
     text-decoration: underline;
 }
+
+.csv-mapping-field {
+    display: flex;
+    justify-content: space-between;
+    width: 50%;
+}
+
+.file-field {
+    min-width: 300px;
+}
+
+@media screen and (max-width: 768px){
+    .file-field {
+        min-width: unset;
+        width: 200px;
+    }
+
+    .csv-mapping-field {
+        width: 100%;
+    }
+}
+
+.spinner-wrapper {
+    display: flex;
+    height: 20px;
+}
+
+.spinner-wrapper img {
+    height: 100%;
+    margin-right: 10px;
+}

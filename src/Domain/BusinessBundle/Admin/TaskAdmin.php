@@ -160,8 +160,32 @@ class TaskAdmin extends OxaAdmin
     protected function configureRoutes(RouteCollection $collection)
     {
         $collection->remove('remove');
-        $collection->remove('export');
         $collection->remove('create');
         $collection->remove('show');
+    }
+
+    /**
+     * @return array
+     */
+    public function getExportFormats()
+    {
+        return Task::getExportFormats();
+    }
+
+    /**
+     * @return array
+     */
+    public function getExportFields()
+    {
+        $exportFields['ID'] = 'id';
+        $exportFields['Type'] = 'type';
+        $exportFields['Status'] = 'status';
+        $exportFields['BusinessProfileName'] = 'businessProfile.name';
+        $exportFields['BusinessProfilePhone'] = 'businessProfile.mainPhone';
+        $exportFields['BusinessProfileEmail'] = 'businessProfile.email';
+        $exportFields['createdDate'] = 'createdAt';
+        $exportFields['Approved/RejectedBy'] = 'reviewer.fullName';
+
+        return $exportFields;
     }
 }

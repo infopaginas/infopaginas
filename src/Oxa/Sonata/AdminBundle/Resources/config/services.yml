@@ -64,3 +64,11 @@ services:
             class: Oxa\Sonata\AdminBundle\Form\Type\ModelAutocompleteType
             tags:
                 - { name: form.type, alias: sonata_type_model_autocomplete }
+
+    oxa.sonata.admin.resizer.format_conversion:
+        class: Oxa\Sonata\AdminBundle\Resizer\FormatConversionResizer
+        arguments: ['@sonata.media.adapter.image.imagick', 'inset', '@sonata.media.metadata.proxy']
+
+    oxa.sonata.admin.thumbnail.extension:
+        class: Oxa\Sonata\AdminBundle\Thumbnail\ExtensionThumbnail
+        arguments: ['jpg']

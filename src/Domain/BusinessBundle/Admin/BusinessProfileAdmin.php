@@ -10,6 +10,7 @@ use Domain\BusinessBundle\Entity\Media\BusinessGallery;
 use Domain\BusinessBundle\Entity\Subscription;
 use Domain\BusinessBundle\Entity\SubscriptionPlan;
 use Domain\BusinessBundle\Form\Type\BusinessGalleryAdminType;
+use Domain\BusinessBundle\Form\Type\CustomUrlType;
 use Domain\BusinessBundle\Model\StatusInterface;
 use Domain\BusinessBundle\Model\SubscriptionPlanInterface;
 use Domain\BusinessBundle\Validator\Constraints\BusinessProfilePhoneTypeValidator;
@@ -41,6 +42,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Validator\Constraints\Length;
 use Ivory\CKEditorBundle\Form\Type\CKEditorType;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 /**
  * Class BusinessProfileAdmin
@@ -55,6 +57,8 @@ class BusinessProfileAdmin extends OxaAdmin
     CONST FILTER_IMPRESSIONS = 'impressions';
     CONST FILTER_DIRECTIONS  = 'directions';
     CONST FILTER_CALL_MOBILE = 'callsMobile';
+
+    const MAX_VALIDATION_RESULT = 5;
 
     /**
      * @var bool
@@ -286,7 +290,7 @@ class BusinessProfileAdmin extends OxaAdmin
             ])
             ->add('tasks.type', 'doctrine_orm_callback', [
                 'label'      => $this->trans('filter.label_created_by_user', [], $this->getTranslationDomain()),
-                'callback'   => function($queryBuilder, $alias, $field, $value) {
+                'callback'   => function ($queryBuilder, $alias, $field, $value) {
                     if (!$value['value']) {
                         return false;
                     }
@@ -298,6 +302,12 @@ class BusinessProfileAdmin extends OxaAdmin
                 },
                 'field_type' => 'checkbox',
             ])
+            ->add('isDraft', null, [
+                'label' => $this->trans('filter.label_is_draft', [], $this->getTranslationDomain()),
+            ], null, [
+                'placeholder' => $this->trans('all', [], 'AdminReportBundle'),
+            ])
+            ->add('csvImportFile')
         ;
     }
 
@@ -337,6 +347,7 @@ class BusinessProfileAdmin extends OxaAdmin
             ->add('isDeleted', null, [
                 'label' => 'Scheduled for deletion',
             ])
+            ->add('isDraft')
         ;
 
         $this->addGridActions($listMapper);
@@ -360,6 +371,7 @@ class BusinessProfileAdmin extends OxaAdmin
             ->tab('Media')->end()
             ->tab('Others')->end()
             ->tab('Legacy URLs')->end()
+            ->tab('Social Networks')->end()
         ;
 
         // define block
@@ -384,7 +396,6 @@ class BusinessProfileAdmin extends OxaAdmin
                 ->with('Category')->end()
             ->end()
             ->tab('Media')
-                ->with('Social Networks')->end()
                 ->with('Gallery')->end()
                 ->with('Panorama')->end()
             ->end()
@@ -469,8 +480,9 @@ class BusinessProfileAdmin extends OxaAdmin
         $formMapper
             ->tab('Main')
                 ->with('Main')
-                    ->add('website', UrlType::class, [
+                    ->add('websiteItem', CustomUrlType::class, [
                         'required' => false,
+                        'by_reference'  => false,
                     ])
                     ->add('actionUrlType', ChoiceType::class, [
                         'choices'  => BusinessProfile::getActionUrlTypes(),
@@ -479,8 +491,9 @@ class BusinessProfileAdmin extends OxaAdmin
                         'required' => true,
                         'translation_domain' => 'AdminDomainBusinessBundle',
                     ])
-                    ->add('actionUrl', UrlType::class, [
+                    ->add('actionUrlItem', CustomUrlType::class, [
                         'required' => false,
+                        'by_reference'  => false,
                     ])
                     ->add('email', EmailType::class, [
                         'required' => false,
@@ -737,28 +750,35 @@ class BusinessProfileAdmin extends OxaAdmin
         // Media tab
         // Social Networks Block
         $formMapper
-            ->tab('Media')
+            ->tab('Social Networks')
                 ->with('Social Networks')
-                    ->add('linkedInURL', UrlType::class, [
+                    ->add('linkedInURLItem', CustomUrlType::class, [
                         'required' => false,
+                        'by_reference'  => false,
                     ])
-                    ->add('twitterURL', UrlType::class, [
+                    ->add('twitterURLItem', CustomUrlType::class, [
                         'required' => false,
+                        'by_reference'  => false,
                     ])
-                    ->add('facebookURL', UrlType::class, [
+                    ->add('facebookURLItem', CustomUrlType::class, [
                         'required' => false,
+                        'by_reference'  => false,
                     ])
-                    ->add('googleURL', UrlType::class, [
+                    ->add('googleURLItem', CustomUrlType::class, [
                         'required' => false,
+                        'by_reference'  => false,
                     ])
-                    ->add('youtubeURL', UrlType::class, [
+                    ->add('youtubeURLItem', CustomUrlType::class, [
                         'required' => false,
+                        'by_reference'  => false,
                     ])
-                    ->add('instagramURL', UrlType::class, [
+                    ->add('instagramURLItem', CustomUrlType::class, [
                         'required' => false,
+                        'by_reference'  => false,
                     ])
-                    ->add('tripAdvisorURL', UrlType::class, [
+                    ->add('tripAdvisorURLItem', CustomUrlType::class, [
                         'required' => false,
+                        'by_reference'  => false,
                     ])
                 ->end()
             ->end()
@@ -918,6 +938,30 @@ class BusinessProfileAdmin extends OxaAdmin
             ;
         }
 
+        if ($businessProfile->getSubscriptionPlanCode() > SubscriptionPlanInterface::CODE_FREE) {
+            //Social Feeds Tab
+            $formMapper
+                ->tab('Social Networks')
+                    ->with('Social Networks Feeds')
+                        ->add(
+                            'mediaUrls',
+                            'sonata_type_collection',
+                            [
+                                'by_reference'  => false,
+                                'required'      => false,
+                            ],
+                            [
+                                'edit'          => 'inline',
+                                'delete_empty'  => false,
+                                'inline'        => 'table',
+                                'sortable'      => 'position',
+                            ]
+                        )
+                    ->end()
+                ->end()
+            ;
+        }
+
         if ($businessProfile->getId() and $subscriptionPlanCode >= SubscriptionPlanInterface::CODE_PREMIUM_PLATINUM) {
             $formMapper
                 ->tab('More Info')
@@ -991,12 +1035,16 @@ class BusinessProfileAdmin extends OxaAdmin
      */
     protected function configureShowFields(ShowMapper $showMapper)
     {
+        /** @var BusinessProfile $businessProfile */
+        $businessProfile = $this->getSubject();
+
         // define tabs
         $showMapper
             ->tab('Main')->end()
             ->tab('Media')->end()
             ->tab('Others')->end()
             ->tab('Legacy URLs')->end()
+            ->tab('Social Networks')->end()
             ->tab('Reviews')->end()
         ;
 
@@ -1038,9 +1086,9 @@ class BusinessProfileAdmin extends OxaAdmin
                     ->add('user', null, [
                         'template' => 'OxaSonataAdminBundle:ShowFields:show_orm_many_to_one.html.twig',
                     ])
-                    ->add('website')
+                    ->add('websiteLink')
                     ->add('actionUrlType')
-                    ->add('actionUrl')
+                    ->add('getActionLink')
                     ->add('email')
                     ->add('slug')
                     ->add('collectionWorkingHours', null, [
@@ -1122,22 +1170,6 @@ class BusinessProfileAdmin extends OxaAdmin
                     ->add('keywordText', null, [
                         'template' => 'DomainBusinessBundle:Admin:BusinessProfile/show_keywords.html.twig',
                     ])
-                ->end()
-            ->end()
-        ;
-
-        // Media tab
-        // Social Networks Block
-        $showMapper
-            ->tab('Media')
-                ->with('Social Networks')
-                    ->add('linkedInURL')
-                    ->add('twitterURL')
-                    ->add('facebookURL')
-                    ->add('googleURL')
-                    ->add('youtubeURL')
-                    ->add('instagramURL')
-                    ->add('tripAdvisorURL')
                 ->end()
             ->end()
         ;
@@ -1227,6 +1259,34 @@ class BusinessProfileAdmin extends OxaAdmin
             ->end()
         ;
 
+        //Social Networks Tab
+        $showMapper
+            ->tab('Social Networks')
+                ->with('Social Networks')
+                    ->add('linkedInLink')
+                    ->add('twitterLink')
+                    ->add('facebookLink')
+                    ->add('googleLink')
+                    ->add('youtubeLink')
+                    ->add('instagramLink')
+                    ->add('tripAdvisorLink')
+                ->end()
+            ->end()
+        ;
+
+        if ($businessProfile->getId() &&
+            $businessProfile->getSubscriptionPlanCode() > SubscriptionPlanInterface::CODE_FREE) {
+            $showMapper
+                ->tab('Social Networks')
+                    ->with('Social Networks Feeds')
+                        ->add('mediaUrls', null, [
+                            'template' => 'OxaSonataAdminBundle:ShowFields:show_orm_one_to_many.html.twig',
+                        ])
+                    ->end()
+                ->end()
+            ;
+        }
+
         // Review Tab
         $showMapper
             ->tab('Reviews')
@@ -1244,7 +1304,7 @@ class BusinessProfileAdmin extends OxaAdmin
         ;
 
         // Report tabs
-        if ($this->getSubject()->getId()) {
+        if ($businessProfile->getId()) {
             $dateRange = DatesUtil::getDateRangeValueObjectFromRangeType(DatesUtil::RANGE_LAST_MONTH);
 
             $showMapper
@@ -1281,6 +1341,11 @@ class BusinessProfileAdmin extends OxaAdmin
                         ->add('impressions', null, [
                             'label'     => 'Impressions',
                             'eventType'     => BusinessOverviewModel::TYPE_CODE_VIEW,
+                            'template' => 'DomainBusinessBundle:Admin:BusinessProfile/report_data.html.twig',
+                        ])
+                        ->add('socialNetworks', null, [
+                            'label'     => 'Social Networks',
+                            'eventType'     => BusinessOverviewModel::TYPE_CODE_SOCIAL_NETWORKS,
                             'template' => 'DomainBusinessBundle:Admin:BusinessProfile/report_data.html.twig',
                         ])
                         ->add('directions', null, [
@@ -1321,7 +1386,7 @@ class BusinessProfileAdmin extends OxaAdmin
                 ->end()
             ;
 
-            if ($this->getSubject()->getDcOrderId()) {
+            if ($businessProfile->getDcOrderId()) {
                 $showMapper
                     ->tab('Reports')
                         ->with('Preview')
@@ -1412,6 +1477,17 @@ class BusinessProfileAdmin extends OxaAdmin
                 ;
             }
         }
+
+        if ($object->getSubscriptionPlanCode() > SubscriptionPlanInterface::CODE_PRIORITY && !$object->getLogo()) {
+            $errorElement->with('logo')
+                ->addViolation($this->getTranslator()->trans(
+                    'form.business.logo_required',
+                    [],
+                    $this->getTranslationDomain()
+                ))
+                ->end()
+            ;
+        }
     }
 
     /**
@@ -1461,6 +1537,9 @@ class BusinessProfileAdmin extends OxaAdmin
     {
         //If you swap those 2 lines, the title will be saved half the time
         $this->preSave($entity);
+        if ($entity->getIsActive()) {
+            $entity->setIsDraft(false);
+        }
         parent::preUpdate($entity);
     }
 
@@ -1541,6 +1620,9 @@ class BusinessProfileAdmin extends OxaAdmin
         $exportFields['userName']   = 'user.fullName';
         $exportFields['userAccountUpdateDate']   = 'user.updatedAt';
         $exportFields['userAccountCreationDate'] = 'user.createdAt';
+
+        $exportFields['socialFeedUrls']    = 'exportSocialFeedUrls';
+        $exportFields['socialNetworkUrls'] = 'exportSocialNetworkUrls';
 
         return $exportFields;
     }

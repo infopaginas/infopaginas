@@ -1,15 +1,12 @@
 {% extends "redesign/layout/base.html.twig" %}
 
-{% block videoJs %}
-    {% include ':redesign/layout/widgets:video-js.html.twig' %}
-{% endblock %}
-
 {% block breadcrumbs %}
     {% include ':redesign/blocks:breadcrumbs.html.twig' with {'catalogLocality': businessProfile.catalogLocality, 'category': businessProfile.categories|first} %}
 {% endblock %}
 
 {% block styles %}
     {{ parent() }}
+    <link rel="preload" href="https://api.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.css" as="style" onload="this.rel='stylesheet'" />
     <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.css" />
 
     {% if businessProfile.getBackground() and hasSubscription(businessProfile, "CODE_PREMIUM_PLUS") %}
@@ -91,7 +88,7 @@
                                         </ul>
                                     </div><!-- highlights__item -->
                                 {% endif %}
-                                {% if businessProfile.getWebsite() %}
+                                {% if businessProfile.websiteItem and businessProfile.websiteItem.url %}
                                     <div class="highlights__item">
                                         <h3>{% trans %}WebsiteButton{% endtrans %}</h3>
                                         <ul>
@@ -99,13 +96,14 @@
                                                 <i class="fa fa-link"></i>
                                                 <a
                                                     class="redirect-event link-pointer"
-                                                    data-href="{{ businessProfile.getWebsite() }}"
+                                                    data-href="{{ businessProfile.websiteItem.url }}"
                                                     data-id="{{ businessProfile.id }}"
                                                     data-type="webActionButton"
                                                     data-bw-gtm-event-click
-                                                    data-bw-gtm-label="{{ businessProfile.getWebsite() }}"
+                                                    data-bw-gtm-label="{{ businessProfile.websiteItem.url }}"
+                                                    rel="{% if businessProfile.websiteItem.relNoFollow %}nofollow{% endif %} {% if businessProfile.websiteItem.relNoOpener %}noopener{% endif %} {% if businessProfile.websiteItem.relNoReferrer %}noreferrer{% endif %}"
                                                 >
-                                                    {{ businessProfile.getWebsite() |truncate(profile_action_url_span_length) }}
+                                                    {{ businessProfile.websiteItem.url |truncate(profile_action_url_span_length) }}
                                                 </a>
                                             </li>
                                         </ul>
@@ -181,10 +179,11 @@
                                         <li>
                                             {% if paymentMethod.type in PAYMENT_METHOD_TYPE %}
                                                 {% set path = 'redesign/img/payment/' ~ paymentMethod.type ~ '.svg' %}
-
-                                                <img src="{{ absolute_url(asset(path)) }}" alt="{{ paymentMethod.getName }}">
+                                                <img data-src="{{ absolute_url(asset(path)) }}"
+                                                     alt="{{ paymentMethod.getName }}"
+                                                     class="lazyload"
+                                                >
                                             {% endif %}
-
                                             <span>{{ paymentMethod.getName }}</span>
                                         </li>
                                     {% endfor %}
@@ -204,7 +203,10 @@
                             <section class="page-section photos slider section--slider hide-before">
                                 {% for photo in photos %}
                                     <div class="slider__item">
-                                        <img src="{% path photo.getMedia(), 'normal' %}" alt="{% if photo.description %}{{ photo.description }}{% else %}{{ businessProfile.getName() }}{% endif %}">
+                                        <img data-src="{% path photo.getMedia(), 'normal' %}"
+                                             alt="{% if photo.description %}{{ photo.description }}{% else %}{{ businessProfile.getName() }}{% endif %}"
+                                             class="lazyload"
+                                        >
                                     </div>
                                 {% endfor %}
                             </section>
@@ -228,7 +230,9 @@
                                                 </div>
                                                 <div class="slide-image">
                                                     {% if suggestedBusiness.logo %}
-                                                        <img src="{% path suggestedBusiness.logo, 'preview' %}" alt="{{ suggestedBusiness.name }}">
+                                                        <img data-src="{% path suggestedBusiness.logo, 'preview' %}"
+                                                             alt="{{ suggestedBusiness.name }}" class="lazyload"
+                                                        >
                                                     {% else %}
                                                         <span class="default-image"><i class="fa fa-camera" aria-hidden="true"></i></span>
                                                     {% endif %}
@@ -379,6 +383,17 @@
                         </div>
 
                         {% include ':redesign/blocks/modals:report_problem.html.twig' %}
+
+                        {% if businessProfile.subscriptionPlanCode > SUBSCRIPTION.CODE.FREE %}
+                            <div class="social-feeds-column">
+                                {% if businessProfile.mediaUrls | length %}
+                                    <h3>{{ 'social_network_feeds' | trans }}</h3>
+                                    {% for socialFeed in businessProfile.mediaUrls %}
+                                        {% include ':redesign/blocks/businessProfile/view:social-feeds.html.twig' %}
+                                    {% endfor %}
+                                {% endif %}
+                            </div>
+                        {% endif %}
                     </aside>
                 </div><!-- container -->
             </div><!-- profile-body_-container -->
@@ -388,8 +403,7 @@
 {% endblock %}
 
 {% block scripts %}
-    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.js'></script>
-
+    <script src='{{ absolute_url(asset('assetic/js/modules/mapbox-gl.min.js')) }}'></script>
     {{ parent() }}
 
     <script type="text/javascript">
@@ -398,9 +412,14 @@
         requirejs(['{{ absolute_url(asset("assetic/require_common_js.js")) }}'], function(common) {
             requirejs([
                 '{{ absolute_url(asset("assetic/require_business_profile_view_js.js")) }}'
-            ], function(businessProfileView, interactionsReport) {
+            ], function (businessProfileView, interactionsReport) {
                 var businessProfileView = new businessProfileView();
-            })
+            });
+            requirejs(['{{ absolute_url(asset("assetic/require_business_profile_social_feeds_js.js")) }}'
+            ], function (socialFeeds) {
+                var socialFeeds = new socialFeeds();
+            });
+            require(['{{ absolute_url(asset("assetic/js/modules/tools/videojsCustomize.min.js")) }}'], function () {});
         });
     </script>
 

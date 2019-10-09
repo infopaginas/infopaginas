@@ -30,6 +30,14 @@ domain_business_admin_reviews:
     resource: "@DomainBusinessBundle/Resources/config/routing/adminReviews.yml"
     prefix: /admin/reviews
 
+domain_business_admin_validation:
+    resource: "@DomainBusinessBundle/Resources/config/routing/adminValidation.yml"
+    prefix: /admin/validations
+
+domain_business_admin_csv_import_file:
+    resource: "@DomainBusinessBundle/Resources/config/routing/adminCSVImportFile.yml"
+    prefix: /admin/csvImportFile
+
 domain_business_api:
     resource: "@DomainBusinessBundle/Resources/config/routing/api.yml"
     prefix: /api

@@ -7,6 +7,7 @@
 
 {% block styles %}
     {{ parent() }}
+    <link rel="preload" href="https://api.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.css" as="style" onload="this.rel='stylesheet'" />
     <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.css" />
 {% endblock %}
 
@@ -28,16 +29,6 @@
         </section><!-- main -->
 
         <section class="results-map" data-bw-gtm-component="search-results-map">
-            <button id="redo-search-in-map" type="button" class="button-like-google button--redo-search-in-map" data-bw-gtm-event-click data-bw-gtm-label="{% trans %}search.control.redo{% endtrans %}">
-                <i class="fa fa-search"></i>
-                <span>{% trans %}search.control.redo{% endtrans %}</span>
-            </button>
-
-            <button id="auto-search-in-map" type="button" class="button-like-google button--auto-search-in-map" data-bw-gtm-event-click data-bw-gtm-label="{% trans %}search.control.auto{% endtrans %}">
-                <i class="fa fa-square-o"></i>
-                <span>{% trans %}search.control.auto{% endtrans %}</span>
-            </button>
-
             <button id="hide-map" type="button" class="button button-round button--hide-map" data-bw-gtm-event-click data-bw-gtm-label="{% trans %}List view{% endtrans %}">
                 <i class="fa fa-list"></i>
                 <span>{% trans %}List view{% endtrans %}</span>
@@ -56,12 +47,14 @@
 {% endblock %}
 
 {% block scripts %}
-    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.js'></script>
-    <script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.0.0/mapbox-gl-directions.js'></script>
+    <script src='{{ absolute_url(asset('assetic/js/modules/mapbox-gl.min.js')) }}'></script>
+    <script src='{{ absolute_url(asset('assetic/js/modules/mapbox-gl-directions.min.js')) }}'></script>
 
     {{ parent() }}
 
     <script type="text/javascript">
+        var autoSearchEnabled = true;
+
         requirejs(['{{ absolute_url(asset("assetic/require_common_js.js")) }}'], function(common) {
             require(['{{ absolute_url(asset("assetic/js/modules/tools/mapSpin.min.js")) }}'], function(spin) {
                 var spin = new spin('map');

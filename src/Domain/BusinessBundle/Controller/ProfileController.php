@@ -404,6 +404,43 @@ class ProfileController extends Controller
     }
 
     /**
+     * @param Request $request
+     * @param mixed   $id
+     *
+     * @return JsonResponse
+     */
+    public function nameValidationAction(Request $request, $id)
+    {
+        $businesses = $this->getBusinessProfilesManager()->getSimilarBusinesses(
+            $request->request->get('businessName'),
+            $request->request->get('businessCity'),
+            $id
+        );
+
+        $errors = [];
+
+        foreach ($businesses as $business) {
+            $errors[] = [
+                'id' => $business->getId(),
+                'url' => $this->generateUrl('admin_domain_business_businessprofile_edit', [
+                    'id' => $business->getId(),
+                ]),
+                'name' => $business->getName(),
+                'city' => $business->getCity(),
+            ];
+        }
+
+        return new JsonResponse([
+            'errors' => $errors,
+            'message' => $this->get('translator')->trans(
+                'validation_warnings.business_name',
+                [],
+                'AdminDomainBusinessBundle'
+            ),
+        ]);
+    }
+
+    /**
      * @return SectionManager
      */
     private function getSectionManager() : SectionManager

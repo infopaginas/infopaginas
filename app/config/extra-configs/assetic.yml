@@ -66,6 +66,11 @@ assetic:
                 - '@DomainBusinessBundle/Resources/public/scripts/modules/businessProfile.js'
             filters:
                 - jsqueeze
+        require_business_profile_social_feeds_js:
+            inputs:
+                - '@DomainBusinessBundle/Resources/public/scripts/modules/businessProfileSocialFeeds.js'
+            filters:
+                - jsqueeze
         require_emergency_business_js:
             inputs:
                 - '@DomainEmergencyBundle/Resources/public/scripts/businessDraft.js'
@@ -94,6 +99,12 @@ assetic:
         require_user_profile_js:
             inputs:
                 - '@DomainSiteBundle/Resources/public/scripts/modules/tools/userProfile.js'
+            filters:
+                - jsqueeze
+        require_videojs_customize:
+            inputs:
+                - '@DomainSiteBundle/Resources/public/scripts/modules/tools/videojsCustomize.js'
+            output: 'assetic/js/modules/tools/videojsCustomize.min.js'
             filters:
                 - jsqueeze
         video_share_js:
@@ -267,5 +278,23 @@ assetic:
             inputs:
                 - '@DomainBusinessBundle/Resources/public/scripts/modules/tools/videos.js'
             output: 'assetic/js/modules/tools/videos.min.js'
+            filters:
+                - jsqueeze
+        mapbox_js:
+            inputs:
+                - '@DomainBusinessBundle/Resources/public/scripts/mapbox.js'
+            output: 'assetic/js/modules/mapbox.min.js'
+            filters:
+                - jsqueeze
+        mapbox_gl_directions:
+            inputs:
+                - '@DomainSiteBundle/Resources/public/scripts/vendors/mapbox-gl-directions.js'
+            output: 'assetic/js/modules/mapbox-gl-directions.min.js'
+            filters:
+                - jsqueeze
+        mapbox_gl:
+            inputs:
+                - '@DomainSiteBundle/Resources/public/scripts/vendors/mapbox-gl.js'
+            output: 'assetic/js/modules/mapbox-gl.min.js'
             filters:
                 - jsqueeze

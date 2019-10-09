@@ -232,6 +232,21 @@ class FeedbackReportManager extends BaseReportManager
         return $cursor;
     }
 
+    public function getFeedbackExportData($params)
+    {
+        $cursor = $this->mongoDbManager->find(
+            self::MONGO_DB_COLLECTION_NAME,
+            $this->getMongoSearchQuery($params),
+            [
+                'sort'  => [
+                    self::MONGO_DB_FIELD_DATE_TIME => MongoDbManager::INDEX_TYPE_DESC,
+                ],
+            ]
+        );
+
+        return $this->prepareFeedbackReportStats($cursor);
+    }
+
     /**
      * @param array $params
      *

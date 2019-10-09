@@ -5,7 +5,7 @@
  * Plugin details: https://github.com/jmccraw/videojs-socialShare
  */
 
-(function(videojs) {
+define(['videojs'], function( videojs ) {
   'use strict';
 
   videojs.plugin('socialShare', function(opts) {
@@ -100,4 +100,4 @@
     });
 
   });
-}(window.videojs));
+});

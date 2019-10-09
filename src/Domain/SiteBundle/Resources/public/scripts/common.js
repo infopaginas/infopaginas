@@ -89,6 +89,8 @@ requirejs.config({
         'iframetracker' : 'domainsite/scripts/vendors/jquery.iframetracker.min',
         'maskedInput'   : 'domainsite/scripts/vendors/jquery.maskedinput.min',
         'highcharts'    : 'domainsite/scripts/vendors/highcharts',
+        'videojs'       : '/bundles/oxavideo/scripts/video.5.8.8.min',
+        'video_share_js': '/assets/scripts/video-js-social-share',
 
         'business/modules' : 'domainbusiness/scripts/modules',
         'business/tools'   : 'domainbusiness/scripts/modules/tools',

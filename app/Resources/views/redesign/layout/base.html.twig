@@ -40,6 +40,7 @@
         {% block videoJs %}{% endblock %}
 
         {% block styles %}
+            <link rel="preload" href="{{ absolute_url(asset('assetic/app_common_css.css')) }}" as="style" onload="this.rel='stylesheet'">
             <link rel="stylesheet" href="{{ absolute_url(asset('assetic/app_common_css.css')) }}" />
         {% endblock %}
 
@@ -116,6 +117,7 @@
                     });
                 })
             </script>
+            <script src="{{ absolute_url(asset('bundles/domainsite/scripts/vendors/lazysizes.min.js')) }}"></script>
         {% endblock %}
 
     </body>

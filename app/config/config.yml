@@ -11,6 +11,7 @@ imports:
     - { resource: extra-configs/twig_constant.yml }
     - { resource: extra-configs/assetic.yml }
     - { resource: extra-configs/db_slaves.yml, ignore_errors: true }
+    - { resource: extra-configs/html_purifier.yml }
     - { resource: "@OxaSonataUserBundle/Resources/config/services.yml" }
     - { resource: "@DomainArticleBundle/Resources/config/services.yml" }
     - { resource: "@JMaitanSonataMediaCropBundle/Resources/config/services.xml" }
@@ -169,6 +170,7 @@ doctrine:
             json: Sonata\Doctrine\Types\JsonType
             TaskType: Domain\BusinessBundle\DBAL\Types\TaskType
             TaskStatusType: Domain\BusinessBundle\DBAL\Types\TaskStatusType
+            urlType: Domain\BusinessBundle\DBAL\Types\UrlType
     orm:
         auto_generate_proxy_classes: true
         naming_strategy: doctrine.orm.naming_strategy.underscore
@@ -312,6 +314,13 @@ knp_gaufrette:
                 options:
                     create:     true
                     directory:  '%amazon_aws_report_directory%'
+        mass_import_storage:
+            aws_s3:
+                service_id:     aws.s3
+                bucket_name:    %amazon_aws_bucket_name%
+                options:
+                    create:     true
+                    directory:  '%amazon_aws_mass_import_directory%'
     filesystems:
         ipgn:
             adapter:    video_storage
@@ -319,6 +328,9 @@ knp_gaufrette:
         export:
             adapter:    report_storage
             alias:      report_storage_filesystem
+        import:
+            adapter:    mass_import_storage
+            alias:      mass_import_storage_filesystem
 
 dubture_f_fmpeg:
     ffmpeg_binary: /usr/bin/ffmpeg

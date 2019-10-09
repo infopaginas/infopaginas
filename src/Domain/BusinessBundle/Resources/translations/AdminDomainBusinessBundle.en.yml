@@ -6,6 +6,7 @@ filter.label_name: Name
 filter.label_subscription_plan: Subscription Plan
 filter.label_phone: Phones
 form.business.max_images: Only max_images_per_business images quantity allowed per one business profile, please, delete extra
+form.business.logo_required: This field is required
 form.business_gallery.max_images: Business business_profile already has max_images_per_business images in gallery, this is the max quantity per one business
 form.business.empty_images: Images in gallery must not contain empty value in Media field
 form.subscription.start_date: Start Date cannot be in the future
@@ -34,10 +35,47 @@ business_profile:
     logo: The target block size is "120px X 120px", accepted image formats are "png, jpeg, jpg, gif", max image size is "10 Mb".
     background: The target block size is "1500px X 600px", accepted image formats are "png, jpeg, jpg, gif", max image size is "1 Mb".
     gallery: The target block size is "500px X 375px", accepted image formats are "png, jpeg, jpg, gif", max image size is "10 Mb".
+  fields:
+    name: Name
+    discountEn: Discount English
+    discountEs: Discount Spanish
+    panorama_id: Panorama ID
+    descriptionEn: Description English
+    descriptionEs: Description Spanish
+    phone_main: Main Phone
+    phone_secondary: Secondary Phone
+    phone_fax: Fax
+    website: Website
+    email: Email
+    productEn: Product English
+    productEs: Product Spanish
+    brandsEn: Brands English
+    brandsEs: Brands Spanish
+    streetAddress: Street Address
+    streetNumber: Street Number
+    extendedAddress: Extended Address
+    crossStreet: Cross Street
+    state: State
+    city: City
+    zipCode: Zip code
+    customAddress: Custom Address
+    hideAddress: Hide Address
+    hideMap: Hide Map
+    linkedInURL: Linkedin URL
+    twitterURL: Twitter URL
+    facebookURL: Facebook URL
+    googleURL: Google URL
+    youtubeURL: YouTube URL
+    instagramURL: Instagram URL
+    tripAdvisorURL: TripAdvisor URL
+    sloganEn: Slogan English
+    sloganEs: Slogan Spanish
 
 filter.label_categories.en: Categories En
 filter.label_categories.es: Categories Es
 filter.label_created_by_user: Created By User
+filter:
+  label_is_draft: Draft
 
 # interaction report
 interaction_report:
@@ -72,3 +110,6 @@ interaction_report:
     click: Emails
   sum:
     interaction: Interactions
+
+validation_warnings:
+  business_name: 'This business profile may already exist.'

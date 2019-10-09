@@ -1,0 +1,37 @@
+{% if socialFeed.type == SOCIAL_FEED.INSTAGRAM %}
+
+    <div class="social-feed instagram-feed" data-instagram-url="{{ socialFeed.url }}">
+        <div class="social-feed-header">
+            <i class="fa fa-lg fa-instagram"></i>
+        </div>
+        <div class="posts-wrapper lazy"></div>
+    </div>
+    <script src="https://www.instagram.com/embed.js"></script>
+
+{% elseif socialFeed.type == SOCIAL_FEED.FACEBOOK %}
+
+    <div id="fb-root"></div>
+    <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v4.0"></script>
+
+    <div class="social-feed facebook-feed">
+        <div class="social-feed-header">
+            <i class="fa fa-lg fa-facebook-f"></i>
+        </div>
+        <div class="lazy" id="fb-page-placeholder" data-href="{{ socialFeed.url }}" data-tabs="timeline" data-width="500"
+             data-small-header="false" data-adapt-container-width="true" data-hide-cover="false" data-show-facepile="true">
+        </div>
+    </div>
+
+{% elseif socialFeed.type == SOCIAL_FEED.TWITTER %}
+
+    <div class="social-feed twitter-feed">
+        <div class="social-feed-header">
+            <i class="fa fa-lg fa-twitter"></i>
+        </div>
+        <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+        <a id="twitter-timeline-placeholder" class="lazy" data-height="700" data-link-color="#2B7BB9"
+           href="{{ socialFeed.url }}">
+        </a>
+    </div>
+
+{% endif %}

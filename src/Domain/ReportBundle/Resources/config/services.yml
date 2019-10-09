@@ -35,6 +35,10 @@ services:
         class: Domain\ReportBundle\Manager\KeywordsReportManager
         arguments: [ '@mongodb.manager' ]
 
+    domain_report.manager.social_networks_report_manager:
+        class: Domain\ReportBundle\Manager\SocialNetworksReportManager
+        arguments: [ '@mongodb.manager' ]
+
     # export services
     domain_report.exporter:
         class: Domain\ReportBundle\Service\Export\Exporter
@@ -179,4 +183,10 @@ services:
         class: Domain\ReportBundle\Service\Export\BusinessProfileCsvExporter
         calls:
             - [ setBusinessProfileManager, [ '@domain_business.manager.business_profile' ]]
+            - [ setTranslator, [ '@translator.default' ]]
+
+    domain_report.exporter.feedback_report_csv_exporter:
+        class: Domain\ReportBundle\Service\Export\FeedbackReportCsvExporter
+        calls:
+            - [ setFeedbackReportManager, [ '@domain_report.manager.feedback_report_manager' ]]
             - [ setTranslator, [ '@translator.default' ]]

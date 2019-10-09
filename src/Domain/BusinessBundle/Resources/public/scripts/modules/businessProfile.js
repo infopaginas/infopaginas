@@ -39,7 +39,8 @@ define(['jquery', 'bootstrap', 'business/tools/form', 'tools/spin', 'tools/selec
             imageValidationErrors: '#imageValidationErrors',
             videoValidationErrors: '#videoValidationErrors',
             requiredTagSelector: '[data-required-indicator]',
-            requiredTag: '<span data-required-indicator>*</span>'
+            requiredTag: '<span data-required-indicator>*</span>',
+            googleMap: '#google-map'
         };
 
         this.newProfileRequestFormHandler = new FormHandler({
@@ -60,6 +61,7 @@ define(['jquery', 'bootstrap', 'business/tools/form', 'tools/spin', 'tools/selec
 
         this.isDirty = false;
         this.formSubmitting = false;
+        this.mapPinUpdated = false;
 
         this.currentLocale = $( this.html.languageSelectorClass + '.selected' ).data('locale');
 
@@ -91,7 +93,7 @@ define(['jquery', 'bootstrap', 'business/tools/form', 'tools/spin', 'tools/selec
 
         that.updateLatLngFields( latlng.lat, latlng.lng );
         that.updateFieldSelectionFocus();
-
+        that.mapPingUpdated = true;
     };
 
     businessProfile.prototype.getGoogleMapObject = function(lat, lng)
@@ -254,6 +256,14 @@ define(['jquery', 'bootstrap', 'business/tools/form', 'tools/spin', 'tools/selec
         $( document ).on( 'submit' , this.html.forms.newProfileRequestFormId , function( event ) {
             that.formSubmitting = true;
             event.preventDefault();
+
+            if ( !that.mapPingUpdated ) {
+                if ( !$( that.html.googleMap ).next( '.error' ).length ) {
+                    $( that.html.googleMap ).after( "<span data-error-message class='error'>" +
+                        $( that.html.googleMap ).data('update-location-norification') + "</span>" );
+                }
+                return false;
+            }
 
             if ( that.validateImages() || that.validateVideo() ) {
                 that.scrollToError();
