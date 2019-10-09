@@ -407,6 +407,7 @@ $side-padding-mb: 16px;
   padding-bottom: 20px;
   text-align: center;
   min-height: 60px;
+  background: $blue--dark;
 
   @media only screen and (min-width: 805px) {
     padding: 10px;
@@ -1081,7 +1082,7 @@ $bps-border: 1px dotted #bcbcbc;
 .main__container {
   @media only screen and (min-width: 805px) {
     display: flex;
-    max-height: 100vh;
+    height: 100vh;
   }
 
   .form__row-bps {
@@ -1487,7 +1488,6 @@ $bps-border: 1px dotted #bcbcbc;
 .main {
   height: auto;
   padding-top: 25px;
-  padding-bottom: 30px;
   transition-duration: .4s;
   transition-property: width;
   transition-timing-function: ease-in-out;
@@ -2272,7 +2272,6 @@ $thumb-width-mb: 60px;
   .main {
     margin-top: 32px;
     overflow: visible;
-    padding-bottom: 100px;
 
     @media only screen and (min-width: 805px) {
       margin-top: 0;
