@@ -10,21 +10,26 @@ class TypeModel implements TypeInterface
     public static function getCodeSizes() : array
     {
         return [
-            self::CODE_LANDING_PAGE_RIGHT   => self::SIZE_300_250,
-            self::CODE_BUSINESS_PAGE_RIGHT  => self::SIZE_300_250,
-            self::CODE_ARTICLE_PAGE_RIGHT   => self::SIZE_300_250,
-            self::CODE_VIDEO_PAGE_RIGHT     => self::SIZE_300_250,
-            self::CODE_PORTAL_RIGHT         => self::SIZE_300_250,
-            self::CODE_HOME_VERTICAL        => self::SIZE_AUTO_STATIC,
-            self::CODE_SEARCH_PAGE_TOP      => self::SIZE_AUTO_STATIC,
-            self::CODE_SEARCH_PAGE_BOTTOM   => self::SIZE_AUTO_STATIC,
-            self::CODE_BUSINESS_PAGE_BOTTOM => self::SIZE_AUTO_STATIC,
-            self::CODE_ARTICLE_PAGE_BOTTOM  => self::SIZE_AUTO_STATIC,
-            self::CODE_VIDEO_PAGE_BOTTOM    => self::SIZE_AUTO_STATIC,
-            self::CODE_STATIC_BOTTOM        => self::SIZE_AUTO_STATIC,
-            self::CODE_COMPARE_PAGE_TOP     => self::SIZE_320_50,
-            self::CODE_COMPARE_PAGE_BOTTOM  => self::SIZE_320_50,
-            self::CODE_SEARCH_FLOAT_BOTTOM  => self::SIZE_320_50,
+            self::CODE_LANDING_PAGE_RIGHT        => self::SIZE_300_250,
+            self::CODE_BUSINESS_PAGE_RIGHT       => self::SIZE_300_250,
+            self::CODE_ARTICLE_PAGE_RIGHT        => self::SIZE_300_250,
+            self::CODE_VIDEO_PAGE_RIGHT          => self::SIZE_300_250,
+            self::CODE_PORTAL_RIGHT              => self::SIZE_300_250,
+            self::CODE_HOME_VERTICAL             => self::SIZE_AUTO_STATIC,
+            self::CODE_SEARCH_PAGE_TOP           => self::SIZE_AUTO_STATIC,
+            self::CODE_SEARCH_PAGE_BOTTOM        => self::SIZE_AUTO_STATIC,
+            self::CODE_BUSINESS_PAGE_BOTTOM      => self::SIZE_AUTO_STATIC,
+            self::CODE_ARTICLE_PAGE_BOTTOM       => self::SIZE_AUTO_STATIC,
+            self::CODE_VIDEO_PAGE_BOTTOM         => self::SIZE_AUTO_STATIC,
+            self::CODE_STATIC_BOTTOM             => self::SIZE_AUTO_STATIC,
+            self::CODE_COMPARE_PAGE_TOP          => self::SIZE_320_50,
+            self::CODE_COMPARE_PAGE_BOTTOM       => self::SIZE_320_50,
+            self::CODE_SEARCH_FLOAT_BOTTOM       => self::SIZE_320_50,
+            self::CODE_LANDING_PAGE_RIGHT_LARGE  => self::SIZE_AUTO_SIDEBLOCK,
+            self::CODE_BUSINESS_PAGE_RIGHT_LARGE => self::SIZE_AUTO_SIDEBLOCK,
+            self::CODE_ARTICLE_PAGE_RIGHT_LARGE  => self::SIZE_AUTO_SIDEBLOCK,
+            self::CODE_VIDEO_PAGE_RIGHT_LARGE    => self::SIZE_AUTO_SIDEBLOCK,
+            self::CODE_PORTAL_RIGHT_LARGE        => self::SIZE_AUTO_SIDEBLOCK,
         ];
     }
 
@@ -86,6 +91,26 @@ class TypeModel implements TypeInterface
             self::CODE_SEARCH_FLOAT_BOTTOM  => [
                 self::SIZE_DATA_320_50,
             ],
+            self::CODE_LANDING_PAGE_RIGHT_LARGE => [
+                self::SIZE_DATA_300_250,
+                self::SIZE_DATA_300_600,
+            ],
+            self::CODE_BUSINESS_PAGE_RIGHT_LARGE => [
+                self::SIZE_DATA_300_250,
+                self::SIZE_DATA_300_600,
+            ],
+            self::CODE_ARTICLE_PAGE_RIGHT_LARGE => [
+                self::SIZE_DATA_300_250,
+                self::SIZE_DATA_300_600,
+            ],
+            self::CODE_VIDEO_PAGE_RIGHT_LARGE => [
+                self::SIZE_DATA_300_250,
+                self::SIZE_DATA_300_600,
+            ],
+            self::CODE_PORTAL_RIGHT_LARGE => [
+                self::SIZE_DATA_300_250,
+                self::SIZE_DATA_300_600,
+            ],
         ];
     }
 
@@ -130,6 +155,11 @@ class TypeModel implements TypeInterface
             self::CODE_PORTAL_RIGHT,
             self::CODE_STATIC_BOTTOM,
             self::CODE_SEARCH_FLOAT_BOTTOM,
+            self::CODE_LANDING_PAGE_RIGHT_LARGE,
+            self::CODE_BUSINESS_PAGE_RIGHT_LARGE,
+            self::CODE_ARTICLE_PAGE_RIGHT_LARGE,
+            self::CODE_VIDEO_PAGE_RIGHT_LARGE,
+            self::CODE_PORTAL_RIGHT_LARGE,
         ];
     }
 
@@ -303,6 +333,46 @@ class TypeModel implements TypeInterface
                 'comment'   => 'Floating ad block at the bottom of search and catalog pages',
                 'htmlId'    => 'div-gpt-ad-1492095039573-0',
                 'slotId'    => '/101238367/qa_search_float_bottom',
+            ],
+            [
+                'code'      => TypeInterface::CODE_LANDING_PAGE_RIGHT_LARGE,
+                'name'      => 'Landing Page 300x250 and 300x600',
+                'placement' => 'Landing Page',
+                'comment'   => 'Ad block in the right column of Landing Page',
+                'htmlId'    => 'div-gpt-ad-1568730199302-0',
+                'slotId'    => '/101238367/landing_page_right_large',
+            ],
+            [
+                'code'      => TypeInterface::CODE_BUSINESS_PAGE_RIGHT_LARGE,
+                'name'      => 'Business Profile Page 300x250 and 300x600',
+                'placement' => 'Business Profile Pages',
+                'comment'   => 'Ad block in the right column of Business Profile Pages',
+                'htmlId'    => 'div-gpt-ad-1568730717834-0',
+                'slotId'    => '/101238367/business_page_right_large',
+            ],
+            [
+                'code'      => TypeInterface::CODE_ARTICLE_PAGE_RIGHT_LARGE,
+                'name'      => 'Articles 300x250 and 300x600',
+                'placement' => 'Article List and Article Page',
+                'comment'   => 'Ad block in the right column of Article List and Article Page',
+                'htmlId'    => 'div-gpt-ad-1568730474743-0',
+                'slotId'    => '/101238367/article_page_right_large',
+            ],
+            [
+                'code'      => TypeInterface::CODE_VIDEO_PAGE_RIGHT_LARGE,
+                'name'      => 'Videos 300x250 and 300x600',
+                'placement' => 'Video List',
+                'comment'   => 'Ad block in the right column of Video List',
+                'htmlId'    => 'div-gpt-ad-1568730350035-0',
+                'slotId'    => '/101238367/video_page_right_large',
+            ],
+            [
+                'code'      => TypeInterface::CODE_PORTAL_RIGHT_LARGE,
+                'name'      => 'Static 300x250 and 300x600',
+                'placement' => 'Static pages (advertise, contact us, terms, privacy)',
+                'comment'   => 'Ad block in the right column of Static pages',
+                'htmlId'    => 'div-gpt-ad-1568730392474-0',
+                'slotId'    => '/101238367/static_page_right_large',
             ],
         ];
     }

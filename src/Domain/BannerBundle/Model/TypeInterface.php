@@ -23,14 +23,21 @@ interface TypeInterface
     const CODE_ARTICLE_PAGE_BOTTOM  = 13;
     const CODE_VIDEO_PAGE_BOTTOM    = 14;
     const CODE_SEARCH_FLOAT_BOTTOM  = 15;
+    const CODE_LANDING_PAGE_RIGHT_LARGE  = 16;
+    const CODE_BUSINESS_PAGE_RIGHT_LARGE = 17;
+    const CODE_ARTICLE_PAGE_RIGHT_LARGE  = 18;
+    const CODE_VIDEO_PAGE_RIGHT_LARGE    = 19;
+    const CODE_PORTAL_RIGHT_LARGE        = 20;
 
     const SIZE_300_250 = '300x250';
+    const SIZE_AUTO_SIDEBLOCK = '300x250, 300x600';
     const SIZE_320_50  = '320x50';
     const SIZE_AUTO_STATIC = '320x50, 728x90';
 
     const SIZE_DATA_300_250 = [300, 250];
     const SIZE_DATA_320_50  = [320, 50];
     const SIZE_DATA_728_90  = [728, 90];
+    const SIZE_DATA_300_600 = [300, 600];
 
     const BANNER_TYPE_DEFAULT              = 'default';
     const BANNER_TYPE_RESIZABLE            = 'resizable';
