@@ -204,7 +204,7 @@ class ProfileController extends Controller
         $bannerManager  = $this->get('domain_banner.manager.banner');
         $banners        = $bannerManager->getBanners(
             [
-                TypeInterface::CODE_BUSINESS_PAGE_RIGHT,
+                TypeInterface::CODE_BUSINESS_PAGE_RIGHT_LARGE,
                 TypeInterface::CODE_BUSINESS_PAGE_BOTTOM,
             ]
         );

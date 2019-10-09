@@ -33,7 +33,7 @@ class ArticleController extends Controller
         $bannerManager  = $this->get('domain_banner.manager.banner');
         $banners        = $bannerManager->getBanners(
             [
-                TypeInterface::CODE_ARTICLE_PAGE_RIGHT,
+                TypeInterface::CODE_ARTICLE_PAGE_RIGHT_LARGE,
                 TypeInterface::CODE_ARTICLE_PAGE_BOTTOM,
             ]
         );
@@ -75,7 +75,7 @@ class ArticleController extends Controller
         $bannerManager  = $this->get('domain_banner.manager.banner');
         $banners        = $bannerManager->getBanners(
             [
-                TypeInterface::CODE_ARTICLE_PAGE_RIGHT,
+                TypeInterface::CODE_ARTICLE_PAGE_RIGHT_LARGE,
                 TypeInterface::CODE_ARTICLE_PAGE_BOTTOM,
             ]
         );

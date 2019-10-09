@@ -32,7 +32,8 @@ interface TypeInterface
     const SIZE_DATA_320_50  = [320, 50];
     const SIZE_DATA_728_90  = [728, 90];
 
-    const BANNER_TYPE_DEFAULT           = 'default';
-    const BANNER_TYPE_RESIZABLE         = 'resizable';
-    const BANNER_TYPE_RESIZABLE_BLOCK   = 'resizableBlock';
+    const BANNER_TYPE_DEFAULT              = 'default';
+    const BANNER_TYPE_RESIZABLE            = 'resizable';
+    const BANNER_TYPE_RESIZABLE_BLOCK      = 'resizableBlock';
+    const BANNER_TYPE_RESIZABLE_SIDE_BLOCK = 'resizableSideBlock';
 }
