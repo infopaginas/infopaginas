@@ -14,7 +14,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  * Class ReportArchiveDataCommand
  * @package Domain\ReportBundle\Command
  */
-class ReportArchiveDataCommand extends ContainerAwareCommand
+class ReportArchiveRawDataCommand extends ContainerAwareCommand
 {
     /**
      * Lifetime of mongoDB logs
@@ -24,8 +24,8 @@ class ReportArchiveDataCommand extends ContainerAwareCommand
     protected function configure()
     {
         $this
-            ->setName('domain:report-mongo-db:archive')
-            ->setDescription('Archive mongoDB reports')
+            ->setName('domain:report-mongo-db:archive-raw')
+            ->setDescription('Archive mongoDB reports (raw)')
         ;
     }
 
@@ -37,40 +37,26 @@ class ReportArchiveDataCommand extends ContainerAwareCommand
     {
         $container = $this->getContainer();
         $logger = $container->get('domain_site.cron.logger');
-        $logger->addInfo($logger::MONGO_ARCHIVE, $logger::STATUS_START, 'execute:start');
+        $logger->addInfo($logger::MONGO_ARCHIVE_RAW, $logger::STATUS_START, 'execute:start');
 
         $rawDataArchivingDate = $this->getRawDataArchivingDate();
-        $aggregatedDataArchivingDate = $this->getAggregatedDataArchivingDate();
 
         $output->writeln('Start...');
 
         $output->writeln('Process overview report');
         $businessOverviewReportManager = $container->get('domain_report.manager.business_overview_report_manager');
         $businessOverviewReportManager->archiveRawBusinessInteractions($rawDataArchivingDate);
-        $businessOverviewReportManager->archiveAggregatedBusinessInteractions($aggregatedDataArchivingDate);
         $logger->addInfo($logger::MONGO_ARCHIVE, $logger::STATUS_IN_PROGRESS, 'execute:Process overview report');
 
         $output->writeln('Process keyword report');
         $keywordsReportManager = $container->get('domain_report.manager.keywords_report_manager');
         $keywordsReportManager->archiveRawBusinessKeywords($rawDataArchivingDate);
-        $keywordsReportManager->archiveAggregatedBusinessKeywords($aggregatedDataArchivingDate);
         $logger->addInfo($logger::MONGO_ARCHIVE, $logger::STATUS_IN_PROGRESS, 'execute:Process keyword report');
 
         $output->writeln('Process category report');
         $categoryOverviewReportManager = $container->get('domain_report.manager.category_overview_report_manager');
         $categoryOverviewReportManager->archiveRawBusinessCategories($rawDataArchivingDate);
-        $categoryOverviewReportManager->archiveAggregatedBusinessCategories($aggregatedDataArchivingDate);
         $logger->addInfo($logger::MONGO_ARCHIVE, $logger::STATUS_IN_PROGRESS, 'execute:Process category report');
-
-        $output->writeln('Process user action report');
-        $userActionReportManager = $container->get('domain_report.manager.user_action_report_manager');
-        $userActionReportManager->archiveUserActions($aggregatedDataArchivingDate);
-        $logger->addInfo($logger::MONGO_ARCHIVE, $logger::STATUS_IN_PROGRESS, 'execute:Process user action report');
-
-        $output->writeln('Process feedback report');
-        $feedbackReportManager = $container->get('domain_report.manager.feedback_report_manager');
-        $feedbackReportManager->archiveFeedbackActions($aggregatedDataArchivingDate);
-        $logger->addInfo($logger::MONGO_ARCHIVE, $logger::STATUS_IN_PROGRESS, 'execute:Process feedback report');
 
         $output->writeln('done');
         $logger->addInfo($logger::MONGO_ARCHIVE, $logger::STATUS_END, 'execute:stop');
@@ -82,13 +68,5 @@ class ReportArchiveDataCommand extends ContainerAwareCommand
     protected function getRawDataArchivingDate()
     {
         return DatesUtil::getYesterday();
-    }
-
-    /**
-     * @return \Datetime
-     */
-    protected function getAggregatedDataArchivingDate()
-    {
-        return DatesUtil::getYesterday()->modify('-' . self::LOGS_LIFETIME . ' month');
     }
 }
