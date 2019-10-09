@@ -10,7 +10,6 @@ define(['jquery'], function ( $ ) {
     var BANNER_BREAK_POINT_728x90 = 740;
     var BANNER_BREAK_POINT_468x60 = 480;
     var BANNER_BREAK_POINT_320x50 = 320;
-    var BANNER_BREAK_POINT_300 = 300;
 
     var BASE_BREAK_POINT = 805;
     var RESPONSIVE_ADS_BLOCK_SIZE = 0.6;
@@ -18,8 +17,6 @@ define(['jquery'], function ( $ ) {
     var BANNER_SIZE_728x90 = [728, 90];
     var BANNER_SIZE_468x60 = [468, 60];
     var BANNER_SIZE_320x50 = [320, 50];
-    var BANNER_SIZE_300x250 = [300, 250];
-    var BANNER_SIZE_300x600 = [300, 600];
 
     ads.prototype.init = function () {
         this.options = {
@@ -32,10 +29,9 @@ define(['jquery'], function ( $ ) {
                 slugTargeting:          'dfp-targeting-slug'
             },
             type: {
-                resizable:          'resizable',
-                resizableBlock:     'resizableBlock',
-                resizableSideBlock: 'resizableSideBlock',
-                default:            'default'
+                resizable:      'resizable',
+                resizableBlock: 'resizableBlock',
+                default:        'default'
             }
         };
 
@@ -66,9 +62,8 @@ define(['jquery'], function ( $ ) {
 
         googletag.cmd.push(function() {
             // init header
-            var googleResponsiveCommonSize    = self.getResponsiveCommonSizeMapping( googletag );
-            var googleResponsiveBlockSize     = self.getResponsiveBlockSizeMapping( googletag );
-            var googleResponsiveSideBlockSize = self.getResponsiveSideBlockSizeMapping( googletag );
+            var googleResponsiveCommonSize = self.getResponsiveCommonSizeMapping( googletag );
+            var googleResponsiveBlockSize  = self.getResponsiveBlockSizeMapping( googletag );
 
             $.each( self.options.adsData, function() {
                 var item = this;
@@ -80,8 +75,6 @@ define(['jquery'], function ( $ ) {
                         slot.defineSizeMapping( googleResponsiveCommonSize );
                     } else if ( item.type == self.options.type.resizableBlock && googleResponsiveBlockSize ) {
                         slot.defineSizeMapping( googleResponsiveBlockSize );
-                    } else if ( item.type == self.options.type.resizableSideBlock ) {
-                        slot.defineSizeMapping( googleResponsiveSideBlockSize );
                     }
 
                     slot.addService( googletag.pubads() );
@@ -158,17 +151,6 @@ define(['jquery'], function ( $ ) {
         }
 
         return googleResponsiveBlockSize;
-    };
-
-    ads.prototype.getResponsiveSideBlockSizeMapping = function ( googletag ) {
-        var googleResponsiveSideBlockSize = googletag.sizeMapping().addSize( [ 0, 0 ], [] );
-        if ( window.innerWidth < BASE_BREAK_POINT ) {
-            googleResponsiveSideBlockSize.addSize( [ BANNER_BREAK_POINT_300, 0 ], BANNER_SIZE_300x250 );
-        } else {
-            googleResponsiveSideBlockSize.addSize( [ BANNER_BREAK_POINT_300, 0 ], BANNER_SIZE_300x600 );
-        }
-
-        return googleResponsiveSideBlockSize.build();
     };
 
     return ads;

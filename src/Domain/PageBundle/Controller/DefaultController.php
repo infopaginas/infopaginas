@@ -71,7 +71,7 @@ class DefaultController extends Controller
         $bannerManager  = $this->get('domain_banner.manager.banner');
         $banners        = $bannerManager->getBanners(
             [
-                TypeInterface::CODE_PORTAL_RIGHT_LARGE,
+                TypeInterface::CODE_PORTAL_RIGHT,
                 TypeInterface::CODE_STATIC_BOTTOM,
             ]
         );

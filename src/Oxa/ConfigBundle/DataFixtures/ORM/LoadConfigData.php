@@ -66,6 +66,14 @@ class LoadConfigData extends AbstractFixture implements ContainerAwareInterface,
                 'format' => 'text',
                 'description' => 'Meta-keywords by default',
             ], [
+                'key' => ConfigInterface::FOOTER_CONTENT,
+                'title' => 'Footer content',
+                'value' => $this->container->get('twig')->render(
+                    'OxaConfigBundle:Fixtures:footer_content.html.twig'
+                ),
+                'format' => 'html',
+                'description' => 'Footer content',
+            ], [
                 'key' => ConfigInterface::DEFAULT_EMAIL_ADDRESS,
                 'title' => 'Default Email Address',
                 'value' => 'info@infopaginas.com',
