@@ -257,7 +257,7 @@ define(['jquery', 'bootstrap', 'business/tools/form', 'tools/spin', 'tools/selec
             that.formSubmitting = true;
             event.preventDefault();
 
-            if ( !that.mapPingUpdated ) {
+            if ( !businessProfileId && !that.mapPingUpdated ) {
                 if ( !$( that.html.googleMap ).next( '.error' ).length ) {
                     $( that.html.googleMap ).after( "<span data-error-message class='error'>" +
                         $( that.html.googleMap ).data('update-location-norification') + "</span>" );
