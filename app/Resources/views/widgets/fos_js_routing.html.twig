@@ -1,0 +1,5 @@
+{% if app.debug %}
+    <script src="{{ absolute_url(path('fos_js_routing_js', { callback: 'fos.Router.setData' })) }}"></script>
+{% else %}
+    <script src="{{ absolute_url(asset('js/fos_js_routes.js')) }}"></script>
+{% endif %}
