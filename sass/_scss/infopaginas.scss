@@ -3269,7 +3269,11 @@ a.tag {
   margin-top: 35px;
   margin-bottom: .5em;
   text-align: center;
-  text-transform: uppercase
+  text-transform: uppercase;
+
+  @media only screen and (min-width: 805px) {
+    margin-top: 85px;
+  }
 }
 
 
@@ -4750,6 +4754,7 @@ li.active {
 
     @media only screen and (min-width: 805px) {
       font-size: 2.4em;
+      margin-top: 55px;
     }
   }
 
