@@ -417,7 +417,7 @@ class SearchManager extends Manager
         $query = '';
         $page  = SearchDataUtil::getPageFromRequest($request);
 
-        $limit     = (int) $this->configService->getSetting(ConfigInterface::SEARCH_ADS_PER_PAGE)->getValue();
+        $limit     = (int) $this->configService->getSetting(ConfigInterface::DEFAULT_RESULTS_PAGE_SIZE)->getValue();
         $searchDTO = SearchDataUtil::buildRequestDTO($query, $location, $page, $limit);
         $searchDTO = $this->setSearchAdsParams($searchDTO);
 
