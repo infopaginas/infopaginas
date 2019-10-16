@@ -16,11 +16,6 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class ReportArchiveRawDataCommand extends ContainerAwareCommand
 {
-    /**
-     * Lifetime of mongoDB logs
-     */
-    const LOGS_LIFETIME = 24;
-
     protected function configure()
     {
         $this
