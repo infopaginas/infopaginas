@@ -1,0 +1,9 @@
+{% extends 'SonataAdminBundle:CRUD:base_show_field.html.twig' %}
+
+{% block field %}
+    {% if object.id is not null %}
+        <div class="chart-block">
+            <div class="stat-block" id="ChartStatContainer"></div>
+        </div>
+    {% endif %}
+{% endblock %}
