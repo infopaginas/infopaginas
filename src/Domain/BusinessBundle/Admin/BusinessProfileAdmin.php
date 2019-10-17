@@ -1333,6 +1333,9 @@ class BusinessProfileAdmin extends OxaAdmin
                         ])
                     ->end()
                     ->with('Summary')
+                        ->add('', null, [
+                            'template' => 'DomainBusinessBundle:Admin:BusinessProfile/report_summary.html.twig',
+                        ])
                         ->add('impressions', null, [
                             'label'     => 'Impressions',
                             'eventType'     => BusinessOverviewModel::TYPE_CODE_IMPRESSION,
