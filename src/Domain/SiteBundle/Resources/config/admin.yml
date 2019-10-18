@@ -1,0 +1,6 @@
+services:
+    domain_site.admin.release_note:
+        class: Domain\SiteBundle\Admin\ReleaseNoteAdmin
+        arguments: [~, Domain\SiteBundle\Entity\ReleaseNote, ~]
+        tags:
+            - {name: sonata.admin, manager_type: orm, group: admin, label: Release Note, audit: true}
