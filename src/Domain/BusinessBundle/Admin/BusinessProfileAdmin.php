@@ -1068,7 +1068,7 @@ class BusinessProfileAdmin extends OxaAdmin
                     ->add('name')
                     ->add('slogan')
                     ->add('description', null, [
-                        'template' => 'DomainBusinessBundle:Admin:BusinessProfile/show_description.html.twig',
+                        'template' => 'DomainBusinessBundle:Admin:BusinessProfile/show_purified_value.html.twig',
                     ])
                     ->add('product')
                     ->add('brands')
