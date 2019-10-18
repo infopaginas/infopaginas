@@ -131,7 +131,7 @@ class BusinessProfileUtil
 
         $hasLink = false;
 
-        if ($businessProfile->getWebsite() and mb_strlen($seoDescription) < $descriptionMaxLength) {
+        if ($businessProfile->getWebsiteLink() and mb_strlen($seoDescription) < $descriptionMaxLength) {
             $seoDescription .= ' ' . $translator->trans(
                 'business_profile.seoDescription.link',
                 [

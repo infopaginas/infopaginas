@@ -98,6 +98,8 @@
     {{ parent() }}
 
     <script type="text/javascript">
+        var businessProfileId = '{{ app.request.get('id', null) }}';
+
         requirejs(['{{ absolute_url(asset("assetic/require_common_js.js")) }}'], function(common) {
             requirejs(['{{ absolute_url(asset("assetic/require_business_profile_js.js")) }}'], function(businessProfile) {
                 var profile = new businessProfile();
