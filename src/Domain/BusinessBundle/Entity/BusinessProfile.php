@@ -5,6 +5,7 @@ namespace Domain\BusinessBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\OneToMany;
 use Domain\BusinessBundle\DBAL\Types\TaskStatusType;
 use Domain\BusinessBundle\DBAL\Types\TaskType;
 use Domain\BusinessBundle\Entity\Address\Country;
@@ -1083,6 +1084,18 @@ class BusinessProfile implements
     protected $panoramaId;
 
     /**
+     * @OneToMany(targetEntity="Domain\BusinessBundle\Entity\BusinessProfile", mappedBy="businessToRedirect")
+     */
+    protected $redirectedBusinesses;
+
+    /**
+     * @var BusinessProfile $businessToRedirect
+     * @ORM\ManyToOne(targetEntity="Domain\BusinessBundle\Entity\BusinessProfile", inversedBy="redirectedBusinesses")
+     * @ORM\JoinColumn(name="business_to_redirect", referencedColumnName="id", nullable=true)
+     */
+    protected $businessToRedirect;
+
+    /**
      * @var string - keyword
      *
      * @ORM\Column(name="keyword_text", type="text", length=1000, nullable=true)
@@ -1116,6 +1129,7 @@ class BusinessProfile implements
         $this->aliases                  = new ArrayCollection();
         $this->tasks                    = new ArrayCollection();
         $this->mediaUrls                = new ArrayCollection();
+        $this->redirectedBusinesses     = new ArrayCollection();
 
         $this->isClosed  = false;
         $this->isUpdated = true;
@@ -1573,6 +1587,46 @@ class BusinessProfile implements
     public function removeCategory(\Domain\BusinessBundle\Entity\Category $category)
     {
         $this->categories->removeElement($category);
+    }
+
+    /**
+     * @param BusinessProfile $businessProfile
+     *
+     * @return $this
+     */
+    public function addRedirectedBusinesses(BusinessProfile $businessProfile)
+    {
+        $this->redirectedBusinesses->add($businessProfile);
+
+        return $this;
+    }
+
+    /**
+     * @param BusinessProfile $businessProfile
+     */
+    public function removeRedirectedBusinesses(BusinessProfile $businessProfile)
+    {
+        $this->redirectedBusinesses->removeElement($businessProfile);
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getRedirectedBusinesses()
+    {
+        return $this->redirectedBusinesses;
+    }
+
+    public function getBusinessToRedirect()
+    {
+        return $this->businessToRedirect;
+    }
+
+    public function setBusinessToRedirect($businessProfile)
+    {
+        $this->businessToRedirect = $businessProfile;
+
+        return $this;
     }
 
     /**
