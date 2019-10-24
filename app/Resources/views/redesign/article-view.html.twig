@@ -1,4 +1,5 @@
 {% extends "redesign/layout/base.html.twig" %}
+{% from 'widgets/picture_macros.html.twig' import picture %}
 
 {% block bodyClass %}generic-page article-page has-sidebar{% endblock %}
 
@@ -31,14 +32,18 @@
                         {% if (articleGallery|length > 0) %}
                             <section class="page-section photos slider section--slider hide-before">
                                 <div class="slider__item">
-                                    <img data-src="{% path article.getImage(), 'normal' %}" alt="{{ article.title }}" class="lazyload">
+                                    {{ picture(article.getImage(), 'normal', true, article.title) }}
                                 </div>
                                 {% for image in articleGallery %}
                                     <div class="slider__item">
-                                        <img data-src="{% path image.getMedia(), 'normal' %}"
-                                             alt="{% if image.description %}{{ image.description }}{% else %}{{ article.title }}{% endif %}"
-                                             class="lazyload"
-                                        >
+                                        {% set alt %}
+                                            {% if image.description %}
+                                                {{ image.description }}
+                                            {% else %}
+                                                {{ article.title }}
+                                            {% endif %}
+                                        {% endset %}
+                                        {{ picture(image.getMedia(), 'normal', true, alt) }}
                                     </div>
                                 {% endfor %}
                             </section>
@@ -46,7 +51,7 @@
                             <section class="gallery">
                                 <div class="photos">
                                     <div class="article-photo">
-                                        <img src="{% path article.getImage(), 'normal' %}" alt="{{ article.title }}">
+                                        {{ picture(article.getImage(), 'normal', true, article.title) }}
                                     </div>
                                 </div>
                             </section>

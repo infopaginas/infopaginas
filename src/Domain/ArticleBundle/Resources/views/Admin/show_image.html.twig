@@ -10,11 +10,12 @@ file that was distributed with this source code.
 #}
 
 {% extends 'SonataAdminBundle:CRUD:base_show_field.html.twig' %}
+{% from 'widgets/picture_macros.html.twig' import picture %}
 
 {% block field%}
     {% if object.image is not null %}
         <a href="{{ path('admin_sonata_media_media_edit', {'id' : object.image|sonata_urlsafeid }) }}">
-            <img src="{% path object.image, 'preview' %}" alt="{{ object.image.name }}">
+            {{ picture(object.image, 'preview', false, object.image.name) }}
         </a>
     {% endif %}
 {% endblock %}

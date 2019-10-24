@@ -155,7 +155,7 @@ $( document ).ready( function() {
             success: function( response ) {
                 if ( response.success ) {
                     row.media.val( response.data.id );
-                    row.preview.attr( 'src', response.data.url );
+                    row.preview.replaceWith( response.data.html );
                     row.filename.html( response.data.name );
                     row.removeButton.click();
                 } else {
@@ -314,12 +314,11 @@ $( document ).ready( function() {
             url: Routing.generate( 'domain_business_admin_images_preview', {id: mediaId} ),
             type: 'GET',
             success: function( response ) {
-                var img = $( elem ).parents( '.sonata-ba-field-list-natural .field-container' ).find( '.single-media-preview-block img' );
-
+                var picture = $( elem ).parents( '.sonata-ba-field-list-natural .field-container' ).find( '.single-media-preview-block picture' );
                 if ( response.success ) {
-                    img.attr( 'src', response.data.url );
+                    picture.replaceWith( response.data.html );
                 } else {
-                    img.removeAttr( 'src' );
+                    picture.find('img').removeAttr( 'src' );
                 }
             }
         });
@@ -342,7 +341,7 @@ $( document ).ready( function() {
             var media      = $( item );
             var mediaBlockRow = media.parents( '.sonata-ba-field-list-natural' );
             var mediaBlock = mediaBlockRow.find( '.field-container' );
-            var html = '<div class="single-media-preview-block"><img></div>';
+            var html = '<div class="single-media-preview-block"><picture><img></picture></div>';
 
             mediaBlockRow.addClass( 'row' );
             mediaBlock.prepend( html );
