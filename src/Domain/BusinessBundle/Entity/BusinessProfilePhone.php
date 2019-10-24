@@ -15,7 +15,7 @@ use Misd\PhoneNumberBundle\Validator\Constraints\PhoneNumber as AssertPhoneNumbe
  * @ORM\Table(name="business_profile_phone")
  * @ORM\Entity(repositoryClass="Domain\BusinessBundle\Repository\BusinessProfilePhoneRepository")
  * @ORM\HasLifecycleCallbacks()
- * @UniqueEntity(fields={"phone"}, groups={"Admin"})
+ * @UniqueEntity(fields={"phone"})
  */
 class BusinessProfilePhone implements ChangeStateInterface
 {
