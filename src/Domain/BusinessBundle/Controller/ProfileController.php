@@ -154,32 +154,31 @@ class ProfileController extends Controller
             $businessProfileAlias = $this->getBusinessProfilesManager()->findByAlias($slug);
 
             if ($businessProfileAlias) {
-                return $this->redirectToRoute(
-                    'domain_business_profile_view',
-                    [
-                        'citySlug' => $businessProfileAlias->getCitySlug(),
-                        'slug'     => $businessProfileAlias->getSlug(),
-                    ],
-                    301
+                return $this->redirectToBusiness(
+                    $businessProfileAlias->getCitySlug(),
+                    $businessProfileAlias->getSlug()
                 );
             } else {
                 throw new \Symfony\Component\HttpKernel\Exception\GoneHttpException();
             }
-        } elseif (!$businessProfile->getIsActive()) {
+        }
+
+        if ($businessProfile->getSubscriptionPlanCode() == SubscriptionPlanInterface::CODE_FREE &&
+            $businessProfile->getBusinessToRedirect()) {
+            return $this->redirectToBusiness(
+                $businessProfile->getBusinessToRedirect()->getCitySlug(),
+                $businessProfile->getBusinessToRedirect()->getSlug()
+            );
+        }
+
+        if (!$businessProfile->getIsActive()) {
             throw $this->createNotFoundException();
         }
 
         $catalogLocalitySlug = $businessProfile->getCitySlug();
 
         if ($catalogLocalitySlug != $citySlug or $slug != $businessProfile->getSlug()) {
-            return $this->redirectToRoute(
-                'domain_business_profile_view',
-                [
-                    'citySlug' => $catalogLocalitySlug,
-                    'slug'     => $businessProfile->getSlug(),
-                ],
-                301
-            );
+            return $this->redirectToBusiness($catalogLocalitySlug, $businessProfile->getSlug());
         }
 
         $trackingParams = BusinessProfileUtil::getTrackingVisitParamsData([$businessProfile]);
@@ -508,6 +507,18 @@ class ProfileController extends Controller
         if (!$user->getBusinessProfiles()->contains($businessProfile)) {
             throw $this->createNotFoundException(self::ERROR_ACCESS_NOT_ALLOWED);
         }
+    }
+
+    protected function redirectToBusiness(string $citySlug, string $slug)
+    {
+        return $this->redirectToRoute(
+            'domain_business_profile_view',
+            [
+                'citySlug' => $citySlug,
+                'slug'     => $slug,
+            ],
+            301
+        );
     }
 
     /**
