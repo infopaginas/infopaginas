@@ -1415,7 +1415,8 @@ class BusinessProfileAdmin extends OxaAdmin
     /**
      * @param ErrorElement $errorElement
      * @param mixed $object
-     * @return null
+     *
+     * @throws \Exception
      */
     public function validate(ErrorElement $errorElement, $object)
     {
@@ -1476,17 +1477,6 @@ class BusinessProfileAdmin extends OxaAdmin
                     ->end()
                 ;
             }
-        }
-
-        if ($object->getSubscriptionPlanCode() > SubscriptionPlanInterface::CODE_PRIORITY && !$object->getLogo()) {
-            $errorElement->with('logo')
-                ->addViolation($this->getTranslator()->trans(
-                    'form.business.logo_required',
-                    [],
-                    $this->getTranslationDomain()
-                ))
-                ->end()
-            ;
         }
     }
 
