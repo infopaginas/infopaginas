@@ -56,7 +56,7 @@
         var spinnerLink = '{{ asset('assets/images/spinner-empty-background.gif') }}';
     </script>
     <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
-    <script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
+    {% include ':widgets:fos_js_routing.html.twig' %}
     <script type="text/javascript" src="{{ asset('bundles/domainbusiness/scripts/modules/businessProfileAdmin.js')}}"></script>
     <script type="text/javascript" src="{{ asset('bundles/domainsite/scripts/vendors/jquery.maskedinput.min.js')}}"></script>
     <script type="text/javascript" src="{{ asset('bundles/domainsite/scripts/modules/sonataCollectionRemove.js')}}"></script>

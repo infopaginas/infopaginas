@@ -1,0 +1,4 @@
+{% from 'widgets/picture_macros.html.twig' import picture %}
+{% if lazy is not defined %}{% set lazy = false %}{% endif %}
+{% if alt is not defined %}{% set alt = '' %}{% endif %}
+{{ picture(object, format, lazy, alt) }}
