@@ -21,6 +21,12 @@
     {% endif %}
 {% endblock %}
 
+{% block metaData %}
+    {% if businessProfile.getLogo() and hasSubscription(businessProfile, "CODE_PREMIUM_PLUS") %}
+        <meta property="og:image" content="{% path businessProfile.getLogo(), 'normal' %}" />
+    {% endif %}
+{% endblock %}
+
 {% block bodyClass %}profile{% endblock %}
 
 {% block body %}
