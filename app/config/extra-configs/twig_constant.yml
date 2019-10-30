@@ -38,6 +38,9 @@ twig:
             ACTION_TYPE:
                 ORDER: 'order'
                 BOOK:  'book'
+            LOGO:
+                WIDTH: '300'
+                HEIGHT: '300'
 
 #        const of BusinessProfilePhone class
         BUSINESS_PROFILE_PHONE:

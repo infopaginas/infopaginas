@@ -24,6 +24,8 @@
 {% block metaData %}
     {% if businessProfile.getLogo() and hasSubscription(businessProfile, "CODE_PREMIUM_PLUS") %}
         <meta property="og:image" content="{% path businessProfile.getLogo(), 'normal' %}" />
+        <meta property="og:image:width" content="{{ BUSINESS_PROFILE.LOGO.WIDTH }}" />
+        <meta property="og:image:height" content="{{ BUSINESS_PROFILE.LOGO.HEIGHT }}" />
     {% endif %}
 {% endblock %}
 
