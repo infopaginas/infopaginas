@@ -74,12 +74,15 @@ class ImagesController extends Controller
             $media = $this->getBusinessProfilesManager()->getBusinessGalleryMediaById($id);
 
             if ($media) {
-                $url = $this->getBusinessProfilesManager()->getMediaPublicUrl($media, 'preview');
+                $html = $this->renderView('widgets/picture_macros_wrapper.html.twig', [
+                    'object' => $media,
+                    'format' => 'preview',
+                ]);
 
                 return new JsonResponse([
                     'success' => true,
                     'data' => [
-                        'url'  => $url,
+                        'html' => $html,
                     ],
                 ]);
             }
@@ -114,12 +117,15 @@ class ImagesController extends Controller
                 OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_IMAGES
             );
 
-            $url = $this->getBusinessProfilesManager()->getMediaPublicUrl($media, 'preview');
+            $html = $this->renderView('widgets/picture_macros_wrapper.html.twig', [
+               'object' => $media,
+               'format' => 'preview',
+            ]);
 
             return new JsonResponse([
                 'success' => true,
                 'data' => [
-                    'url'  => $url,
+                    'html' => $html,
                     'id'   => $media->getId(),
                     'name' => $media->getName(),
                 ],

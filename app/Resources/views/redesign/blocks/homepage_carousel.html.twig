@@ -1,3 +1,5 @@
+{% from 'widgets/picture_macros.html.twig' import picture %}
+
 <div class="suggested-slider-section hide-before homepage-carousel-block" data-bw-gtm-component="business-profile-suggested">
     <span class="arrow prev slick-arrow">
         <i class="fa fa-chevron-circle-left" aria-hidden="true"></i>
@@ -12,10 +14,7 @@
                         </div>
                         {% if not carouselBusiness.getVideo() %}
                             <div class="">
-                                <img data-src="{% path carouselBusiness.image, 'normal' %}"
-                                     alt="{{ carouselBusiness.businessProfile.name }}"
-                                     class="lazyload"
-                                >
+                                {{ picture(carouselBusiness.image, 'normal', true, carouselBusiness.businessProfile.name) }}
                             </div>
                         {% endif %}
                     </a>

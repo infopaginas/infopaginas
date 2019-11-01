@@ -1,4 +1,5 @@
 {% extends "redesign/layout/base.html.twig" %}
+{% from 'widgets/picture_macros.html.twig' import picture %}
 
 {% block breadcrumbs %}
     {% include ':redesign/blocks:breadcrumbs.html.twig' with {'catalogLocality': businessProfile.catalogLocality, 'category': businessProfile.categories|first} %}
@@ -20,6 +21,14 @@
     {% endif %}
 {% endblock %}
 
+{% block metaData %}
+    {% if businessProfile.getLogo() and hasSubscription(businessProfile, "CODE_PREMIUM_PLUS") %}
+        <meta property="og:image" content="{% path businessProfile.getLogo(), 'normal' %}" />
+        <meta property="og:image:width" content="{{ BUSINESS_PROFILE.LOGO.WIDTH }}" />
+        <meta property="og:image:height" content="{{ BUSINESS_PROFILE.LOGO.HEIGHT }}" />
+    {% endif %}
+{% endblock %}
+
 {% block bodyClass %}profile{% endblock %}
 
 {% block body %}
@@ -38,7 +47,7 @@
                     </div><!-- item__header -->
                     {% if businessProfile.getLogo() and hasSubscription(businessProfile, "CODE_PREMIUM_PLUS") %}
                         <div class="avatar">
-                            <img src="{% path businessProfile.getLogo(), 'preview' %}" alt="{{ businessProfile.getName() }}">
+                            {{ picture(businessProfile.getLogo(), 'preview', false, businessProfile.getName()) }}
                         </div>
                     {% endif %}
                     <h1 id="businessProfileName" data-business-profile-id="{{ businessProfile.id }}" class="{{ seoTags.name }}">{{ businessProfile.getName() }}</h1>
@@ -203,10 +212,14 @@
                             <section class="page-section photos slider section--slider hide-before">
                                 {% for photo in photos %}
                                     <div class="slider__item">
-                                        <img data-src="{% path photo.getMedia(), 'normal' %}"
-                                             alt="{% if photo.description %}{{ photo.description }}{% else %}{{ businessProfile.getName() }}{% endif %}"
-                                             class="lazyload"
-                                        >
+                                        {% set alt %}
+                                            {% if photo.description %}
+                                                {{ photo.description }}
+                                            {% else %}
+                                                {{ businessProfile.getName() }}
+                                            {% endif %}
+                                        {% endset %}
+                                        {{ picture(photo.getMedia(), 'normal', true, alt) }}
                                     </div>
                                 {% endfor %}
                             </section>
@@ -230,9 +243,7 @@
                                                 </div>
                                                 <div class="slide-image">
                                                     {% if suggestedBusiness.logo %}
-                                                        <img data-src="{% path suggestedBusiness.logo, 'preview' %}"
-                                                             alt="{{ suggestedBusiness.name }}" class="lazyload"
-                                                        >
+                                                        {{ picture(suggestedBusiness.logo, 'preview', true, suggestedBusiness.name) }}
                                                     {% else %}
                                                         <span class="default-image"><i class="fa fa-camera" aria-hidden="true"></i></span>
                                                     {% endif %}
