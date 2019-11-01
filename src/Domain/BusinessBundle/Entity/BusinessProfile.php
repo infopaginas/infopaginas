@@ -920,8 +920,33 @@ class BusinessProfile implements
      */
     protected $csvImportFile;
 
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="enable_not_unique_phone", type="boolean", options={"default" : 0}, nullable=true)
+     */
+    protected $enableNotUniquePhone;
+
     /* @var string */
     private $statusForUser;
+
+    /**
+     * @return bool
+     */
+    public function isEnableNotUniquePhone()
+    {
+        return $this->enableNotUniquePhone;
+    }
+
+    /**
+     * @param bool $enableNotUniquePhone
+     * @return BusinessProfile
+     */
+    public function setEnableNotUniquePhone($enableNotUniquePhone)
+    {
+        $this->enableNotUniquePhone = $enableNotUniquePhone;
+        return $this;
+    }
 
     /**
      * @return mixed
