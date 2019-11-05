@@ -9,6 +9,7 @@ use Domain\BusinessBundle\Entity\Category;
 use Domain\BusinessBundle\Entity\Media\BusinessGallery;
 use Domain\BusinessBundle\Entity\Subscription;
 use Domain\BusinessBundle\Entity\SubscriptionPlan;
+use Domain\BusinessBundle\Form\Handler\BusinessFormHandlerInterface;
 use Domain\BusinessBundle\Form\Type\BusinessGalleryAdminType;
 use Domain\BusinessBundle\Form\Type\CustomUrlType;
 use Domain\BusinessBundle\Model\StatusInterface;
@@ -38,6 +39,7 @@ use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\UrlType;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Validator\Constraints\Length;
@@ -54,11 +56,12 @@ class BusinessProfileAdmin extends OxaAdmin
     const DATE_PICKER_REPORT_FORMAT = 'YYYY-MM-DD';
     const SONATA_FILTER_DATE_FORMAT = 'd-m-Y H:i:s';
 
-    CONST FILTER_IMPRESSIONS = 'impressions';
-    CONST FILTER_DIRECTIONS  = 'directions';
-    CONST FILTER_CALL_MOBILE = 'callsMobile';
+    const FILTER_IMPRESSIONS = 'impressions';
+    const FILTER_DIRECTIONS  = 'directions';
+    const FILTER_CALL_MOBILE = 'callsMobile';
 
     const MAX_VALIDATION_RESULT = 5;
+    const DEFAULT_VALIDATION_GROUPS = ['Default', 'Admin'];
 
     /**
      * @var bool
@@ -79,7 +82,7 @@ class BusinessProfileAdmin extends OxaAdmin
      * @var array
      */
     protected $formOptions = [
-        'validation_groups' => ['Default', 'Admin']
+        'validation_groups' => self::DEFAULT_VALIDATION_GROUPS,
     ];
 
     public $imageHelpMessage = 'imageHelpMessage';
@@ -137,6 +140,20 @@ class BusinessProfileAdmin extends OxaAdmin
         }
 
         return $list;
+    }
+
+    public function getFormBuilder()
+    {
+        $this->formOptions['validation_groups'] = function (FormInterface $form) {
+            $validationGroups = BusinessProfileAdmin::DEFAULT_VALIDATION_GROUPS;
+            if (!$form->getData()->isEnableNotUniquePhone()) {
+                $validationGroups[] = BusinessFormHandlerInterface::UNIQUE_PHONE_VALIDATION_GROUP;
+            }
+
+            return $validationGroups;
+        };
+
+        return parent::getFormBuilder();
     }
 
     /**
@@ -551,6 +568,16 @@ class BusinessProfileAdmin extends OxaAdmin
                 ->end()
             ->end()
         ;
+
+        if ($this->isGranted('ROLE_SUPER_ADMIN')) {
+            $formMapper
+                ->tab('Main')
+                    ->with('Main')
+                        ->add('enableNotUniquePhone')
+                    ->end()
+                ->end()
+            ;
+        }
 
         // Payment Method Block
         $formMapper
