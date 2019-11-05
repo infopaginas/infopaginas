@@ -32,7 +32,7 @@ class BusinessProfileUtil
      */
     public static function extractEntitiesId(array $searchResults)
     {
-        $ids = array_map(function($entity) {
+        $ids = array_map(function ($entity) {
             return $entity->getId();
         }, $searchResults);
 
