@@ -9,6 +9,11 @@ services:
         arguments:
             - '@service_container'
 
+    domain_business.manager.business_profile_phone:
+        class: Domain\BusinessBundle\Manager\BusinessProfilePhoneManager
+        arguments:
+          - '@doctrine.orm.entity_manager'
+
     domain_business.manager.tasks:
         class: Domain\BusinessBundle\Manager\TasksManager
         arguments:
