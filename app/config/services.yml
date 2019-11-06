@@ -24,3 +24,6 @@ services:
             - "%aws_sdk_cloudwatch_group%"
             - "%aws_sdk_cloudwatch_stream%"
             - "%aws_sdk_cloudwatch_retention%"
+            - "%aws_sdk_cloudwatch_batch_size%"
+            - { dev-tag: "dev-tag" }
+            - "%aws_sdk_cloudwatch_level%"

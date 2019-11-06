@@ -38,7 +38,9 @@ parameters:
 
     aws_sdk_cloudwatch_group: infopaginas
     aws_sdk_cloudwatch_stream: infopaginas-stage
-    aws_sdk_cloudwatch_retention: 7
+    aws_sdk_cloudwatch_retention: 14
+    aws_sdk_cloudwatch_batch_size: 10000
+    aws_sdk_cloudwatch_level: WARNING
 
     # cdn host
     amazon_aws_base_host: 'https://s3.amazonaws.com/%amazon_aws_bucket_name%'
