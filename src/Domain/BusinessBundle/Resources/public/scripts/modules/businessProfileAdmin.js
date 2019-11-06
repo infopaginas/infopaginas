@@ -838,4 +838,8 @@ $( document ).ready( function() {
             input.after( errorHtml );
         }
     }
+
+    $( '.start-date' ).parent().on( 'dp.change', function( event ) {
+        $( this ).parents( 'tr' ).children('.end-date').parent().data( 'DateTimePicker' ).setDate( event.date.add( 1, 'year' ) );
+    } )
 } );
