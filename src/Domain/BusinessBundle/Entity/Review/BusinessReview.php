@@ -4,16 +4,16 @@ namespace Domain\BusinessBundle\Entity\Review;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Domain\BusinessBundle\Entity\Translation\Review\BusinessReviewTranslation;
 use Oxa\Sonata\AdminBundle\Model\ChangeStateInterface;
 use Oxa\Sonata\AdminBundle\Model\CopyableEntityInterface;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
+use Oxa\Sonata\AdminBundle\Model\OxaPersonalTranslatableInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\ChangeStateTrait;
 use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Oxa\Sonata\UserBundle\Entity\User;
-use Sonata\TranslationBundle\Model\Gedmo\TranslatableInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\OxaPersonalTranslatable as PersonalTranslatable;
-use Domain\BusinessBundle\Entity\Translation\Review\BusinessReviewTranslation;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -27,7 +27,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 class BusinessReview implements
     DefaultEntityInterface,
     CopyableEntityInterface,
-    TranslatableInterface,
+    OxaPersonalTranslatableInterface,
     ChangeStateInterface
 {
     use DefaultEntityTrait;
@@ -269,13 +269,8 @@ class BusinessReview implements
         return $this->rating;
     }
 
-    /**
-     * Remove translation
-     *
-     * @param \Domain\BusinessBundle\Entity\Translation\Review\BusinessReviewTranslation $translation
-     */
-    public function removeTranslation(BusinessReviewTranslation $translation)
+    public function getTranslationClass(): string
     {
-        $this->translations->removeElement($translation);
+        return BusinessReviewTranslation::class;
     }
 }

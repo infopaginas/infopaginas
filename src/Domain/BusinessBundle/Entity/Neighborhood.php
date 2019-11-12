@@ -3,7 +3,9 @@
 namespace Domain\BusinessBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Domain\BusinessBundle\Entity\Translation\NeighborhoodTranslation;
 use Oxa\Sonata\AdminBundle\Model\ChangeStateInterface;
+use Oxa\Sonata\AdminBundle\Model\OxaPersonalTranslatableInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\ChangeStateTrait;
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -13,8 +15,6 @@ use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Oxa\Sonata\AdminBundle\Util\Traits\OxaPersonalTranslatable as PersonalTranslatable;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
-use Sonata\TranslationBundle\Model\Gedmo\TranslatableInterface;
 
 /**
  * Neighborhood
@@ -24,7 +24,7 @@ use Sonata\TranslationBundle\Model\Gedmo\TranslatableInterface;
  * @ORM\HasLifecycleCallbacks
  * @Gedmo\TranslationEntity(class="Domain\BusinessBundle\Entity\Translation\NeighborhoodTranslation")
  */
-class Neighborhood implements DefaultEntityInterface, TranslatableInterface, ChangeStateInterface
+class Neighborhood implements DefaultEntityInterface, OxaPersonalTranslatableInterface, ChangeStateInterface
 {
     use DefaultEntityTrait;
     use PersonalTranslatable;
@@ -194,16 +194,6 @@ class Neighborhood implements DefaultEntityInterface, TranslatableInterface, Cha
     }
 
     /**
-     * Remove translation
-     *
-     * @param \Domain\BusinessBundle\Entity\Translation\NeighborhoodTranslation $translation
-     */
-    public function removeTranslation(\Domain\BusinessBundle\Entity\Translation\NeighborhoodTranslation $translation)
-    {
-        $this->translations->removeElement($translation);
-    }
-
-    /**
      * Get Locality
      *
      * @return Zip[]
@@ -246,5 +236,10 @@ class Neighborhood implements DefaultEntityInterface, TranslatableInterface, Cha
     public function __toString()
     {
         return $this->getName() ?: '';
+    }
+
+    public function getTranslationClass(): string
+    {
+        return NeighborhoodTranslation::class;
     }
 }

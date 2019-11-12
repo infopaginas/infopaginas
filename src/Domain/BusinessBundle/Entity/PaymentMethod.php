@@ -4,9 +4,11 @@ namespace Domain\BusinessBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Domain\BusinessBundle\Entity\Translation\PaymentMethodTranslation;
 use Oxa\Sonata\AdminBundle\Model\ChangeStateInterface;
 use Oxa\Sonata\AdminBundle\Model\CopyableEntityInterface;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
+use Oxa\Sonata\AdminBundle\Model\OxaPersonalTranslatableInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\ChangeStateTrait;
 use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -26,7 +28,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 class PaymentMethod implements
     DefaultEntityInterface,
     CopyableEntityInterface,
-    TranslatableInterface,
+    OxaPersonalTranslatableInterface,
     ChangeStateInterface
 {
     use DefaultEntityTrait;
@@ -277,16 +279,6 @@ class PaymentMethod implements
     }
 
     /**
-     * Remove translation
-     *
-     * @param \Domain\BusinessBundle\Entity\Translation\PaymentMethodTranslation $translation
-     */
-    public function removeTranslation(\Domain\BusinessBundle\Entity\Translation\PaymentMethodTranslation $translation)
-    {
-        $this->translations->removeElement($translation);
-    }
-
-    /**
      * Set type
      *
      * @param string $type
@@ -377,5 +369,10 @@ class PaymentMethod implements
                 'type' => self::PAYMENT_METHOD_TYPE_ATH,
             ],
         ];
+    }
+
+    public function getTranslationClass(): string
+    {
+        return PaymentMethodTranslation::class;
     }
 }
