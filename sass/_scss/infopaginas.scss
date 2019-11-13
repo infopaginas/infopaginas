@@ -405,7 +405,7 @@ $side-padding-mb: 16px;
   flex-direction: row;
   font-size: 1em;
   text-align: center;
-  min-height: 40px;
+  height: $footer-height;
   background: $blue--dark;
   justify-content: space-around;
 
@@ -430,8 +430,7 @@ $side-padding-mb: 16px;
   }
 
   @media only screen and (max-width: 805px) {
-    font-size: 1em;
-    padding: 0 20px 0;
+    font-size: 13px;
   }
 
   @media only screen and (min-width: 1440px) {
@@ -1472,11 +1471,13 @@ $bps-border: 1px dotted #bcbcbc;
 }
 
 .main__container--centered {
+  min-height: calc(100vh - #{$bar-height-mobile-mb} - #{$footer-height});
 
   @media only screen and (min-width: 805px) {
     margin: 0 auto;
     max-width: 2000px;
     width: 100%;
+    min-height: calc(100vh - #{$bar-height-mb} - #{$footer-height});
   }
 }
 
@@ -3270,7 +3271,11 @@ a.tag {
   margin-top: 35px;
   margin-bottom: .5em;
   text-align: center;
-  text-transform: uppercase
+  text-transform: uppercase;
+
+  @media only screen and (min-width: 805px) {
+    margin-top: 85px;
+  }
 }
 
 
@@ -4751,6 +4756,7 @@ li.active {
 
     @media only screen and (min-width: 805px) {
       font-size: 2.4em;
+      margin-top: 55px;
     }
   }
 

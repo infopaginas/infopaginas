@@ -545,4 +545,23 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
         return $qb->getQuery()
             ->getResult();
     }
+
+    public function getSimilarBusinessesByPhones(array $phones, $id)
+    {
+        $qb = $this->createQueryBuilder('bp');
+
+        $qb
+            ->select('bp')
+            ->distinct()
+            ->join('bp.phones', 'phones')
+            ->where($qb->expr()->neq('bp.id', ':id'))
+            ->andWhere($qb->expr()->in('phones.phone', ':phones'))
+            ->setParameter('id', $id)
+            ->setParameter('phones', $phones)
+            ->setMaxResults(BusinessProfileAdmin::MAX_VALIDATION_RESULT)
+            ->orderBy('bp.id');
+
+        return $qb->getQuery()
+            ->getResult();
+    }
 }

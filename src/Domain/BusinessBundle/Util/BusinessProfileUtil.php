@@ -32,7 +32,7 @@ class BusinessProfileUtil
      */
     public static function extractEntitiesId(array $searchResults)
     {
-        $ids = array_map(function($entity) {
+        $ids = array_map(function ($entity) {
             return $entity->getId();
         }, $searchResults);
 
@@ -131,7 +131,7 @@ class BusinessProfileUtil
 
         $hasLink = false;
 
-        if ($businessProfile->getWebsite() and mb_strlen($seoDescription) < $descriptionMaxLength) {
+        if ($businessProfile->getWebsiteLink() and mb_strlen($seoDescription) < $descriptionMaxLength) {
             $seoDescription .= ' ' . $translator->trans(
                 'business_profile.seoDescription.link',
                 [

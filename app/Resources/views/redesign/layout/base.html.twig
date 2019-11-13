@@ -29,6 +29,8 @@
         <meta name="apple-mobile-web-app-status-bar-style" content="black">
         <meta name="apple-mobile-web-app-title" content="{% if seoData is defined and seoData.seoTitle %}{{ seoData.seoTitle }}{% else %}Infopáginas{% endif %}">
 
+        {% block metaData %}{% endblock %}
+
         {% block googleAnalyticsScript %}
             {% include ':widgets:google_analytics_script.html.twig' %}
         {% endblock %}
@@ -97,11 +99,7 @@
         {% block scripts %}
             <script src="{{ absolute_url(asset('assetic/app_common_js.js')) }}"></script>
 
-            {% if app.debug %}
-                <script src="{{ absolute_url(path('fos_js_routing_js', { callback: 'fos.Router.setData' })) }}"></script>
-            {% else %}
-                <script src="{{ absolute_url(asset('js/fos_js_routes.js')) }}"></script>
-            {% endif %}
+            {% include ':widgets:fos_js_routing.html.twig' %}
 
             <script type="text/javascript">
                 requirejs.config({

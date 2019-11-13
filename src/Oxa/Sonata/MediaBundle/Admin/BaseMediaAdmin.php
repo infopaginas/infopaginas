@@ -21,7 +21,7 @@ class BaseMediaAdmin extends OxaAdmin
      * @param string                            $code
      * @param string                            $class
      * @param string                            $baseControllerName
-     * @param \Sonata\MediaBundle\Provider\Pool $pool
+     * @param Pool $pool
      */
     public function __construct($code, $class, $baseControllerName, Pool $pool)
     {
@@ -84,32 +84,6 @@ class BaseMediaAdmin extends OxaAdmin
     /**
      * {@inheritdoc}
      */
-    public function getPersistentParameters()
-    {
-        if (!$this->hasRequest()) {
-            return array();
-        }
-
-        $context   = $this->getRequest()->get('context', $this->pool->getDefaultContext());
-        $providers = $this->pool->getProvidersByContext($context);
-        $provider  = $this->getRequest()->get('provider');
-
-        // if the context has only one provider, set it into the request
-        // so the intermediate provider selection is skipped
-        if (count($providers) == 1 && null === $provider) {
-            $provider = array_shift($providers)->getName();
-            $this->getRequest()->query->set('provider', $provider);
-        }
-
-        return array(
-            'provider' => $provider,
-            'context'  => $context,
-        );
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function getNewInstance()
     {
         $media = parent::getNewInstance();
@@ -123,7 +97,7 @@ class BaseMediaAdmin extends OxaAdmin
     }
 
     /**
-     * @return null|\Sonata\MediaBundle\Provider\Pool
+     * @return null|Pool
      */
     public function getPool()
     {
@@ -131,7 +105,7 @@ class BaseMediaAdmin extends OxaAdmin
     }
 
     /**
-     * @param \Sonata\AdminBundle\Datagrid\DatagridMapper $datagridMapper
+     * @param DatagridMapper $datagridMapper
      */
     protected function configureDatagridFilters(DatagridMapper $datagridMapper)
     {

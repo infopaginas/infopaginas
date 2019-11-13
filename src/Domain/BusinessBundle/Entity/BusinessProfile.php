@@ -5,6 +5,7 @@ namespace Domain\BusinessBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\OneToMany;
 use Domain\BusinessBundle\DBAL\Types\TaskStatusType;
 use Domain\BusinessBundle\DBAL\Types\TaskType;
 use Domain\BusinessBundle\Entity\Address\Country;
@@ -288,31 +289,12 @@ class BusinessProfile implements
 
     /**
      * Related to BUSINESS_PROFILE_URL_MAX_LENGTH
-     * @var string - Website
-     *
-     * @ORM\Column(name="website", type="string", length=1000, nullable=true)
-     * @Assert\Url()
-     * @Assert\Length(max=1000, maxMessage="business_profile.max_length")
-     */
-    protected $website;
-
-    /**
-     * Related to BUSINESS_PROFILE_URL_MAX_LENGTH
      * @var Url - Website
      *
      * @ORM\Column(name="websiteItem", type="urlType", length=1000, nullable=true)
      * @Assert\Valid()
      */
     protected $websiteItem;
-
-    /**
-     * @var string - action url
-     *
-     * @ORM\Column(name="action_url", type="string", length=1000, nullable=true)
-     * @Assert\Url()
-     * @Assert\Length(max=1000, maxMessage="business_profile.max_length")
-     */
-    protected $actionUrl;
 
     /**
      * @var Url|null
@@ -611,28 +593,12 @@ class BusinessProfile implements
     protected $hideMap = false;
 
     /**
-     * Related to BUSINESS_PROFILE_URL_MAX_LENGTH
-     * @ORM\Column(name="linkedin_url", type="string", nullable=true, length=1000)
-     * @Assert\Length(max=1000, maxMessage="business_profile.max_length")
-     * @Assert\Url()
-     */
-    protected $linkedInURL;
-
-    /**
      * @var Url|null
      *
      * @ORM\Column(name="linkedin_url_item", type="urlType", length=1000, nullable=true)
      * @Assert\Valid()
      */
     protected $linkedInURLItem;
-
-    /**
-     * Related to BUSINESS_PROFILE_URL_MAX_LENGTH
-     * @ORM\Column(name="twitter_url", type="string", nullable=true, length=1000)
-     * @Assert\Length(max=1000, maxMessage="business_profile.max_length")
-     * @Assert\Url()
-     */
-    protected $twitterURL;
 
     /**
      * @var Url|null
@@ -643,28 +609,12 @@ class BusinessProfile implements
     protected $twitterURLItem;
 
     /**
-     * Related to BUSINESS_PROFILE_URL_MAX_LENGTH
-     * @ORM\Column(name="facebook_url", type="string", nullable=true, length=1000)
-     * @Assert\Length(max=1000, maxMessage="business_profile.max_length")
-     * @Assert\Url()
-     */
-    protected $facebookURL;
-
-    /**
      * @var Url|null
      *
      * @ORM\Column(name="facebook_url_item", type="urlType", length=1000, nullable=true)
      * @Assert\Valid()
      */
     protected $facebookURLItem;
-
-    /**
-     * Related to BUSINESS_PROFILE_URL_MAX_LENGTH
-     * @ORM\Column(name="google_url", type="string", nullable=true, length=1000)
-     * @Assert\Length(max=1000, maxMessage="business_profile.max_length")
-     * @Assert\Url()
-     */
-    protected $googleURL;
 
     /**
      * @var Url|null
@@ -675,14 +625,6 @@ class BusinessProfile implements
     protected $googleURLItem;
 
     /**
-     * Related to BUSINESS_PROFILE_URL_MAX_LENGTH
-     * @ORM\Column(name="youtube_url", type="string", nullable=true, length=1000)
-     * @Assert\Length(max=1000, maxMessage="business_profile.max_length")
-     * @Assert\Url()
-     */
-    protected $youtubeURL;
-
-    /**
      * @var Url|null
      *
      * @ORM\Column(name="youtube_url_item", type="urlType", length=1000, nullable=true)
@@ -691,28 +633,12 @@ class BusinessProfile implements
     protected $youtubeURLItem;
 
     /**
-     * Related to BUSINESS_PROFILE_FIELD_INSTAGRAM_URL_TYPE
-     * @ORM\Column(name="instagram_url", type="string", nullable=true, length=1000)
-     * @Assert\Length(max=1000, maxMessage="business_profile.max_length")
-     * @Assert\Url()
-     */
-    protected $instagramURL;
-
-    /**
      * @var Url|null
      *
      * @ORM\Column(name="instagram_url_item", type="urlType", length=1000, nullable=true)
      * @Assert\Valid()
      */
     protected $instagramURLItem;
-
-    /**
-     * Related to BUSINESS_PROFILE_FIELD_TRIP_ADVISOR_URL_TYPE
-     * @ORM\Column(name="trip_advisor_url", type="string", nullable=true, length=1000)
-     * @Assert\Length(max=1000, maxMessage="business_profile.max_length")
-     * @Assert\Url()
-     */
-    protected $tripAdvisorURL;
 
     /**
      * @var Url|null
@@ -995,8 +921,33 @@ class BusinessProfile implements
      */
     protected $csvImportFile;
 
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="enable_not_unique_phone", type="boolean", options={"default" : 0}, nullable=true)
+     */
+    protected $enableNotUniquePhone;
+
     /* @var string */
     private $statusForUser;
+
+    /**
+     * @return bool
+     */
+    public function isEnableNotUniquePhone()
+    {
+        return $this->enableNotUniquePhone;
+    }
+
+    /**
+     * @param bool $enableNotUniquePhone
+     * @return BusinessProfile
+     */
+    public function setEnableNotUniquePhone($enableNotUniquePhone)
+    {
+        $this->enableNotUniquePhone = $enableNotUniquePhone;
+        return $this;
+    }
 
     /**
      * @return mixed
@@ -1158,6 +1109,18 @@ class BusinessProfile implements
     protected $panoramaId;
 
     /**
+     * @OneToMany(targetEntity="Domain\BusinessBundle\Entity\BusinessProfile", mappedBy="businessToRedirect")
+     */
+    protected $redirectedBusinesses;
+
+    /**
+     * @var BusinessProfile $businessToRedirect
+     * @ORM\ManyToOne(targetEntity="Domain\BusinessBundle\Entity\BusinessProfile", inversedBy="redirectedBusinesses")
+     * @ORM\JoinColumn(name="business_to_redirect", referencedColumnName="id", nullable=true)
+     */
+    protected $businessToRedirect;
+
+    /**
      * @var string - keyword
      *
      * @ORM\Column(name="keyword_text", type="text", length=1000, nullable=true)
@@ -1191,6 +1154,7 @@ class BusinessProfile implements
         $this->aliases                  = new ArrayCollection();
         $this->tasks                    = new ArrayCollection();
         $this->mediaUrls                = new ArrayCollection();
+        $this->redirectedBusinesses     = new ArrayCollection();
 
         $this->isClosed  = false;
         $this->isUpdated = true;
@@ -1272,30 +1236,6 @@ class BusinessProfile implements
     public function getNameEs()
     {
         return $this->nameEs;
-    }
-
-    /**
-     * Set website
-     *
-     * @param string $website
-     *
-     * @return BusinessProfile
-     */
-    public function setWebsite($website)
-    {
-        $this->website = $website;
-
-        return $this;
-    }
-
-    /**
-     * Get website
-     *
-     * @return string
-     */
-    public function getWebsite()
-    {
-        return $this->website;
     }
 
     /**
@@ -1672,6 +1612,46 @@ class BusinessProfile implements
     public function removeCategory(\Domain\BusinessBundle\Entity\Category $category)
     {
         $this->categories->removeElement($category);
+    }
+
+    /**
+     * @param BusinessProfile $businessProfile
+     *
+     * @return $this
+     */
+    public function addRedirectedBusinesses(BusinessProfile $businessProfile)
+    {
+        $this->redirectedBusinesses->add($businessProfile);
+
+        return $this;
+    }
+
+    /**
+     * @param BusinessProfile $businessProfile
+     */
+    public function removeRedirectedBusinesses(BusinessProfile $businessProfile)
+    {
+        $this->redirectedBusinesses->removeElement($businessProfile);
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getRedirectedBusinesses()
+    {
+        return $this->redirectedBusinesses;
+    }
+
+    public function getBusinessToRedirect()
+    {
+        return $this->businessToRedirect;
+    }
+
+    public function setBusinessToRedirect($businessProfile)
+    {
+        $this->businessToRedirect = $businessProfile;
+
+        return $this;
     }
 
     /**
@@ -2299,25 +2279,6 @@ class BusinessProfile implements
     }
 
     /**
-     * @return mixed
-     */
-    public function getLinkedInURL()
-    {
-        return $this->linkedInURL;
-    }
-
-    /**
-     * @param mixed $linkedInURL
-     * @return BusinessProfile
-     */
-    public function setLinkedInURL($linkedInURL)
-    {
-        $this->linkedInURL = $linkedInURL;
-
-        return $this;
-    }
-
-    /**
      * @return Url|null
      */
     public function getLinkedInURLItem()
@@ -2332,24 +2293,6 @@ class BusinessProfile implements
     public function setLinkedInURLItem($linkedInURLItem)
     {
         $this->linkedInURLItem = $linkedInURLItem;
-        return $this;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getTwitterURL()
-    {
-        return $this->twitterURL;
-    }
-
-    /**
-     * @param mixed $twitterURL
-     * @return BusinessProfile
-     */
-    public function setTwitterURL($twitterURL)
-    {
-        $this->twitterURL = $twitterURL;
         return $this;
     }
 
@@ -2373,24 +2316,6 @@ class BusinessProfile implements
     }
 
     /**
-     * @return mixed
-     */
-    public function getFacebookURL()
-    {
-        return $this->facebookURL;
-    }
-
-    /**
-     * @param mixed $facebookURL
-     * @return BusinessProfile
-     */
-    public function setFacebookURL($facebookURL)
-    {
-        $this->facebookURL = $facebookURL;
-        return $this;
-    }
-
-    /**
      * @return Url|null
      */
     public function getFacebookURLItem()
@@ -2404,24 +2329,6 @@ class BusinessProfile implements
     public function setFacebookURLItem($facebookURLItem)
     {
         $this->facebookURLItem = $facebookURLItem;
-        return $this;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getGoogleURL()
-    {
-        return $this->googleURL;
-    }
-
-    /**
-     * @param mixed $googleURL
-     * @return BusinessProfile
-     */
-    public function setGoogleURL($googleURL)
-    {
-        $this->googleURL = $googleURL;
         return $this;
     }
 
@@ -2502,24 +2409,6 @@ class BusinessProfile implements
     }
 
     /**
-     * @return mixed
-     */
-    public function getYoutubeURL()
-    {
-        return $this->youtubeURL;
-    }
-
-    /**
-     * @param mixed $youtubeURL
-     * @return User
-     */
-    public function setYoutubeURL($youtubeURL)
-    {
-        $this->youtubeURL = $youtubeURL;
-        return $this;
-    }
-
-    /**
      * @return Url|null
      */
     public function getYoutubeURLItem()
@@ -2538,26 +2427,6 @@ class BusinessProfile implements
     }
 
     /**
-     * @return mixed
-     */
-    public function getInstagramURL()
-    {
-        return $this->instagramURL;
-    }
-
-    /**
-     * @param mixed $instagramURL
-     *
-     * @return User
-     */
-    public function setInstagramURL($instagramURL)
-    {
-        $this->instagramURL = $instagramURL;
-
-        return $this;
-    }
-
-    /**
      * @return Url|null
      */
     public function getInstagramURLItem()
@@ -2572,26 +2441,6 @@ class BusinessProfile implements
     public function setInstagramURLItem($instagramURLItem)
     {
         $this->instagramURLItem = $instagramURLItem;
-        return $this;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getTripAdvisorURL()
-    {
-        return $this->tripAdvisorURL;
-    }
-
-    /**
-     * @param mixed $tripAdvisorURL
-     *
-     * @return User
-     */
-    public function setTripAdvisorURL($tripAdvisorURL)
-    {
-        $this->tripAdvisorURL = $tripAdvisorURL;
-
         return $this;
     }
 
@@ -2689,6 +2538,17 @@ class BusinessProfile implements
     public function getPhones()
     {
         return $this->phones;
+    }
+
+    public function getPhonesJSON()
+    {
+        $phones = $this->phones->toArray();
+
+        $phones = array_map(function ($phone) {
+            return $phone->getPhone();
+        }, $phones);
+
+        return json_encode($phones);
     }
 
     /**
@@ -3228,26 +3088,6 @@ class BusinessProfile implements
             self::ACTION_URL_TYPE_ORDER => 'business_profile.action_type.order',
             self::ACTION_URL_TYPE_BOOK  => 'business_profile.action_type.book',
         ];
-    }
-
-    /**
-     * @param string $actionUrl
-     *
-     * @return BusinessProfile
-     */
-    public function setActionUrl($actionUrl)
-    {
-        $this->actionUrl = $actionUrl;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getActionUrl()
-    {
-        return $this->actionUrl;
     }
 
     /**

@@ -9,6 +9,7 @@ use Domain\BusinessBundle\Entity\Category;
 use Domain\BusinessBundle\Entity\Media\BusinessGallery;
 use Domain\BusinessBundle\Entity\Subscription;
 use Domain\BusinessBundle\Entity\SubscriptionPlan;
+use Domain\BusinessBundle\Form\Handler\BusinessFormHandlerInterface;
 use Domain\BusinessBundle\Form\Type\BusinessGalleryAdminType;
 use Domain\BusinessBundle\Form\Type\CustomUrlType;
 use Domain\BusinessBundle\Model\StatusInterface;
@@ -38,6 +39,7 @@ use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\UrlType;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Validator\Constraints\Length;
@@ -54,11 +56,12 @@ class BusinessProfileAdmin extends OxaAdmin
     const DATE_PICKER_REPORT_FORMAT = 'YYYY-MM-DD';
     const SONATA_FILTER_DATE_FORMAT = 'd-m-Y H:i:s';
 
-    CONST FILTER_IMPRESSIONS = 'impressions';
-    CONST FILTER_DIRECTIONS  = 'directions';
-    CONST FILTER_CALL_MOBILE = 'callsMobile';
+    const FILTER_IMPRESSIONS = 'impressions';
+    const FILTER_DIRECTIONS  = 'directions';
+    const FILTER_CALL_MOBILE = 'callsMobile';
 
     const MAX_VALIDATION_RESULT = 5;
+    const DEFAULT_VALIDATION_GROUPS = ['Default', 'Admin'];
 
     /**
      * @var bool
@@ -79,7 +82,7 @@ class BusinessProfileAdmin extends OxaAdmin
      * @var array
      */
     protected $formOptions = [
-        'validation_groups' => ['Default', 'Admin']
+        'validation_groups' => self::DEFAULT_VALIDATION_GROUPS,
     ];
 
     public $imageHelpMessage = 'imageHelpMessage';
@@ -137,6 +140,20 @@ class BusinessProfileAdmin extends OxaAdmin
         }
 
         return $list;
+    }
+
+    public function getFormBuilder()
+    {
+        $this->formOptions['validation_groups'] = function (FormInterface $form) {
+            $validationGroups = BusinessProfileAdmin::DEFAULT_VALIDATION_GROUPS;
+            if (!$form->getData()->isEnableNotUniquePhone()) {
+                $validationGroups[] = BusinessFormHandlerInterface::UNIQUE_PHONE_VALIDATION_GROUP;
+            }
+
+            return $validationGroups;
+        };
+
+        return parent::getFormBuilder();
     }
 
     /**
@@ -419,6 +436,24 @@ class BusinessProfileAdmin extends OxaAdmin
             $formMapper->tab('Main')->with('Keywords')->end()->end();
         }
 
+        if ($businessProfile->getId() and $subscriptionPlanCode == SubscriptionPlanInterface::CODE_FREE) {
+            $formMapper
+                ->tab('Main')
+                    ->with('Main')
+                        ->add('businessToRedirect', 'sonata_type_model_list', [
+                            'required'   => false,
+                            'btn_delete' => 'delete',
+                            'btn_add'    => false,
+                        ], [
+                            'link_parameters' => [
+                                'onlyPaidProfiles'  => true,
+                            ]
+                        ])
+                    ->end()
+                ->end()
+            ;
+        }
+
         // Main tab
         // Subscription Block
         $formMapper
@@ -551,6 +586,16 @@ class BusinessProfileAdmin extends OxaAdmin
                 ->end()
             ->end()
         ;
+
+        if ($this->isGranted('ROLE_SUPER_ADMIN')) {
+            $formMapper
+                ->tab('Main')
+                    ->with('Main')
+                        ->add('enableNotUniquePhone')
+                    ->end()
+                ->end()
+            ;
+        }
 
         // Payment Method Block
         $formMapper
@@ -1068,7 +1113,7 @@ class BusinessProfileAdmin extends OxaAdmin
                     ->add('name')
                     ->add('slogan')
                     ->add('description', null, [
-                        'template' => 'DomainBusinessBundle:Admin:BusinessProfile/show_description.html.twig',
+                        'template' => 'DomainBusinessBundle:Admin:BusinessProfile/show_purified_value.html.twig',
                     ])
                     ->add('product')
                     ->add('brands')
@@ -1332,14 +1377,17 @@ class BusinessProfileAdmin extends OxaAdmin
                             'data'      => KeywordsReportManager::DEFAULT_KEYWORDS_COUNT,
                         ])
                     ->end()
-                    ->with('Preview')
-                        ->add('views', null, [
-                            'label'     => 'Views',
-                            'eventType'     => BusinessOverviewModel::TYPE_CODE_IMPRESSION,
-                            'template' => 'DomainBusinessBundle:Admin:BusinessProfile/report_data.html.twig',
+                    ->with('Summary')
+                        ->add('', null, [
+                            'template' => 'DomainBusinessBundle:Admin:BusinessProfile/report_summary.html.twig',
                         ])
                         ->add('impressions', null, [
                             'label'     => 'Impressions',
+                            'eventType'     => BusinessOverviewModel::TYPE_CODE_IMPRESSION,
+                            'template' => 'DomainBusinessBundle:Admin:BusinessProfile/report_data.html.twig',
+                        ])
+                        ->add('views', null, [
+                            'label'     => 'Views',
                             'eventType'     => BusinessOverviewModel::TYPE_CODE_VIEW,
                             'template' => 'DomainBusinessBundle:Admin:BusinessProfile/report_data.html.twig',
                         ])
@@ -1415,7 +1463,8 @@ class BusinessProfileAdmin extends OxaAdmin
     /**
      * @param ErrorElement $errorElement
      * @param mixed $object
-     * @return null
+     *
+     * @throws \Exception
      */
     public function validate(ErrorElement $errorElement, $object)
     {
@@ -1477,17 +1526,6 @@ class BusinessProfileAdmin extends OxaAdmin
                 ;
             }
         }
-
-        if ($object->getSubscriptionPlanCode() > SubscriptionPlanInterface::CODE_PRIORITY && !$object->getLogo()) {
-            $errorElement->with('logo')
-                ->addViolation($this->getTranslator()->trans(
-                    'form.business.logo_required',
-                    [],
-                    $this->getTranslationDomain()
-                ))
-                ->end()
-            ;
-        }
     }
 
     /**
@@ -1504,19 +1542,27 @@ class BusinessProfileAdmin extends OxaAdmin
         $parameters = $this->getFilterParameters();
 
         // search by active subscription of chosen subscriptionPlan
-        if (isset($parameters['subscriptions__subscriptionPlan']) &&
-            !empty($parameters['subscriptions__subscriptionPlan']['value'])
+        if ((isset($parameters['subscriptions__subscriptionPlan']) &&
+             !empty($parameters['subscriptions__subscriptionPlan']['value'])) ||
+            $this->getRequest()->get('onlyPaidProfiles')
         ) {
-            $subscriptionPlanId = $parameters['subscriptions__subscriptionPlan']['value'];
-
             $query->leftJoin($query->getRootAliases()[0] . '.subscriptions', 's');
             $query->leftJoin('s.subscriptionPlan', 'sp');
-
-            $query->andWhere('sp.id = :subscriptionPlanId');
             $query->andWhere('s.status = :subscriptionStatus');
-
-            $query->setParameter('subscriptionPlanId', $subscriptionPlanId);
             $query->setParameter('subscriptionStatus', StatusInterface::STATUS_ACTIVE);
+
+            if ($this->getRequest()->get('onlyPaidProfiles')) {
+                $query->andWhere('sp.code > :subscriptionPlanCode');
+                $query->setParameter('subscriptionPlanCode', SubscriptionPlanInterface::CODE_FREE);
+            }
+            if ((isset($parameters['subscriptions__subscriptionPlan']) &&
+                 !empty($parameters['subscriptions__subscriptionPlan']['value']))
+            ) {
+                $query->andWhere('sp.id = :subscriptionPlanId');
+
+                $subscriptionPlanId = $parameters['subscriptions__subscriptionPlan']['value'];
+                $query->setParameter('subscriptionPlanId', $subscriptionPlanId);
+            }
         }
 
         return $query;

@@ -98,8 +98,18 @@ class SubscriptionAdmin extends OxaAdmin
                 ->add('subscriptionPlan')
             ->end()
             ->with('Period')
-                ->add('startDate', 'sonata_type_datetime_picker', ['format' => self::FORM_DATETIME_FORMAT])
-                ->add('endDate', 'sonata_type_datetime_picker', ['format' => self::FORM_DATETIME_FORMAT])
+                ->add('startDate', 'sonata_type_datetime_picker', [
+                    'format' => self::FORM_DATETIME_FORMAT,
+                    'attr' => [
+                        'class' => 'start-date',
+                    ],
+                ])
+                ->add('endDate', 'sonata_type_datetime_picker', [
+                    'format' => self::FORM_DATETIME_FORMAT,
+                    'attr' => [
+                        'class' => 'end-date',
+                    ],
+                ])
             ->end()
             ->with('Status')
                 ->add('createdAt', 'sonata_type_datetime_picker', $systemDatetimeOptions)

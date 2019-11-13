@@ -7,9 +7,9 @@
         <div class="featured-categories clearfix">
             {% for item in shortCutItems %}
                 <div class="featured-categories__list">
-                    <h3>
-                        {{ item.title }}
-                    </h3>
+                    <a href="{{ absolute_url(path('domain_search_catalog', { 'localitySlug': item.localitySlug } )) }}">
+                        <h3>{{ item.title }}</h3>
+                    </a>
                     <ul>
                         {% for searchItem in item.data %}
                             <li class="cat-list__item">

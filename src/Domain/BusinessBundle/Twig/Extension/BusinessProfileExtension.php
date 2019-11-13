@@ -2,10 +2,14 @@
 
 namespace Domain\BusinessBundle\Twig\Extension;
 
+use Domain\BusinessBundle\DBAL\Types\TaskType;
 use Domain\BusinessBundle\DBAL\Types\UrlType;
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\BusinessProfilePhone;
 use Domain\BusinessBundle\Entity\BusinessProfileWorkingHour;
+use Domain\BusinessBundle\Entity\ChangeSet;
+use Domain\BusinessBundle\Entity\ChangeSetEntry;
+use Domain\BusinessBundle\Entity\Task;
 use Domain\BusinessBundle\Manager\BusinessProfileManager;
 use Domain\BusinessBundle\Model\DayOfWeekModel;
 use Domain\BusinessBundle\Model\SubscriptionPlanInterface;
@@ -161,6 +165,14 @@ class BusinessProfileExtension extends \Twig_Extension
             'get_business_gallery_media' => new \Twig_Function_Method(
                 $this,
                 'getBusinessGalleryMedia'
+            ),
+            'get_business_profile_phones_json' => new \Twig_Function_Method(
+                $this,
+                'getBusinessProfilePhonesJson'
+            ),
+            'get_business_profile_markers' => new \Twig_Function_Method(
+                $this,
+                'getBusinessProfileMarkers'
             ),
         ];
     }
@@ -636,6 +648,63 @@ class BusinessProfileExtension extends \Twig_Extension
         }
 
         return json_encode($categoriesData);
+    }
+
+    /**
+     * @param string $changeSetEntryValue
+     *
+     * @return false|string
+     */
+    public function getBusinessProfilePhonesJson(string $changeSetEntryValue)
+    {
+        if (!$this->isJson($changeSetEntryValue)) {
+            return $changeSetEntryValue;
+        }
+
+        $data = [];
+        foreach (json_decode($changeSetEntryValue) as $phone) {
+            $data[] = json_decode($phone->value)->value;
+        }
+
+        return json_encode($data);
+    }
+
+    public function getBusinessProfileMarkers(Task $task)
+    {
+        $bp = $task->getBusinessProfile();
+
+        if ($task->getType() == TaskType::TASK_PROFILE_UPDATE) {
+            /** @var ChangeSet $changeSet */
+            $changeSet = $task->getChangeSet();
+            $changeSetEntries = $changeSet->getEntries();
+
+            /** @var ChangeSetEntry $entry */
+            foreach ($changeSetEntries as $entry) {
+                switch ($entry->getFieldName()) {
+                    case BusinessProfile::BUSINESS_PROFILE_FIELD_LONGITUDE:
+                        $oldLongitude = $entry->getNewValue();
+                        break;
+                    case BusinessProfile::BUSINESS_PROFILE_FIELD_LATITUDE:
+                        $oldLatitude = $entry->getNewValue();
+                        break;
+                }
+            }
+
+            if (!empty($oldLongitude) || !empty($oldLatitude)) {
+                $markers[] = [
+                    'name'      => $bp->getName(),
+                    'latitude'  => $oldLatitude ?? $bp->getLatitude(),
+                    'longitude' => $oldLongitude ?? $bp->getLongitude(),
+                ];
+            }
+        }
+        $markers[] = [
+            'name'      => $bp->getName(),
+            'latitude'  => $bp->getLatitude(),
+            'longitude' => $bp->getLongitude(),
+        ];
+
+        return json_encode($markers);
     }
 
     /**

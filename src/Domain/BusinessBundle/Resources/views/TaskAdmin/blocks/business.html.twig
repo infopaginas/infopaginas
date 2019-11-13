@@ -23,7 +23,13 @@
                 {% endfor %}
             </td>
         </tr>
-        <tr class="sonata-ba-view-container">
+        <tr class="sonata-ba-view-container"
+            {% if (object.type == TASK.PROFILE_CREATE) %}
+                id="phones"
+                data-bp-id="{{ business.getId() }}"
+                data-phones="{{ business.getPhonesJSON() }}"
+            {% endif %}
+        >
             <td>{{ admin.trans('Phone') }}</td>
             <td>
                 {% for phone in business.getPhones() %}
@@ -82,6 +88,17 @@
                 {% for paymentMethod in business.getPaymentMethods() %}
                     {{ paymentMethod }}{% if not loop.last %},{% endif %}
                 {% endfor %}
+            </td>
+        </tr>
+        <tr class="sonata-ba-view-container">
+            <td>{{ admin.trans('mapbox location') }}</td>
+            <td>
+                <section class="page-section profile-map">
+                    <div id="map" class="business-map">
+                        {% include ':redesign/blocks/mapbox:mapLogo.html.twig' %}
+                    </div>
+                    <span id="map-markers" hidden data-mapbox-markers="{{ get_business_profile_markers(admin.subject) }}"></span>
+                </section>
             </td>
         </tr>
         {% if (object.type == constant('Domain\\BusinessBundle\\DBAL\\Types\\TaskType::TASK_PROFILE_CLOSE')) %}

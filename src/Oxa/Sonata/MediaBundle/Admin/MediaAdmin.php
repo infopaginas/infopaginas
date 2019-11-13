@@ -18,7 +18,7 @@ use Symfony\Component\Validator\Constraints\Url;
  */
 class MediaAdmin extends BaseMediaAdmin
 {
-    public $showFilters = false;
+    public $showFilters = true;
 
     /**
      * @var bool
@@ -56,33 +56,28 @@ class MediaAdmin extends BaseMediaAdmin
      */
     protected function configureDatagridFilters(DatagridMapper $datagridMapper)
     {
-        $context = $this->getPersistentParameter('context');
+        $contexts = $this->getPool()->getContexts();
+        $contextsChoices = [];
+
+        foreach ($contexts as $name => $context) {
+            $contextsChoices[$name] = $this->trans($name, [], 'SonataMediaBundle');
+        }
+
         $datagridMapper->add(
             'context',
             'doctrine_orm_choice',
             [
                 'field_options' => [
-                    'choices' => [
-                        $context => $this->trans($context, [], 'SonataMediaBundle'),
-                    ],
+                    'choices' => $contextsChoices,
                 ],
                 'field_type' => 'choice',
             ]
         );
 
-        $provider = $this->getPersistentParameter('provider');
-        $datagridMapper->add(
-            'providerName',
-            'doctrine_orm_choice',
-            [
-                'field_options' => [
-                    'choices' => [
-                        $provider => $this->trans($provider, [], 'SonataMediaBundle'),
-                    ],
-                ],
-                'field_type' => 'choice',
-            ]
-        );
+        $datagridMapper
+            ->add('name')
+            ->add('createdAt', 'doctrine_orm_datetime_range', $this->defaultDatagridDatetimeTypeOptions)
+        ;
     }
 
     /**
@@ -92,6 +87,7 @@ class MediaAdmin extends BaseMediaAdmin
     {
         $listMapper
             ->add('name', null, ['template' => 'OxaSonataMediaBundle:MediaAdmin:list_image.html.twig'])
+            ->add('createdAt')
         ;
 
         $parentCode = $this->getRequest()->get('pcode');

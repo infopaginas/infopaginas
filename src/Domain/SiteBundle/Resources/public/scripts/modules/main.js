@@ -353,6 +353,10 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
             }
         });
 
+        $( document ).on( 'mapScriptRequestedIfVisible', function() {
+            triggerMapRequestedIfVisible();
+        });
+
         $('.form input, .form textarea').each(function() {
             var $this;
             $this = $(this);
@@ -652,9 +656,7 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
     if ( hasMap ) {
         triggerMapRequestedIfVisible();
 
-        $( window ).scroll(function() {
-            triggerMapRequestedIfVisible();
-        });
+        $( window ).scroll(triggerMapRequestedIfVisible);
     }
 
     var comparisonListToggle = $('#comparison-list-toggle');
@@ -821,6 +823,9 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
     function triggerMapRequestedIfVisible() {
         if ( isScrolledIntoView( mapContainer ) ) {
             triggerMapRequested();
+            if ( typeof mapScriptInit !== 'undefined' && mapScriptInit === true ) {
+                $( window ).unbind( 'scroll', triggerMapRequestedIfVisible );
+            }
         }
     }
 

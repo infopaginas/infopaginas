@@ -80,7 +80,13 @@
                     <td>{{ get_business_profile_many_to_one_relations_changes_string(row.newValue) }}</td>
                 </tr>
             {% elseif row.action == CHANGE_SET_TYPE.RELATION_ONE_TO_MANY %}
-                <tr class="sonata-ba-view-container">
+                    <tr class="sonata-ba-view-container"
+                    {% if row.fieldName == BUSINESS_PROFILE_FIELD.PHONES %}
+                        id="phones"
+                        data-bp-id="{{ business.getId() }}"
+                        data-phones="{{ get_business_profile_phones_json(row.newValue) }}"
+                    {% endif %}
+                >
                     <td>{{ normalize_task_fieldname_label(row.fieldName)|trans }}</td>
                     <td>{{ normalize_task_changeaction_label(row.action) }}</td>
                     <td>{{ get_business_profile_related_entity_changes_html(row.oldValue) }}</td>

@@ -53,14 +53,6 @@ class ClickbaitTitle implements DefaultEntityInterface, TranslatableInterface, C
     protected $title;
 
     /**
-     * @ORM\Column(name="url", type="string", nullable=true, length=1000)
-     * @Assert\Length(max=1000, maxMessage="business_profile.max_length")
-     * @Assert\Url()
-     * @Assert\NotBlank()
-     */
-    protected $url;
-
-    /**
      * @var Url|null
      *
      * @ORM\Column(name="url_item", type="urlType", length=1000, nullable=true)
@@ -128,25 +120,6 @@ class ClickbaitTitle implements DefaultEntityInterface, TranslatableInterface, C
     public function setTitle($title)
     {
         $this->title = $title;
-
-        return $this;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getUrl()
-    {
-        return $this->url;
-    }
-
-    /**
-     * @param mixed $url
-     * @return ClickbaitTitle
-     */
-    public function setUrl($url)
-    {
-        $this->url = $url;
 
         return $this;
     }

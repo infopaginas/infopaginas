@@ -14,4 +14,6 @@ interface BusinessFormHandlerInterface
     const MESSAGE_EMERGENCY_BUSINESS_CREATED = 'emergency.business_draft.message.created';
 
     const MESSAGE_BUSINESS_PROFILE_FLASH_GROUP = 'success';
+
+    const UNIQUE_PHONE_VALIDATION_GROUP = 'UniquePhone';
 }

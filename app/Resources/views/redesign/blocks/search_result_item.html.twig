@@ -1,3 +1,5 @@
+{% from 'widgets/picture_macros.html.twig' import picture %}
+
 {% set hasVideo = video_section_allowed_for_business(item) and item.getVideo() is not null %}
 {% set hasImages = item.logo or item.background or item.images|length > 0 and hasSubscription(item, "CODE_PREMIUM_PLUS") %}
 {% set itemSubscriptionClass = getItemSubscriptionClass(item) %}
@@ -7,7 +9,7 @@
         <div class="item__img">
             {% if (hasSubscription(item, "CODE_PREMIUM_PLUS") and item.getLogo()) %}
                 <a href="{{ absolute_url(path('domain_business_profile_view', { 'citySlug' : item.citySlug, 'slug' : item.slug })) }}" title="{% trans %}Go to information page{% endtrans %}" data-bw-gtm-event-click data-bw-gtm-label="item-image::{{ item.name }}::{{ absolute_url(path('domain_business_profile_view', { 'citySlug' : item.citySlug, 'slug' : item.slug })) }}">
-                    <img width="80" data-src="{% path item.getLogo(), 'preview' %}" alt="{{ item.name }}" class="lazyload">
+                    {{ picture(item.getLogo(), 'preview', true, item.name()) }}
                 </a>
             {% endif %}
         </div>

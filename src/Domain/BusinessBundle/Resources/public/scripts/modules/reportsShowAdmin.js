@@ -153,7 +153,7 @@ $( document ).ready( function() {
                     loadBusinessOverviewChart( chartBlock, response.dates, response.chart, response.chartTitle );
 
                     if ( data.chartType === chartType.impressions  ) {
-                        chartBlock.parent().find( html.containers.statBlock ).html( response.stats );
+                        $( html.containers.statBlock ).first().html( response.stats );
                     }
                 }
             },

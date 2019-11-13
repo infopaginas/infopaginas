@@ -113,3 +113,7 @@ interaction_report:
 
 validation_warnings:
   business_name: 'This business profile may already exist.'
+  business_phones: 'These phones are already in use.'
+  phone:
+    not_unique: Phone is not unique. Continue?
+    check_not_complete: Phones check is not complete. Continue?

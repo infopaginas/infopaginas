@@ -1,10 +1,11 @@
 {% extends 'SonataAdminBundle:CRUD:base_show_field.html.twig' %}
+{% from 'widgets/picture_macros.html.twig' import picture %}
 
 {% block field %}
     <ul class="sonata-ba-show-one-to-many">
         {% for element in value %}
             <li>
-                <img src="{% path element.media, 'preview' %}" alt="{{ element.description }}">
+                {{ picture(element.media, 'preview', false, element.description) }}
             </li>
         {% endfor %}
     </ul>

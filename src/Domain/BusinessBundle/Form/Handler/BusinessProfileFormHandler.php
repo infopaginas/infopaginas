@@ -62,10 +62,14 @@ class BusinessProfileFormHandler extends BaseFormHandler implements BusinessForm
     /** @var Translator $translator */
     protected $translator;
 
+    /** @var ContainerInterface $container */
+    protected $container;
+
     /**
      * FreeBusinessProfileFormHandler constructor.
      * @param FormInterface $form
      * @param Request $request
+     * @param ContainerInterface $container
      */
     public function __construct(
         FormInterface $form,
@@ -113,6 +117,10 @@ class BusinessProfileFormHandler extends BaseFormHandler implements BusinessForm
             $this->businessProfileNew = $this->form->getData();
             $this->businessProfileNew->setLocale(LocaleHelper::DEFAULT_LOCALE);
 
+            if (!$this->businessProfileOld->isEnableNotUniquePhone()) {
+                $this->validateNewPhones();
+            }
+
             $serviceAreasType = $this->businessProfileNew->getServiceAreasType();
 
             if ($serviceAreasType === BusinessProfile::SERVICE_AREAS_LOCALITY_CHOICE_VALUE) {
@@ -138,6 +146,25 @@ class BusinessProfileFormHandler extends BaseFormHandler implements BusinessForm
         }
 
         return false;
+    }
+
+    private function validateNewPhones()
+    {
+        $businessProfilePhoneManager = $this->container->get('domain_business.manager.business_profile_phone');
+
+        $newPhones = $this->businessProfileNew->getPhones()->toArray();
+        $oldPhones = $this->businessProfileOld->getPhones()->toArray();
+
+        foreach ($newPhones as $i => $phone) {
+            if (!$businessProfilePhoneManager->isNewPhoneValid($phone, $oldPhones)) {
+                $error = new FormError($this->translator->trans(
+                    'business_profile_phone.not_unique_phone',
+                    [],
+                    'validators'
+                ));
+                $this->form->get('phones')->get($i)->get('phone')->addError($error);
+            }
+        }
     }
 
     private function onSuccess()

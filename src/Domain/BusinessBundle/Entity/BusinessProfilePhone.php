@@ -8,6 +8,7 @@ use Oxa\Sonata\AdminBundle\Util\Traits\ChangeStateTrait;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Misd\PhoneNumberBundle\Validator\Constraints\PhoneNumber as AssertPhoneNumber;
+use Domain\BusinessBundle\Form\Handler\BusinessFormHandlerInterface;
 
 /**
  * BusinessProfilePhone
@@ -15,7 +16,7 @@ use Misd\PhoneNumberBundle\Validator\Constraints\PhoneNumber as AssertPhoneNumbe
  * @ORM\Table(name="business_profile_phone")
  * @ORM\Entity(repositoryClass="Domain\BusinessBundle\Repository\BusinessProfilePhoneRepository")
  * @ORM\HasLifecycleCallbacks()
- * @UniqueEntity(fields={"phone"}, groups={"Admin"})
+ * @UniqueEntity(fields={"phone"}, groups={BusinessFormHandlerInterface::UNIQUE_PHONE_VALIDATION_GROUP})
  */
 class BusinessProfilePhone implements ChangeStateInterface
 {

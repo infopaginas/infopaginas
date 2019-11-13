@@ -29,6 +29,7 @@ twig:
             BRANDS:          'brands'
             WORKING_HOURS:   'workingHours'
             SLOGAN:          'slogan'
+            PHONES:          'phones'
 
         WORKING_HOURS_ASSOCIATED_FIELD: 'collectionWorkingHours'
         BUSINESS_PROFILE_FIELD_PANORAMA_ID: 'panoramaId'
@@ -38,6 +39,9 @@ twig:
             ACTION_TYPE:
                 ORDER: 'order'
                 BOOK:  'book'
+            LOGO:
+                WIDTH: '300'
+                HEIGHT: '300'
 
 #        const of BusinessProfilePhone class
         BUSINESS_PROFILE_PHONE:
@@ -112,6 +116,8 @@ twig:
 
         TASK:
             PROFILE_CLAIM: PROFILE_CLAIM
+            PROFILE_UPDATE: PROFILE_UPDATE
+            PROFILE_CREATE: PROFILE_CREATE
 
         SHORT_CUT_ITEMS:
             LANDING: LANDING
