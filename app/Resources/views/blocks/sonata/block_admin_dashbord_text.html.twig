@@ -1,0 +1,6 @@
+{% extends 'SonataBlockBundle:Block:block_core_text.html.twig' %}
+
+{% block block %}
+    <h2>{{ 'admin_greeting' | trans({}, 'DomainSiteBundle') }}</h2>
+    <p>Current version: <a href="{{ path('admin_domain_site_releasenote_list') }}">{{ app_version }}</a></p>
+{% endblock %}

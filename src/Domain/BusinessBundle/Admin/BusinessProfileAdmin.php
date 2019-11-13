@@ -436,6 +436,24 @@ class BusinessProfileAdmin extends OxaAdmin
             $formMapper->tab('Main')->with('Keywords')->end()->end();
         }
 
+        if ($businessProfile->getId() and $subscriptionPlanCode == SubscriptionPlanInterface::CODE_FREE) {
+            $formMapper
+                ->tab('Main')
+                    ->with('Main')
+                        ->add('businessToRedirect', 'sonata_type_model_list', [
+                            'required'   => false,
+                            'btn_delete' => 'delete',
+                            'btn_add'    => false,
+                        ], [
+                            'link_parameters' => [
+                                'onlyPaidProfiles'  => true,
+                            ]
+                        ])
+                    ->end()
+                ->end()
+            ;
+        }
+
         // Main tab
         // Subscription Block
         $formMapper
@@ -1095,7 +1113,7 @@ class BusinessProfileAdmin extends OxaAdmin
                     ->add('name')
                     ->add('slogan')
                     ->add('description', null, [
-                        'template' => 'DomainBusinessBundle:Admin:BusinessProfile/show_description.html.twig',
+                        'template' => 'DomainBusinessBundle:Admin:BusinessProfile/show_purified_value.html.twig',
                     ])
                     ->add('product')
                     ->add('brands')
@@ -1442,7 +1460,8 @@ class BusinessProfileAdmin extends OxaAdmin
     /**
      * @param ErrorElement $errorElement
      * @param mixed $object
-     * @return null
+     *
+     * @throws \Exception
      */
     public function validate(ErrorElement $errorElement, $object)
     {
@@ -1504,17 +1523,6 @@ class BusinessProfileAdmin extends OxaAdmin
                 ;
             }
         }
-
-        if ($object->getSubscriptionPlanCode() > SubscriptionPlanInterface::CODE_PRIORITY && !$object->getLogo()) {
-            $errorElement->with('logo')
-                ->addViolation($this->getTranslator()->trans(
-                    'form.business.logo_required',
-                    [],
-                    $this->getTranslationDomain()
-                ))
-                ->end()
-            ;
-        }
     }
 
     /**
@@ -1531,19 +1539,27 @@ class BusinessProfileAdmin extends OxaAdmin
         $parameters = $this->getFilterParameters();
 
         // search by active subscription of chosen subscriptionPlan
-        if (isset($parameters['subscriptions__subscriptionPlan']) &&
-            !empty($parameters['subscriptions__subscriptionPlan']['value'])
+        if ((isset($parameters['subscriptions__subscriptionPlan']) &&
+             !empty($parameters['subscriptions__subscriptionPlan']['value'])) ||
+            $this->getRequest()->get('onlyPaidProfiles')
         ) {
-            $subscriptionPlanId = $parameters['subscriptions__subscriptionPlan']['value'];
-
             $query->leftJoin($query->getRootAliases()[0] . '.subscriptions', 's');
             $query->leftJoin('s.subscriptionPlan', 'sp');
-
-            $query->andWhere('sp.id = :subscriptionPlanId');
             $query->andWhere('s.status = :subscriptionStatus');
-
-            $query->setParameter('subscriptionPlanId', $subscriptionPlanId);
             $query->setParameter('subscriptionStatus', StatusInterface::STATUS_ACTIVE);
+
+            if ($this->getRequest()->get('onlyPaidProfiles')) {
+                $query->andWhere('sp.code > :subscriptionPlanCode');
+                $query->setParameter('subscriptionPlanCode', SubscriptionPlanInterface::CODE_FREE);
+            }
+            if ((isset($parameters['subscriptions__subscriptionPlan']) &&
+                 !empty($parameters['subscriptions__subscriptionPlan']['value']))
+            ) {
+                $query->andWhere('sp.id = :subscriptionPlanId');
+
+                $subscriptionPlanId = $parameters['subscriptions__subscriptionPlan']['value'];
+                $query->setParameter('subscriptionPlanId', $subscriptionPlanId);
+            }
         }
 
         return $query;

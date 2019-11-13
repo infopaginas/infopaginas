@@ -114,6 +114,4 @@ sonata_admin:
                 position: right
                 type: sonata.block.service.text
                 settings:
-                    content: >
-                        <h2>Welcome to the Infopaginas Admin Panel</h2>
-                        <p>Current version: %app_version%</p>
+                    template: ':blocks/sonata:block_admin_dashbord_text.html.twig'
