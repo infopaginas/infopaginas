@@ -13,6 +13,12 @@ sonata_media:
     contexts:
         # when you add a new one or edit context name,
         # edit OxaMediaInterface constans
+        payment_method:
+            download:
+                mode: http
+            providers:
+                - sonata.media.provider.image
+            formats:
         business_profile_logo:
             download:
                 mode: http

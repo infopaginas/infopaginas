@@ -10,6 +10,7 @@ use Domain\BusinessBundle\Entity\Coupon;
 use Domain\ArticleBundle\Entity\Article;
 use Domain\BusinessBundle\Entity\HomepageCarousel;
 use Domain\BusinessBundle\Entity\Media\BusinessGallery;
+use Domain\BusinessBundle\Entity\PaymentMethod;
 use Oxa\Sonata\AdminBundle\Model\ChangeStateInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\ChangeStateTrait;
 use Oxa\VideoBundle\Entity\VideoMedia;
@@ -53,7 +54,13 @@ class Media extends BaseMedia implements
      */
     const IMAGE_BACKGROUND_MAX_SIZE = 1048576;
 
+    /**
+     * Payment method image max size in bytes = 10kb
+     */
+    const IMAGE_PAYMENT_METHOD_MAX_SIZE = 10240;
+
     const BYTES_IN_MEGABYTE = 1048576;
+    const BYTES_IN_KILOBYTE = 1024;
 
     /**
      * @var int
@@ -152,6 +159,15 @@ class Media extends BaseMedia implements
      * )
      */
     protected $homepageCarousel;
+
+    /**
+     * @var PaymentMethod[]
+     * @ORM\OneToMany(targetEntity="Domain\BusinessBundle\Entity\PaymentMethod",
+     *     mappedBy="image",
+     *     cascade={"persist"}
+     * )
+     */
+    protected $paymentMethod;
 
     /**
      * Get id
@@ -633,7 +649,7 @@ class Media extends BaseMedia implements
 
         if ($maxSize < $this->getSize()) {
             $context->buildViolation('media.max_size')
-                ->setParameter('{{ limit }}', $maxSize / self::BYTES_IN_MEGABYTE)
+                ->setParameter('{{ limit }}', self::getSizeLimitMessage($maxSize))
                 ->atPath('binaryContent')
                 ->addViolation()
             ;
@@ -651,11 +667,30 @@ class Media extends BaseMedia implements
             case self::CONTEXT_BUSINESS_PROFILE_BACKGROUND:
                 $maxSize = self::IMAGE_BACKGROUND_MAX_SIZE;
                 break;
+            case self::CONTEXT_PAYMENT_METHOD:
+                $maxSize = self::IMAGE_PAYMENT_METHOD_MAX_SIZE;
+                break;
             default:
                 $maxSize = self::IMAGE_MAX_SIZE;
                 break;
         }
 
         return $maxSize;
+    }
+
+    /**
+     * @param int $sizeInBytes
+     *
+     * @return string
+     */
+    public static function getSizeLimitMessage(int $sizeInBytes): string
+    {
+        if ($sizeInBytes / self::BYTES_IN_KILOBYTE < self::BYTES_IN_KILOBYTE) {
+            $limit = $sizeInBytes / self::BYTES_IN_KILOBYTE . ' kb';
+        } else {
+            $limit = $sizeInBytes / self::BYTES_IN_MEGABYTE . ' Mb';
+        }
+
+        return $limit;
     }
 }

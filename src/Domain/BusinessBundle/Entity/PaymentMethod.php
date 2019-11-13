@@ -12,7 +12,7 @@ use Oxa\Sonata\AdminBundle\Model\OxaPersonalTranslatableInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\ChangeStateTrait;
 use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
 use Gedmo\Mapping\Annotation as Gedmo;
-use Sonata\TranslationBundle\Model\Gedmo\TranslatableInterface;
+use Oxa\Sonata\MediaBundle\Entity\Media;
 use Oxa\Sonata\AdminBundle\Util\Traits\OxaPersonalTranslatable as PersonalTranslatable;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -34,15 +34,6 @@ class PaymentMethod implements
     use DefaultEntityTrait;
     use PersonalTranslatable;
     use ChangeStateTrait;
-
-    /* const value related to icon name */
-    const PAYMENT_METHOD_TYPE_CASH      = 'cash';
-    const PAYMENT_METHOD_TYPE_CHECK     = 'check';
-    const PAYMENT_METHOD_TYPE_PAYPAL    = 'paypal';
-    const PAYMENT_METHOD_TYPE_ATH_MOVIL = 'ath_movil';
-    const PAYMENT_METHOD_TYPE_ONLINE    = 'online';
-    const PAYMENT_METHOD_TYPE_DEBIT     = 'debit';
-    const PAYMENT_METHOD_TYPE_ATH       = 'ath';
 
     const PAYMENT_METHOD_FIELD_NAME = 'name';
 
@@ -111,6 +102,16 @@ class PaymentMethod implements
     protected $type;
 
     /**
+     * @var Media - Media
+     * @ORM\ManyToOne(targetEntity="Oxa\Sonata\MediaBundle\Entity\Media",
+     *     inversedBy="paymentMethod",
+     *     cascade={"persist"}
+     *     )
+     * @ORM\JoinColumn(name="image_id", referencedColumnName="id", nullable=true)
+     */
+    protected $image;
+
+    /**
      * Get id
      *
      * @return int
@@ -168,6 +169,30 @@ class PaymentMethod implements
     public function getName()
     {
         return $this->name;
+    }
+
+    /**
+     * Set image
+     *
+     * @param Media $image
+     *
+     * @return PaymentMethod
+     */
+    public function setImage(Media $image = null)
+    {
+        $this->image = $image;
+
+        return $this;
+    }
+
+    /**
+     * Get image
+     *
+     * @return Media
+     */
+    public function getImage()
+    {
+        return $this->image;
     }
 
     /**
@@ -309,65 +334,6 @@ class PaymentMethod implements
     {
         return [
             self::PAYMENT_METHOD_FIELD_NAME
-        ];
-    }
-
-    /**
-     * @return array
-     */
-    public static function getRequiredPaymentMethods()
-    {
-        return [
-            self::PAYMENT_METHOD_TYPE_CASH,
-            self::PAYMENT_METHOD_TYPE_CHECK,
-            self::PAYMENT_METHOD_TYPE_PAYPAL,
-            self::PAYMENT_METHOD_TYPE_ATH_MOVIL,
-            self::PAYMENT_METHOD_TYPE_ONLINE,
-            self::PAYMENT_METHOD_TYPE_DEBIT,
-        ];
-    }
-
-    /**
-     * @return array
-     */
-    public static function getPaymentMethodData()
-    {
-        return [
-            self::PAYMENT_METHOD_TYPE_CASH => [
-                'nameEn' => 'Cash',
-                'nameEs' => 'Efectivo',
-                'type' => self::PAYMENT_METHOD_TYPE_CASH,
-            ],
-            self::PAYMENT_METHOD_TYPE_CHECK => [
-                'nameEn' => 'Check',
-                'nameEs' => 'Cheque',
-                'type' => self::PAYMENT_METHOD_TYPE_CHECK,
-            ],
-            self::PAYMENT_METHOD_TYPE_PAYPAL => [
-                'nameEn' => 'PayPal',
-                'nameEs' => 'PayPal',
-                'type' => self::PAYMENT_METHOD_TYPE_PAYPAL,
-            ],
-            self::PAYMENT_METHOD_TYPE_ATH_MOVIL => [
-                'nameEn' => 'ATHMovil',
-                'nameEs' => 'ATHMovil',
-                'type' => self::PAYMENT_METHOD_TYPE_ATH_MOVIL,
-            ],
-            self::PAYMENT_METHOD_TYPE_ONLINE => [
-                'nameEn' => 'Online Payment',
-                'nameEs' => 'Online Payment',
-                'type' => self::PAYMENT_METHOD_TYPE_ONLINE,
-            ],
-            self::PAYMENT_METHOD_TYPE_DEBIT => [
-                'nameEn' => 'Debit Card',
-                'nameEs' => 'Debito',
-                'type' => self::PAYMENT_METHOD_TYPE_DEBIT,
-            ],
-            self::PAYMENT_METHOD_TYPE_ATH => [
-                'nameEn' => 'ATH',
-                'nameEs' => 'ATH',
-                'type' => self::PAYMENT_METHOD_TYPE_ATH,
-            ],
         ];
     }
 
