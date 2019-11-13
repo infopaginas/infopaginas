@@ -4,7 +4,7 @@ namespace Domain\BusinessBundle\Admin;
 
 use Domain\BusinessBundle\Entity\PaymentMethod;
 use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
-use Sonata\AdminBundle\Admin\Admin;
+use Oxa\Sonata\MediaBundle\Model\OxaMediaInterface;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
@@ -19,7 +19,6 @@ class PaymentMethodAdmin extends OxaAdmin
     protected function configureDatagridFilters(DatagridMapper $datagridMapper)
     {
         $datagridMapper
-            ->add('id')
             ->add('name', null, [
                 'show_filter' => true,
             ])
@@ -46,6 +45,19 @@ class PaymentMethodAdmin extends OxaAdmin
     {
         $formMapper
             ->add('name')
+            ->add(
+                'image',
+                'sonata_type_model_list',
+                [
+                    'required' => true,
+                ],
+                [
+                    'link_parameters' => [
+                        'context'  => OxaMediaInterface::CONTEXT_PAYMENT_METHOD,
+                        'provider' => OxaMediaInterface::PROVIDER_IMAGE,
+                    ]
+                ]
+            )
         ;
     }
 
@@ -58,33 +70,5 @@ class PaymentMethodAdmin extends OxaAdmin
             ->add('id')
             ->add('name')
         ;
-    }
-
-    /**
-     * @param RouteCollection $collection
-     */
-    protected function configureRoutes(RouteCollection $collection)
-    {
-        parent::configureRoutes($collection);
-
-        $collection->remove('create');
-        $collection->remove('delete');
-    }
-
-    /**
-     * @param string $name
-     * @param PaymentMethod|null $object
-     *
-     * @return bool
-     */
-    public function isGranted($name, $object = null)
-    {
-        $deniedActions = $this->getDeniedAllButViewAndEditActions();
-
-        if ($object && in_array($name, $deniedActions)) {
-            return false;
-        }
-
-        return parent::isGranted($name, $object);
     }
 }
