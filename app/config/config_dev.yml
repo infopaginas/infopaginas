@@ -15,11 +15,11 @@ web_profiler:
 
 monolog:
     handlers:
-        main:
-            type: stream
-            path: "%kernel.logs_dir%/%kernel.environment%.log"
+        cloudwatch:
+            type: service
             level: debug
             channels: [!event]
+            id: "app.monolog.handler.cloudwatch"
         console:
             type:   console
             channels: [!event, !doctrine]

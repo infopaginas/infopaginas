@@ -29,7 +29,8 @@ class CronLogger
     const ARTICLE_UPDATE            = 'domain:article:update';
     const MONGO_AGGREGATE           = 'domain:report-mongo-db:aggregate';
     const MONGO_POPULAR_CATEGORIES  = 'domain:popular-category:update';
-    const MONGO_ARCHIVE             = 'domain:report-mongo-db:archive';
+    const MONGO_ARCHIVE_RAW         = 'domain:report-mongo-db:archive-raw';
+    const MONGO_ARCHIVE_AGGREGATE         = 'domain:report-mongo-db:archive-aggregate';
     const POSTPONE_EXPORT           = 'domain:postpone-export:report';
     const BUSINESS_COUNTER          = 'domain:managed-businesses:counter';
     const POSTPONE_REMOVE           = 'data:postpone:remove';
