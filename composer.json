@@ -88,7 +88,6 @@
         "pulse00/ffmpeg-bundle": "^0.6",
         "egulias/email-validator": "~1.2",
         "knplabs/knp-snappy-bundle": "^1.5",
-        "h4cc/wkhtmltopdf-amd64": "^0.12.4",
         "maxbanton/cwh": "^1.0"
     },
     "require-dev": {
