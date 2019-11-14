@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "fab842ce6f2b170f5d5b97eb13dfc2c3",
+    "content-hash": "c1210a168dc03119e1f956845326c49d",
     "packages": [
         {
             "name": "alchemy/binary-driver",
@@ -114,7 +114,7 @@
                 "antimattr",
                 "product"
             ],
-            "time": "2018-08-07 15:13:58"
+            "time": "2018-08-07T15:13:58+00:00"
         },
         {
             "name": "antimattr/google-bundle",
@@ -5056,6 +5056,56 @@
                 "xls"
             ],
             "time": "2016-06-20T17:11:22+00:00"
+        },
+        {
+            "name": "maxbanton/cwh",
+            "version": "v1.1.13",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/maxbanton/cwh.git",
+                "reference": "e9bc1f253663388c3555fbab0414ce82af97ee3a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/maxbanton/cwh/zipball/e9bc1f253663388c3555fbab0414ce82af97ee3a",
+                "reference": "e9bc1f253663388c3555fbab0414ce82af97ee3a",
+                "shasum": ""
+            },
+            "require": {
+                "aws/aws-sdk-php": "^3.18",
+                "monolog/monolog": "^1.20",
+                "php": ">=5.6.0"
+            },
+            "require-dev": {
+                "maxbanton/dd": "^1.0",
+                "php-coveralls/php-coveralls": "^2.0",
+                "phpunit/phpunit": "^5.6",
+                "squizlabs/php_codesniffer": "2.*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Maxbanton\\Cwh\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Max Leonov",
+                    "email": "hi@maxleonov.pw",
+                    "homepage": "https://maxleonov.pw"
+                }
+            ],
+            "description": "AWS CloudWatch Handler for Monolog library",
+            "keywords": [
+                "aws",
+                "cloudwatch",
+                "monolog"
+            ],
+            "time": "2019-10-06T16:41:39+00:00"
         },
         {
             "name": "michelf/php-markdown",
