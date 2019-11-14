@@ -203,7 +203,7 @@ class ProfileController extends Controller
         $bannerManager  = $this->get('domain_banner.manager.banner');
         $banners        = $bannerManager->getBanners(
             [
-                TypeInterface::CODE_BUSINESS_PAGE_RIGHT,
+                TypeInterface::CODE_BUSINESS_PAGE_RIGHT_LARGE,
                 TypeInterface::CODE_BUSINESS_PAGE_BOTTOM,
             ]
         );
@@ -433,6 +433,41 @@ class ProfileController extends Controller
             'errors' => $errors,
             'message' => $this->get('translator')->trans(
                 'validation_warnings.business_name',
+                [],
+                'AdminDomainBusinessBundle'
+            ),
+        ]);
+    }
+
+    /**
+     * @param Request $request
+     * @param mixed   $id
+     *
+     * @return JsonResponse
+     */
+    public function phoneValidationAction(Request $request, $id)
+    {
+        $businesses = $this->getBusinessProfilesManager()->getSimilarBusinessesByPhones(
+            $request->request->get('phones'),
+            $id
+        );
+
+        $matches = [];
+
+        foreach ($businesses as $business) {
+            $matches[] = [
+                'id' => $business->getId(),
+                'url' => $this->generateUrl('admin_domain_business_businessprofile_edit', [
+                    'id' => $business->getId(),
+                ]),
+                'name' => $business->getName(),
+            ];
+        }
+
+        return new JsonResponse([
+            'matches' => $matches,
+            'message' => $this->get('translator')->trans(
+                'validation_warnings.business_phones',
                 [],
                 'AdminDomainBusinessBundle'
             ),

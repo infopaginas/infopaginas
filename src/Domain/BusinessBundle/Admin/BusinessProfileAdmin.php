@@ -1377,14 +1377,17 @@ class BusinessProfileAdmin extends OxaAdmin
                             'data'      => KeywordsReportManager::DEFAULT_KEYWORDS_COUNT,
                         ])
                     ->end()
-                    ->with('Preview')
-                        ->add('views', null, [
-                            'label'     => 'Views',
-                            'eventType'     => BusinessOverviewModel::TYPE_CODE_IMPRESSION,
-                            'template' => 'DomainBusinessBundle:Admin:BusinessProfile/report_data.html.twig',
+                    ->with('Summary')
+                        ->add('', null, [
+                            'template' => 'DomainBusinessBundle:Admin:BusinessProfile/report_summary.html.twig',
                         ])
                         ->add('impressions', null, [
                             'label'     => 'Impressions',
+                            'eventType'     => BusinessOverviewModel::TYPE_CODE_IMPRESSION,
+                            'template' => 'DomainBusinessBundle:Admin:BusinessProfile/report_data.html.twig',
+                        ])
+                        ->add('views', null, [
+                            'label'     => 'Views',
                             'eventType'     => BusinessOverviewModel::TYPE_CODE_VIEW,
                             'template' => 'DomainBusinessBundle:Admin:BusinessProfile/report_data.html.twig',
                         ])

@@ -7,16 +7,18 @@ ivory_ck_editor:
             toolbar: full
             width: 100%
         extended_text:
+            forcePasteAsPlainText: true
             toolbar:
                 - [Maximize]
-                - [Bold, Italic, Underline, -, Cut, Copy, Paste, PasteText, PasteFromWord, -, Undo, Redo, -, NumberedList, BulletedList, -, Outdent, Indent, -, Blockquote, -, Link, Unlink]
+                - [Bold, Italic, Underline, -, Cut, Copy, Paste, PasteFromWord, -, Undo, Redo, -, NumberedList, BulletedList, -, Outdent, Indent, -, Blockquote, -, Link, Unlink]
                 - [Styles, Format, Font, FontSize, -, TextColor, BGColor]
         extended_text_scayt:
             scayt_autoStartup: true
             scayt_disableOptionsStorage : 'lang'
+            forcePasteAsPlainText: true
             toolbar:
                 - [Maximize]
-                - [Bold, Italic, Underline, -, Cut, Copy, Paste, PasteText, PasteFromWord, -, Undo, Redo, -, NumberedList, BulletedList, -, Outdent, Indent, -, Blockquote, -, Link, Unlink]
+                - [Bold, Italic, Underline, -, Cut, Copy, Paste, PasteFromWord, -, Undo, Redo, -, NumberedList, BulletedList, -, Outdent, Indent, -, Blockquote, -, Link, Unlink]
                 - [Styles, Format, Font, FontSize, -, TextColor, BGColor, Scayt]
         preview_text:
             toolbar:

@@ -20,8 +20,10 @@ business_profile:
   locality:
       not_empty: Debe elegir una Localidad válida
 
-business_profile_phone.not_unique_main: Error: no puede haber más de un teléfono principal
-business_profile_phone.no_main: Error al menos un teléfono debe estar marcado como "principal"
+business_profile_phone:
+  not_unique_main: 'Error: no puede haber más de un teléfono principal'
+  not_unique_phone: 'Error: Este teléfono ya está en uso'
+  no_main: Error al menos un teléfono debe estar marcado como "principal"
 
 form.collectionWorkingHours.overlap: Las horas de trabajo no deben superponerse
 form.collectionWorkingHours.duration: Inicio de tiempo debe ser más que tiempo final

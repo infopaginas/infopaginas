@@ -4,9 +4,9 @@ Articles: Articles
 View more articles: View more articles
 Videos: Videos
 View more videos: View more videos
-infopaginos.copyright: © 2016 infopáginas
+infopaginos.copyright: Copyrights © %date%
 infopaginos.image.alt: Infopaginas
-90 Calle San Martin Rodval Bldg. Suite 201 Guaynabo: 90 Calle San Martin Rodval Bldg. Suite 201 Guaynabo
+infopaginos.address: 90 Calle San Martin, Rodval Bldg. Suite 201 - Guaynabo, PR 00068-1401
 PR: PR
 About Us: About Us
 Contact Us: Contact Us
@@ -133,6 +133,7 @@ Tags: Tags
 business.add.workingHours.placeholder: Mon - Fri 9 a.m. - 7 p.m. Sat 9:00 am-2:00pm
 Fullness: Fullness
 Map: Map
+mapbox location: Mapbox Location
 Service Areas: Service Areas
 Social Links: Social Links
 Within miles of my business: Within miles of my business

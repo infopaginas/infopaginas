@@ -10,8 +10,6 @@ services:
             - {name: sonata.admin, manager_type: orm, group: admin, label: Media}
         calls:
             - [ setTemplate, ['edit', 'OxaSonataMediaBundle:MediaAdmin:edit.html.twig']]
-            - [ setTemplate, ['list', 'OxaSonataMediaBundle:MediaAdmin:list.html.twig']]
-            - [ setTemplate, ['inner_list_row', 'OxaSonataMediaBundle:MediaAdmin:inner_row_media.html.twig']]
 
     sonata.media.doctrine.event_subscriber:
         class: Oxa\Sonata\MediaBundle\EventListener\MediaRemoveListener

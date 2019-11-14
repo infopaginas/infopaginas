@@ -101,6 +101,7 @@ h5 {
 .container {
   margin: 0 auto;
   max-width: 92%;
+  position: relative;
 
   @media only screen and (min-width: 805px) {
     margin-left: auto;
@@ -401,23 +402,18 @@ $side-padding-mb: 16px;
 .about-infopaginas {
   align-items: center;
   display: flex;
-  flex-direction: column;
-  font-size: .75em;
-  padding: 5px;
-  padding-bottom: 20px;
+  flex-direction: row;
+  font-size: 1em;
   text-align: center;
-  min-height: 60px;
-
-  @media only screen and (min-width: 805px) {
-    padding: 10px;
-    padding-bottom: 20px;
-  }
+  height: $footer-height;
+  background: $blue--dark;
+  justify-content: space-around;
 
   span {
     color: $white;
   }
 
-  a {
+  a, i {
     color: $green;
   }
 
@@ -434,8 +430,7 @@ $side-padding-mb: 16px;
   }
 
   @media only screen and (max-width: 805px) {
-    font-size: 1em;
-    padding: 0 20px 0;
+    font-size: 13px;
   }
 
   @media only screen and (min-width: 1440px) {
@@ -1081,7 +1076,9 @@ $bps-border: 1px dotted #bcbcbc;
 .main__container {
   @media only screen and (min-width: 805px) {
     display: flex;
-    max-height: 100vh;
+    &.no-page-scroll {
+      max-height: 100vh;
+    }
   }
 
   .form__row-bps {
@@ -1474,11 +1471,13 @@ $bps-border: 1px dotted #bcbcbc;
 }
 
 .main__container--centered {
+  min-height: calc(100vh - #{$bar-height-mobile-mb} - #{$footer-height});
 
   @media only screen and (min-width: 805px) {
     margin: 0 auto;
     max-width: 2000px;
     width: 100%;
+    min-height: calc(100vh - #{$bar-height-mb} - #{$footer-height});
   }
 }
 
@@ -1487,17 +1486,26 @@ $bps-border: 1px dotted #bcbcbc;
 .main {
   height: auto;
   padding-top: 25px;
-  padding-bottom: 30px;
   transition-duration: .4s;
   transition-property: width;
   transition-timing-function: ease-in-out;
 
   @media only screen and (min-width: 805px) {
-    height: calc(100vh - 132px);
+    &#searchResults {
+      height: calc(100vh - 132px);
+    }
     overflow-y: auto;
     width: 60%;
     top: 86px;
-    padding-top: 0px;
+    padding-top: 0;
+
+    &.search-page {
+      height: calc(100vh - 131px);
+    }
+
+    &.results-top {
+      height: calc(100vh - 98px);
+    }
 
     &.main-results-resize {
       padding-top: 52px;
@@ -2024,7 +2032,7 @@ $thumb-width-mb: 60px;
 }
 
 .directions-map {
-  height: calc(100vh - 45px);
+  height: calc(100vh - 60px);
   width: 100%;
 
   @media only screen and (max-width: 804px) {
@@ -2084,15 +2092,15 @@ $thumb-width-mb: 60px;
     font-size: 14px;
     height: 2.4em !important;
     line-height: 2.2em;
-    top: 100px;
+    top: 70px;
     width: 10em;
-
-    &.button--hide-map {
-      top: 55px;
-    }
 
     &.button--show-map {
       transform: translateX(500px) translateY(0px);
+    }
+
+    &.button--hide-map {
+      top: 25px;
     }
 
     span {
@@ -2193,8 +2201,13 @@ $thumb-width-mb: 60px;
 }
 
 @media only screen and (max-width: 804px) {
-  .button--show-map, .button--hide-map {
+  .button--hide-map {
     right: 50px;
+  }
+
+  .button--show-map {
+    right: 10px;
+    bottom: 45px;
   }
 }
 
@@ -2233,7 +2246,7 @@ $thumb-width-mb: 60px;
   background: $white;
 
   @media only screen and (min-width: 805px) {
-    padding-bottom: 0;
+    padding-bottom: 10px;
   }
 }
 
@@ -2252,6 +2265,10 @@ $thumb-width-mb: 60px;
   @media only screen and (min-width: 805px) {
     width: 30%;
     padding-left: 20px;
+    position: absolute;
+    top: 0;
+    bottom: 100px;
+    right: 0;
   }
 }
 
@@ -2272,7 +2289,6 @@ $thumb-width-mb: 60px;
   .main {
     margin-top: 32px;
     overflow: visible;
-    padding-bottom: 100px;
 
     @media only screen and (min-width: 805px) {
       margin-top: 0;
@@ -2825,6 +2841,15 @@ $thumb-width-mb: 60px;
   }
 }
 
+.section--ad {
+  &.sticky {
+    @media only screen and (min-width: 805px) {
+      position: sticky;
+      top: 110px;
+    }
+  }
+}
+
 .map-socials {
   position: absolute;
   display: block;
@@ -3246,7 +3271,11 @@ a.tag {
   margin-top: 35px;
   margin-bottom: .5em;
   text-align: center;
-  text-transform: uppercase
+  text-transform: uppercase;
+
+  @media only screen and (min-width: 805px) {
+    margin-top: 85px;
+  }
 }
 
 
@@ -4727,6 +4756,7 @@ li.active {
 
     @media only screen and (min-width: 805px) {
       font-size: 2.4em;
+      margin-top: 55px;
     }
   }
 
@@ -5167,12 +5197,7 @@ li.active {
 .results-list {
   .pagination {
     margin-bottom: 0;
-    @media only screen and (min-width: 805px) {
-      position: fixed;
-      width: 59%;
-    }
   }
-
 }
 
 .results--map-view {
@@ -5206,16 +5231,6 @@ li.active {
         padding-left: 0.7em;
         width: 100%;
       }
-    }
-  }
-}
-
-.results--map-view {
-  .pagination {
-    @media only screen and (min-width: 805px) {
-      position: fixed;
-      width: 24%;
-      min-width: 300px;;
     }
   }
 }

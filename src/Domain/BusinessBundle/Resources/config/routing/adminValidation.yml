@@ -3,3 +3,9 @@ domain_business_admin_validation_business_name:
     defaults: { _controller: DomainBusinessBundle:Profile:nameValidation, id: 0 }
     options:
         expose: true
+
+domain_business_admin_validation_business_phone:
+    path:     /business/{id}/same-phone
+    defaults: { _controller: DomainBusinessBundle:Profile:phoneValidation, id: 0 }
+    options:
+        expose: true

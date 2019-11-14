@@ -236,7 +236,6 @@ document.addEventListener( 'jQueryLoaded', function() {
 
     function initMapRequestedListener() {
         mapRequested = true;
-        initMapHandler();
 
         $( document ).on( 'mapScriptRequested', function() {
             mapRequested = true;
@@ -245,6 +244,7 @@ document.addEventListener( 'jQueryLoaded', function() {
                 initMapHandler();
             }
         });
+        $( document ).trigger( 'mapScriptRequestedIfVisible' );
     }
 
     function initMapHandler() {
@@ -256,7 +256,7 @@ document.addEventListener( 'jQueryLoaded', function() {
 
         this.options.mapOptions = {
             container: 'map',
-            style: 'mapbox://styles/mapbox/streets-v9',
+            style: 'mapbox://styles/mapbox/streets-v9?optimize=true',
             center: {
                 lat: center[0],
                 lng: center[1]

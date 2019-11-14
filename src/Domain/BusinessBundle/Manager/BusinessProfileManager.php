@@ -1727,16 +1727,34 @@ class BusinessProfileManager extends Manager
         $coordinates = $searchParams->getCurrentCoordinates();
 
         if ($searchParams->checkAdsAllowed()) {
-            $searchQuery = $this->getElasticSearchSuggestedQuery($searchParams);
-            $response    = $this->searchBusinessAdElastic($searchQuery);
+            $searchAdQuery = $this->getElasticSearchSuggestedAdQuery($searchParams);
+            $responseAd    = $this->searchBusinessAdElastic($searchAdQuery);
+            $searchAd = $this->getBusinessAdDataFromElasticResponse($responseAd);
+            $resultAds = $this->setBusinessDynamicValues($searchAd, $coordinates, true);
+
+            $excludeIds = array_keys($searchAd['data']);
         } else {
-            $response = [];
+            $excludeIds = [];
+            $resultAds = [];
         }
 
-        $search = $this->getBusinessAdDataFromElasticResponse($response);
-        $result = $this->setBusinessDynamicValues($search, $coordinates, true);
+        $searchQuery = $this->getElasticSuggestedQuery($searchParams, $excludeIds);
 
-        return $result;
+        $response = $this->searchBusinessElastic($searchQuery);
+
+        $search = $this->getBusinessDataFromElasticResponse($response);
+
+        $search = $this->setBusinessDynamicValues($search, $coordinates);
+
+        if ($searchParams->checkAdsAllowed() and $resultAds) {
+            $resultAds['data'] = array_reverse($resultAds['data']);
+
+            foreach ($resultAds['data'] as $item) {
+                array_unshift($search['data'], $item);
+            }
+        }
+
+        return $search;
     }
 
     /**
@@ -2458,7 +2476,39 @@ class BusinessProfileManager extends Manager
         $searchQuery = $this->addElasticLocationQuery($searchQuery, $locationQuery);
         $searchQuery = $this->addElasticFiltersQuery($searchQuery, $filters);
         $searchQuery = $this->addElasticLocationFilterQuery($searchQuery, $locationFilter);
-        $searchQuery = $this->addElasticExcludeQuery($searchQuery, $excludeIds);
+        $searchQuery = $this->addElasticExcludeIdsQuery($searchQuery, $excludeIds);
+
+        return $searchQuery;
+    }
+
+    protected function getElasticSuggestedQuery(SearchDTO $params, $excludeIds = [])
+    {
+        $categoryFilters = $this->getElasticMultipleFilters(
+            $params,
+            $params->getSuggestedCategories(),
+            BusinessProfile::ELASTIC_CATEGORIES_FILED,
+            $params->getMinimumCategoriesMatch()
+        );
+        $localityFilters = $this->getElasticMultipleFilters(
+            $params,
+            $params->getSuggestedLocalities(),
+            BusinessProfile::ELASTIC_LOCALITIES_FILED,
+            $params->getMinimumLocalitiesMatch()
+        );
+        $sort = $this->getElasticSubscriptionSortQuery();
+
+        $locationQuery = $this->getElasticLocationQuery($params, $localityFilters[0]);
+
+        $searchQuery = $this->getElasticBaseQuery($params->page, $params->limit);
+        $searchQuery = $this->addElasticSortQuery($searchQuery, $sort);
+        $searchQuery = $this->addElasticLocationQuery($searchQuery, $locationQuery);
+        $searchQuery = $this->addElasticFiltersQuery($searchQuery, $categoryFilters);
+        $searchQuery = $this->addElasticExcludeQuery($searchQuery, [
+            'match' => [
+                'subscr_rank' => SubscriptionPlanInterface::CODE_FREE,
+            ],
+        ]);
+        $searchQuery = $this->addElasticExcludeIdsQuery($searchQuery, $excludeIds);
 
         return $searchQuery;
     }
@@ -2537,7 +2587,7 @@ class BusinessProfileManager extends Manager
      *
      * @return array
      */
-    protected function getElasticSearchSuggestedQuery(SearchDTO $params)
+    protected function getElasticSearchSuggestedAdQuery(SearchDTO $params)
     {
         $categoryFilters = $this->getElasticMultipleFilters(
             $params,
@@ -2589,7 +2639,7 @@ class BusinessProfileManager extends Manager
         $searchQuery = $this->addElasticLocationQuery($searchQuery, $locationQuery);
         $searchQuery = $this->addElasticFiltersQuery($searchQuery, $filters);
         $searchQuery = $this->addElasticLocationFilterQuery($searchQuery, $locationFilter);
-        $searchQuery = $this->addElasticExcludeQuery($searchQuery, $excludeIds);
+        $searchQuery = $this->addElasticExcludeIdsQuery($searchQuery, $excludeIds);
 
         return $searchQuery;
     }
@@ -3015,7 +3065,7 @@ class BusinessProfileManager extends Manager
      *
      * @return array
      */
-    protected function addElasticExcludeQuery($searchQuery, $excludeIds)
+    protected function addElasticExcludeIdsQuery($searchQuery, $excludeIds)
     {
         if ($excludeIds) {
             $searchQuery['query']['bool']['must_not'][] = [
@@ -3023,6 +3073,21 @@ class BusinessProfileManager extends Manager
                     'values' => $excludeIds,
                 ],
             ];
+        }
+
+        return $searchQuery;
+    }
+
+    /**
+     * @param array $searchQuery
+     * @param $excludeQuery
+     *
+     * @return array
+     */
+    protected function addElasticExcludeQuery($searchQuery, $excludeQuery)
+    {
+        if ($excludeQuery) {
+            $searchQuery['query']['bool']['must_not'][] = $excludeQuery;
         }
 
         return $searchQuery;
@@ -3982,6 +4047,19 @@ class BusinessProfileManager extends Manager
     public function getSimilarBusinesses($name, $city, $id)
     {
         $items = $this->getRepository()->getSimilarBusinesses($name, $city, $id);
+
+        return $items;
+    }
+
+    /**
+     * @param array $phones
+     * @param int   $id
+     *
+     * @return BusinessProfile[]
+     */
+    public function getSimilarBusinessesByPhones($phones, $id)
+    {
+        $items = $this->getRepository()->getSimilarBusinessesByPhones($phones, $id);
 
         return $items;
     }

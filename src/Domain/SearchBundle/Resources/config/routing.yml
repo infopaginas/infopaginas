@@ -30,6 +30,10 @@ domain_search_compare:
     path:   /search/compare
     defaults: { _controller: DomainSearchBundle:Search:compare }
 
+domain_search_compare_catalog:
+    path:   /search/compare/{localitySlug}/{categorySlug}
+    defaults: { _controller: DomainSearchBundle:Search:compareCatalog }
+
 domain_search_catalog:
     path:   /c/{localitySlug}/{categorySlug}
     defaults: { _controller: DomainSearchBundle:Search:catalog, localitySlug: '', categorySlug: '' }

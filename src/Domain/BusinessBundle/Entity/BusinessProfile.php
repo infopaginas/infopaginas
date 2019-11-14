@@ -2540,6 +2540,17 @@ class BusinessProfile implements
         return $this->phones;
     }
 
+    public function getPhonesJSON()
+    {
+        $phones = $this->phones->toArray();
+
+        $phones = array_map(function ($phone) {
+            return $phone->getPhone();
+        }, $phones);
+
+        return json_encode($phones);
+    }
+
     /**
      * @return BusinessProfilePhone|null
      */
