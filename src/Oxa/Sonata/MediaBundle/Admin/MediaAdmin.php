@@ -74,6 +74,14 @@ class MediaAdmin extends BaseMediaAdmin
             ]
         );
 
+        $datagridMapper->add(
+            'providerName',
+            'doctrine_orm_choice',
+            [
+                'show_filter' => false,
+            ]
+        );
+
         $datagridMapper
             ->add('name')
             ->add('createdAt', 'doctrine_orm_datetime_range', $this->defaultDatagridDatetimeTypeOptions)
