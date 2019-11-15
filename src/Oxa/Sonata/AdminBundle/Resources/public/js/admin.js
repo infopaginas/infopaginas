@@ -33,6 +33,17 @@ $(document).ready(function () {
             ckEditorChanged = false;
         });
     }
+
+    if ($( '#map' ).length) {
+        $( window ).scroll(triggerMapRequested);
+    }
+
+    function triggerMapRequested () {
+        $( document ).trigger( 'mapScriptRequested' );
+        if ( typeof mapScriptInit !== 'undefined' && mapScriptInit === true ) {
+            $( window ).unbind( 'scroll', triggerMapRequested );
+        }
+    }
 });
 var FilterSwitcher = {
     open: true,
