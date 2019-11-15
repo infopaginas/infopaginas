@@ -6,8 +6,10 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Mapping as ORM;
 use Domain\BusinessBundle\Entity\BusinessProfile;
+use Domain\BusinessBundle\Entity\Translation\Media\BusinessGalleryTranslation;
 use Oxa\Sonata\AdminBundle\Model\ChangeStateInterface;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
+use Oxa\Sonata\AdminBundle\Model\OxaPersonalTranslatableInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\ChangeStateTrait;
 use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
 use Oxa\Sonata\MediaBundle\Entity\Gallery;
@@ -16,10 +18,8 @@ use Oxa\Sonata\MediaBundle\Model\OxaMediaInterface;
 use Sonata\MediaBundle\Entity\BaseGalleryHasMedia;
 use Sonata\MediaBundle\Model\MediaInterface;
 use Gedmo\Mapping\Annotation as Gedmo;
-use Sonata\TranslationBundle\Model\Gedmo\TranslatableInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\OxaPersonalTranslatable as PersonalTranslatable;
 use Symfony\Component\Validator\Exception\ValidatorException;
-use Domain\BusinessBundle\Entity\Translation\Media\BusinessGalleryTranslation;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -30,7 +30,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\HasLifecycleCallbacks
  * @Gedmo\TranslationEntity(class="Domain\BusinessBundle\Entity\Translation\Media\BusinessGalleryTranslation")
  */
-class BusinessGallery implements DefaultEntityInterface, TranslatableInterface, ChangeStateInterface
+class BusinessGallery implements DefaultEntityInterface, OxaPersonalTranslatableInterface, ChangeStateInterface
 {
     use DefaultEntityTrait;
     use PersonalTranslatable;
@@ -201,16 +201,6 @@ class BusinessGallery implements DefaultEntityInterface, TranslatableInterface, 
     }
 
     /**
-     * Remove translation
-     *
-     * @param \Domain\BusinessBundle\Entity\Translation\Media\BusinessGalleryTranslation $translation
-     */
-    public function removeTranslation(BusinessGalleryTranslation $translation)
-    {
-        $this->translations->removeElement($translation);
-    }
-
-    /**
      * @return mixed
      */
     public function getType()
@@ -272,5 +262,10 @@ class BusinessGallery implements DefaultEntityInterface, TranslatableInterface, 
     public function getPosition()
     {
         return $this->position;
+    }
+
+    public function getTranslationClass(): string
+    {
+        return BusinessGalleryTranslation::class;
     }
 }

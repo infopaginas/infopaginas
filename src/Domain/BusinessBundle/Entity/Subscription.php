@@ -4,6 +4,7 @@ namespace Domain\BusinessBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Domain\BusinessBundle\Entity\Translation\SubscriptionTranslation;
 use Domain\BusinessBundle\Model\DatetimePeriodStatusInterface;
 use Domain\BusinessBundle\Model\StatusInterface;
 use Domain\BusinessBundle\Util\Traits\DatetimePeriodStatusTrait;
@@ -11,11 +12,11 @@ use Domain\BusinessBundle\Util\Traits\StatusTrait;
 use Oxa\Sonata\AdminBundle\Model\ChangeStateInterface;
 use Oxa\Sonata\AdminBundle\Model\DatetimePeriodInterface;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
+use Oxa\Sonata\AdminBundle\Model\OxaPersonalTranslatableInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\ChangeStateTrait;
 use Oxa\Sonata\AdminBundle\Util\Traits\DatetimePeriodTrait;
 use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
 use Gedmo\Mapping\Annotation as Gedmo;
-use Sonata\TranslationBundle\Model\Gedmo\TranslatableInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\OxaPersonalTranslatable as PersonalTranslatable;
 
 /**
@@ -28,7 +29,7 @@ use Oxa\Sonata\AdminBundle\Util\Traits\OxaPersonalTranslatable as PersonalTransl
  */
 class Subscription implements
     DefaultEntityInterface,
-    TranslatableInterface,
+    OxaPersonalTranslatableInterface,
     DatetimePeriodStatusInterface,
     ChangeStateInterface
 {
@@ -167,13 +168,8 @@ class Subscription implements
         return $this->subscriptionPlan;
     }
 
-    /**
-     * Remove translation
-     *
-     * @param \Domain\BusinessBundle\Entity\Translation\SubscriptionTranslation $translation
-     */
-    public function removeTranslation(\Domain\BusinessBundle\Entity\Translation\SubscriptionTranslation $translation)
+    public function getTranslationClass(): string
     {
-        $this->translations->removeElement($translation);
+        return SubscriptionTranslation::class;
     }
 }

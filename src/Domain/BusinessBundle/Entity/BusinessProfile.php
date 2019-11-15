@@ -16,6 +16,7 @@ use Domain\BusinessBundle\Entity\CustomFields\BusinessCustomFieldTextAreaCollect
 use Domain\BusinessBundle\Entity\Media\BusinessGallery;
 use Domain\BusinessBundle\Entity\Review\BusinessReview;
 use Domain\BusinessBundle\Entity\Task;
+use Domain\BusinessBundle\Entity\Translation\BusinessProfileTranslation;
 use Domain\BusinessBundle\Model\StatusInterface;
 use Domain\BusinessBundle\Model\SubscriptionPlanInterface;
 use Domain\BusinessBundle\Util\ZipFormatterUtil;
@@ -24,6 +25,7 @@ use Domain\ReportBundle\Model\ReportInterface;
 use Oxa\Sonata\AdminBundle\Model\ChangeStateInterface;
 use Oxa\Sonata\AdminBundle\Model\CopyableEntityInterface;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
+use Oxa\Sonata\AdminBundle\Model\OxaPersonalTranslatableInterface;
 use Oxa\Sonata\AdminBundle\Model\PostponeRemoveInterface;
 use Oxa\Sonata\AdminBundle\Util\Helpers\AdminHelper;
 use Oxa\Sonata\AdminBundle\Util\Traits\ChangeStateTrait;
@@ -33,7 +35,6 @@ use Oxa\Sonata\MediaBundle\Entity\Media;
 use Oxa\Sonata\UserBundle\Entity\User;
 use Domain\SiteBundle\Utils\Traits\SeoTrait;
 use Gedmo\Mapping\Annotation as Gedmo;
-use Sonata\TranslationBundle\Model\Gedmo\TranslatableInterface;
 use Oxa\GeolocationBundle\Model\Geolocation\GeolocationInterface;
 use Symfony\Component\HttpFoundation\File\File;
 use Oxa\Sonata\AdminBundle\Util\Traits\OxaPersonalTranslatable as PersonalTranslatable;
@@ -61,7 +62,7 @@ use Domain\BusinessBundle\VO\Url;
 class BusinessProfile implements
     DefaultEntityInterface,
     CopyableEntityInterface,
-    TranslatableInterface,
+    OxaPersonalTranslatableInterface,
     GeolocationInterface,
     PostponeRemoveInterface,
     ReportInterface,
@@ -2013,14 +2014,9 @@ class BusinessProfile implements
         return $this->images;
     }
 
-    /**
-     * Remove translation
-     *
-     * @param \Domain\BusinessBundle\Entity\Translation\BusinessProfileTranslation $translation
-     */
-    public function removeTranslation(\Domain\BusinessBundle\Entity\Translation\BusinessProfileTranslation $translation)
+    public function getTranslationClass(): string
     {
-        $this->translations->removeElement($translation);
+        return BusinessProfileTranslation::class;
     }
 
     /**

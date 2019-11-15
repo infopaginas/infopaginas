@@ -4,12 +4,13 @@ namespace Oxa\ConfigBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Oxa\ConfigBundle\Entity\Translation\ConfigTranslation;
 use Oxa\ConfigBundle\Model\ConfigInterface;
 use Oxa\Sonata\AdminBundle\Model\ChangeStateInterface;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
+use Oxa\Sonata\AdminBundle\Model\OxaPersonalTranslatableInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\ChangeStateTrait;
 use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
-use Sonata\TranslationBundle\Model\Gedmo\TranslatableInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\OxaPersonalTranslatable as PersonalTranslatable;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -22,7 +23,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
  * @UniqueEntity("key")
  * @Gedmo\TranslationEntity(class="Oxa\ConfigBundle\Entity\Translation\ConfigTranslation")
  */
-class Config implements DefaultEntityInterface, ConfigInterface, TranslatableInterface, ChangeStateInterface
+class Config implements DefaultEntityInterface, ConfigInterface, OxaPersonalTranslatableInterface, ChangeStateInterface
 {
     use DefaultEntityTrait;
     use PersonalTranslatable;
@@ -225,13 +226,8 @@ class Config implements DefaultEntityInterface, ConfigInterface, TranslatableInt
         $this->translations = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
-    /**
-     * Remove translation
-     *
-     * @param \Oxa\ConfigBundle\Entity\Translation\ConfigTranslation $translation
-     */
-    public function removeTranslation(\Oxa\ConfigBundle\Entity\Translation\ConfigTranslation $translation)
+    public function getTranslationClass(): string
     {
-        $this->translations->removeElement($translation);
+        return ConfigTranslation::class;
     }
 }

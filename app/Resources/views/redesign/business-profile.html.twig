@@ -186,13 +186,10 @@
                                 <ul>
                                     {% for paymentMethod in businessProfile.paymentMethods %}
                                         <li>
-                                            {% if paymentMethod.type in PAYMENT_METHOD_TYPE %}
-                                                {% set path = 'redesign/img/payment/' ~ paymentMethod.type ~ '.svg' %}
-                                                <img data-src="{{ absolute_url(asset(path)) }}"
-                                                     alt="{{ paymentMethod.getName }}"
-                                                     class="lazyload"
-                                                >
-                                            {% endif %}
+                                            <img data-src="{% path paymentMethod.image, 'reference' %}"
+                                                 alt="{{ paymentMethod.getName }}"
+                                                 class="lazyload"
+                                            >
                                             <span>{{ paymentMethod.getName }}</span>
                                         </li>
                                     {% endfor %}

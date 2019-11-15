@@ -5,16 +5,17 @@ namespace Domain\ArticleBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Domain\ArticleBundle\Entity\Media\ArticleGallery;
+use Domain\ArticleBundle\Entity\Translation\ArticleTranslation;
 use Domain\BusinessBundle\Entity\Category;
 use Oxa\Sonata\AdminBundle\Model\ChangeStateInterface;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
+use Oxa\Sonata\AdminBundle\Model\OxaPersonalTranslatableInterface;
 use Oxa\Sonata\AdminBundle\Model\PostponeRemoveInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\ChangeStateTrait;
 use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
 use Domain\SiteBundle\Utils\Traits\SeoTrait;
 use Oxa\Sonata\AdminBundle\Util\Traits\PostponeRemoveTrait;
 use Oxa\Sonata\MediaBundle\Entity\Media;
-use Sonata\TranslationBundle\Model\Gedmo\TranslatableInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\OxaPersonalTranslatable as PersonalTranslatable;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -26,7 +27,11 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Entity(repositoryClass="Domain\ArticleBundle\Repository\ArticleRepository")
  * @Gedmo\TranslationEntity(class="Domain\ArticleBundle\Entity\Translation\ArticleTranslation")
  */
-class Article implements DefaultEntityInterface, TranslatableInterface, PostponeRemoveInterface, ChangeStateInterface
+class Article implements
+    DefaultEntityInterface,
+    OxaPersonalTranslatableInterface,
+    PostponeRemoveInterface,
+    ChangeStateInterface
 {
     use DefaultEntityTrait;
     use PersonalTranslatable;
@@ -343,16 +348,6 @@ class Article implements DefaultEntityInterface, TranslatableInterface, Postpone
     }
 
     /**
-     * Remove translation
-     *
-     * @param \Domain\ArticleBundle\Entity\Translation\ArticleTranslation $translation
-     */
-    public function removeTranslation(\Domain\ArticleBundle\Entity\Translation\ArticleTranslation $translation)
-    {
-        $this->translations->removeElement($translation);
-    }
-
-    /**
      * Set category
      *
      * @param \Domain\BusinessBundle\Entity\Category $category
@@ -582,5 +577,10 @@ class Article implements DefaultEntityInterface, TranslatableInterface, Postpone
         } else {
             return $this->getCreatedAt();
         }
+    }
+
+    public function getTranslationClass(): string
+    {
+        return ArticleTranslation::class;
     }
 }

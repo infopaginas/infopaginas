@@ -50,16 +50,6 @@ twig:
                 FAX:        'fax'
                 SECONDARY:  'secondary'
 
-#        const of PaymentMethod class
-        PAYMENT_METHOD_TYPE:
-            CASH:       'cash'
-            CHECK:      'check'
-            PAYPAL:     'paypal'
-            ATH_MOVIL:  'ath_movil'
-            ONLINE:     'online'
-            DEBIT:      'debit'
-            ATH:        'ath'
-
 #       const types of ChangeSetCalculator class
         CHANGE_SET_TYPE:
             PROPERTY_IMAGE_PROPERTY_UPDATE: 'PROPERTY_IMAGE_PROPERTY_UPDATE'

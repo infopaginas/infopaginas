@@ -10,10 +10,10 @@ use Domain\ReportBundle\Util\DatesUtil;
 use Domain\SiteBundle\Utils\Traits\SeoTrait;
 use Oxa\Sonata\AdminBundle\Model\ChangeStateInterface;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
+use Oxa\Sonata\AdminBundle\Model\OxaPersonalTranslatableInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\ChangeStateTrait;
 use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
 use Oxa\Sonata\MediaBundle\Entity\Media;
-use Sonata\TranslationBundle\Model\Gedmo\TranslatableInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\OxaPersonalTranslatable as PersonalTranslatable;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -28,7 +28,7 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
  * @Gedmo\TranslationEntity(class="Domain\PageBundle\Entity\Translation\PageTranslation")
  * @Assert\Callback(methods={"validatePageActionLink"})
  */
-class Page implements DefaultEntityInterface, TranslatableInterface, PageInterface, ChangeStateInterface
+class Page implements DefaultEntityInterface, OxaPersonalTranslatableInterface, PageInterface, ChangeStateInterface
 {
     use DefaultEntityTrait;
     use PersonalTranslatable;
@@ -347,16 +347,6 @@ class Page implements DefaultEntityInterface, TranslatableInterface, PageInterfa
     public function getSlug()
     {
         return $this->slug;
-    }
-
-    /**
-     * Remove translation
-     *
-     * @param PageTranslation $translation
-     */
-    public function removeTranslation(PageTranslation $translation)
-    {
-        $this->translations->removeElement($translation);
     }
 
     /**
@@ -709,5 +699,10 @@ class Page implements DefaultEntityInterface, TranslatableInterface, PageInterfa
         }
 
         return $links;
+    }
+
+    public function getTranslationClass(): string
+    {
+        return PageTranslation::class;
     }
 }

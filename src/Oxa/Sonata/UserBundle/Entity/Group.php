@@ -7,11 +7,12 @@ use Gedmo\Translatable\Translatable;
 use Oxa\Sonata\AdminBundle\Model\ChangeStateInterface;
 use Oxa\Sonata\AdminBundle\Model\CopyableEntityInterface;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
+use Oxa\Sonata\AdminBundle\Model\OxaPersonalTranslatableInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\ChangeStateTrait;
 use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
 use Doctrine\ORM\Mapping as ORM;
-use Sonata\TranslationBundle\Model\Gedmo\TranslatableInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\OxaPersonalTranslatable as PersonalTranslatable;
+use Oxa\Sonata\UserBundle\Entity\Translation\GroupTranslation;
 use Sonata\UserBundle\Entity\BaseGroup as BaseGroup;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -22,7 +23,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  * @Gedmo\TranslationEntity(class="Oxa\Sonata\UserBundle\Entity\Translation\GroupTranslation")
  * @UniqueEntity("code")
  */
-class Group extends BaseGroup implements DefaultEntityInterface, TranslatableInterface, ChangeStateInterface
+class Group extends BaseGroup implements DefaultEntityInterface, OxaPersonalTranslatableInterface, ChangeStateInterface
 {
     use DefaultEntityTrait;
     use PersonalTranslatable;
@@ -179,13 +180,8 @@ class Group extends BaseGroup implements DefaultEntityInterface, TranslatableInt
         return $this->roleUsers;
     }
 
-    /**
-     * Remove translation
-     *
-     * @param \Oxa\Sonata\UserBundle\Entity\Translation\GroupTranslation $translation
-     */
-    public function removeTranslation(\Oxa\Sonata\UserBundle\Entity\Translation\GroupTranslation $translation)
+    public function getTranslationClass(): string
     {
-        $this->translations->removeElement($translation);
+        return GroupTranslation::class;
     }
 }
