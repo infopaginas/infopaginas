@@ -840,6 +840,6 @@ $( document ).ready( function() {
     }
 
     $( '.start-date' ).parent().on( 'dp.change', function( event ) {
-        $( this ).parents( 'tr' ).children('.end-date').parent().data( 'DateTimePicker' ).setDate( event.date.add( 1, 'year' ) );
+        $( this ).parents( 'tr' ).find('.end-date').parent().data( 'DateTimePicker' ).setDate( event.date.add( 1, 'year' ) );
     } )
 } );
