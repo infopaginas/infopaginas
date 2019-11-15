@@ -84,6 +84,32 @@ class BaseMediaAdmin extends OxaAdmin
     /**
      * {@inheritdoc}
      */
+    public function getPersistentParameters()
+    {
+        if (!$this->hasRequest()) {
+            return array();
+        }
+
+        $context   = $this->getRequest()->get('context', $this->pool->getDefaultContext());
+        $providers = $this->pool->getProvidersByContext($context);
+        $provider  = $this->getRequest()->get('provider');
+
+        // if the context has only one provider, set it into the request
+        // so the intermediate provider selection is skipped
+        if (count($providers) == 1 && null === $provider) {
+            $provider = array_shift($providers)->getName();
+            $this->getRequest()->query->set('provider', $provider);
+        }
+
+        return array(
+            'provider' => $provider,
+            'context'  => $context,
+        );
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getNewInstance()
     {
         $media = parent::getNewInstance();
