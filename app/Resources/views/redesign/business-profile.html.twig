@@ -1,5 +1,6 @@
 {% extends "redesign/layout/base.html.twig" %}
 {% from 'widgets/picture_macros.html.twig' import picture %}
+{% from 'widgets/phone_number_macros.html.twig' import phoneNumber %}
 
 {% block breadcrumbs %}
     {% include ':redesign/blocks:breadcrumbs.html.twig' with {'catalogLocality': businessProfile.catalogLocality, 'category': businessProfile.categories|first} %}
@@ -90,8 +91,15 @@
                                             {% for phone in businessProfile.phones %}
                                                 <li {% if phone.type == BUSINESS_PROFILE_PHONE.TYPE.MAIN %}class="main-phone"{% endif %} title="{{ ('business_profile.phone.tooltip.' ~ phone.type)|trans }}">
                                                     <i class="fa {{ get_business_profile_phone_icon(phone) }}"></i>
-                                                    <a href="tel:{{ phone.phone }}" class="hide-desktop phone-call" data-id="{{ businessProfile.id }}" data-type="callMobButton" data-bw-gtm-event-click data-bw-gtm-label="{{ phone.phone }}">{{ phone.phone }}</a>
-                                                    <span class="hide-mobile">{{ phone.phone }}</span>
+                                                    <a href="tel:{{ phone.phone }}" class="hide-desktop phone-call"
+                                                       data-id="{{ businessProfile.id }}" data-type="callMobButton"
+                                                       data-bw-gtm-event-click data-bw-gtm-label="{{ phone.phone }}"
+                                                    >
+                                                        {{ phoneNumber(phone) }}
+                                                    </a>
+                                                    <span class="hide-mobile">
+                                                        {{ phoneNumber(phone) }}
+                                                    </span>
                                                 </li>
                                             {% endfor %}
                                         </ul>
