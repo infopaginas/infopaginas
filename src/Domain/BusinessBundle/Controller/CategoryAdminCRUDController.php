@@ -48,13 +48,20 @@ class CategoryAdminCRUDController extends CRUDController
             $existDependentFields = $adminManager->checkExistDependentEntity($object);
 
             $categoryAttachedToProfiles = ($this->admin->getClass() == Category::class)
-                && (count($object->getBusinessProfiles()) > 0);
+                && !$object->getBusinessProfiles()->isEmpty();
 
             if ($categoryAttachedToProfiles) {
                 $existDependentFields[] = 'Business Profiles';
             }
 
-            if (!count($existDependentFields) && !$categoryAttachedToProfiles) {
+            $categoryAttachedToArticles = ($this->admin->getClass() == Category::class)
+                && !$object->getArticles()->isEmpty();
+
+            if ($categoryAttachedToArticles) {
+                $existDependentFields[] = 'Articles';
+            }
+
+            if (!count($existDependentFields) && !$categoryAttachedToProfiles && !$categoryAttachedToArticles) {
                 $objectName = $this->admin->toString($object);
 
                 try {

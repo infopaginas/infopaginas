@@ -5,6 +5,7 @@ namespace Domain\ArticleBundle\Repository;
 use Doctrine\ORM\Internal\Hydration\IterableResult;
 use Domain\ArticleBundle\Entity\Article;
 use Domain\BusinessBundle\Entity\BusinessProfile;
+use Domain\BusinessBundle\Entity\Category;
 use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
 use Domain\SiteBundle\Utils\Helpers\SiteHelper;
 use Oxa\ManagerArchitectureBundle\Model\DataType\AbstractDTO;
@@ -121,5 +122,31 @@ class ArticleRepository extends \Doctrine\ORM\EntityRepository
         $iterateResult = $query->iterate();
 
         return $iterateResult;
+    }
+
+    public function getArticlesByCategory(Category $category, $limit = null)
+    {
+        $qb = $this->createQueryBuilder('a');
+
+        $qb
+            ->select('a')
+            ->where('a.category = :categoryId')
+            ->setParameter('categoryId', $category->getId())
+            ->setMaxResults($limit)
+            ->orderBy('a.id');
+
+        return $qb->getQuery()
+            ->getResult();
+    }
+
+    public function getArticlesCountForCategory(Category $category) : int
+    {
+        $qb = $this->createQueryBuilder('a');
+        $qb
+            ->select($qb->expr()->count('a'))
+            ->where('a.category = :categoryId')
+            ->setParameter('categoryId', $category->getId());
+
+        return $qb->getQuery()->getSingleScalarResult();
     }
 }
