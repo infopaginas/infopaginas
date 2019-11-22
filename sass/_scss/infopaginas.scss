@@ -535,6 +535,11 @@ $side-padding-mb: 16px;
     &.field-phone-value {
       flex: 1 1 30%;
     }
+
+    &.field-extension-value {
+      flex: 1 1 30%;
+      margin-left: 5px;
+    }
   }
 }
 
@@ -3648,6 +3653,13 @@ a.tag {
   box-sizing: content-box;
   line-height: 1em;
   margin: 10px 0;
+
+  li {
+    .phone-call {
+      width: 80%;
+      float: right;
+    }
+  }
 }
 
 .empty {
