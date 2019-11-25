@@ -2,6 +2,7 @@
 
 namespace Domain\BusinessBundle\Repository;
 
+use Domain\BusinessBundle\Entity\Category;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Internal\Hydration\IterableResult;
 use Doctrine\ORM\Query;
@@ -563,5 +564,33 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
 
         return $qb->getQuery()
             ->getResult();
+    }
+
+    public function getBusinessByCategory(Category $category, $limit = null)
+    {
+        $qb = $this->createQueryBuilder('bp');
+
+        $qb
+            ->select('bp')
+            ->join('bp.categories', 'categories')
+            ->where('categories.id = :categoryId')
+            ->setParameter('categoryId', $category->getId())
+            ->setMaxResults($limit)
+            ->orderBy('bp.id');
+
+        return $qb->getQuery()
+            ->getResult();
+    }
+
+    public function getBusinessCountForCategory(Category $category) : int
+    {
+        $qb = $this->createQueryBuilder('bp');
+        $qb
+            ->select($qb->expr()->count('bp'))
+            ->join('bp.categories', 'categories')
+            ->where('categories.id = :categoryId')
+            ->setParameter('categoryId', $category->getId());
+
+        return $qb->getQuery()->getSingleScalarResult();
     }
 }

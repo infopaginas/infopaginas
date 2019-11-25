@@ -1,4 +1,5 @@
 {% from 'widgets/picture_macros.html.twig' import picture %}
+{% from 'widgets/phone_number_macros.html.twig' import phoneNumber %}
 
 {% set hasVideo = video_section_allowed_for_business(item) and item.getVideo() is not null %}
 {% set hasImages = item.logo or item.background or item.images|length > 0 and hasSubscription(item, "CODE_PREMIUM_PLUS") %}
@@ -62,7 +63,9 @@
                 {% else %}
                     {% set phoneToCall = item.phones.first.phone %}
                 {% endif %}
-                <a data-bname="{{ item.name }}" href="tel:{{ phoneToCall }}" class="button button--small button--featured hide-desktop phone-call {% if item.isAd %}svm-callmobile{% endif %}" data-id="{{ item.id }}" data-type="callMobButton" data-bw-gtm-event-click data-bw-gtm-label="{% trans %}ActionButtonCall{% endtrans %}">
+                <a data-bname="{{ item.name }}" href="tel:{{ phoneToCall }}"
+                   class="button button--small button--featured hide-desktop phone-call {% if item.isAd %}svm-callmobile{% endif %}"
+                   data-id="{{ item.id }}" data-type="callMobButton" data-bw-gtm-event-click data-bw-gtm-label="{% trans %}ActionButtonCall{% endtrans %}">
                     <i class="fa fa-phone"></i>
                     {% trans %}ActionButtonCall{% endtrans %}
                 </a>
@@ -76,7 +79,7 @@
                         {% for phone in item.phones %}
                             <li {% if phone.type == BUSINESS_PROFILE_PHONE.TYPE.MAIN %}class="main-phone"{% endif %} title="{{ ('business_profile.phone.tooltip.' ~ phone.type)|trans }}">
                                 <i class="fa {{ get_business_profile_phone_icon(phone) }}"></i>
-                                {{ phone.phone }}
+                                {{ phoneNumber(phone) }}
                             </li>
                             <li role="separator" class="divider"></li>
                         {% endfor %}

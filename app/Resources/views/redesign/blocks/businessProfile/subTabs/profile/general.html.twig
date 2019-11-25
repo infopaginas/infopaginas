@@ -11,6 +11,10 @@
             {{ custom_form_label.widget(phoneField.phone) }}
             {{ form_widget(phoneField.phone, {'attr': {'placeholder': ''}} ) }}
         </div>
+        <div class="form__field field-extension-value">
+            {{ custom_form_label.widget(phoneField.extension) }}
+            {{ form_widget(phoneField.extension) }}
+        </div>
         <button class="button button--small remove-phone">
             <i class="fa fa-minus-square"></i>
             {% trans %}Remove phone{% endtrans %}

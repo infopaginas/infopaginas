@@ -228,11 +228,6 @@ class AdminManager extends DefaultManager
             $existDependentField[] = 'External Article';
         }
 
-        // prevent deletion of hardcoded categories
-        if ($entity instanceof Category and ($entity->getSlugEn() or $entity->getSlugEs())) {
-            $existDependentField[] = 'Protected Category';
-        }
-
         // prevent deletion of hardcoded subscription plans
         if ($entity instanceof SubscriptionPlan) {
             $existDependentField[] = 'Protected Item';

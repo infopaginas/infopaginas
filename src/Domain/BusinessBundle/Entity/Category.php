@@ -48,6 +48,8 @@ class Category implements
 
     const ALLOW_DELETE_ASSOCIATED_FIELD_CATALOG_ITEMS = 'catalogItems';
 
+    const RELATED_ENTITIES_DISPLAY_COUNT = 15;
+
     /**
      * @var int
      *
