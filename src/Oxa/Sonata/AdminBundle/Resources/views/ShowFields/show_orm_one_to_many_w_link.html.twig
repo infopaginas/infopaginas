@@ -1,0 +1,21 @@
+{% extends 'SonataAdminBundle:CRUD:base_show_field.html.twig' %}
+
+{% block field %}
+    <ul class="sonata-ba-show-one-to-many">
+        {% if field_description.options.data.value is defined %}
+            {% for element in field_description.options.data.value %}
+                <li>
+                    {% if is_granted(SECURITY_ROLE.ADMINISTRATOR) %}
+                        <a href="{{ absolute_url(path(field_description.options.data.path, {id: element.getId()})) }}">
+                            {{ element.getId() }} -
+                        </a>
+                    {% else %}
+                        {{ element.getId() }} -
+                    {% endif %}
+                    {{ element|render_relation_element(field_description) }}
+                </li>
+            {% endfor %}
+            <span>Total count: {{ field_description.options.data.count }}</span>
+        {% endif %}
+    </ul>
+{% endblock %}

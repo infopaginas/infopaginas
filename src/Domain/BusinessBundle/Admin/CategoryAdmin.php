@@ -2,6 +2,7 @@
 
 namespace Domain\BusinessBundle\Admin;
 
+use Domain\ArticleBundle\Entity\Article;
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\Category;
 use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
@@ -63,11 +64,39 @@ class CategoryAdmin extends OxaAdmin
      */
     protected function configureShowFields(ShowMapper $showMapper)
     {
+        $container = $this->getConfigurationPool()->getContainer();
         $showMapper
-            ->add('id')
-            ->add('name')
-            ->add('showSuggestion')
-            ->add('slug')
+            ->with('Category')
+                ->add('id')
+                ->add('name')
+                ->add('showSuggestion')
+                ->add('slug')
+            ->end()
+            ->with('Dependencies')
+                ->add('businessProfilesLimited', null, [
+                    'label' => 'Business Profiles',
+                    'template' => 'OxaSonataAdminBundle:ShowFields:show_orm_one_to_many_w_link.html.twig',
+                    'data' => [
+                        'path' => 'admin_domain_business_businessprofile_edit',
+                        'value' => $container->get('doctrine')
+                            ->getRepository(BusinessProfile::class)
+                            ->getBusinessByCategory($this->getSubject(), Category::RELATED_ENTITIES_DISPLAY_COUNT),
+                        'count' => $container->get('doctrine')
+                            ->getRepository(BusinessProfile::class)->getBusinessCountForCategory($this->getSubject()),
+                    ],
+                ])
+                ->add('articlesLimited', null, [
+                    'template' => 'OxaSonataAdminBundle:ShowFields:show_orm_one_to_many_w_link.html.twig',
+                    'data' => [
+                        'path' => 'admin_domain_article_article_edit',
+                        'value' => $container->get('doctrine')
+                            ->getRepository(Article::class)
+                            ->getArticlesByCategory($this->getSubject(), Category::RELATED_ENTITIES_DISPLAY_COUNT),
+                        'count' => $container->get('doctrine')
+                            ->getRepository(Article::class)->getArticlesCountForCategory($this->getSubject()),
+                    ],
+                ])
+            ->end()
         ;
     }
 
@@ -116,7 +145,7 @@ class CategoryAdmin extends OxaAdmin
 
     /**
      * @param string $name
-     * @param null $object
+     * @param Category|null $object
      * @return bool
      */
     public function isGranted($name, $object = null)
@@ -125,10 +154,19 @@ class CategoryAdmin extends OxaAdmin
 
         if ($object and in_array($name, $deniedActions) and
             (in_array($object->getCode(), Category::getDefaultCategories()) or
-            $object->getSlugEn() or $object->getSlugEs())) {
+                !$object->getBusinessProfiles()->isEmpty() or
+                !$object->getArticles()->isEmpty())
+        ) {
             return false;
         }
 
         return parent::isGranted($name, $object);
+    }
+
+    public function configureBatchActions($actions)
+    {
+        unset($actions['delete']);
+
+        return $actions;
     }
 }

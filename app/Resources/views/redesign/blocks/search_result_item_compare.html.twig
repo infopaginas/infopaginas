@@ -1,3 +1,5 @@
+{% from 'widgets/phone_number_macros.html.twig' import phoneNumber %}
+
 <div class="comparison__item" id="business-{{ item.id }}" data-bw-gtm-component="search-results-item-compare">
     <div class="comparison__row comparison__where">
         {% set workingHoursData = get_business_profile_open_status(item) %}
@@ -58,8 +60,15 @@
                         {% for phone in item.phones %}
                             <li {% if phone.type == BUSINESS_PROFILE_PHONE.TYPE.MAIN %}class="main-phone"{% endif %} title="{{ ('business_profile.phone.tooltip.' ~ phone.type)|trans }}">
                                 <i class="fa {{ get_business_profile_phone_icon(phone) }}"></i>
-                                <a data-bname="{{ item.name }}" href="tel:{{ phone.phone }}" class="hide-desktop phone-call" data-id="{{ item.id }}" data-type="callMobButton" data-bw-gtm-event-click>{{ phone.phone }}</a>
-                                <span class="hide-mobile">{{ phone.phone }}</span>
+                                <a data-bname="{{ item.name }}" class="hide-desktop phone-call"
+                                   href="tel:{{ phone.phone }}"
+                                   data-id="{{ item.id }}" data-type="callMobButton"
+                                   data-bw-gtm-event-click>
+                                    {{ phoneNumber(phone, true) }}
+                                </a>
+                                <span class="hide-mobile">
+                                    {{ phoneNumber(phone) }}
+                                </span>
                             </li>
                         {% endfor %}
                     </ul>

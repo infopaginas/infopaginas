@@ -1,0 +1,5 @@
+{% macro phoneNumber(object, breakLine = false) %}
+    {{ object.phone }}
+    {% if breakLine %}<br/>{% endif %}
+    {% if object.extension %} {% trans %}Ext{% endtrans %}: {{ object.extension }}{% endif %}
+{% endmacro %}

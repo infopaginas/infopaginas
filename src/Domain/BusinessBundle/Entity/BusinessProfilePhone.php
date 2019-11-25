@@ -24,6 +24,8 @@ class BusinessProfilePhone implements ChangeStateInterface
 
     const REGEX_PHONE_PATTERN = '/^\d{3}-\d{3}-\d{4}$/';
     const MAX_PHONE_LENGTH = 15;
+    const MAX_EXTENSION_LENGTH = 6;
+    const MIN_EXTENSION_LENGTH = 1;
 
     const PHONE_TYPE_MAIN       = 'main';
     const PHONE_TYPE_SECONDARY  = 'secondary';
@@ -51,6 +53,15 @@ class BusinessProfilePhone implements ChangeStateInterface
      * @Assert\Length(max=BusinessProfilePhone::MAX_PHONE_LENGTH)
      */
     private $phone;
+
+    /**
+     * @var string - Phone extension
+     *
+     * @ORM\Column(name="extension", type="string", length=6, nullable=true)
+     * @Assert\Length(min=BusinessProfilePhone::MIN_EXTENSION_LENGTH, max=BusinessProfilePhone::MAX_EXTENSION_LENGTH)
+     * @Assert\Type("digit")
+     */
+    private $extension;
 
     /**
      * @var string
@@ -266,5 +277,23 @@ class BusinessProfilePhone implements ChangeStateInterface
     public function setPriorityValue()
     {
         $this->priority = self::getPriorityByType($this->type);
+    }
+
+    /**
+     * @return string
+     */
+    public function getExtension()
+    {
+        return $this->extension;
+    }
+
+    /**
+     * @param string $extension
+     * @return BusinessProfilePhone
+     */
+    public function setExtension($extension)
+    {
+        $this->extension = $extension;
+        return $this;
     }
 }

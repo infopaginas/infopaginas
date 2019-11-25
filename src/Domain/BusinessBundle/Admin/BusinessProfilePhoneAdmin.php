@@ -63,6 +63,7 @@ class BusinessProfilePhoneAdmin extends OxaAdmin
                     'required' => true,
                 ],
             ])
+            ->add('extension')
         ;
     }
 

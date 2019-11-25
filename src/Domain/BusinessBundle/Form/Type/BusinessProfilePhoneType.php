@@ -48,6 +48,9 @@ class BusinessProfilePhoneType extends AbstractType
                 ],
                 'required' => true,
             ])
+            ->add('extension', TextType::class, [
+                'label' => 'Extension',
+            ])
         ;
     }
 
