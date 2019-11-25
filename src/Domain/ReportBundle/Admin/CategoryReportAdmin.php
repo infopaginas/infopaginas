@@ -65,6 +65,13 @@ class CategoryReportAdmin extends ReportAdmin
                     'mapped' => false,
                 ],
             ])
+            ->add('searchTextEs', 'doctrine_orm_string', [
+                'label' => 'Name Esp',
+                'show_filter' => !empty($this->datagridValues['searchTextEs']['value']) ?: null,
+                'field_options' => [
+                    'mapped' => false,
+                ],
+            ])
             ->add('date', 'doctrine_orm_datetime_range', AdminHelper::getReportDateTypeOptions())
             ->add('locality', 'doctrine_orm_model', [
                 'show_filter' => !empty($this->datagridValues['locality']['value']) ?: null,
