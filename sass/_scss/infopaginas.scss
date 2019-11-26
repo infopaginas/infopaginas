@@ -3019,10 +3019,6 @@ $thumb-width-mb: 60px;
   }
 }
 
-.news__img {
-  width: 100%;
-}
-
 .news__icon {
   position: absolute;
   right: 5px;
@@ -5956,11 +5952,22 @@ input[type='radio'], input[type='checkbox'] {
 
 .articles__container {
   .news__item{
+    text-align: center;
+
     .news__title {
       font-size: 18px;
       margin-bottom: 10px;
       letter-spacing: 0;
       text-transform: none;
+      text-align: left;
+    }
+
+    .news__text {
+      text-align: left;
+    }
+
+    img {
+      height: 225px;
     }
   }
 }

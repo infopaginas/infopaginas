@@ -45,3 +45,6 @@ imageHelpMessage: Use keywords for the picture names. Use <span class="highlight
 homepageCarouselImageRatioHelpMessage: For a better quality image should have aspect ratio about 888:492
 file_is_processing: File is Processing. It will take about one minute
 link_filters: Columns Filter
+article:
+  help:
+    image: The target block size is "442 x 225"

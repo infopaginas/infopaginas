@@ -4,10 +4,14 @@
     {% block titleTag %} {% endblock %}
     <div class="articles__container clearfix">
         {% for article in articles %}
-            <a href="{{ absolute_url(path('domain_article_view', { 'slug' : article.getSlug() })) }}" title="{% trans %}Go to read...{% endtrans %}" class="news__item clearfix" data-bw-gtm-event-click data-bw-gtm-label="{{ article.title }}::{{ absolute_url(path('domain_article_view', { 'slug' : article.getSlug() })) }}">
+            <a href="{{ absolute_url(path('domain_article_view', { 'slug' : article.getSlug() })) }}"
+               title="{% trans %}Go to read...{% endtrans %}"
+               class="news__item clearfix"
+               data-bw-gtm-event-click
+               data-bw-gtm-label="{{ article.title }}::{{ absolute_url(path('domain_article_view', { 'slug' : article.getSlug() })) }}">
                 {{ picture(article.getImage(), 'list', true, article.title, 'news__img') }}
                 <h2 class="news__title">{{ article.title }}</h2>
-                <p>{{ cut_body_extension(article.getBody()) }}</p>
+                <p class="news__text">{{ cut_body_extension(article.getBody()) }}</p>
             </a>
         {% endfor %}
     </div>
