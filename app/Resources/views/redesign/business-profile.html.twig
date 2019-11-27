@@ -280,7 +280,11 @@
                                                 {% else %}
                                                     {% set hasPhone = false %}
                                                 {% endif %}
-                                                <a class="slide-button get-dir redirect-event button button--small button--featured link-pointer {% if suggestedBusiness.isAd %}svm-getdir{% endif %} {% if not hasPhone %}empty-phone{% endif %}" data-href="{{ path('domain_search_show_directions', {'slug': suggestedBusiness.slug }) }}" data-id="{{ suggestedBusiness.id }}" data-latlng="{{ suggestedBusiness.latLng }}" data-type="directionButton" data-bw-gtm-event-click data-bw-gtm-label="{% trans %}Directions{% endtrans %}" data-bname="{{ suggestedBusiness.name }}">
+                                                <a class="slide-button get-dir redirect-event button button--small button--featured link-pointer {% if suggestedBusiness.isAd %}svm-getdir{% endif %} {% if not hasPhone %}empty-phone{% endif %}"
+                                                   data-href="{{ path('domain_search_show_directions', {'slug': suggestedBusiness.slug }) }}"
+                                                   data-id="{{ suggestedBusiness.id }}" data-latlng="{{ suggestedBusiness.latLng }}"
+                                                   data-type="directionButton" data-bw-gtm-event-click data-bw-gtm-label="{% trans %}Directions{% endtrans %}"
+                                                   data-bname="{{ suggestedBusiness.name }}" rel="nofollow">
                                                     <i class="fa fa-location-arrow"></i>
                                                     {% trans %}Directions{% endtrans %}
                                                 </a>
