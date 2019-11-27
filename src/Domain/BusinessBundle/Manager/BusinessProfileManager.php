@@ -2682,9 +2682,8 @@ class BusinessProfileManager extends Manager
         $locationQuery = [];
 
         if (!$params->locationValue->ignoreLocality) {
-            $distanceScript = 'doc["location"].arcDistance(' . $params->locationValue->lat . ', '
-                . $params->locationValue->lng . ') * ' . ElasticSearchManager::MILES_IN_METER
-                . ' < doc["miles_of_my_business"].value';
+            $distanceScript = 'doc["location"].arcDistance(params.lat, params.lng) * params.milesInMeter' .
+                ' < doc["miles_of_my_business"].value';
 
             if ($params->locationValue->locality) {
                 $localityId = $params->locationValue->locality->getId();
@@ -2703,7 +2702,14 @@ class BusinessProfileManager extends Manager
                                 'must' => [
                                     [
                                         'script' => [
-                                            'script' => $distanceScript,
+                                            'script' => [
+                                                'inline' => $distanceScript,
+                                                'params' => [
+                                                    'lat' => $params->locationValue->lat,
+                                                    'lng' => $params->locationValue->lng,
+                                                    'milesInMeter' => ElasticSearchManager::MILES_IN_METER,
+                                                ]
+                                            ]
                                         ],
                                     ],
                                     [
