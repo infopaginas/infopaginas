@@ -8,25 +8,32 @@
 <div class="sidebar__section section--social" data-bw-gtm-component="social-share">
     <ul>
         <li>
-            <a class="button button-share--facebook social-share" rel="noopener" aria-label="{% trans %}Share on Facebook{% endtrans %}" data-href="https://www.facebook.com/sharer/sharer.php?u={{ currentUrl|url_encode }}&t={{ currentTitle|url_encode }}" data-bw-gtm-event-click data-bw-gtm-label="{% trans %}Share on Facebook{% endtrans %}">
+            <a class="button button-share--facebook social-share" rel="noopener nofollow" aria-label="{% trans %}Share on Facebook{% endtrans %}"
+               data-href="https://www.facebook.com/sharer/sharer.php?u={{ currentUrl|url_encode }}&t={{ currentTitle|url_encode }}"
+               data-bw-gtm-event-click data-bw-gtm-label="{% trans %}Share on Facebook{% endtrans %}">
                 <i class="fa fa-facebook"></i>
                 <span>{% trans %}Share on Facebook{% endtrans %}</span>
             </a>
         </li>
         <li>
-            <a class="button button-share--twitter" data-href="https://twitter.com/intent/tweet/?text={{ currentTitle|url_encode }}&url={{ currentUrl|url_encode }}" data-bw-gtm-event-click data-bw-gtm-label="{% trans %}Share on Twitter{% endtrans %}">
+            <a class="button button-share--twitter" data-href="https://twitter.com/intent/tweet/?text={{ currentTitle|url_encode }}&url={{ currentUrl|url_encode }}"
+               data-bw-gtm-event-click data-bw-gtm-label="{% trans %}Share on Twitter{% endtrans %}" rel="nofollow">
                 <i class="fa fa-twitter"></i>
                 <span>{% trans %}Share on Twitter{% endtrans %}</span>
             </a>
         </li>
         <li>
-            <a href="https://wa.me/?text={{ currentUrl|url_encode }}" target="_blank" rel="noopener" aria-label="{% trans %}Share on WhatsApp{% endtrans %}" class="button button-share--whatsapp" data-bw-gtm-event-click data-bw-gtm-label="{% trans %}Share on WhatsApp{% endtrans %}">
+            <a href="https://wa.me/?text={{ currentUrl|url_encode }}" target="_blank" rel="noopener nofollow"
+               aria-label="{% trans %}Share on WhatsApp{% endtrans %}" class="button button-share--whatsapp"
+               data-bw-gtm-event-click data-bw-gtm-label="{% trans %}Share on WhatsApp{% endtrans %}">
                 <i class="fa fa-whatsapp"></i>
                 <span>{% trans %}Share on WhatsApp{% endtrans %}</span>
             </a>
         </li>
         <li>
-            <a href="mailto:?subject={% trans %}I wanted you to see this site{% endtrans %}&amp;body={{ currentUrl|url_encode }}." target="_blank" rel="noopener" aria-label="{% trans %}Share on Email{% endtrans %}" class="button button-share--email" data-bw-gtm-event-click data-bw-gtm-label="{% trans %}Share on Email{% endtrans %}">
+            <a href="mailto:?subject={% trans %}I wanted you to see this site{% endtrans %}&amp;body={{ currentUrl|url_encode }}."
+               target="_blank" rel="noopener nofollow" aria-label="{% trans %}Share on Email{% endtrans %}"
+               class="button button-share--email" data-bw-gtm-event-click data-bw-gtm-label="{% trans %}Share on Email{% endtrans %}">
                 <i class="fa fa-envelope"></i>
                 <span>{% trans %}Share on Email{% endtrans %}</span>
             </a>
