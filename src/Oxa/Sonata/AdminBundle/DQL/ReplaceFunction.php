@@ -18,8 +18,8 @@ class ReplaceFunction extends FunctionNode
      */
     public function getSql(\Doctrine\ORM\Query\SqlWalker $sqlWalker)
     {
-        return  sprintf(
-            'replace(%s,%s,%s)',
+        return sprintf(
+            'REGEXP_REPLACE(%s,%s,%s)',
             $this->stringFirst->dispatch($sqlWalker),
             $this->stringSecond->dispatch($sqlWalker),
             $this->stringThird->dispatch($sqlWalker)
