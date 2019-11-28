@@ -1,4 +1,5 @@
 {% from 'widgets/picture_macros.html.twig' import picture %}
+{% from ':widgets:url_item_rel_attributes_macros.html.twig' import relAttributes %}
 
 <div class="suggested-slider-section hide-before homepage-carousel-block" data-bw-gtm-component="business-profile-suggested">
     <span class="arrow prev slick-arrow">
@@ -57,7 +58,7 @@
                                     data-type="webActionButton"
                                     data-bw-gtm-event-click
                                     data-bw-gtm-label="{{ carouselBusiness.businessProfile.actionUrlItem.url }}"
-                                    rel="{% if carouselBusiness.businessProfile.actionUrlItem.relNoFollow %}nofollow{% endif %} {% if carouselBusiness.businessProfile.actionUrlItem.relNoOpener %}noopener{% endif %} {% if carouselBusiness.businessProfile.actionUrlItem.relNoReferrer %}noreferrer{% endif %}"
+                                    rel="{{ relAttributes(carouselBusiness.businessProfile.actionUrlItem) }}"
                             >
                                 {% if carouselBusiness.businessProfile.actionUrlType in BUSINESS_PROFILE.ACTION_TYPE %}
                                     {% set path = 'redesign/img/icons/' ~ carouselBusiness.businessProfile.actionUrlType ~ '.svg' %}

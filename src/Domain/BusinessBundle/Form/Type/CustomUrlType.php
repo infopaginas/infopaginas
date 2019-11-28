@@ -34,6 +34,14 @@ class CustomUrlType extends AbstractType
                 'label' => 'No Referrer',
                 'data' => true,
             ])
+            ->add('relSponsored', CheckboxType::class, [
+                'label' => 'Sponsored',
+                'data' => false,
+            ])
+            ->add('relUGC', CheckboxType::class, [
+                'label' => 'User Generated Content',
+                'data' => false,
+            ])
         ;
     }
 

@@ -1,0 +1,7 @@
+{% macro relAttributes(object) %}
+    {% if object.relNoFollow %}nofollow{% endif %}
+    {% if object.relNoOpener %}noopener{% endif %}
+    {% if object.relNoReferrer %}noreferrer{% endif %}
+    {% if object.relSponsored %}sponsored{% endif %}
+    {% if object.relUGC %}ugc{% endif %}
+{% endmacro %}

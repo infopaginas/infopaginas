@@ -1,6 +1,7 @@
 {% extends "redesign/layout/base.html.twig" %}
 {% from 'widgets/picture_macros.html.twig' import picture %}
 {% from 'widgets/phone_number_macros.html.twig' import phoneNumber %}
+{% from ':widgets:url_item_rel_attributes_macros.html.twig' import relAttributes %}
 
 {% block breadcrumbs %}
     {% include ':redesign/blocks:breadcrumbs.html.twig' with {'catalogLocality': businessProfile.catalogLocality, 'category': businessProfile.categories|first} %}
@@ -118,7 +119,7 @@
                                                     data-type="webActionButton"
                                                     data-bw-gtm-event-click
                                                     data-bw-gtm-label="{{ businessProfile.websiteItem.url }}"
-                                                    rel="{% if businessProfile.websiteItem.relNoFollow %}nofollow{% endif %} {% if businessProfile.websiteItem.relNoOpener %}noopener{% endif %} {% if businessProfile.websiteItem.relNoReferrer %}noreferrer{% endif %}"
+                                                    rel="{{ relAttributes(businessProfile.websiteItem) }}"
                                                 >
                                                     {{ businessProfile.websiteItem.url |truncate(profile_action_url_span_length) }}
                                                 </a>
