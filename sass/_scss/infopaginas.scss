@@ -2267,6 +2267,8 @@ $thumb-width-mb: 60px;
 
 .profile__sidebar {
   width: 100%;
+  margin-bottom: 100px;
+
   @media only screen and (min-width: 805px) {
     width: 30%;
     padding-left: 20px;
