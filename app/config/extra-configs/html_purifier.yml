@@ -4,3 +4,5 @@ exercise_html_purifier:
             - 'nofollow'
             - 'noopener'
             - 'noreferrer'
+            - 'sponsored'
+            - 'ugc'

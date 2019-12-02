@@ -595,6 +595,14 @@ class BusinessProfileManager extends Manager
                         if (array_key_exists(UrlType::REL_NO_REFERRER, $newValue)) {
                             $value->setRelNoReferrer((bool)$newValue[UrlType::REL_NO_REFERRER]);
                         }
+
+                        if (array_key_exists(UrlType::REL_SPONSORED, $newValue)) {
+                            $value->setRelSponsored((bool)$newValue[UrlType::REL_SPONSORED]);
+                        }
+
+                        if (array_key_exists(UrlType::REL_UGC, $newValue)) {
+                            $value->setRelUGC((bool)$newValue[UrlType::REL_UGC]);
+                        }
                     } else {
                         $value = null;
                     }

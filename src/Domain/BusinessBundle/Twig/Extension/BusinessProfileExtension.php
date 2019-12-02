@@ -514,6 +514,14 @@ class BusinessProfileExtension extends \Twig_Extension
                         $name = 'No opener';
 
                         break;
+                    case UrlType::REL_SPONSORED:
+                        $name = 'Sponsored';
+
+                        break;
+                    case UrlType::REL_UGC:
+                        $name = 'User Generated Content';
+
+                        break;
                     default:
                         $name = $item;
 
