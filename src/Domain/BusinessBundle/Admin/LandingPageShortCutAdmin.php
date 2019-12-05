@@ -2,6 +2,8 @@
 
 namespace Domain\BusinessBundle\Admin;
 
+use Domain\BusinessBundle\Entity\LandingPageShortCut;
+use Domain\SearchBundle\Util\CacheUtil;
 use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
@@ -105,6 +107,33 @@ class LandingPageShortCutAdmin extends OxaAdmin
     }
 
     /**
+     * @param LandingPageShortCut $entity
+     */
+    public function postRemove($entity)
+    {
+        $this->invalidateLandingShortcutCache();
+        parent::postRemove($entity);
+    }
+
+    /**
+     * @param LandingPageShortCut $entity
+     */
+    public function postPersist($entity)
+    {
+        $this->invalidateLandingShortcutCache();
+        parent::postPersist($entity);
+    }
+
+    /**
+     * @param LandingPageShortCut $entity
+     */
+    public function postUpdate($entity)
+    {
+        $this->invalidateLandingShortcutCache();
+        parent::postUpdate($entity);
+    }
+
+    /**
      * @param RouteCollection $collection
      */
     protected function configureRoutes(RouteCollection $collection)
@@ -113,5 +142,11 @@ class LandingPageShortCutAdmin extends OxaAdmin
             ->remove('export')
             ->add('move', $this->getRouterIdParameter().'/move/{position}')
         ;
+    }
+
+    private function invalidateLandingShortcutCache(): void
+    {
+        $memcachedCache = $this->getConfigurationPool()->getContainer()->get('app.cache.memcached');
+        CacheUtil::invalidateCacheByPrefix($memcachedCache, CacheUtil::PREFIX_HOMEPAGE_SHORTCUT . 'prefix');
     }
 }

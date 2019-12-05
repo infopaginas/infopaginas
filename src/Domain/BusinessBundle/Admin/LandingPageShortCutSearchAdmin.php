@@ -2,6 +2,8 @@
 
 namespace Domain\BusinessBundle\Admin;
 
+use Domain\BusinessBundle\Entity\LandingPageShortCutSearch;
+use Domain\SearchBundle\Util\CacheUtil;
 use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
@@ -10,6 +12,33 @@ use Sonata\AdminBundle\Show\ShowMapper;
 
 class LandingPageShortCutSearchAdmin extends OxaAdmin
 {
+    /**
+     * @param LandingPageShortCutSearch $entity
+     */
+    public function postRemove($entity)
+    {
+        $this->invalidateLandingShortcutCache();
+        parent::postRemove($entity);
+    }
+
+    /**
+     * @param LandingPageShortCutSearch $entity
+     */
+    public function postPersist($entity)
+    {
+        $this->invalidateLandingShortcutCache();
+        parent::postPersist($entity);
+    }
+
+    /**
+     * @param LandingPageShortCutSearch $entity
+     */
+    public function postUpdate($entity)
+    {
+        $this->invalidateLandingShortcutCache();
+        parent::postUpdate($entity);
+    }
+
     /**
      * Default values to the datagrid.
      *
@@ -89,5 +118,11 @@ class LandingPageShortCutSearchAdmin extends OxaAdmin
             ->add('searchTextEn')
             ->add('searchTextEs')
         ;
+    }
+
+    private function invalidateLandingShortcutCache(): void
+    {
+        $memcachedCache = $this->getConfigurationPool()->getContainer()->get('app.cache.memcached');
+        CacheUtil::invalidateCacheByPrefix($memcachedCache, CacheUtil::PREFIX_HOMEPAGE_SHORTCUT . 'prefix');
     }
 }

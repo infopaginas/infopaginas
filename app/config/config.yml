@@ -96,7 +96,7 @@ framework:
     trusted_proxies: ~
     session:
         # handler_id set to null will use default session handler from php.ini
-        handler_id:  ~
+        handler_id:  session.handler.memcached
         storage_id: dynamicDomainSessionStorage
         name: SFSESSID
     fragments:       ~
@@ -173,16 +173,18 @@ doctrine:
             urlType: Domain\BusinessBundle\DBAL\Types\UrlType
     orm:
         auto_generate_proxy_classes: true
-        naming_strategy: doctrine.orm.naming_strategy.underscore
-        auto_mapping: true
-        mappings:
-            OxaSonataUserBundle: ~
-            SonataUserBundle: ~
-            FOSUserBundle: ~
-            OxaSonataMediaBundle: ~
-            SonataMediaBundle: ~
-            SonataClassificationBundle: ~
-            ApplicationSonataClassificationBundle: ~
+        entity_managers:
+            default:
+                naming_strategy: doctrine.orm.naming_strategy.underscore
+                auto_mapping: true
+                mappings:
+                    OxaSonataUserBundle: ~
+                    SonataUserBundle: ~
+                    FOSUserBundle: ~
+                    OxaSonataMediaBundle: ~
+                    SonataMediaBundle: ~
+                    SonataClassificationBundle: ~
+                    ApplicationSonataClassificationBundle: ~
 
 #sonataClassificationBundle
 sonata_classification:

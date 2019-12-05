@@ -85,3 +85,13 @@ parameters:
 
     # path to wkhtmltopdf binary files
     wkhtmltopdf_file_path: '/usr/bin/wkhtmltopdf'
+
+    memcached.host:
+    memcached.port: 11211
+    memcached.config:
+        type: memcached
+        host: '%memcached.host%'
+        port: '%memcached.port%'
+        instance_class: Memcached
+    memcached.session_prefix: infopaginas
+    memcached.session_expire: 1440

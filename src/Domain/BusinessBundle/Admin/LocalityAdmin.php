@@ -5,6 +5,7 @@ namespace Domain\BusinessBundle\Admin;
 use Doctrine\Common\Collections\ArrayCollection;
 use Domain\BusinessBundle\Entity\Locality;
 use Domain\BusinessBundle\Entity\BusinessProfile;
+use Domain\SearchBundle\Util\CacheUtil;
 use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
 use Sonata\AdminBundle\Admin\Admin;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
@@ -113,6 +114,33 @@ class LocalityAdmin extends OxaAdmin
     }
 
     /**
+     * @param Locality $entity
+     */
+    public function postRemove($entity)
+    {
+        $this->invalidateLandingShortcutCache();
+        parent::postRemove($entity);
+    }
+
+    /**
+     * @param Locality $entity
+     */
+    public function postPersist($entity)
+    {
+        $this->invalidateLandingShortcutCache();
+        parent::postPersist($entity);
+    }
+
+    /**
+     * @param Locality $entity
+     */
+    public function postUpdate($entity)
+    {
+        $this->invalidateLandingShortcutCache();
+        parent::postUpdate($entity);
+    }
+
+    /**
      * @param string $name
      * @param null $object
      *
@@ -173,5 +201,11 @@ class LocalityAdmin extends OxaAdmin
 
             $businessProfile->removeLocality($entity);
         }
+    }
+
+    private function invalidateLandingShortcutCache(): void
+    {
+        $memcachedCache = $this->getConfigurationPool()->getContainer()->get('app.cache.memcached');
+        CacheUtil::invalidateCacheByPrefix($memcachedCache, CacheUtil::PREFIX_HOMEPAGE_SHORTCUT . 'prefix');
     }
 }

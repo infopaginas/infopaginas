@@ -14,6 +14,7 @@ use Domain\BusinessBundle\Util\SlugUtil;
 use Domain\ReportBundle\Manager\CategoryOverviewReportManager;
 use Domain\ReportBundle\Manager\KeywordsReportManager;
 use Domain\ReportBundle\Model\BusinessOverviewModel;
+use Domain\SearchBundle\Util\CacheUtil;
 use Domain\SearchBundle\Util\SearchDataUtil;
 use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -205,14 +206,25 @@ class SearchController extends Controller
         $searchData = $this->getSearchDataByRequest($request);
         $locale = LocaleHelper::getLocale($request->getLocale());
 
-        $businessProfileManager = $this->get('domain_business.manager.business_profile');
-        $results = $businessProfileManager->searchCategoryAutosuggestByPhrase(
-            $searchData['q'],
-            $locale,
-            CategoryManager::AUTO_SUGGEST_MAX_CATEGORY_MAIN_COUNT
-        );
+        $memcached = $this->container->get('app.cache.memcached');
+        $response = $memcached->fetch(CacheUtil::PREFIX_AUTOCOMPLETE . $searchData['q'] . $locale);
 
-        return (new JsonResponse)->setData($results);
+        if (!$response) {
+            $businessProfileManager = $this->get('domain_business.manager.business_profile');
+            $results = $businessProfileManager->searchCategoryAutosuggestByPhrase(
+                $searchData['q'],
+                $locale,
+                CategoryManager::AUTO_SUGGEST_MAX_CATEGORY_MAIN_COUNT
+            );
+            $response = (new JsonResponse())->setData($results);
+            $memcached->save(
+                CacheUtil::PREFIX_AUTOCOMPLETE . $searchData['q'] . $locale,
+                $response,
+                CacheUtil::AUTOCOMPLETE_CACHE_LIFETIME
+            );
+        }
+
+        return $response;
     }
 
     /**
