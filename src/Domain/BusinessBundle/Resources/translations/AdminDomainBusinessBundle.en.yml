@@ -71,11 +71,13 @@ business_profile:
     sloganEn: Slogan English
     sloganEs: Slogan Spanish
 
-filter.label_categories.en: Categories En
-filter.label_categories.es: Categories Es
-filter.label_created_by_user: Created By User
 filter:
   label_is_draft: Draft
+  label_created_by_user: Created By User
+  label_categories.es: Categories Es
+  label_categories.en: Categories En
+  label_has_panorama_id: Has panorama id
+  label_only_paid_profiles: Only paid profiles
 
 # interaction report
 interaction_report:
