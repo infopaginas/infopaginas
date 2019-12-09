@@ -6,6 +6,7 @@ use AntiMattr\GoogleBundle\Analytics\CustomVariable;
 use Domain\BusinessBundle\Manager\HomepageCarouselManager;
 use Domain\BusinessBundle\Manager\LandingPageShortCutManager;
 use Domain\PageBundle\Model\PageInterface;
+use Domain\SearchBundle\Util\CacheUtil;
 use Domain\SiteBundle\Form\Type\RegistrationType;
 use Domain\SiteBundle\Form\Type\LoginType;
 use Domain\SiteBundle\Form\Type\ResetPasswordRequestType;
@@ -15,6 +16,7 @@ use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Domain\BannerBundle\Model\TypeInterface;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class HomeController
@@ -73,7 +75,7 @@ class HomeController extends Controller
     /**
      * @param Request $request
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
     public function popularMenuItemsAction(Request $request)
     {
@@ -81,21 +83,43 @@ class HomeController extends Controller
         $title = $request->get('title', '');
         $locale = LocaleHelper::getLocale($request->getLocale());
 
-        $shortCutManager = $this->get('domain_business.manager.landing_page_short_cut_manager');
-        $shortCutItems   = $shortCutManager->getLandingPageShortCutItems($locale);
+        $memcached = $this->get('app.cache.memcached');
 
-        return $this->render(
-            ':redesign/blocks:popular_menu_items.html.twig',
-            [
-                'shortCutItems' => $shortCutItems,
-                'type'          => $type,
-                'title'         => $title,
-            ]
-        );
+        $response = null;
+        $keyIncrement = $memcached->fetch(CacheUtil::PREFIX_HOMEPAGE_SHORTCUT);
+        if ($keyIncrement) {
+            $response = $memcached->fetch(
+                CacheUtil::PREFIX_HOMEPAGE_SHORTCUT . $keyIncrement . $type . $title . $locale
+            );
+        } else {
+            $keyIncrement = 0;
+            $memcached->save(CacheUtil::PREFIX_HOMEPAGE_SHORTCUT, $keyIncrement);
+        }
+
+        if (!$response) {
+            $shortCutManager = $this->get('domain_business.manager.landing_page_short_cut_manager');
+            $shortCutItems = $shortCutManager->getLandingPageShortCutItems($locale);
+
+            $response = $this->render(
+                ':redesign/blocks:popular_menu_items.html.twig',
+                [
+                    'shortCutItems' => $shortCutItems,
+                    'type' => $type,
+                    'title' => $title,
+                ]
+            );
+            $memcached->save(
+                CacheUtil::PREFIX_HOMEPAGE_SHORTCUT . $keyIncrement . $type . $title . $locale,
+                $response,
+                CacheUtil::HOMEPAGE_SHORTCUT_CACHE_LIFETIME
+            );
+        }
+
+        return $response;
     }
 
     /**
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
     public function authModalRedesignAction()
     {

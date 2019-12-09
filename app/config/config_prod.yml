@@ -6,17 +6,19 @@ parameters:
     google_youtube_api_client_key: '1038987589554-5beh6k655b6nma7ltrd9sv17avbobjkp.apps.googleusercontent.com'
     google_youtube_secret_key: 'MqwCsstQtzNrT_WTgWW5Styc'
 
-#framework:
-#    validation:
-#        cache: validator.mapping.cache.doctrine.apc
-#    serializer:
-#        cache: serializer.mapping.cache.doctrine.apc
+framework:
+    validation:
+        cache: validator.mapping.cache.memcached
+    serializer:
+        cache: serializer.mapping.cache.doctrine.memcached
 
-#doctrine:
-#    orm:
-#        metadata_cache_driver: apc
-#        result_cache_driver: apc
-#        query_cache_driver: apc
+doctrine:
+    orm:
+        entity_managers:
+            default:
+                metadata_cache_driver: '%memcached.config%'
+                query_cache_driver: '%memcached.config%'
+                result_cache_driver: '%memcached.config%'
 
 monolog:
     handlers:

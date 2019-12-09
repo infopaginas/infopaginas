@@ -2,6 +2,8 @@
 
 namespace Oxa\ConfigBundle\Admin;
 
+use Domain\SearchBundle\Util\CacheUtil;
+use Oxa\ConfigBundle\Entity\Config;
 use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
 use Sonata\AdminBundle\Admin\Admin;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
@@ -16,6 +18,23 @@ use Sonata\AdminBundle\Route\RouteCollection;
  */
 class ConfigAdmin extends OxaAdmin
 {
+    /**
+     * @param Config $entity
+     */
+    public function postPersist($entity)
+    {
+        $this->removeConfigCache();
+    }
+
+    /**
+     * @param Config $entity
+     */
+    public function postUpdate($entity)
+    {
+        $this->removeConfigCache();
+        parent::postUpdate($entity);
+    }
+
     /**
      * @param DatagridMapper $datagridMapper
      */
@@ -110,5 +129,11 @@ class ConfigAdmin extends OxaAdmin
         $collection->remove('create');
         $collection->remove('delete');
         $collection->remove('export');
+    }
+
+    private function removeConfigCache()
+    {
+        $memcached = $this->getConfigurationPool()->getContainer()->get('app.cache.memcached');
+        $memcached->delete(CacheUtil::ID_CONFIGS);
     }
 }

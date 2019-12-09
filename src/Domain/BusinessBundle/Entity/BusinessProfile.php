@@ -50,7 +50,7 @@ use Domain\BusinessBundle\VO\Url;
 /**
  * BusinessProfile
  *
- * @ORM\Table(name="business_profile")
+ * @ORM\Table(name="business_profile", indexes={@ORM\Index(name="slug_idx", columns={"slug"})})
  * @ORM\Entity(repositoryClass="Domain\BusinessBundle\Repository\BusinessProfileRepository")
  * @ORM\HasLifecycleCallbacks
  * @Gedmo\TranslationEntity(class="Domain\BusinessBundle\Entity\Translation\BusinessProfileTranslation")
