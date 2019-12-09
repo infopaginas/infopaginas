@@ -46,10 +46,13 @@ class Config
      */
     public function getSetting($key)
     {
-        if ($this->cache->contains(CacheUtil::ID_CONFIGS)) {
-            $this->config = $this->cache->fetch(CacheUtil::ID_CONFIGS);
-        } else {
-            $this->buildConfig();
+        if (!$this->config) {
+            $cachedConfigs = $this->cache->fetch(CacheUtil::ID_CONFIGS);
+            if ($cachedConfigs) {
+                $this->config = $cachedConfigs;
+            } else {
+                $this->buildConfig();
+            }
         }
 
         return $this->config[$key] ?? null;
