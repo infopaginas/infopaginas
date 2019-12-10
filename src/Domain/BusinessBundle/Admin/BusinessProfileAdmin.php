@@ -928,16 +928,23 @@ class BusinessProfileAdmin extends OxaAdmin
 
         // Video Block
         if ($businessProfile->getId() and $subscriptionPlanCode >= SubscriptionPlanInterface::CODE_PREMIUM_PLATINUM) {
-
             $formMapper
                 ->tab('Media')
                     ->with('Video')
-                        ->add('video', 'sonata_type_model_list', [
-                            'required' => false,
-                        ])
+                        ->add(
+                            'video',
+                            'sonata_type_model_list',
+                            [
+                                'required' => false,
+                            ],
+                            [
+                                'link_parameters' => [
+                                    'businessName' => $businessProfile->getName(),
+                                ],
+                            ]
+                        )
                     ->end()
-                ->end()
-            ;
+                ->end();
         }
 
         // Others Tab

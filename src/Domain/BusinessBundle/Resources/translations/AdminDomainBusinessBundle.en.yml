@@ -11,6 +11,9 @@ form.business_gallery.max_images: Business business_profile already has max_imag
 form.business.empty_images: Images in gallery must not contain empty value in Media field
 form.subscription.start_date: Start Date cannot be in the future
 form.name.required: Please fill name of business profile
+form:
+  video:
+    name: Video title does not match business name. Are you sure?
 business_profile.admin.export.csv: csv
 task.media.change.title: Title
 task.media.change.description: Description
