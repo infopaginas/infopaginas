@@ -59,6 +59,7 @@ class VideoAdmin extends OxaAdmin
         $formMapper
             ->add('title', TextType::class, [
                 'required' => true,
+                'data' => $this->getRequest()->get('businessName'),
                 'constraints' => [
                     new Length(
                         [
@@ -67,6 +68,11 @@ class VideoAdmin extends OxaAdmin
                     ),
                     new NotBlank(),
                 ],
+                'attr' => [
+                    'class' => 'videoTitle',
+                    'data-business-name' => $this->getRequest()->get('businessName'),
+                    'data-message' => $this->trans('form.video.name', [], 'AdminDomainBusinessBundle'),
+                ]
             ])
             ->add('description', TextareaType::class, [
                 'required'    => true,
