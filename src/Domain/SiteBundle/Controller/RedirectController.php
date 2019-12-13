@@ -173,7 +173,10 @@ class RedirectController extends Controller
     {
         return $this->redirectToRoute(
             'domain_search_catalog',
-            ['localitySlug' => $locality]
+            [
+                'localitySlug' => $locality,
+                'redirected' => true,
+            ]
         );
     }
 }
