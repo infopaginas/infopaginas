@@ -1927,6 +1927,8 @@ class BusinessProfileManager extends Manager
         try {
             $response = $this->elasticSearchManager->search($searchQuery, $documentType);
         } catch (\Exception $e) {
+            $logger = $this->container->get('monolog.logger.elasticsearch');
+            $logger->error($e->getMessage());
             $response = [];
         }
 
