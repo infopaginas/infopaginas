@@ -172,3 +172,7 @@ services:
             - { name: twig.extension }
         calls:
             - [ setDefaultLanguage, [ '%locale%' ] ]
+
+    monolog.logger.elasticsearch:
+        tags:
+            - { name: monolog.logger, channel: elasticsearch }
