@@ -36,11 +36,9 @@ class CustomUrlType extends AbstractType
             ])
             ->add('relSponsored', CheckboxType::class, [
                 'label' => 'Sponsored',
-                'data' => false,
             ])
             ->add('relUGC', CheckboxType::class, [
                 'label' => 'User Generated Content',
-                'data' => false,
             ])
         ;
     }
