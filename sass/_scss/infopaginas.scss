@@ -5649,11 +5649,8 @@ table {
   background-color: #f0f1f3 !important;
   padding: 10px 30px;
   list-style: none;
-  li.category a {
+  li a {
     color: #08418c;
-  }
-  li.business a {
-    color: #8a8d90;
   }
   @media only screen and (max-width: 414px) {
     li {
@@ -5667,18 +5664,18 @@ table {
 
 #ui-id-1 {
   width: 318px !important;
-  @media only screen and (max-width: 805px){
+  @media only screen and (max-width: 805px) {
     max-width: none;
     width: calc(95vw - 20px) !important;
   }
 }
 
 #ui-id-2 {
-  @media only screen and (max-width: 805px){
+  @media only screen and (max-width: 805px) {
     max-width: none;
     width: calc(95vw - 20px) !important;
   }
-  li.business::before{
+  li.business::before {
     width: 16px;
     height: 16px;
     position: absolute;
@@ -5688,12 +5685,10 @@ table {
     content: "";
     display: block;
     background-size: cover;
-    background-position: center;
-    background: url('../assets/images/business-house.png');
-    opacity: .3;
+    background: url('../assets/images/business-profile-icon.png') center;
   }
 
-  li.category::before{
+  li.category::before {
     width: 16px;
     height: 16px;
     position: absolute;;

@@ -10,6 +10,7 @@ use Domain\SearchBundle\Util\SearchDataUtil;
 use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
 use Oxa\ElasticSearchBundle\Manager\ElasticSearchManager;
 use Oxa\ManagerArchitectureBundle\Model\Manager\Manager;
+use Oxa\Sonata\AdminBundle\Util\Helpers\AdminHelper;
 
 class CategoryManager extends Manager
 {
@@ -89,6 +90,8 @@ class CategoryManager extends Manager
 
         $categoryEn = $category->getTranslation(Category::CATEGORY_FIELD_NAME, $enLocale);
         $categoryEs = $category->getTranslation(Category::CATEGORY_FIELD_NAME, $esLocale);
+
+        $categoryEs = AdminHelper::convertAccentedString($categoryEs);
 
         $data = [
             'id'              => $category->getId(),
@@ -188,7 +191,7 @@ class CategoryManager extends Manager
             'query' => [
                 'multi_match' => [
                     'type' => 'most_fields',
-                    'query' => $query,
+                    'query' => AdminHelper::convertAccentedString($query),
                     'fields' => [
                         'auto_suggest_' . strtolower($locale),
                     ],
