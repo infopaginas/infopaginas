@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "7d3529aaf795c47246f6194017b44ae3",
+    "content-hash": "61a351aa20ac38c9023b1b0f10eae010",
     "packages": [
         {
             "name": "alchemy/binary-driver",
@@ -7293,16 +7293,16 @@
         },
         {
             "name": "sonata-project/admin-bundle",
-            "version": "3.18.2",
+            "version": "3.10.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sonata-project/SonataAdminBundle.git",
-                "reference": "448bec94b7f1d665ae60d4d2a37fdf5fd22afeab"
+                "reference": "6527db506d3284db2a963984352b338dad33b727"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sonata-project/SonataAdminBundle/zipball/448bec94b7f1d665ae60d4d2a37fdf5fd22afeab",
-                "reference": "448bec94b7f1d665ae60d4d2a37fdf5fd22afeab",
+                "url": "https://api.github.com/repos/sonata-project/SonataAdminBundle/zipball/6527db506d3284db2a963984352b338dad33b727",
+                "reference": "6527db506d3284db2a963984352b338dad33b727",
                 "shasum": ""
             },
             "require": {
@@ -7312,7 +7312,7 @@
                 "php": "^5.3 || ^7.0",
                 "sonata-project/block-bundle": "^3.2",
                 "sonata-project/core-bundle": "^3.1",
-                "sonata-project/exporter": "^1.7",
+                "sonata-project/exporter": "^1.0",
                 "symfony/class-loader": "^2.3 || ^3.0",
                 "symfony/config": "^2.3.9 || ^3.0",
                 "symfony/console": "^2.3 || ^3.0",
@@ -7329,16 +7329,14 @@
                 "symfony/twig-bridge": "^2.3.5 || ^3.0",
                 "symfony/validator": "^2.3 || ^3.0",
                 "twig/extensions": "^1.0",
-                "twig/twig": "^1.28 || ^2.0"
+                "twig/twig": "^1.26"
             },
             "conflict": {
-                "jms/di-extra-bundle": "<1.7.0",
-                "sonata-project/exporter": "1.6.0"
+                "jms/di-extra-bundle": "<1.7.0"
             },
             "require-dev": {
                 "jms/di-extra-bundle": "^1.7",
                 "jms/translation-bundle": "^1.2",
-                "matthiasnoback/symfony-dependency-injection-test": "^0.1 || ^1.0",
                 "sensio/generator-bundle": "^2.3 || ^3.0",
                 "sllh/php-cs-fixer-styleci-bridge": "^2.0",
                 "sonata-project/intl-bundle": "^2.2.4",
@@ -7388,7 +7386,7 @@
                 "bootstrap",
                 "sonata"
             ],
-            "time": "2017-05-15T14:51:14+00:00"
+            "time": "2016-12-22T13:07:43+00:00"
         },
         {
             "name": "sonata-project/block-bundle",
@@ -7811,16 +7809,16 @@
         },
         {
             "name": "sonata-project/doctrine-orm-admin-bundle",
-            "version": "3.1.7",
+            "version": "3.0.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sonata-project/SonataDoctrineORMAdminBundle.git",
-                "reference": "b06d0103572c0c35fea2b6b59b9e939818b10d64"
+                "reference": "b1eb22c546dc9b7e38093bf382ea0c2f4ae57007"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sonata-project/SonataDoctrineORMAdminBundle/zipball/b06d0103572c0c35fea2b6b59b9e939818b10d64",
-                "reference": "b06d0103572c0c35fea2b6b59b9e939818b10d64",
+                "url": "https://api.github.com/repos/sonata-project/SonataDoctrineORMAdminBundle/zipball/b1eb22c546dc9b7e38093bf382ea0c2f4ae57007",
+                "reference": "b1eb22c546dc9b7e38093bf382ea0c2f4ae57007",
                 "shasum": ""
             },
             "require": {
@@ -7836,15 +7834,12 @@
                 "symfony/security": "^2.3 || ^3.0",
                 "symfony/security-acl": "^2.2 || ^3.0"
             },
-            "conflict": {
-                "simplethings/entity-audit-bundle": ">=2.0"
-            },
             "provide": {
                 "sonata-project/admin-bundle-persistency-layer": "1.0.0"
             },
             "require-dev": {
                 "knplabs/knp-menu-bundle": "^2.1.1",
-                "simplethings/entity-audit-bundle": "0.1 - 0.9 || ^1.0",
+                "simplethings/entity-audit-bundle": "0.1 - 0.9",
                 "sllh/php-cs-fixer-styleci-bridge": "^2.0",
                 "symfony/phpunit-bridge": "^2.7 || ^3.0"
             },
@@ -7860,10 +7855,7 @@
             "autoload": {
                 "psr-4": {
                     "Sonata\\DoctrineORMAdminBundle\\": ""
-                },
-                "exclude-from-classmap": [
-                    "Tests/"
-                ]
+                }
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
@@ -7889,7 +7881,7 @@
                 "generator",
                 "sonata"
             ],
-            "time": "2017-09-14T10:48:58+00:00"
+            "time": "2016-07-05T14:17:35+00:00"
         },
         {
             "name": "sonata-project/easy-extends-bundle",
