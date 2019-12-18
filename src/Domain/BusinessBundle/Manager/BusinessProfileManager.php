@@ -3446,7 +3446,7 @@ class BusinessProfileManager extends Manager
             'categories_es'        => $categories[$esLocale],
             'keywords'             => $keywords,
             'auto_suggest_en'      => [$businessProfile->getNameEn()],
-            'auto_suggest_es'      => [AdminHelper::convertAccentedString($businessProfile->getNameEs())],
+            'auto_suggest_es'      => [$businessProfile->getNameEs()],
             'location'             => [
                 'lat' => $businessProfile->getLatitude(),
                 'lon' => $businessProfile->getLongitude(),
