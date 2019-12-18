@@ -66,6 +66,7 @@ class ClickbaitTitle implements DefaultEntityInterface, TranslatableInterface, C
     public function __construct()
     {
         $this->isActive = true;
+        $this->urlItem = new Url();
     }
 
     /**
