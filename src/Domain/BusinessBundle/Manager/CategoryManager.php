@@ -91,8 +91,6 @@ class CategoryManager extends Manager
         $categoryEn = $category->getTranslation(Category::CATEGORY_FIELD_NAME, $enLocale);
         $categoryEs = $category->getTranslation(Category::CATEGORY_FIELD_NAME, $esLocale);
 
-        $categoryEs = AdminHelper::convertAccentedString($categoryEs);
-
         $data = [
             'id'              => $category->getId(),
             'auto_suggest_en' => SearchDataUtil::sanitizeElasticSearchQueryString($categoryEn),
@@ -191,9 +189,10 @@ class CategoryManager extends Manager
             'query' => [
                 'multi_match' => [
                     'type' => 'most_fields',
-                    'query' => AdminHelper::convertAccentedString($query),
+                    'query' => $query,
                     'fields' => [
                         'auto_suggest_' . strtolower($locale),
+                        'auto_suggest_' . strtolower($locale) . '.folded',
                     ],
                 ],
             ],
