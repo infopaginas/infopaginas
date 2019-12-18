@@ -1157,6 +1157,16 @@ class BusinessProfile implements
         $this->mediaUrls                = new ArrayCollection();
         $this->redirectedBusinesses     = new ArrayCollection();
 
+        $this->websiteItem =        new Url();
+        $this->actionUrlItem =      new Url();
+        $this->facebookURLItem =    new Url();
+        $this->googleURLItem =      new Url();
+        $this->instagramURLItem =   new Url();
+        $this->linkedInURLItem =    new Url();
+        $this->tripAdvisorURLItem = new Url();
+        $this->twitterURLItem =     new Url();
+        $this->youtubeURLItem =     new Url();
+
         $this->isClosed  = false;
         $this->isUpdated = true;
         $this->hasImages = false;

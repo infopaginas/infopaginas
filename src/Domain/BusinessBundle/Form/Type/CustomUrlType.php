@@ -24,15 +24,12 @@ class CustomUrlType extends AbstractType
             ])
             ->add('relNoFollow', CheckboxType::class, [
                 'label' => 'No Follow',
-                'data' => true,
             ])
             ->add('relNoOpener', CheckboxType::class, [
                 'label' => 'No Opener',
-                'data' => true,
             ])
             ->add('relNoReferrer', CheckboxType::class, [
                 'label' => 'No Referrer',
-                'data' => true,
             ])
             ->add('relSponsored', CheckboxType::class, [
                 'label' => 'Sponsored',
