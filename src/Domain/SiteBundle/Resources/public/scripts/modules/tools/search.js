@@ -99,6 +99,7 @@ define(['jquery', 'abstract/view', 'tools/geolocation', 'jquery-ui'], function( 
             open: function() {
                 $('.ui-autocomplete').css('width', '500px');
                 $('.ui-autocomplete').css('background-color', 'rgba(122, 122, 122, 0.95)');
+                $('.ui-autocomplete').css('position', 'absolute');
 
                 if (window.navigator.userAgent.match(/(iPod|iPhone|iPad)/)) {
                     $('.ui-autocomplete').off('mouseenter');

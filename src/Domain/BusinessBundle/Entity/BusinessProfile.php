@@ -196,6 +196,8 @@ class BusinessProfile implements
     const USER_STATUS_REJECTED    = 'Rejected';
     const USER_STATUS_DEACTIVATED = 'Deactivated';
 
+    const ADDRESS_FIELDS_REGEX_PATTERN = '/^[\s\dA-Za-z_.,#!%&@]*$/';
+
     /**
      * @var int
      *
@@ -516,6 +518,7 @@ class BusinessProfile implements
      *
      * @ORM\Column(name="street_address", type="string", length=255, nullable=true)
      * @Assert\NotBlank()
+     * @Assert\Regex(pattern=BusinessProfile::ADDRESS_FIELDS_REGEX_PATTERN)
      * @Assert\Length(max=255, maxMessage="business_profile.max_length")
      */
     protected $streetAddress;
@@ -557,6 +560,7 @@ class BusinessProfile implements
      *
      * @ORM\Column(name="city", type="string", length=255, nullable=true)
      * @Assert\NotBlank()
+     * @Assert\Regex(pattern=BusinessProfile::ADDRESS_FIELDS_REGEX_PATTERN)
      * @Assert\Length(max=255, maxMessage="business_profile.max_length")
      */
     protected $city;
@@ -567,6 +571,7 @@ class BusinessProfile implements
      *
      * @ORM\Column(name="zip_code", type="string", length=10, nullable=true)
      * @Assert\NotBlank()
+     * @Assert\Regex(pattern=BusinessProfile::ADDRESS_FIELDS_REGEX_PATTERN)
      * @Assert\Length(max=10, maxMessage="business_profile.max_length")
      */
     protected $zipCode;
@@ -575,6 +580,7 @@ class BusinessProfile implements
      * @var string
      *
      * @ORM\Column(name="custom_address", type="string", length=255, nullable=true)
+     * @Assert\Regex(pattern=BusinessProfile::ADDRESS_FIELDS_REGEX_PATTERN)
      * @Assert\Length(max=255, maxMessage="business_profile.max_length")
      */
     protected $customAddress;
@@ -1156,6 +1162,16 @@ class BusinessProfile implements
         $this->tasks                    = new ArrayCollection();
         $this->mediaUrls                = new ArrayCollection();
         $this->redirectedBusinesses     = new ArrayCollection();
+
+        $this->websiteItem =        new Url();
+        $this->actionUrlItem =      new Url();
+        $this->facebookURLItem =    new Url();
+        $this->googleURLItem =      new Url();
+        $this->instagramURLItem =   new Url();
+        $this->linkedInURLItem =    new Url();
+        $this->tripAdvisorURLItem = new Url();
+        $this->twitterURLItem =     new Url();
+        $this->youtubeURLItem =     new Url();
 
         $this->isClosed  = false;
         $this->isUpdated = true;

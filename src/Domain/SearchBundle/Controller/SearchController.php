@@ -211,10 +211,9 @@ class SearchController extends Controller
 
         if (!$response) {
             $businessProfileManager = $this->get('domain_business.manager.business_profile');
-            $results = $businessProfileManager->searchCategoryAutosuggestByPhrase(
+            $results = $businessProfileManager->searchCategoryAndBusinessAutosuggestByPhrase(
                 $searchData['q'],
-                $locale,
-                CategoryManager::AUTO_SUGGEST_MAX_CATEGORY_MAIN_COUNT
+                $locale
             );
             $response = (new JsonResponse())->setData($results);
             $memcached->save(
