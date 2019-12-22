@@ -44,6 +44,7 @@ class Category implements
     const CATEGORY_ARTICLE_SLUG = 'infopaginas-media';
 
     const ELASTIC_DOCUMENT_TYPE = 'Category';
+    const ELASTIC_INDEX = 'category';
     const FLAG_IS_UPDATED = 'isUpdated';
 
     const ALLOW_DELETE_ASSOCIATED_FIELD_CATALOG_ITEMS = 'catalogItems';

@@ -138,8 +138,6 @@ class BusinessProfileManager extends Manager
         $this->analytics = $container->get('google.analytics');
 
         $this->elasticSearchManager = $container->get('oxa_elastic_search.manager.search');
-
-        $this->elasticSearchManager->setDocumentType(BusinessProfile::ELASTIC_DOCUMENT_TYPE);
     }
 
     /**
@@ -2115,20 +2113,23 @@ class BusinessProfileManager extends Manager
     }
 
     /**
+     * @param string $name
+     * @param array $mapping
+     *
      * @return bool
      */
-    public function createElasticSearchIndex()
+    public function createElasticSearchIndex(string $name, array $mapping = []): bool
     {
         $status = true;
-        $mappings = $this->getElasticSearchMappings();
+        $settings = $this->elasticSearchManager->getDefaultIndexSettings();
 
         try {
-            $response = $this->elasticSearchManager->createIndex($mappings);
+            $this->elasticSearchManager->createIndex($name, $settings, $mapping);
         } catch (\Exception $e) {
             $status = false;
-            $message = json_decode($e->getMessage());
-            if (!empty($message->error->type) and
-                $message->error->type == ElasticSearchManager::INDEX_ALREADY_EXISTS_EXCEPTION
+            $message = json_decode($e->getMessage(), false);
+            if (!empty($message->error->type) &&
+                $message->error->type === ElasticSearchManager::INDEX_ALREADY_EXISTS_EXCEPTION
             ) {
                 $status = true;
             }
@@ -2137,17 +2138,30 @@ class BusinessProfileManager extends Manager
         return $status;
     }
 
+    public function createAllElasticIndexes(): bool
+    {
+        $mappings = ElasticSearchManager::getElasticMappings();
+
+        foreach (ElasticSearchManager::ELASTIC_INDEXES as $indexName) {
+            if (!$this->createElasticSearchIndex($indexName, $mappings[$indexName])) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     /**
      * @return bool
      */
-    public function handleElasticSearchIndexRefresh()
+    public function handleElasticSearchIndexRefresh(): bool
     {
         $status = false;
 
-        $deleteStatus = $this->deleteElasticSearchIndex();
+        $deleteStatus = $this->deleteAllElasticSearchIndexes();
 
         if ($deleteStatus) {
-            $createStatus = $this->createElasticSearchIndex();
+            $createStatus = $this->createAllElasticIndexes();
 
             if ($createStatus) {
                 $this->getRepository()->setUpdatedAllBusinessProfiles();
@@ -2163,104 +2177,21 @@ class BusinessProfileManager extends Manager
     }
 
     /**
-     * @return array
-     */
-    protected function getElasticSearchMappings()
-    {
-        $businessMapping   = $this->getBusinessElasticSearchMapping();
-        $businessAdMapping = $this->getBusinessAdElasticSearchMapping();
-        $categoryMapping   = $this->categoryManager->getCategoryElasticSearchMapping();
-        $localityMapping   = $this->localityManager->getLocalityElasticSearchMapping();
-        $emergencyMapping  = $this->emergencyManager->getEmergencyBusinessElasticSearchMapping();
-
-        $mappings = array_merge(
-            $businessMapping,
-            $businessAdMapping,
-            $categoryMapping,
-            $localityMapping,
-            $emergencyMapping
-        );
-
-        return $mappings;
-    }
-
-    /**
-     * @param bool $sourceEnabled
+     * @param string $name
      *
-     * @return array
-     */
-    protected function getBusinessElasticSearchMapping($sourceEnabled = true)
-    {
-        $properties = $this->getBusinessElasticSearchIndexParams();
-
-        $data = [
-            BusinessProfile::ELASTIC_DOCUMENT_TYPE => [
-                '_source' => [
-                    'enabled' => $sourceEnabled,
-                ],
-                'properties' => $properties,
-            ],
-        ];
-
-        return $data;
-    }
-
-    /**
-     * @param $sourceEnabled bool
-     *
-     * @return array
-     */
-    protected function getBusinessAdElasticSearchMapping($sourceEnabled = true)
-    {
-        $properties = $this->getBusinessAdElasticSearchIndexParams();
-
-        $data = [
-            BusinessProfile::ELASTIC_DOCUMENT_TYPE_AD => [
-                '_source' => [
-                    'enabled' => $sourceEnabled,
-                ],
-                'properties' => $properties,
-            ],
-        ];
-
-        return $data;
-    }
-
-    /**
-     * @param bool $sourceEnabled
-     *
-     * @return array
-     */
-    protected function getCategoryElasticSearchMapping($sourceEnabled = true)
-    {
-        $properties = $this->categoryManager->getCategoryElasticSearchIndexParams();
-
-        $data = [
-            Category::ELASTIC_DOCUMENT_TYPE => [
-                '_source' => [
-                    'enabled' => $sourceEnabled,
-                ],
-                'properties' => $properties,
-            ],
-        ];
-
-        return $data;
-    }
-
-    /**
      * @return bool
      */
-    protected function deleteElasticSearchIndex()
+    protected function deleteElasticSearchIndex(string $name): bool
     {
         $status = true;
 
         try {
-            $response = $this->elasticSearchManager->deleteIndex();
+            $this->elasticSearchManager->deleteIndex($name);
         } catch (\Exception $e) {
             $status = false;
-            $message = json_decode($e->getMessage());
+            $message = json_decode($e->getMessage(), false);
 
-            if (!empty($message->error->type) and
+            if (!empty($message->error->type) &&
                 $message->error->type == ElasticSearchManager::INDEX_NOT_FOUND_EXCEPTION
             ) {
                 $status = true;
@@ -2270,31 +2201,15 @@ class BusinessProfileManager extends Manager
         return $status;
     }
 
-    /**
-     * @param BusinessProfile[] $businessProfiles
-     *
-     * @return mixed
-     */
-    public function addBusinessesRawToElasticIndex($businessProfiles)
+    protected function deleteAllElasticSearchIndexes(): bool
     {
-        $data = [];
-        $response = true;
-
-        foreach ($businessProfiles as $businessProfile) {
-            $item = $this->buildBusinessProfileElasticData($businessProfile);
-
-            if ($item) {
-                $data[] = $item;
-            } else {
-                $this->removeBusinessFromElastic($businessProfile->getId());
+        foreach (ElasticSearchManager::ELASTIC_INDEXES as $indexName) {
+            if (!$this->deleteElasticSearchIndex($indexName)) {
+                return false;
             }
         }
 
-        if ($data) {
-            $response = $this->addElasticBulkBusinessData($data);
-        }
-
-        return $response;
+        return true;
     }
 
     /**
@@ -2304,9 +2219,7 @@ class BusinessProfileManager extends Manager
      */
     public function addBusinessesToElasticIndex($data)
     {
-        $response = $this->addElasticBulkItemData($data, BusinessProfile::ELASTIC_DOCUMENT_TYPE);
-
-        return $response;
+        return $this->addElasticBulkItemData(BusinessProfile::ELASTIC_INDEX, $data);
     }
 
     /**
@@ -2316,9 +2229,7 @@ class BusinessProfileManager extends Manager
      */
     public function addBusinessesAdToElasticIndex($data)
     {
-        $response = $this->addElasticBulkItemData($data, BusinessProfile::ELASTIC_DOCUMENT_TYPE_AD);
-
-        return $response;
+        return $this->addElasticBulkItemData(BusinessProfile::ELASTIC_INDEX_AD, $data);
     }
 
     /**
@@ -2328,9 +2239,7 @@ class BusinessProfileManager extends Manager
      */
     public function addCategoriesToElasticIndex($data)
     {
-        $response = $this->addElasticBulkItemData($data, Category::ELASTIC_DOCUMENT_TYPE);
-
-        return $response;
+        return $this->addElasticBulkItemData(Category::ELASTIC_INDEX, $data);
     }
 
     /**
@@ -2340,9 +2249,7 @@ class BusinessProfileManager extends Manager
      */
     public function addLocalitiesToElasticIndex($data)
     {
-        $response = $this->addElasticBulkItemData($data, Locality::ELASTIC_DOCUMENT_TYPE);
-
-        return $response;
+        return $this->addElasticBulkItemData(Locality::ELASTIC_INDEX, $data);
     }
 
     /**
@@ -2352,119 +2259,50 @@ class BusinessProfileManager extends Manager
      */
     public function addEmergencyBusinessToElasticIndex($data)
     {
-        $response = $this->addElasticBulkItemData($data, EmergencyBusiness::ELASTIC_DOCUMENT_TYPE);
-
-        return $response;
+        return $this->addElasticBulkItemData(EmergencyBusiness::ELASTIC_INDEX, $data);
     }
 
     /**
+     * @param string $index
      * @param array $data
-     * @param string $documentType
      *
      * @return bool
      */
-    protected function addElasticBulkItemData($data, $documentType)
+    protected function addElasticBulkItemData(string $index, $data): bool
     {
         try {
-            $status = $this->elasticSearchManager->addBulkItems($data, $documentType);
+            $status = $this->elasticSearchManager->addBulkItems($index, $data);
         } catch (\Exception $e) {
             $status = false;
-            $message = json_decode($e->getMessage());
-
-            //create index if it doesn't exist
-            if (!empty($message->error->type) and
-                $message->error->type == ElasticSearchManager::INDEX_NOT_FOUND_EXCEPTION
-            ) {
-                $this->createElasticSearchIndex();
-                $status = $this->elasticSearchManager->addBulkItems($data, $documentType);
-            }
+            $message = json_decode($e->getMessage(), false);
+            $this->container->get('monolog.logger.elasticsearch')->error($message);
         }
 
         return $status;
     }
 
     /**
+     * @param string $index
      * @param int $id
-     * @param string $documentType
      *
      * @return bool
      */
-    protected function removeItemFromElastic($id, $documentType)
+    public function removeItemFromElastic(string $index, $id): bool
     {
         $status = true;
 
         try {
-            $response = $this->elasticSearchManager->deleteItem($id, $documentType);
+            $this->elasticSearchManager->deleteItem($index, $id);
         } catch (\Exception $e) {
             $status = false;
-            $message = json_decode($e->getMessage());
+            $message = json_decode($e->getMessage(), false);
 
-            if (!empty($message->error->type) and
-                $message->error->type == ElasticSearchManager::INDEX_NOT_FOUND_EXCEPTION
+            if (!empty($message->error->type) &&
+                $message->error->type === ElasticSearchManager::INDEX_NOT_FOUND_EXCEPTION
             ) {
                 $status = true;
             }
         }
-
-        return $status;
-    }
-
-    /**
-     * @param int $id
-     *
-     * @return bool
-     */
-    public function removeBusinessFromElastic($id)
-    {
-        $status = $this->removeItemFromElastic($id, BusinessProfile::ELASTIC_DOCUMENT_TYPE);
-
-        return $status;
-    }
-
-    /**
-     * @param $id int
-     *
-     * @return bool
-     */
-    public function removeBusinessAdFromElastic($id)
-    {
-        $status = $this->removeItemFromElastic($id, BusinessProfile::ELASTIC_DOCUMENT_TYPE_AD);
-
-        return $status;
-    }
-
-    /**
-     * @param int $id
-     *
-     * @return bool
-     */
-    public function removeCategoryFromElastic($id)
-    {
-        $status = $this->removeItemFromElastic($id, Category::ELASTIC_DOCUMENT_TYPE);
-
-        return $status;
-    }
-
-    /**
-     * @param int $id
-     *
-     * @return bool
-     */
-    public function removeLocalityFromElastic($id)
-    {
-        $status = $this->removeItemFromElastic($id, Locality::ELASTIC_DOCUMENT_TYPE);
-
-        return $status;
-    }
-
-    /**
-     * @param int $id
-     *
-     * @return bool
-     */
-    public function removeEmergencyBusinessFromElastic($id)
-    {
-        $status = $this->removeItemFromElastic($id, EmergencyBusiness::ELASTIC_DOCUMENT_TYPE);
 
         return $status;
     }
@@ -3537,9 +3375,9 @@ class BusinessProfileManager extends Manager
     /**
      * @return array
      */
-    protected function getBusinessAdElasticSearchIndexParams()
+    public static function getBusinessAdElasticSearchIndexParams(): array
     {
-        $params = $this->getBusinessElasticSearchIndexParams();
+        $params = self::getBusinessElasticSearchIndexParams();
 
         $params['parent_id'] = [
             'type' => 'integer'
@@ -3551,115 +3389,115 @@ class BusinessProfileManager extends Manager
     /**
      * @return array
      */
-    protected function getBusinessElasticSearchIndexParams()
+    public static function getBusinessElasticSearchIndexParams(): array
     {
-        $params = [
+        return [
             'auto_suggest_en' => [
-                'type' => 'string',
+                'type' => 'text',
                 'analyzer' => 'autocomplete',
                 'search_analyzer' => 'autocomplete_search',
                 'fields' => [
                     'folded' => [
-                        'type' => 'string',
+                        'type' => 'text',
                         'analyzer' => 'folding',
                     ],
                 ],
             ],
             'auto_suggest_es' => [
-                'type' => 'string',
+                'type' => 'text',
                 'analyzer' => 'autocomplete',
                 'search_analyzer' => 'autocomplete_search',
                 'fields' => [
                     'folded' => [
-                        'type' => 'string',
+                        'type' => 'text',
                         'analyzer' => 'folding',
                     ],
                 ],
             ],
             'name' => [
-                'type' => 'string',
+                'type' => 'text',
                 'analyzer' => 'autocomplete',
                 'search_analyzer' => 'autocomplete_search',
                 'fields' => [
                     'folded' => [
-                        'type' => 'string',
+                        'type' => 'text',
                         'analyzer' => 'folding',
                     ],
                 ],
             ],
             'categories_en' => [
-                'type' => 'string',
+                'type' => 'text',
                 'analyzer' => 'autocomplete',
                 'search_analyzer' => 'autocomplete_search',
                 'fields' => [
                     'folded' => [
-                        'type' => 'string',
+                        'type' => 'text',
                         'analyzer' => 'folding',
                     ],
                 ],
             ],
             'categories_es' => [
-                'type' => 'string',
+                'type' => 'text',
                 'analyzer' => 'autocomplete',
                 'search_analyzer' => 'autocomplete_search',
                 'fields' => [
                     'folded' => [
-                        'type' => 'string',
+                        'type' => 'text',
                         'analyzer' => 'folding',
                     ],
                 ],
             ],
             'description_en' => [
-                'type' => 'string',
+                'type' => 'text',
                 'analyzer' => 'autocomplete',
                 'search_analyzer' => 'autocomplete_search',
                 'fields' => [
                     'folded' => [
-                        'type' => 'string',
+                        'type' => 'text',
                         'analyzer' => 'folding',
                     ],
                 ],
             ],
             'description_es' => [
-                'type' => 'string',
+                'type' => 'text',
                 'analyzer' => 'autocomplete',
                 'search_analyzer' => 'autocomplete_search',
                 'fields' => [
                     'folded' => [
-                        'type' => 'string',
+                        'type' => 'text',
                         'analyzer' => 'folding',
                     ],
                 ],
             ],
             'products_en' => [
-                'type' => 'string',
+                'type' => 'text',
                 'analyzer' => 'autocomplete',
                 'search_analyzer' => 'autocomplete_search',
                 'fields' => [
                     'folded' => [
-                        'type' => 'string',
+                        'type' => 'text',
                         'analyzer' => 'folding',
                     ],
                 ],
             ],
             'products_es' => [
-                'type' => 'string',
+                'type' => 'text',
                 'analyzer' => 'autocomplete',
                 'search_analyzer' => 'autocomplete_search',
                 'fields' => [
                     'folded' => [
-                        'type' => 'string',
+                        'type' => 'text',
                         'analyzer' => 'folding',
                     ],
                 ],
             ],
             'keywords' => [
-                'type' => 'string',
+                'type' => 'text',
                 'analyzer' => 'autocomplete',
                 'search_analyzer' => 'autocomplete_search',
                 'fields' => [
                     'folded' => [
-                        'type' => 'string',
+                        'type' => 'text',
                         'analyzer' => 'folding',
                     ],
                 ],
@@ -3674,19 +3512,25 @@ class BusinessProfileManager extends Manager
                 'type' => 'integer'
             ],
             'service_areas_type' => [
-                'type'  => 'string',
-                'index' => 'not_analyzed'
+                'type'  => 'keyword',
+                'index' => 'false'
             ],
         ];
-
-        return $params;
     }
 
-    public function handleBusinessElasticSync()
+    public function handleBusinessElasticSync(): void
     {
-        $index = $this->createElasticSearchIndex();
+        $bpIndex = $this->createElasticSearchIndex(
+            BusinessProfile::ELASTIC_INDEX,
+            self::getBusinessElasticSearchIndexParams()
+        );
 
-        if ($index) {
+        $bpAdIndex = $this->createElasticSearchIndex(
+            BusinessProfile::ELASTIC_INDEX_AD,
+            self::getBusinessAdElasticSearchIndexParams()
+        );
+
+        if ($bpIndex && $bpAdIndex) {
             $businesses = $this->getRepository()->getUpdatedBusinessProfilesIterator();
 
             $iDoctrine = 0;
@@ -3707,7 +3551,7 @@ class BusinessProfileManager extends Manager
                     $data[] = $item;
                     $this->handleBusinessAdsElasticData($business, $item);
                 } else {
-                    $this->removeBusinessFromElastic($business->getId());
+                    $this->removeItemFromElastic(BusinessProfile::ELASTIC_INDEX, $business->getId());
                 }
 
                 $business->setIsUpdated(false);
@@ -3739,7 +3583,7 @@ class BusinessProfileManager extends Manager
      * @param $business     BusinessProfile
      * @param $parentData   array
      */
-    protected function handleBusinessAdsElasticData($business, $parentData)
+    protected function handleBusinessAdsElasticData($business, $parentData): void
     {
         $ads = [];
 
@@ -3748,7 +3592,7 @@ class BusinessProfileManager extends Manager
                 if ($business->getSubscriptionPlanCode() >= SubscriptionPlanInterface::CODE_PREMIUM_PLATINUM) {
                     $ads[] = $this->buildBusinessProfileChildElasticData($extraSearch, $parentData);
                 } else {
-                    $this->removeBusinessAdFromElastic($extraSearch->getId());
+                    $this->removeItemFromElastic(BusinessProfile::ELASTIC_INDEX_AD, $extraSearch->getId());
                 }
             }
         }
@@ -3758,9 +3602,12 @@ class BusinessProfileManager extends Manager
         }
     }
 
-    public function handleCategoryElasticSync()
+    public function handleCategoryElasticSync(): void
     {
-        $index = $this->createElasticSearchIndex();
+        $index = $this->createElasticSearchIndex(
+            Category::ELASTIC_INDEX,
+            CategoryManager::getCategoryElasticSearchIndexParams()
+        );
 
         if ($index) {
             $categories = $this->categoryManager->getUpdatedCategoriesIterator();
@@ -3782,7 +3629,7 @@ class BusinessProfileManager extends Manager
                 if ($item) {
                     $data[] = $item;
                 } else {
-                    $this->removeCategoryFromElastic($category->getId());
+                    $this->removeItemFromElastic(Category::ELASTIC_INDEX, $category->getId());
                 }
 
                 $category->setIsUpdated(false);
@@ -3809,9 +3656,12 @@ class BusinessProfileManager extends Manager
         }
     }
 
-    public function handleLocalityElasticSync()
+    public function handleLocalityElasticSync(): void
     {
-        $index = $this->createElasticSearchIndex();
+        $index = $this->createElasticSearchIndex(
+            Locality::ELASTIC_INDEX,
+            LocalityManager::getLocalityElasticSearchIndexParams()
+        );
 
         if ($index) {
             $localities = $this->localityManager->getUpdatedLocalitiesIterator();
@@ -3833,7 +3683,7 @@ class BusinessProfileManager extends Manager
                 if ($item) {
                     $data[] = $item;
                 } else {
-                    $this->removeLocalityFromElastic($locality->getId());
+                    $this->removeItemFromElastic(Locality::ELASTIC_INDEX, $locality->getId());
                 }
 
                 $locality->setIsUpdated(false);
@@ -3860,9 +3710,12 @@ class BusinessProfileManager extends Manager
         }
     }
 
-    public function handleEmergencyBusinessElasticSync()
+    public function handleEmergencyBusinessElasticSync(): void
     {
-        $index = $this->createElasticSearchIndex();
+        $index = $this->createElasticSearchIndex(
+            EmergencyBusiness::ELASTIC_INDEX,
+            EmergencyManager::getEmergencyBusinessElasticSearchIndexParams()
+        );
 
         if ($index) {
             $businesses = $this->emergencyManager->getUpdatedLocalitiesIterator();
@@ -3884,7 +3737,7 @@ class BusinessProfileManager extends Manager
                 if ($item) {
                     $data[] = $item;
                 } else {
-                    $this->removeEmergencyBusinessFromElastic($business->getId());
+                    $this->removeItemFromElastic(EmergencyBusiness::ELASTIC_INDEX, $business->getId());
                 }
 
                 $business->setIsUpdated(false);

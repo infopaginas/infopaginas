@@ -214,39 +214,18 @@ class EmergencyManager
     }
 
     /**
-     * @param bool $sourceEnabled
-     *
      * @return array
      */
-    public function getEmergencyBusinessElasticSearchMapping($sourceEnabled = true)
+    public static function getEmergencyBusinessElasticSearchIndexParams(): array
     {
-        $properties = $this->getEmergencyBusinessElasticSearchIndexParams();
-
-        $data = [
-            EmergencyBusiness::ELASTIC_DOCUMENT_TYPE => [
-                '_source' => [
-                    'enabled' => $sourceEnabled,
-                ],
-                'properties' => $properties,
-            ],
-        ];
-
-        return $data;
-    }
-
-    /**
-     * @return array
-     */
-    protected function getEmergencyBusinessElasticSearchIndexParams()
-    {
-        $params = [
+        return [
             'title' => [
-                'type'  => 'string',
-                'index' => 'not_analyzed'
+                'type'  => 'text',
+                'index' => 'false'
             ],
             'first_symbol' => [
-                'type'  => 'string',
-                'index' => 'not_analyzed'
+                'type'  => 'text',
+                'index' => 'false'
             ],
             'area_id' => [
                 'type' => 'integer'
@@ -258,8 +237,6 @@ class EmergencyManager
                 'type' => 'geo_point',
             ],
         ];
-
-        return $params;
     }
 
     /**

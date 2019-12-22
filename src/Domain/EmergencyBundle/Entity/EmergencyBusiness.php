@@ -24,6 +24,7 @@ class EmergencyBusiness extends EmergencyAbstractBusiness implements ReportInter
     use ChangeStateTrait;
 
     const ELASTIC_DOCUMENT_TYPE = 'EmergencyBusiness';
+    const ELASTIC_INDEX = 'emergency_business';
     const DISTANCE_TO_BUSINESS_PRECISION = 1;
 
     /**

@@ -43,6 +43,7 @@ class Locality implements
     const ALLOW_DELETE_ASSOCIATED_FIELD_CATALOG_ITEMS     = 'catalogItems';
 
     const ELASTIC_DOCUMENT_TYPE = 'Locality';
+    const ELASTIC_INDEX = 'locality';
 
     const FLAG_IS_UPDATED       = 'isUpdated';
     const LOCALITY_FIELD_NAME   = 'name';
