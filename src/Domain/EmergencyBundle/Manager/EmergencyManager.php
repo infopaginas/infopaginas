@@ -221,11 +221,9 @@ class EmergencyManager
         return [
             'title' => [
                 'type'  => 'text',
-                'index' => 'false'
             ],
             'first_symbol' => [
-                'type'  => 'text',
-                'index' => 'false'
+                'type'  => 'keyword',
             ],
             'area_id' => [
                 'type' => 'integer'

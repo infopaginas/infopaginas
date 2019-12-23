@@ -30,7 +30,6 @@ class ElasticSearchManager
         EmergencyBusiness::ELASTIC_INDEX,
     ];
 
-    protected $documentIndex;
     protected $indexingPage;
     protected $host;
     protected $indexRefreshInterval = '30s';
@@ -64,9 +63,8 @@ class ElasticSearchManager
         ];
     }
 
-    public function setConfigData($documentIndex, $indexingPage, $host): void
+    public function setConfigData($indexingPage, $host): void
     {
-        $this->documentIndex = $documentIndex;
         $this->indexingPage  = $indexingPage;
         $this->host          = $host;
         $builder             = Elasticsearch\ClientBuilder::create()->setHosts([$host]);
@@ -131,15 +129,15 @@ class ElasticSearchManager
                 'settings' => $settings,
                 'mappings' => [
                     'properties' => $mappings,
-                ]
-            ]
+                ],
+            ],
         ];
 
         // Create the index with mappings and settings now
         return $this->client->indices()->create($params);
     }
 
-    public function getDefaultIndexSettings()
+    public function getDefaultIndexSettings(): array
     {
         return [
             'number_of_shards' => $this->numberOfShards,
@@ -154,7 +152,7 @@ class ElasticSearchManager
                         'tokenizer' => 'autocomplete',
                         'filter' => [
                             'lowercase',
-                            'asciifolding'
+                            'asciifolding',
                         ],
                     ],
                     'autocomplete' => [
@@ -203,17 +201,97 @@ class ElasticSearchManager
     }
 
     /**
-     * @param string $index
+     * @param string $name
+     * @param array $mapping
      *
-     * @return array
+     * @return bool
      */
-    public function deleteIndex(string $index)
+    public function createElasticSearchIndex(string $name, array $mapping = []): bool
     {
-        $params = [
-            'index' => $index,
-        ];
+        $status = true;
+        $settings = $this->getDefaultIndexSettings();
 
-        return $this->client->indices()->delete($params);
+        try {
+            $this->createIndex($name, $settings, $mapping);
+        } catch (\Exception $e) {
+            $status = false;
+            $message = json_decode($e->getMessage());
+            if (!empty($message->error->type) &&
+                $message->error->type === self::INDEX_ALREADY_EXISTS_EXCEPTION
+            ) {
+                $status = true;
+            }
+        }
+
+        return $status;
+    }
+
+    public function createAllElasticIndexes(): bool
+    {
+        $mappings = self::getElasticMappings();
+
+        foreach (self::ELASTIC_INDEXES as $indexName) {
+            if (!$this->createElasticSearchIndex($indexName, $mappings[$indexName])) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * @param string $indexName
+     *
+     * @return bool
+     */
+    protected function deleteElasticSearchIndex(string $indexName): bool
+    {
+        $status = true;
+
+        try {
+            $this->client->indices()->delete(['index' => $indexName]);
+        } catch (\Exception $e) {
+            $status = false;
+            $message = json_decode($e->getMessage());
+
+            if (!empty($message->error->type) &&
+                $message->error->type == self::INDEX_NOT_FOUND_EXCEPTION
+            ) {
+                $status = true;
+            }
+        }
+
+        return $status;
+    }
+
+    public function deleteAllElasticSearchIndexes(): bool
+    {
+        foreach (self::ELASTIC_INDEXES as $indexName) {
+            if (!$this->deleteElasticSearchIndex($indexName)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * @param string $index
+     * @param array $data
+     *
+     * @return bool
+     */
+    public function addElasticBulkItemData(string $index, $data): bool
+    {
+        try {
+            $status = $this->addBulkItems($index, $data);
+        } catch (\Exception $e) {
+            $status = false;
+            $message = json_decode($e->getMessage());
+            $this->logger->error($message);
+        }
+
+        return $status;
     }
 
     protected function addItemToRequest(array $data, $index, $jsonData = [])

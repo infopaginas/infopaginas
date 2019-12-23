@@ -43,7 +43,6 @@ class Category implements
     const CATEGORY_ARTICLE_CODE = '99999';
     const CATEGORY_ARTICLE_SLUG = 'infopaginas-media';
 
-    const ELASTIC_DOCUMENT_TYPE = 'Category';
     const ELASTIC_INDEX = 'category';
     const FLAG_IS_UPDATED = 'isUpdated';
 

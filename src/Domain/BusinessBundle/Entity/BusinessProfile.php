@@ -100,8 +100,6 @@ class BusinessProfile implements
     const TRANSLATION_LANG_EN = 'En';
     const TRANSLATION_LANG_ES = 'Es';
 
-    const ELASTIC_DOCUMENT_TYPE = 'BusinessProfile';
-    const ELASTIC_DOCUMENT_TYPE_AD = 'BusinessProfileAd';
     const ELASTIC_INDEX = 'business_profile';
     const ELASTIC_INDEX_AD = 'business_profile_ad';
     const FLAG_IS_UPDATED = 'isUpdated';
