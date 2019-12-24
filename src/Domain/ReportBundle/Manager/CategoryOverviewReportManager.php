@@ -698,8 +698,11 @@ class CategoryOverviewReportManager extends BaseReportManager
         $callsMobile = [];
 
         foreach ($categoryIds as $categoryId) {
+            $spanishName = '';
+
             if (!empty($mapping[$categoryId])) {
-                $label = $mapping[$categoryId];
+                $label = $mapping[$categoryId]['name'];
+                $spanishName = $mapping[$categoryId]['searchTextEs'];
             } else {
                 $label = $categoryId . ' - item was deleted';
             }
@@ -720,7 +723,7 @@ class CategoryOverviewReportManager extends BaseReportManager
 
             // table
             $data[] = [
-                'name' => $label,
+                'name' => $label . ' / ' . $spanishName,
                 CategoryOverviewModel::TYPE_CODE_IMPRESSION => $impression,
                 CategoryOverviewModel::TYPE_CODE_DIRECTION_BUTTON => $direction,
                 CategoryOverviewModel::TYPE_CODE_CALL_MOB_BUTTON => $callMobile,
@@ -777,7 +780,8 @@ class CategoryOverviewReportManager extends BaseReportManager
         $categories = $this->getCategoryRepository()->getAvailableCategoryNameByIds($categoryIds);
 
         foreach ($categories as $category) {
-            $data[$category['id']] = $category['name'];
+            $data[$category['id']]['name'] = $category['name'];
+            $data[$category['id']]['searchTextEs'] = $category['searchTextEs'];
         }
 
         return $data;

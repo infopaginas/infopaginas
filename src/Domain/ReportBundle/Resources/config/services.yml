@@ -6,11 +6,6 @@ services:
             - '@mongodb.manager'
         calls:
             - [ setContainer, [ '@service_container' ] ]
-    domain_report.manager.category_report_manager:
-        class: Domain\ReportBundle\Manager\CategoryReportManager
-        arguments: [ '@mongodb.manager' ]
-        calls:
-            - [ setContainer, [ '@service_container' ] ]
     domain_report.manager.geolocation_manager:
         class: Domain\ReportBundle\Manager\GeolocationManager
         arguments: [ '@mongodb.manager' ]
