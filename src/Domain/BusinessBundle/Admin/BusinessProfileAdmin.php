@@ -382,6 +382,9 @@ class BusinessProfileAdmin extends OxaAdmin
             ->add('phones', null, [
                 'template' => 'OxaSonataAdminBundle:ListFields:list_orm_one_to_many.html.twig',
             ])
+            ->add('Address', null, [
+                'template' => 'DomainBusinessBundle:Admin:BusinessProfile/full_address.html.twig'
+            ])
             ->add('hasImages')
             ->add('subscriptionPlan', null, [
                 'template' => 'DomainBusinessBundle:Admin:BusinessProfile/list_subscription.html.twig'
