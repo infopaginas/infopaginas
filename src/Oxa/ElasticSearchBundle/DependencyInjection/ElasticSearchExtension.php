@@ -26,7 +26,6 @@ class ElasticSearchExtension extends Extension
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
 
-        $container->setParameter('elastic_search.document_index', $config['document_index']);
         $container->setParameter('elastic_search.indexing_page', $config['indexing_page']);
         $container->setParameter('elastic_search.host', $config['host']);
 

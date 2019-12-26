@@ -187,21 +187,13 @@ class SearchController extends Controller
     }
 
     /**
-     * @return BusinessOverviewReportManager
-     */
-    protected function getBusinessOverviewReportManager() : BusinessOverviewReportManager
-    {
-        return $this->get('domain_report.manager.business_overview_report_manager');
-    }
-
-    /**
      * Source endpoint for jQuery UI Autocomplete plugin in search widget
      *
      * @param Request $request
      *
      * @return JsonResponse
      */
-    public function autocompleteAction(Request $request)
+    public function autocompleteAction(Request $request): JsonResponse
     {
         $searchData = $this->getSearchDataByRequest($request);
         $locale = LocaleHelper::getLocale($request->getLocale());

@@ -64,12 +64,7 @@ class SearchManager extends Manager
     {
         $search = $this->businessProfileManager->search($searchParams);
         $results = $search['data'];
-        $totalResults = $search['total'];
-
-        if (!$results) {
-            // todo - change logic to 40 miles
-            $results  = [];
-        }
+        $totalResults = $search['total']['value'];
 
         $categories    = [];
         $neighborhoods = [];
@@ -111,7 +106,7 @@ class SearchManager extends Manager
         $search = $this->businessProfileManager->searchCatalog($searchParams);
 
         $results = $search['data'];
-        $totalResults = $search['total'];
+        $totalResults = $search['total']['value'];
 
         if ($results) {
             $pagesCount   = ceil($totalResults/$searchParams->limit);
@@ -146,7 +141,7 @@ class SearchManager extends Manager
         $search = $this->businessProfileManager->searchSuggestedBusinesses($searchParams);
 
         $results      = $search['data'];
-        $totalResults = $search['total'];
+        $totalResults = $search['total']['value'];
 
         if ($results) {
             $pagesCount = ceil($totalResults/$searchParams->limit);
@@ -175,7 +170,7 @@ class SearchManager extends Manager
         $search = $this->businessProfileManager->searchClosestBusinesses($searchParams);
 
         $response = [
-            'total' => $search['total'],
+            'total' => $search['total']['value'],
             'data'  => [],
         ];
 

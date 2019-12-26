@@ -45,7 +45,7 @@ class BusinessProfileListener implements EventSubscriber
         $entity = $args->getEntity();
 
         if ($entity instanceof BusinessProfile) {
-            $this->businessProfileManager->removeBusinessFromElastic($entity->getId());
+            $this->businessProfileManager->removeItemFromElastic(BusinessProfile::ELASTIC_INDEX, $entity->getId());
 
             if ($entity->getVideo()) {
                 $media = $entity->getVideo();

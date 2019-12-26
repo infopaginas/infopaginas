@@ -100,8 +100,8 @@ class BusinessProfile implements
     const TRANSLATION_LANG_EN = 'En';
     const TRANSLATION_LANG_ES = 'Es';
 
-    const ELASTIC_DOCUMENT_TYPE = 'BusinessProfile';
-    const ELASTIC_DOCUMENT_TYPE_AD = 'BusinessProfileAd';
+    const ELASTIC_INDEX = 'business_profile';
+    const ELASTIC_INDEX_AD = 'business_profile_ad';
     const FLAG_IS_UPDATED = 'isUpdated';
 
     const ELASTIC_LOCALITIES_FILED = 'locality_ids';
@@ -1163,15 +1163,15 @@ class BusinessProfile implements
         $this->mediaUrls                = new ArrayCollection();
         $this->redirectedBusinesses     = new ArrayCollection();
 
-        $this->websiteItem =        new Url();
-        $this->actionUrlItem =      new Url();
-        $this->facebookURLItem =    new Url();
-        $this->googleURLItem =      new Url();
-        $this->instagramURLItem =   new Url();
-        $this->linkedInURLItem =    new Url();
+        $this->websiteItem        = new Url();
+        $this->actionUrlItem      = new Url();
+        $this->facebookURLItem    = new Url();
+        $this->googleURLItem      = new Url();
+        $this->instagramURLItem   = new Url();
+        $this->linkedInURLItem    = new Url();
         $this->tripAdvisorURLItem = new Url();
-        $this->twitterURLItem =     new Url();
-        $this->youtubeURLItem =     new Url();
+        $this->twitterURLItem     = new Url();
+        $this->youtubeURLItem     = new Url();
 
         $this->isClosed  = false;
         $this->isUpdated = true;

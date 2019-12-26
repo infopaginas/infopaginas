@@ -30,6 +30,7 @@
     },
     "require": {
         "php": "~7.1.0",
+        "ext-json": "*",
         "symfony/symfony": "2.8.52",
         "doctrine/orm": "dev-master#28c51ab00bededfb8909af25ae31cf0a9c799d9b",
         "doctrine/doctrine-bundle": "~1.4",
@@ -81,7 +82,7 @@
         "aws/aws-sdk-php": "~3.20",
         "aws/aws-sdk-php-symfony": "~1.2",
         "guzzle/guzzle": "~3.9.3",
-        "elasticsearch/elasticsearch": "^5.1",
+        "elasticsearch/elasticsearch": "^7.4",
         "google/apiclient": "~1.1.7",
         "mongodb/mongodb": "~1.1.2",
         "exercise/htmlpurifier-bundle": "^0.2.4",

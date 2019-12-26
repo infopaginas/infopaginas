@@ -162,7 +162,7 @@ class LocalityManager extends Manager
     /**
      * @param Locality $locality
      *
-     * @return array
+     * @return array|bool
      */
     public function buildLocalityElasticData(Locality $locality)
     {
@@ -190,50 +190,29 @@ class LocalityManager extends Manager
     }
 
     /**
-     * @param bool $sourceEnabled
-     *
      * @return array
      */
-    public function getLocalityElasticSearchMapping($sourceEnabled = true)
+    public static function getLocalityElasticSearchIndexParams(): array
     {
-        $properties = $this->getLocalityElasticSearchIndexParams();
-
-        $data = [
-            Locality::ELASTIC_DOCUMENT_TYPE => [
-                '_source' => [
-                    'enabled' => $sourceEnabled,
-                ],
-                'properties' => $properties,
-            ],
-        ];
-
-        return $data;
-    }
-
-    /**
-     * @return array
-     */
-    protected function getLocalityElasticSearchIndexParams()
-    {
-        $params = [
+        return [
             'auto_suggest_en' => [
-                'type' => 'string',
+                'type' => 'text',
                 'analyzer' => 'autocomplete',
                 'search_analyzer' => 'autocomplete_search',
                 'fields' => [
                     'folded' => [
-                        'type' => 'string',
+                        'type' => 'text',
                         'analyzer' => 'folding',
                     ],
                 ],
             ],
             'auto_suggest_es' => [
-                'type' => 'string',
+                'type' => 'text',
                 'analyzer' => 'autocomplete',
                 'search_analyzer' => 'autocomplete_search',
                 'fields' => [
                     'folded' => [
-                        'type' => 'string',
+                        'type' => 'text',
                         'analyzer' => 'folding',
                     ],
                 ],
@@ -242,8 +221,6 @@ class LocalityManager extends Manager
                 'type' => 'geo_point',
             ],
         ];
-
-        return $params;
     }
 
     /**
