@@ -96,7 +96,7 @@ class CategoryRepository extends EntityRepository
     public function getAvailableCategoryNameByIds($ids)
     {
         $qb = $this->getAvailableCategoriesQb()
-            ->select('c.name, c.id')
+            ->select('c.name, c.searchTextEs, c.id')
             ->andWhere('c.id IN (:ids)')
             ->setParameter('ids', $ids)
         ;
