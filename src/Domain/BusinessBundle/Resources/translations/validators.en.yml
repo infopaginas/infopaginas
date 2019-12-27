@@ -6,7 +6,7 @@ business_profile:
     digit_dash: Only digits and dash are allowed
   images:
     invalid_url: Error: Invalid image URL.
-    invalid_size: The image is larger than {{ limit }} MB
+    invalid_size: The image is larger than {{ limit }}
   video:
     invalid_url: Error: Invalid video URL.
   category:
@@ -35,7 +35,7 @@ business_profile:
   map:
     pin_not_moved: Map pin position should be updated
 
-media.max_size: Media max size is {{ limit }} Mb
+media.max_size: Media max size is {{ limit }}
 
 business_profile_phone:
   not_unique_main: Error there cannot be more than one main phone

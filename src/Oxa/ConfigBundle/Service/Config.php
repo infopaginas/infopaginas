@@ -2,7 +2,9 @@
 
 namespace Oxa\ConfigBundle\Service;
 
+use Doctrine\Common\Cache\CacheProvider;
 use Doctrine\ORM\EntityManager;
+use Domain\SearchBundle\Util\CacheUtil;
 use Oxa\ConfigBundle\Entity\Config as SystemConfig;
 use Oxa\ConfigBundle\Model\ConfigInterface;
 
@@ -12,15 +14,18 @@ class Config
      * @var EntityManager
      */
     private $em;
+    private $cache;
 
     protected $config;
 
     /**
      * @param EntityManager $em
+     * @param CacheProvider $cache
      */
-    public function __construct(EntityManager $em)
+    public function __construct(EntityManager $em, CacheProvider $cache)
     {
         $this->em = $em;
+        $this->cache = $cache;
     }
 
     protected function buildConfig()
@@ -30,6 +35,8 @@ class Config
         foreach ($settings as $setting) {
             $this->config[$setting->getKey()] = $setting;
         }
+
+        $this->cache->save(CacheUtil::ID_CONFIGS, $this->config);
     }
 
     /**
@@ -40,14 +47,20 @@ class Config
     public function getSetting($key)
     {
         if (!$this->config) {
-            $this->buildConfig();
+            $cachedConfigs = $this->cache->fetch(CacheUtil::ID_CONFIGS);
+            if ($cachedConfigs) {
+                $this->config = $cachedConfigs;
+            } else {
+                $this->buildConfig();
+            }
         }
 
-        return isset($this->config[$key]) ? $this->config[$key] : null;
+        return $this->config[$key] ?? null;
     }
 
     public function getValue($key)
     {
+        /** @var SystemConfig $setting */
         if ($setting = $this->getSetting($key)) {
             return $setting->getValue();
         }

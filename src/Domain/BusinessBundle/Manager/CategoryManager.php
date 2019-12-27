@@ -10,6 +10,7 @@ use Domain\SearchBundle\Util\SearchDataUtil;
 use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
 use Oxa\ElasticSearchBundle\Manager\ElasticSearchManager;
 use Oxa\ManagerArchitectureBundle\Model\Manager\Manager;
+use Oxa\Sonata\AdminBundle\Util\Helpers\AdminHelper;
 
 class CategoryManager extends Manager
 {
@@ -191,6 +192,7 @@ class CategoryManager extends Manager
                     'query' => $query,
                     'fields' => [
                         'auto_suggest_' . strtolower($locale),
+                        'auto_suggest_' . strtolower($locale) . '.folded',
                     ],
                 ],
             ],

@@ -22,7 +22,7 @@
                     {% include ':redesign/blocks/workingHours:working_hours_current_status.html.twig' with { 'workingHoursData': workingHoursData } %}
                 </div>
                 <div class="item__info">
-                    <h2>{% if item.isAd %} <i class="fa fa-star"></i> {% endif %} {{ item.displayedPosition }}. <span class="{{ seoTags.name }}">{{ item.name }}</span></h2>
+                    <h2>{% if item.isAd %} <i class="fa fa-star"></i> {% endif %} <span class="{{ seoTags.name }}">{{ item.name }}</span></h2>
                     {% if (hasSubscription(item, "CODE_PREMIUM_PLUS") and item.slogan) %}
                         <p>{{ item.slogan }}</p>
                     {% endif %}
@@ -49,7 +49,10 @@
     </div><!-- item__content -->
     <div class="item__actions">
         <div class="item__primary-actions" data-bw-gtm-component="search-results-primary-action">
-            <a data-bname="{{ item.name }}" class="get-dir redirect-event button button--small button--featured link-pointer {% if item.isAd %}svm-getdir{% endif %}" data-href="{{ path('domain_search_show_directions', {'slug': item.getSlug() }) }}" data-id="{{ item.getId() }}" data-latlng="{{ item.getLatLng() }}" data-type="directionButton" data-bw-gtm-event-click data-bw-gtm-label="{% trans %}Directions{% endtrans %}">
+            <a data-bname="{{ item.name }}" class="get-dir redirect-event button button--small button--featured link-pointer {% if item.isAd %}svm-getdir{% endif %}"
+               data-href="{{ path('domain_search_show_directions', {'slug': item.getSlug() }) }}" data-id="{{ item.getId() }}"
+               data-latlng="{{ item.getLatLng() }}" data-type="directionButton" data-bw-gtm-event-click
+               data-bw-gtm-label="{% trans %}Directions{% endtrans %}" rel="nofollow">
                 <i class="fa fa-location-arrow"></i>
                 {% trans %}Directions{% endtrans %}
             </a>

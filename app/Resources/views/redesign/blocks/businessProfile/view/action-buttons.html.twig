@@ -1,3 +1,5 @@
+{% from ':widgets:url_item_rel_attributes_macros.html.twig' import relAttributes %}
+
 {% if not item.phones.empty %}
     {% if item.mainPhone %}
         {% set phoneToCall = item.mainPhone.phone %}
@@ -10,7 +12,10 @@
     </a>
 {% endif %}
 {% if not item.getHideAddress() %}
-    <a data-bname="{{ item.name }}" class="get-dir redirect-event button button--small button--featured link-pointer direction-button vertical-left-separator buttons-width" data-href="{{ path('domain_search_show_directions', { 'slug': item.getSlug() }) }}" data-id="{{ item.getId() }}" data-latlng="{{ item.getLatLng() }}" data-type="directionButton" data-bw-gtm-event-click data-bw-gtm-label="{% trans %}Directions{% endtrans %}">
+    <a data-bname="{{ item.name }}" class="get-dir redirect-event button button--small button--featured link-pointer direction-button vertical-left-separator buttons-width"
+       data-href="{{ path('domain_search_show_directions', { 'slug': item.getSlug() }) }}"
+       data-id="{{ item.getId() }}" data-latlng="{{ item.getLatLng() }}" data-type="directionButton"
+       data-bw-gtm-event-click data-bw-gtm-label="{% trans %}Directions{% endtrans %}" rel="nofollow">
         <i class="fa fa-location-arrow"></i>
         <span>{% trans %}Directions{% endtrans %}</span>
     </a>
@@ -23,7 +28,7 @@
             data-type="webActionButton"
             data-bw-gtm-event-click
             data-bw-gtm-label="{{ item.actionUrlItem.url }}"
-            rel="{% if item.actionUrlItem.relNoFollow %}nofollow{% endif %} {% if item.actionUrlItem.relNoOpener %}noopener{% endif %} {% if item.actionUrlItem.relNoReferrer %}noreferrer{% endif %}"
+            rel="{{ relAttributes(item.actionUrlItem) }}"
     >
         {% if item.actionUrlType in BUSINESS_PROFILE.ACTION_TYPE %}
             {% set path = 'redesign/img/icons/' ~ item.actionUrlType ~ '.svg' %}

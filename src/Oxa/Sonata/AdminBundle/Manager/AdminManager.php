@@ -233,11 +233,6 @@ class AdminManager extends DefaultManager
             $existDependentField[] = 'Protected Item';
         }
 
-        // prevent deletion of hardcoded paymentMethods
-        if ($entity instanceof PaymentMethod and $entity->getType()) {
-            $existDependentField[] = 'Protected Item';
-        }
-
         return $existDependentField;
     }
 

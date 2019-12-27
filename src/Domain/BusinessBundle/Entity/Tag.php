@@ -4,13 +4,14 @@ namespace Domain\BusinessBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Domain\BusinessBundle\Entity\Translation\TagTranslation;
 use Oxa\Sonata\AdminBundle\Model\ChangeStateInterface;
 use Oxa\Sonata\AdminBundle\Model\CopyableEntityInterface;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
+use Oxa\Sonata\AdminBundle\Model\OxaPersonalTranslatableInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\ChangeStateTrait;
 use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
 use Gedmo\Mapping\Annotation as Gedmo;
-use Sonata\TranslationBundle\Model\Gedmo\TranslatableInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\OxaPersonalTranslatable as PersonalTranslatable;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -23,7 +24,11 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @UniqueEntity("name")
  * @Gedmo\TranslationEntity(class="Domain\BusinessBundle\Entity\Translation\TagTranslation")
  */
-class Tag implements DefaultEntityInterface, CopyableEntityInterface, TranslatableInterface, ChangeStateInterface
+class Tag implements
+    DefaultEntityInterface,
+    CopyableEntityInterface,
+    OxaPersonalTranslatableInterface,
+    ChangeStateInterface
 {
     use DefaultEntityTrait;
     use PersonalTranslatable;
@@ -164,13 +169,8 @@ class Tag implements DefaultEntityInterface, CopyableEntityInterface, Translatab
         return $this->businessProfiles;
     }
 
-    /**
-     * Remove translation
-     *
-     * @param \Domain\BusinessBundle\Entity\Translation\TagTranslation $translation
-     */
-    public function removeTranslation(\Domain\BusinessBundle\Entity\Translation\TagTranslation $translation)
+    public function getTranslationClass(): string
     {
-        $this->translations->removeElement($translation);
+        return TagTranslation::class;
     }
 }

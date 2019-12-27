@@ -32,6 +32,7 @@ class SyncBusinessElasticCommand extends ContainerAwareCommand
     {
         $this->setName('data:elastic:sync');
         $this->setDescription('Synchronize business with elastic search');
+        $this->addArgument('object', InputArgument::OPTIONAL);
     }
 
     /**
@@ -53,10 +54,29 @@ class SyncBusinessElasticCommand extends ContainerAwareCommand
 
         $businessProfileManager = $this->getContainer()->get('domain_business.manager.business_profile');
 
-        $businessProfileManager->handleLocalityElasticSync();
-        $businessProfileManager->handleCategoryElasticSync();
-        $businessProfileManager->handleBusinessElasticSync();
-        $businessProfileManager->handleEmergencyBusinessElasticSync();
+        $object = $input->getArgument('object');
+
+        if (!$object) {
+            $businessProfileManager->handleLocalityElasticSync();
+            $businessProfileManager->handleCategoryElasticSync();
+            $businessProfileManager->handleBusinessElasticSync();
+            $businessProfileManager->handleEmergencyBusinessElasticSync();
+        } else {
+            switch ($object) {
+                case 'business':
+                    $businessProfileManager->handleBusinessElasticSync();
+                    break;
+                case 'category':
+                    $businessProfileManager->handleCategoryElasticSync();
+                    break;
+                case 'locality':
+                    $businessProfileManager->handleLocalityElasticSync();
+                    break;
+                case 'emergency':
+                    $businessProfileManager->handleEmergencyBusinessElasticSync();
+                    break;
+            }
+        }
 
         $lockHandler->release();
         $logger->addInfo($logger::ELASTIC_SYNC, $logger::STATUS_END, 'execute:stop');

@@ -12,6 +12,10 @@ sonata_block:
         sonata_translation.block.locale_switcher:
             contexts: [admin]
 
+sonata_doctrine_orm_admin:
+    templates:
+        form: ['@OxaSonataDoctrineORMAdmin/Form/form_admin_fields_custom.html.twig']
+
 sonata_admin:
     show_mosaic_button: false
     title: Infopaginas
@@ -22,6 +26,7 @@ sonata_admin:
         edit:   OxaSonataAdminBundle:CRUD:edit.html.twig
         show:   OxaSonataAdminBundle:CRUD:show.html.twig
         base_list_field:   OxaSonataAdminBundle:CRUD:base_list_field.html.twig
+        delete: OxaSonataAdminBundle:CRUD:delete_custom.html.twig
     security:
         handler: sonata.admin.security.handler.role
     dashboard:

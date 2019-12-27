@@ -1,3 +1,5 @@
+{% from ':widgets:url_item_rel_attributes_macros.html.twig' import relAttributes %}
+
 {% set socialLinksExists = (item.linkedInURLItem and item.linkedInURLItem.url)
     or (item.facebookURLItem and item.facebookURLItem.url)
     or (item.twitterURLItem and item.twitterURLItem.url)
@@ -19,7 +21,7 @@
                         title="{% trans %}Visit business profile on...{% endtrans %}"
                         data-bw-gtm-event-click
                         data-bw-gtm-label="linkedIn::{{ item.linkedInURLItem.url }}"
-                        rel="{% if item.linkedInURLItem.relNoFollow %}nofollow{% endif %} {% if item.linkedInURLItem.relNoOpener %}noopener{% endif %} {% if item.linkedInURLItem.relNoReferrer %}noreferrer{% endif %}"
+                        rel="{{ relAttributes(item.linkedInURLItem) }}"
                 ><i class="fa fa-linkedin"></i></a>
             </div><!-- share__item -->
         {% endif %}
@@ -33,7 +35,7 @@
                         title="{% trans %}Visit business profile on...{% endtrans %}"
                         data-bw-gtm-event-click
                         data-bw-gtm-label="facebook::{{ item.facebookURLItem.url }}"
-                        rel="{% if item.facebookURLItem.relNoFollow %}nofollow{% endif %} {% if item.facebookURLItem.relNoOpener %}noopener{% endif %} {% if item.facebookURLItem.relNoReferrer %}noreferrer{% endif %}"
+                        rel="{{ relAttributes(item.facebookURLItem) }}"
                 ><i class="fa fa-facebook"></i></a>
             </div><!-- share__item -->
         {% endif %}
@@ -46,7 +48,7 @@
                         data-type="twitterVisit"
                         title="{% trans %}Visit business profile on...{% endtrans %}"
                         data-bw-gtm-event-click data-bw-gtm-label="twitter::{{ item.twitterURLItem.url }}"
-                        rel="{% if item.twitterURLItem.relNoFollow %}nofollow{% endif %} {% if item.twitterURLItem.relNoOpener %}noopener{% endif %} {% if item.twitterURLItem.relNoReferrer %}noreferrer{% endif %}"
+                        rel="{{ relAttributes(item.twitterURLItem) }}"
                 ><i class="fa fa-twitter"></i></a>
             </div><!-- share__item -->
         {% endif %}
@@ -60,7 +62,7 @@
                         title="{% trans %}Visit business profile on...{% endtrans %}"
                         data-bw-gtm-event-click
                         data-bw-gtm-label="google-plus::{{ item.googleURLItem.url }}"
-                        rel="{% if item.googleURLItem.relNoFollow %}nofollow{% endif %} {% if item.googleURLItem.relNoOpener %}noopener{% endif %} {% if item.googleURLItem.relNoReferrer %}noreferrer{% endif %}"
+                        rel="{{ relAttributes(item.googleURLItem) }}"
                 ><i class="fa fa-google-plus"></i></a>
             </div><!-- share__item -->
         {% endif %}
@@ -74,7 +76,7 @@
                         title="{% trans %}Visit business profile on...{% endtrans %}"
                         data-bw-gtm-event-click
                         data-bw-gtm-label="youtube::{{ item.youtubeURLItem.url }}"
-                        rel="{% if item.youtubeURLItem.relNoFollow %}nofollow{% endif %} {% if item.youtubeURLItem.relNoOpener %}noopener{% endif %} {% if item.youtubeURLItem.relNoReferrer %}noreferrer{% endif %}"
+                        rel="{{ relAttributes(item.youtubeURLItem) }}"
                 ><i class="fa fa-youtube"></i></a>
             </div><!-- share__item -->
         {% endif %}
@@ -87,7 +89,7 @@
                         title="{% trans %}Visit business profile on...{% endtrans %}"
                         data-bw-gtm-event-click
                         data-bw-gtm-label="instagram::{{ item.instagramURLItem.url }}"
-                        rel="{% if item.instagramURLItem.relNoFollow %}nofollow{% endif %} {% if item.instagramURLItem.relNoOpener %}noopener{% endif %} {% if item.instagramURLItem.relNoReferrer %}noreferrer{% endif %}"
+                        rel="{{ relAttributes(item.instagramURLItem) }}"
                 ><i class="fa fa-instagram"></i></a>
             </div><!-- share__item -->
         {% endif %}
@@ -100,8 +102,8 @@
                         data-type="tripAdvisorVisit"
                         title="{% trans %}Visit business profile on...{% endtrans %}"
                         data-bw-gtm-event-click
-                        data-bw-gtm-label="tripadvisor::{{ item.tripAdvisorURL }}"
-                        rel="{% if item.tripAdvisorURLItem.relNoFollow %}nofollow{% endif %} {% if item.tripAdvisorURLItem.relNoOpener %}noopener{% endif %} {% if item.tripAdvisorURLItem.relNoReferrer %}noreferrer{% endif %}"
+                        data-bw-gtm-label="tripadvisor::{{ item.tripAdvisorURLItem.url }}"
+                        rel="{{ relAttributes(item.tripAdvisorURLItem) }}"
                 ><i class="fa fa-tripadvisor"></i></a>
             </div><!-- share__item -->
         {% endif %}

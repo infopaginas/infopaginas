@@ -21,6 +21,7 @@ interface OxaMediaInterface
     const CONTEXT_ARTICLE_IMAGES              = 'article_images';
     const CONTEXT_VIDEO_POSTER                = 'video_poster';
     const CONTEXT_HOMEPAGE_CAROUSEL           = 'homepage_carousel';
+    const CONTEXT_PAYMENT_METHOD              = 'payment_method';
 
     /**
      * @return mixed

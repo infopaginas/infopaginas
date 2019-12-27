@@ -45,6 +45,7 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Validator\Constraints\Length;
 use Ivory\CKEditorBundle\Form\Type\CKEditorType;
 use Symfony\Component\Validator\Constraints\NotBlank;
+use Doctrine\ORM\Query\Expr\Join;
 
 /**
  * Class BusinessProfileAdmin
@@ -325,6 +326,39 @@ class BusinessProfileAdmin extends OxaAdmin
                 'placeholder' => $this->trans('all', [], 'AdminReportBundle'),
             ])
             ->add('csvImportFile')
+            ->add('hasPanoramaId', 'doctrine_orm_callback', [
+                'label'      => $this->trans('filter.label_has_panorama_id', [], $this->getTranslationDomain()),
+                'callback'   => static function ($queryBuilder, $alias, $field, $value) {
+                    if (!$value['value']) {
+                        return false;
+                    }
+                    $queryBuilder->andWhere(sprintf('%s.panoramaId IS NOT NULL', $alias));
+
+                    return true;
+                },
+                'field_type' => 'checkbox',
+            ])
+            ->add('paidProfiles', 'doctrine_orm_callback', [
+                'label'      => $this->trans('filter.label_only_paid_profiles', [], $this->getTranslationDomain()),
+                'callback'   => static function ($queryBuilder, $alias, $field, $value) {
+                    if (!$value['value']) {
+                        return false;
+                    }
+                    $queryBuilder->leftJoin(
+                        sprintf('%s.subscriptions', $alias),
+                        'sub',
+                        Join::WITH,
+                        'sub.status = :subscriptionStatus'
+                    );
+                    $queryBuilder->leftJoin('sub.subscriptionPlan', 'sp');
+                    $queryBuilder->andWhere('sp.code >= :code');
+                    $queryBuilder->setParameter('code', SubscriptionPlanInterface::CODE_PRIORITY);
+                    $queryBuilder->setParameter('subscriptionStatus', StatusInterface::STATUS_ACTIVE);
+
+                    return true;
+                },
+                'field_type' => 'checkbox',
+            ])
         ;
     }
 
@@ -894,16 +928,23 @@ class BusinessProfileAdmin extends OxaAdmin
 
         // Video Block
         if ($businessProfile->getId() and $subscriptionPlanCode >= SubscriptionPlanInterface::CODE_PREMIUM_PLATINUM) {
-
             $formMapper
                 ->tab('Media')
                     ->with('Video')
-                        ->add('video', 'sonata_type_model_list', [
-                            'required' => false,
-                        ])
+                        ->add(
+                            'video',
+                            'sonata_type_model_list',
+                            [
+                                'required' => false,
+                            ],
+                            [
+                                'link_parameters' => [
+                                    'businessName' => $businessProfile->getName(),
+                                ],
+                            ]
+                        )
                     ->end()
-                ->end()
-            ;
+                ->end();
         }
 
         // Others Tab

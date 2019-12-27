@@ -2,12 +2,19 @@
 
 namespace Oxa\Sonata\AdminBundle\Util\Traits;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Sonata\TranslationBundle\Model\Gedmo\AbstractPersonalTranslation;
 use Sonata\TranslationBundle\Traits\Gedmo\PersonalTranslatable;
 use Symfony\Component\Validator\Constraints as Assert;
 
 trait OxaPersonalTranslatable
 {
     use PersonalTranslatable;
+
+    /**
+     * @var ArrayCollection $translations
+     */
+    protected $translations;
 
     /**
      * Get translation, return original(english) version, if translation is empty
@@ -46,5 +53,15 @@ trait OxaPersonalTranslatable
         }
 
         return null;
+    }
+
+    /**
+     * Remove translation
+     *
+     * @param AbstractPersonalTranslation $translation
+     */
+    public function removeTranslation(AbstractPersonalTranslation $translation)
+    {
+        $this->translations->removeElement($translation);
     }
 }

@@ -5,15 +5,16 @@ namespace Domain\BusinessBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Mapping as ORM;
+use Domain\BusinessBundle\Entity\Translation\AreaTranslation;
 use Oxa\Sonata\AdminBundle\Model\ChangeStateInterface;
 use Oxa\Sonata\AdminBundle\Model\CopyableEntityInterface;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
+use Oxa\Sonata\AdminBundle\Model\OxaPersonalTranslatableInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\ChangeStateTrait;
 use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Oxa\Sonata\AdminBundle\Util\Traits\OxaPersonalTranslatable as PersonalTranslatable;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
-use Sonata\TranslationBundle\Model\Gedmo\TranslatableInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -25,7 +26,11 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @UniqueEntity("name")
  * @Gedmo\TranslationEntity(class="Domain\BusinessBundle\Entity\Translation\AreaTranslation")
  */
-class Area implements DefaultEntityInterface, CopyableEntityInterface, TranslatableInterface, ChangeStateInterface
+class Area implements
+    DefaultEntityInterface,
+    CopyableEntityInterface,
+    OxaPersonalTranslatableInterface,
+    ChangeStateInterface
 {
     use DefaultEntityTrait;
     use PersonalTranslatable;
@@ -186,16 +191,6 @@ class Area implements DefaultEntityInterface, CopyableEntityInterface, Translata
     }
 
     /**
-     * Remove translation
-     *
-     * @param \Domain\BusinessBundle\Entity\Translation\AreaTranslation $translation
-     */
-    public function removeTranslation(\Domain\BusinessBundle\Entity\Translation\AreaTranslation $translation)
-    {
-        $this->translations->removeElement($translation);
-    }
-
-    /**
      * Add Locality
      *
      * @param  Locality $locality
@@ -273,5 +268,10 @@ class Area implements DefaultEntityInterface, CopyableEntityInterface, Translata
     public function getExtraSearches()
     {
         return $this->extraSearches;
+    }
+
+    public function getTranslationClass(): string
+    {
+        return AreaTranslation::class;
     }
 }

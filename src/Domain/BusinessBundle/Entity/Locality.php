@@ -3,7 +3,9 @@
 namespace Domain\BusinessBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Domain\BusinessBundle\Entity\Translation\LocalityTranslation;
 use Oxa\Sonata\AdminBundle\Model\ChangeStateInterface;
+use Oxa\Sonata\AdminBundle\Model\OxaPersonalTranslatableInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\ChangeStateTrait;
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -14,8 +16,6 @@ use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Oxa\Sonata\AdminBundle\Util\Traits\OxaPersonalTranslatable as PersonalTranslatable;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
-use Sonata\TranslationBundle\Model\Gedmo\TranslatableInterface;
 
 /**
  * Locality
@@ -25,7 +25,11 @@ use Sonata\TranslationBundle\Model\Gedmo\TranslatableInterface;
  * @ORM\HasLifecycleCallbacks
  * @Gedmo\TranslationEntity(class="Domain\BusinessBundle\Entity\Translation\LocalityTranslation")
  */
-class Locality implements GeolocationInterface, DefaultEntityInterface, TranslatableInterface, ChangeStateInterface
+class Locality implements
+    GeolocationInterface,
+    DefaultEntityInterface,
+    OxaPersonalTranslatableInterface,
+    ChangeStateInterface
 {
     use DefaultEntityTrait;
     use LocationTrait;
@@ -356,16 +360,6 @@ class Locality implements GeolocationInterface, DefaultEntityInterface, Translat
     }
 
     /**
-     * Remove translation
-     *
-     * @param \Domain\BusinessBundle\Entity\Translation\LocalityTranslation $translation
-     */
-    public function removeTranslation(\Domain\BusinessBundle\Entity\Translation\LocalityTranslation $translation)
-    {
-        $this->translations->removeElement($translation);
-    }
-
-    /**
      * @return string
      */
     public function __toString()
@@ -483,5 +477,10 @@ class Locality implements GeolocationInterface, DefaultEntityInterface, Translat
     public function removePseudo($pseudo)
     {
         $this->pseudos->removeElement($pseudo);
+    }
+
+    public function getTranslationClass(): string
+    {
+        return LocalityTranslation::class;
     }
 }

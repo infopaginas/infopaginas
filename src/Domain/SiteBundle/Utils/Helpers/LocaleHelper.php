@@ -3,8 +3,8 @@
 namespace Domain\SiteBundle\Utils\Helpers;
 
 use Domain\BusinessBundle\Entity\BusinessProfile;
-use Domain\BusinessBundle\Entity\Translation\BusinessProfileTranslation;
 use Domain\BusinessBundle\Util\BusinessProfileUtil;
+use Oxa\Sonata\AdminBundle\Model\OxaPersonalTranslatableInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 
@@ -86,15 +86,15 @@ class LocaleHelper
     }
 
     /**
-     * @param BusinessProfile   $business
-     * @param string            $property
-     * @param array             $data
+     * @param OxaPersonalTranslatableInterface $entity
+     * @param string $property
+     * @param array $data
      *
-     * @return BusinessProfile
+     * @return OxaPersonalTranslatableInterface
      */
-    public static function handleTranslations(BusinessProfile $business, $property, $data)
+    public static function handleTranslations(OxaPersonalTranslatableInterface $entity, $property, $data)
     {
-        if (property_exists($business, $property)) {
+        if (property_exists($entity, $property)) {
             $accessor = PropertyAccess::createPropertyAccessor();
 
             $defaultValue = null;
@@ -109,67 +109,71 @@ class LocaleHelper
                         $defaultValue = $value;
                     }
 
-                    self::addBusinessTranslation($business, $property, $value, $locale);
+                    self::addEntityTranslation($entity, $property, $value, $locale);
                 } else {
                     $value = null;
 
-                     self::removeBusinessTranslation($business, $property, $locale);
+                    self::removeEntityTranslation($entity, $property, $locale);
                 }
 
-                if (property_exists($business, $propertyLocale)) {
-                    $accessor->setValue($business, $propertyLocale, $value);
+                if (property_exists($entity, $propertyLocale)) {
+                    $accessor->setValue($entity, $propertyLocale, $value);
                 }
             }
 
-            $accessor->setValue($business, $property, $defaultValue);
+            $accessor->setValue($entity, $property, $defaultValue);
         }
 
-        return $business;
+        return $entity;
     }
 
     /**
-     * @param BusinessProfile   $business
-     * @param string            $property
-     * @param array             $data
-     * @param string            $locale
+     * @param OxaPersonalTranslatableInterface $entity
+     * @param string $property
+     * @param mixed $data
+     * @param string $locale
      *
-     * @return BusinessProfile
+     * @return OxaPersonalTranslatableInterface
      */
-    public static function addBusinessTranslation(BusinessProfile $business, $property, $data, $locale)
+    public static function addEntityTranslation(OxaPersonalTranslatableInterface $entity, $property, $data, $locale)
     {
-        $translation = $business->getTranslationItem($property, $locale);
+        $translation = $entity->getTranslationItem($property, $locale);
 
         if ($translation) {
             $translation->setContent($data);
         } else {
-            $translation = new BusinessProfileTranslation(
-                $locale,
-                $property,
-                $data
-            );
+            $translationClass = $entity->getTranslationClass();
 
-            $business->addTranslation($translation);
+            if (class_exists($translationClass)) {
+                $translation = new $translationClass(
+                    $locale,
+                    $property,
+                    $data
+                );
+
+                $entity->addTranslation($translation);
+            }
         }
 
-        return $business;
+        return $entity;
     }
 
     /**
-     * @param BusinessProfile   $business
-     * @param string            $property
-     * @param string            $locale
+     * @param OxaPersonalTranslatableInterface $entity
+     * @param string $property
+     * @param string $locale
      *
-     * @return BusinessProfile
+     * @return OxaPersonalTranslatableInterface
      */
-    public static function removeBusinessTranslation(BusinessProfile $business, $property, $locale)
+    public static function removeEntityTranslation(OxaPersonalTranslatableInterface $entity, $property, $locale)
     {
-        $translation = $business->getTranslationItem($property, $locale);
+        $translation = $entity->getTranslationItem($property, $locale);
 
         if ($translation) {
-            $business->removeTranslation($translation);
+            $entity->removeTranslation($translation);
         }
 
-        return $business;
+        return $entity;
     }
 
     /**

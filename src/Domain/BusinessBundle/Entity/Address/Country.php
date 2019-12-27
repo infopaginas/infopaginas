@@ -4,15 +4,15 @@ namespace Domain\BusinessBundle\Entity\Address;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Domain\BusinessBundle\Entity\Translation\Address\CountryTranslation;
 use Oxa\Sonata\AdminBundle\Model\ChangeStateInterface;
 use Oxa\Sonata\AdminBundle\Model\CopyableEntityInterface;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
+use Oxa\Sonata\AdminBundle\Model\OxaPersonalTranslatableInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\ChangeStateTrait;
 use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
 use Gedmo\Mapping\Annotation as Gedmo;
-use Sonata\TranslationBundle\Model\Gedmo\TranslatableInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\OxaPersonalTranslatable as PersonalTranslatable;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * Tag
@@ -21,7 +21,11 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  * @ORM\Entity(repositoryClass="Domain\BusinessBundle\Repository\CountryRepository")
  * @Gedmo\TranslationEntity(class="Domain\BusinessBundle\Entity\Translation\Address\CountryTranslation")
  */
-class Country implements DefaultEntityInterface, CopyableEntityInterface, TranslatableInterface, ChangeStateInterface
+class Country implements
+    DefaultEntityInterface,
+    CopyableEntityInterface,
+    OxaPersonalTranslatableInterface,
+    ChangeStateInterface
 {
     const PUERTO_RICO_SHORT_NAME = 'pr';
     const USA_SHORT_NAME         = 'us';
@@ -193,16 +197,6 @@ class Country implements DefaultEntityInterface, CopyableEntityInterface, Transl
     }
 
     /**
-     * Remove translation
-     *
-     * @param \Domain\BusinessBundle\Entity\Translation\Address\CountryTranslation $translation
-     */
-    public function removeTranslation(\Domain\BusinessBundle\Entity\Translation\Address\CountryTranslation $translation)
-    {
-        $this->translations->removeElement($translation);
-    }
-
-    /**
      * Get countries which can not be removed
      *
      * @return array
@@ -213,5 +207,10 @@ class Country implements DefaultEntityInterface, CopyableEntityInterface, Transl
             self::PUERTO_RICO_SHORT_NAME,
             self::USA_SHORT_NAME,
         ];
+    }
+
+    public function getTranslationClass(): string
+    {
+        return CountryTranslation::class;
     }
 }

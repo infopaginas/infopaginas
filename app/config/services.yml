@@ -27,3 +27,19 @@ services:
             - "%aws_sdk_cloudwatch_batch_size%"
             - { dev-tag: "dev-tag" }
             - "%aws_sdk_cloudwatch_level%"
+    memcached:
+        class: Memcached
+        arguments:
+            persistent_id: "%memcached.session_prefix%"
+        calls:
+            - [ addServer, [ "%memcached.host%", "%memcached.port%" ]]
+    app.cache.memcached:
+        class: Doctrine\Common\Cache\MemcachedCache
+        calls:
+            - [ setMemcached, ['@memcached'] ]
+    session.handler.memcached:
+        class:     Symfony\Component\HttpFoundation\Session\Storage\Handler\MemcachedSessionHandler
+        arguments: ["@memcached", { prefix: "%memcached.session_prefix%", expiretime: "%memcached.session_expire%" }]
+    validator.mapping.cache.memcached:
+        class: Symfony\Component\Validator\Mapping\Cache\DoctrineCache
+        arguments: ['@app.cache.memcached']

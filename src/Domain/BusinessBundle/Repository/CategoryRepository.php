@@ -232,18 +232,24 @@ class CategoryRepository extends EntityRepository
 
     /**
      * @param string $name
+     * @param $searchTextEs
      *
      * @return Category[]|null
      */
-    public function getCategoriesByName($name)
+    public function getCategoriesByName($name, $searchTextEs)
     {
         $queryBuilder = $this->createQueryBuilder('c');
 
+        if (!empty($name)) {
+            $queryBuilder->where($queryBuilder->expr()->like('lower(c.name)', ':name'))
+                ->setParameter('name', '%' . strtolower($name) . '%');
+        }
+        if (!empty($searchTextEs)) {
+            $queryBuilder->andWhere($queryBuilder->expr()->like('lower(c.searchTextEs)', ':searchTextEs'))
+                ->setParameter('searchTextEs', '%' . strtolower($searchTextEs) . '%');
+        }
+
         $result = $queryBuilder
-            ->where(
-                $queryBuilder->expr()->like('lower(c.name)', ':name')
-            )
-            ->setParameter('name', '%' . strtolower($name) . '%')
             ->getQuery()
             ->getResult();
 

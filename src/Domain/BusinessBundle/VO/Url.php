@@ -31,6 +31,16 @@ class Url
     private $relNoReferrer = true;
 
     /**
+     * @var bool
+     */
+    private $relSponsored = false;
+
+    /**
+     * @var bool
+     */
+    private $relUGC = false;
+
+    /**
      * @return string|null
      */
     public function getUrl()
@@ -94,6 +104,42 @@ class Url
         $this->relNoReferrer = $relNoReferrer;
     }
 
+    /**
+     * @return bool
+     */
+    public function isRelSponsored()
+    {
+        return $this->relSponsored;
+    }
+
+    /**
+     * @param bool $relSponsored
+     * @return Url
+     */
+    public function setRelSponsored(bool $relSponsored)
+    {
+        $this->relSponsored = $relSponsored;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isRelUGC()
+    {
+        return $this->relUGC;
+    }
+
+    /**
+     * @param bool $relUGC
+     * @return Url
+     */
+    public function setRelUGC(bool $relUGC)
+    {
+        $this->relUGC = $relUGC;
+        return $this;
+    }
+
     public function toArray()
     {
         return [
@@ -101,6 +147,8 @@ class Url
             UrlType::REL_NO_FOLLOW   => $this->isRelNoFollow(),
             UrlType::REL_NO_OPENER   => $this->isRelNoOpener(),
             UrlType::REL_NO_REFERRER => $this->isRelNoReferrer(),
+            UrlType::REL_SPONSORED   => $this->isRelSponsored(),
+            UrlType::REL_UGC         => $this->isRelUGC(),
         ];
     }
 

@@ -152,7 +152,7 @@ class OxaAdmin extends BaseAdmin
         $this->setPerPageOptions([10, 25, 50, 100, 250, 500]);
 
         // custom delete page template
-        $this->setTemplate('delete', 'OxaSonataAdminBundle:CRUD:delete.html.twig');
+        $this->setTemplate('delete', 'OxaSonataAdminBundle:CRUD:delete_custom.html.twig');
     }
 
     /**

@@ -1,6 +1,7 @@
 {% extends "redesign/layout/base.html.twig" %}
 {% from 'widgets/picture_macros.html.twig' import picture %}
 {% from 'widgets/phone_number_macros.html.twig' import phoneNumber %}
+{% from ':widgets:url_item_rel_attributes_macros.html.twig' import relAttributes %}
 
 {% block breadcrumbs %}
     {% include ':redesign/blocks:breadcrumbs.html.twig' with {'catalogLocality': businessProfile.catalogLocality, 'category': businessProfile.categories|first} %}
@@ -118,7 +119,7 @@
                                                     data-type="webActionButton"
                                                     data-bw-gtm-event-click
                                                     data-bw-gtm-label="{{ businessProfile.websiteItem.url }}"
-                                                    rel="{% if businessProfile.websiteItem.relNoFollow %}nofollow{% endif %} {% if businessProfile.websiteItem.relNoOpener %}noopener{% endif %} {% if businessProfile.websiteItem.relNoReferrer %}noreferrer{% endif %}"
+                                                    rel="{{ relAttributes(businessProfile.websiteItem) }}"
                                                 >
                                                     {{ businessProfile.websiteItem.url |truncate(profile_action_url_span_length) }}
                                                 </a>
@@ -194,13 +195,10 @@
                                 <ul>
                                     {% for paymentMethod in businessProfile.paymentMethods %}
                                         <li>
-                                            {% if paymentMethod.type in PAYMENT_METHOD_TYPE %}
-                                                {% set path = 'redesign/img/payment/' ~ paymentMethod.type ~ '.svg' %}
-                                                <img data-src="{{ absolute_url(asset(path)) }}"
-                                                     alt="{{ paymentMethod.getName }}"
-                                                     class="lazyload"
-                                                >
-                                            {% endif %}
+                                            <img data-src="{% path paymentMethod.image, 'reference' %}"
+                                                 alt="{{ paymentMethod.getName }}"
+                                                 class="lazyload"
+                                            >
                                             <span>{{ paymentMethod.getName }}</span>
                                         </li>
                                     {% endfor %}
@@ -280,7 +278,11 @@
                                                 {% else %}
                                                     {% set hasPhone = false %}
                                                 {% endif %}
-                                                <a class="slide-button get-dir redirect-event button button--small button--featured link-pointer {% if suggestedBusiness.isAd %}svm-getdir{% endif %} {% if not hasPhone %}empty-phone{% endif %}" data-href="{{ path('domain_search_show_directions', {'slug': suggestedBusiness.slug }) }}" data-id="{{ suggestedBusiness.id }}" data-latlng="{{ suggestedBusiness.latLng }}" data-type="directionButton" data-bw-gtm-event-click data-bw-gtm-label="{% trans %}Directions{% endtrans %}" data-bname="{{ suggestedBusiness.name }}">
+                                                <a class="slide-button get-dir redirect-event button button--small button--featured link-pointer {% if suggestedBusiness.isAd %}svm-getdir{% endif %} {% if not hasPhone %}empty-phone{% endif %}"
+                                                   data-href="{{ path('domain_search_show_directions', {'slug': suggestedBusiness.slug }) }}"
+                                                   data-id="{{ suggestedBusiness.id }}" data-latlng="{{ suggestedBusiness.latLng }}"
+                                                   data-type="directionButton" data-bw-gtm-event-click data-bw-gtm-label="{% trans %}Directions{% endtrans %}"
+                                                   data-bname="{{ suggestedBusiness.name }}" rel="nofollow">
                                                     <i class="fa fa-location-arrow"></i>
                                                     {% trans %}Directions{% endtrans %}
                                                 </a>
@@ -416,11 +418,11 @@
                     </aside>
                 </div><!-- container -->
             </div><!-- profile-body_-container -->
-            <div class="hide-mobile">
-                {% include ':redesign/blocks:footer.html.twig' %}
-            </div>
         </div><!-- main -->
     </div><!-- main__container -->
+    <div class="hide-mobile">
+        {% include ':redesign/blocks:footer.html.twig' %}
+    </div>
 {% endblock %}
 
 {% block scripts %}

@@ -13,6 +13,8 @@ class UrlType extends ArrayType
     const REL_NO_FOLLOW     = 'REL_NO_FOLLOW';
     const REL_NO_OPENER     = 'REL_NO_OPENER';
     const REL_NO_REFERRER   = 'REL_NO_REFERRER';
+    const REL_SPONSORED     = 'REL_SPONSORED';
+    const REL_UGC           = 'REL_UGC';
     const URL_NAME          = 'URL_NAME';
 
     public function getName()
@@ -50,6 +52,8 @@ class UrlType extends ArrayType
         $url->setRelNoFollow($this->getValueFromArray(self::REL_NO_FOLLOW, $array));
         $url->setRelNoOpener($this->getValueFromArray(self::REL_NO_OPENER, $array));
         $url->setRelNoReferrer($this->getValueFromArray(self::REL_NO_REFERRER, $array));
+        $url->setRelSponsored($this->getValueFromArray(self::REL_SPONSORED, $array, false));
+        $url->setRelUGC($this->getValueFromArray(self::REL_UGC, $array, false));
 
         return $url;
     }

@@ -4,13 +4,14 @@ namespace Domain\BusinessBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Domain\BusinessBundle\Entity\Translation\SubscriptionPlanTranslation;
 use Domain\BusinessBundle\Model\SubscriptionPlanInterface;
 use Oxa\Sonata\AdminBundle\Model\ChangeStateInterface;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Oxa\Sonata\AdminBundle\Model\OxaPersonalTranslatableInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\ChangeStateTrait;
 use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
-use Sonata\TranslationBundle\Model\Gedmo\TranslatableInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\OxaPersonalTranslatable as PersonalTranslatable;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -26,7 +27,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 class SubscriptionPlan implements
     DefaultEntityInterface,
     SubscriptionPlanInterface,
-    TranslatableInterface,
+    OxaPersonalTranslatableInterface,
     ChangeStateInterface
 {
     use DefaultEntityTrait;
@@ -222,16 +223,6 @@ class SubscriptionPlan implements
     }
 
     /**
-     * Remove translation
-     *
-     * @param \Domain\BusinessBundle\Entity\Translation\SubscriptionTranslation $translation
-     */
-    public function removeTranslation(\Domain\BusinessBundle\Entity\Translation\SubscriptionTranslation $translation)
-    {
-        $this->translations->removeElement($translation);
-    }
-
-    /**
      * Add subscription
      *
      * @param \Domain\BusinessBundle\Entity\Subscription $subscription
@@ -287,5 +278,10 @@ class SubscriptionPlan implements
     public function getRank()
     {
         return $this->rank;
+    }
+
+    public function getTranslationClass(): string
+    {
+        return SubscriptionPlanTranslation::class;
     }
 }

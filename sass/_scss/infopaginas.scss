@@ -673,7 +673,7 @@ $side-padding-mb: 16px;
 }
 
 .header__search--active {
-  background: $orange;
+  background: $green;
   box-shadow: 0 4px 7px transparentize($black, .7);
   padding: 0 10px;
 
@@ -2267,6 +2267,8 @@ $thumb-width-mb: 60px;
 
 .profile__sidebar {
   width: 100%;
+  margin-bottom: 100px;
+
   @media only screen and (min-width: 805px) {
     width: 30%;
     padding-left: 20px;
@@ -3017,10 +3019,6 @@ $thumb-width-mb: 60px;
     margin-bottom: 5px;
     max-width: 100%;
   }
-}
-
-.news__img {
-  width: 100%;
 }
 
 .news__icon {
@@ -5651,11 +5649,8 @@ table {
   background-color: #f0f1f3 !important;
   padding: 10px 30px;
   list-style: none;
-  li.category a {
+  li a {
     color: #08418c;
-  }
-  li.business a {
-    color: #8a8d90;
   }
   @media only screen and (max-width: 414px) {
     li {
@@ -5669,18 +5664,18 @@ table {
 
 #ui-id-1 {
   width: 318px !important;
-  @media only screen and (max-width: 805px){
+  @media only screen and (max-width: 805px) {
     max-width: none;
     width: calc(95vw - 20px) !important;
   }
 }
 
 #ui-id-2 {
-  @media only screen and (max-width: 805px){
+  @media only screen and (max-width: 805px) {
     max-width: none;
     width: calc(95vw - 20px) !important;
   }
-  li.business::before{
+  li.business::before {
     width: 16px;
     height: 16px;
     position: absolute;
@@ -5690,12 +5685,10 @@ table {
     content: "";
     display: block;
     background-size: cover;
-    background-position: center;
-    background: url('../assets/images/business-house.png');
-    opacity: .3;
+    background: url('../assets/images/business-profile-icon.png') center;
   }
 
-  li.category::before{
+  li.category::before {
     width: 16px;
     height: 16px;
     position: absolute;;
@@ -5956,11 +5949,22 @@ input[type='radio'], input[type='checkbox'] {
 
 .articles__container {
   .news__item{
+    text-align: center;
+
     .news__title {
       font-size: 18px;
       margin-bottom: 10px;
       letter-spacing: 0;
       text-transform: none;
+      text-align: left;
+    }
+
+    .news__text {
+      text-align: left;
+    }
+
+    img {
+      height: 225px;
     }
   }
 }

@@ -9,10 +9,10 @@ use Domain\BusinessBundle\Entity\Translation\CategoryTranslation;
 use Oxa\Sonata\AdminBundle\Model\ChangeStateInterface;
 use Oxa\Sonata\AdminBundle\Model\CopyableEntityInterface;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
+use Oxa\Sonata\AdminBundle\Model\OxaPersonalTranslatableInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\ChangeStateTrait;
 use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
 use Gedmo\Mapping\Annotation as Gedmo;
-use Sonata\TranslationBundle\Model\Gedmo\TranslatableInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\OxaPersonalTranslatable as PersonalTranslatable;
 use Sonata\TranslationBundle\Model\Gedmo\AbstractPersonalTranslation;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -24,7 +24,11 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Entity(repositoryClass="Domain\BusinessBundle\Repository\CategoryRepository")
  * @Gedmo\TranslationEntity(class="Domain\BusinessBundle\Entity\Translation\CategoryTranslation")
  */
-class Category implements DefaultEntityInterface, CopyableEntityInterface, TranslatableInterface, ChangeStateInterface
+class Category implements
+    DefaultEntityInterface,
+    CopyableEntityInterface,
+    OxaPersonalTranslatableInterface,
+    ChangeStateInterface
 {
     use DefaultEntityTrait;
     use PersonalTranslatable;
@@ -375,16 +379,6 @@ class Category implements DefaultEntityInterface, CopyableEntityInterface, Trans
     }
 
     /**
-     * Remove translation
-     *
-     * @param \Domain\BusinessBundle\Entity\Translation\CategoryTranslation $translation
-     */
-    public function removeTranslation(\Domain\BusinessBundle\Entity\Translation\CategoryTranslation $translation)
-    {
-        $this->translations->removeElement($translation);
-    }
-
-    /**
      * @param AbstractPersonalTranslation $translation
      *
      * @return $this
@@ -629,5 +623,10 @@ class Category implements DefaultEntityInterface, CopyableEntityInterface, Trans
             self::CATEGORY_ARTICLE_SLUG,
             self::CATEGORY_UNDEFINED_SLUG,
         ];
+    }
+
+    public function getTranslationClass(): string
+    {
+        return CategoryTranslation::class;
     }
 }

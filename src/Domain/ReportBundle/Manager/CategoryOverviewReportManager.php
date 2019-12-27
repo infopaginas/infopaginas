@@ -671,8 +671,13 @@ class CategoryOverviewReportManager extends BaseReportManager
             $params['date']['value']['end']
         );
 
-        if (isset($params['name']) && $params['name']['value']) {
-            $categoriesSearch = $this->getCategoriesIdsByName($params['name']['value']);
+        if ((isset($params['name']) && $params['name']['value']) ||
+            (isset($params['searchTextEs']) && $params['searchTextEs']['value'])
+        ) {
+            $categoriesSearch = $this->getCategoriesIdsByName(
+                $params['name']['value'],
+                $params['searchTextEs']['value']
+            );
             $params['categoriesSearch'] = $categoriesSearch;
         }
 
@@ -779,12 +784,14 @@ class CategoryOverviewReportManager extends BaseReportManager
     }
 
     /**
-     * @param string $searchName
+     * @param $searchName
+     * @param $searchTextEs
+     *
      * @return array
      */
-    private function getCategoriesIdsByName($searchName)
+    private function getCategoriesIdsByName($searchName, $searchTextEs = '')
     {
-        $categories = $this->getCategoryRepository()->getCategoriesByName($searchName);
+        $categories = $this->getCategoryRepository()->getCategoriesByName($searchName, $searchTextEs);
 
         if ($categories) {
             return BusinessProfileUtil::extractEntitiesId($categories);

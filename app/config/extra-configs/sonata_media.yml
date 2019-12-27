@@ -13,6 +13,12 @@ sonata_media:
     contexts:
         # when you add a new one or edit context name,
         # edit OxaMediaInterface constans
+        payment_method:
+            download:
+                mode: http
+            providers:
+                - sonata.media.provider.image
+            formats:
         business_profile_logo:
             download:
                 mode: http
@@ -65,15 +71,15 @@ sonata_media:
             formats:
                 preview:       { width: 150, height: 150, quality: 70, format: 'reference'}
                 homepage:      { width: 312, height: 260, quality: 70, format: 'reference'}
-                list:          { width: 500, height: 170, quality: 70, format: 'reference'}
+                list:          { width: 442, height: 225, quality: 70, format: 'reference'}
                 normal:        { width: 500, height: 500, quality: 100, format: 'reference'}
                 preview_webp:  { width: 150, height: 150, quality: 70, format: 'webp'}
                 homepage_webp: { width: 312, height: 260, quality: 70, format: 'webp'}
-                list_webp:     { width: 500, height: 170, quality: 70, format: 'webp'}
+                list_webp:     { width: 442, height: 225, quality: 70, format: 'webp'}
                 normal_webp:   { width: 500, height: 500, quality: 100, format: 'webp'}
                 preview_jp2:   { width: 150, height: 150, quality: 40, format: 'jp2'}
                 homepage_jp2:  { width: 312, height: 260, quality: 40, format: 'jp2'}
-                list_jp2:      { width: 500, height: 170, quality: 40, format: 'jp2'}
+                list_jp2:      { width: 442, height: 225, quality: 40, format: 'jp2'}
                 normal_jp2:    { width: 500, height: 500, quality: 45, format: 'jp2'}
         article_images:
             download:

@@ -124,7 +124,12 @@ class ArticleAdmin extends OxaAdmin
                 ->add(
                     'image',
                     'sonata_type_model_list',
-                    $imageProperties,
+                    array_merge(
+                        $imageProperties,
+                        [
+                            'sonata_help' => 'article.help.image',
+                        ]
+                    ),
                     [
                         'link_parameters' => [
                             'context' => OxaMediaInterface::CONTEXT_ARTICLE,

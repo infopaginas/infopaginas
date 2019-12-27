@@ -1,7 +1,7 @@
 services:
     oxa_config:
         class: Oxa\ConfigBundle\Service\Config
-        arguments: ["@doctrine.orm.entity_manager"]
+        arguments: ["@doctrine.orm.entity_manager", "@app.cache.memcached"]
     oxa_config.twig.extension:
         class: Oxa\ConfigBundle\Twig\Extension\ConfigExtension
         arguments: ["@oxa_config"]

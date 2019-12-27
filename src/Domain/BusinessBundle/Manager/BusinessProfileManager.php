@@ -148,12 +148,20 @@ class BusinessProfileManager extends Manager
      *
      * @return array
      */
-    public function searchAutosuggestByPhraseAndLocation($query, $locale)
+    public function searchCategoryAndBusinessAutosuggestByPhrase($query, $locale)
     {
-        $categories = $this->searchCategoryAutoSuggestInElastic($query, $locale);
-        $businessProfiles = $this->searchBusinessAutoSuggestInElastic($query, $locale);
+        $categories = $this->searchCategoryAutoSuggestInElastic(
+            $query,
+            $locale,
+            CategoryManager::AUTO_SUGGEST_MAX_CATEGORY_MAIN_COUNT
+        );
+        $businessProfiles = $this->searchBusinessAutoSuggestInElastic(
+            $query,
+            $locale,
+            self::AUTO_SUGGEST_MAX_BUSINESSES_COUNT
+        );
 
-        $result = array_merge($categories, $businessProfiles);
+        $result = array_merge($businessProfiles, $categories);
 
         return $result;
     }
@@ -594,6 +602,14 @@ class BusinessProfileManager extends Manager
 
                         if (array_key_exists(UrlType::REL_NO_REFERRER, $newValue)) {
                             $value->setRelNoReferrer((bool)$newValue[UrlType::REL_NO_REFERRER]);
+                        }
+
+                        if (array_key_exists(UrlType::REL_SPONSORED, $newValue)) {
+                            $value->setRelSponsored((bool)$newValue[UrlType::REL_SPONSORED]);
+                        }
+
+                        if (array_key_exists(UrlType::REL_UGC, $newValue)) {
+                            $value->setRelUGC((bool)$newValue[UrlType::REL_UGC]);
                         }
                     } else {
                         $value = null;
@@ -1802,12 +1818,13 @@ class BusinessProfileManager extends Manager
     /**
      * @param string $query
      * @param string $locale
+     * @param bool $limit
      *
      * @return array
      */
-    protected function searchBusinessAutoSuggestInElastic($query, $locale)
+    protected function searchBusinessAutoSuggestInElastic($query, $locale, $limit = false)
     {
-        $searchQuery = $this->getElasticAutoSuggestSearchQuery($query, $locale);
+        $searchQuery = $this->getElasticAutoSuggestSearchQuery($query, $locale, $limit);
         $response = $this->searchBusinessElastic($searchQuery);
         $search = $this->getBusinessDataFromElasticResponse($response);
 
@@ -1919,6 +1936,8 @@ class BusinessProfileManager extends Manager
         try {
             $response = $this->elasticSearchManager->search($searchQuery, $documentType);
         } catch (\Exception $e) {
+            $logger = $this->container->get('monolog.logger.elasticsearch');
+            $logger->error($e->getMessage());
             $response = [];
         }
 
@@ -2892,7 +2911,7 @@ class BusinessProfileManager extends Manager
         $query = [
             'multi_match' => [
                 'type' => 'most_fields',
-                'query' => $search,
+                'query' => AdminHelper::convertAccentedString($search),
                 'fields' => [
                     'auto_suggest_' . strtolower($locale),
                     'auto_suggest_' . strtolower($locale) . '.folded'
@@ -3317,10 +3336,11 @@ class BusinessProfileManager extends Manager
      * @param string $query
      * @param string $locale
      * @param int|bool $limit
+     * @param int $offset
      *
      * @return array
      */
-    protected function getElasticAutoSuggestSearchQuery($query, $locale, $limit = false, $offset = 0)
+    protected function getElasticAutoSuggestSearchQuery($query, $locale, $limit = false, $offset = 1)
     {
         if (!$limit) {
             $limit = self::AUTO_SUGGEST_MAX_BUSINESSES_COUNT;
@@ -3396,9 +3416,6 @@ class BusinessProfileManager extends Manager
             $businessProfile->getTranslation(BusinessProfile::BUSINESS_PROFILE_FIELD_PRODUCT, $esLocale)
         );
 
-        $autoSuggest[$enLocale][] = $businessProfileName;
-        $autoSuggest[$esLocale][] = $businessProfileName;
-
         if ($businessProfile->getMilesOfMyBusiness()) {
             $milesOfMyBusiness = $businessProfile->getMilesOfMyBusiness();
         } else {
@@ -3428,8 +3445,8 @@ class BusinessProfileManager extends Manager
             'categories_en'        => $categories[$enLocale],
             'categories_es'        => $categories[$esLocale],
             'keywords'             => $keywords,
-            'auto_suggest_en'      => $autoSuggest[$enLocale],
-            'auto_suggest_es'      => $autoSuggest[$esLocale],
+            'auto_suggest_en'      => [$businessProfile->getNameEn()],
+            'auto_suggest_es'      => [$businessProfile->getNameEs()],
             'location'             => [
                 'lat' => $businessProfile->getLatitude(),
                 'lon' => $businessProfile->getLongitude(),

@@ -16,6 +16,7 @@ use Domain\BusinessBundle\Entity\CustomFields\BusinessCustomFieldTextAreaCollect
 use Domain\BusinessBundle\Entity\Media\BusinessGallery;
 use Domain\BusinessBundle\Entity\Review\BusinessReview;
 use Domain\BusinessBundle\Entity\Task;
+use Domain\BusinessBundle\Entity\Translation\BusinessProfileTranslation;
 use Domain\BusinessBundle\Model\StatusInterface;
 use Domain\BusinessBundle\Model\SubscriptionPlanInterface;
 use Domain\BusinessBundle\Util\ZipFormatterUtil;
@@ -24,6 +25,7 @@ use Domain\ReportBundle\Model\ReportInterface;
 use Oxa\Sonata\AdminBundle\Model\ChangeStateInterface;
 use Oxa\Sonata\AdminBundle\Model\CopyableEntityInterface;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
+use Oxa\Sonata\AdminBundle\Model\OxaPersonalTranslatableInterface;
 use Oxa\Sonata\AdminBundle\Model\PostponeRemoveInterface;
 use Oxa\Sonata\AdminBundle\Util\Helpers\AdminHelper;
 use Oxa\Sonata\AdminBundle\Util\Traits\ChangeStateTrait;
@@ -33,7 +35,6 @@ use Oxa\Sonata\MediaBundle\Entity\Media;
 use Oxa\Sonata\UserBundle\Entity\User;
 use Domain\SiteBundle\Utils\Traits\SeoTrait;
 use Gedmo\Mapping\Annotation as Gedmo;
-use Sonata\TranslationBundle\Model\Gedmo\TranslatableInterface;
 use Oxa\GeolocationBundle\Model\Geolocation\GeolocationInterface;
 use Symfony\Component\HttpFoundation\File\File;
 use Oxa\Sonata\AdminBundle\Util\Traits\OxaPersonalTranslatable as PersonalTranslatable;
@@ -49,7 +50,7 @@ use Domain\BusinessBundle\VO\Url;
 /**
  * BusinessProfile
  *
- * @ORM\Table(name="business_profile")
+ * @ORM\Table(name="business_profile", indexes={@ORM\Index(name="slug_idx", columns={"slug"})})
  * @ORM\Entity(repositoryClass="Domain\BusinessBundle\Repository\BusinessProfileRepository")
  * @ORM\HasLifecycleCallbacks
  * @Gedmo\TranslationEntity(class="Domain\BusinessBundle\Entity\Translation\BusinessProfileTranslation")
@@ -61,7 +62,7 @@ use Domain\BusinessBundle\VO\Url;
 class BusinessProfile implements
     DefaultEntityInterface,
     CopyableEntityInterface,
-    TranslatableInterface,
+    OxaPersonalTranslatableInterface,
     GeolocationInterface,
     PostponeRemoveInterface,
     ReportInterface,
@@ -194,6 +195,9 @@ class BusinessProfile implements
     const USER_STATUS_ACCEPTED    = 'Accepted';
     const USER_STATUS_REJECTED    = 'Rejected';
     const USER_STATUS_DEACTIVATED = 'Deactivated';
+
+    // fields should not contain any of !@$%^*()+={}[]<>? characters
+    const ADDRESS_FIELDS_REGEX_PATTERN = '/^[^!@$%^*()+={}\[\]<>?]*$/';
 
     /**
      * @var int
@@ -515,6 +519,7 @@ class BusinessProfile implements
      *
      * @ORM\Column(name="street_address", type="string", length=255, nullable=true)
      * @Assert\NotBlank()
+     * @Assert\Regex(pattern=BusinessProfile::ADDRESS_FIELDS_REGEX_PATTERN)
      * @Assert\Length(max=255, maxMessage="business_profile.max_length")
      */
     protected $streetAddress;
@@ -556,6 +561,7 @@ class BusinessProfile implements
      *
      * @ORM\Column(name="city", type="string", length=255, nullable=true)
      * @Assert\NotBlank()
+     * @Assert\Regex(pattern=BusinessProfile::ADDRESS_FIELDS_REGEX_PATTERN)
      * @Assert\Length(max=255, maxMessage="business_profile.max_length")
      */
     protected $city;
@@ -566,6 +572,7 @@ class BusinessProfile implements
      *
      * @ORM\Column(name="zip_code", type="string", length=10, nullable=true)
      * @Assert\NotBlank()
+     * @Assert\Regex(pattern="/^[\d\-]*$/")
      * @Assert\Length(max=10, maxMessage="business_profile.max_length")
      */
     protected $zipCode;
@@ -574,6 +581,7 @@ class BusinessProfile implements
      * @var string
      *
      * @ORM\Column(name="custom_address", type="string", length=255, nullable=true)
+     * @Assert\Regex(pattern=BusinessProfile::ADDRESS_FIELDS_REGEX_PATTERN)
      * @Assert\Length(max=255, maxMessage="business_profile.max_length")
      */
     protected $customAddress;
@@ -1155,6 +1163,16 @@ class BusinessProfile implements
         $this->tasks                    = new ArrayCollection();
         $this->mediaUrls                = new ArrayCollection();
         $this->redirectedBusinesses     = new ArrayCollection();
+
+        $this->websiteItem =        new Url();
+        $this->actionUrlItem =      new Url();
+        $this->facebookURLItem =    new Url();
+        $this->googleURLItem =      new Url();
+        $this->instagramURLItem =   new Url();
+        $this->linkedInURLItem =    new Url();
+        $this->tripAdvisorURLItem = new Url();
+        $this->twitterURLItem =     new Url();
+        $this->youtubeURLItem =     new Url();
 
         $this->isClosed  = false;
         $this->isUpdated = true;
@@ -2013,14 +2031,9 @@ class BusinessProfile implements
         return $this->images;
     }
 
-    /**
-     * Remove translation
-     *
-     * @param \Domain\BusinessBundle\Entity\Translation\BusinessProfileTranslation $translation
-     */
-    public function removeTranslation(\Domain\BusinessBundle\Entity\Translation\BusinessProfileTranslation $translation)
+    public function getTranslationClass(): string
     {
-        $this->translations->removeElement($translation);
+        return BusinessProfileTranslation::class;
     }
 
     /**

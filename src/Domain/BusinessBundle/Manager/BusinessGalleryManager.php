@@ -110,7 +110,7 @@ class BusinessGalleryManager
                 $error = [
                     'message' => 'business_profile.images.invalid_size',
                     'params'  => [
-                        '{{ limit }}' => Media::getMediaMaxSizeByContext($context) / Media::BYTES_IN_MEGABYTE,
+                        '{{ limit }}' => Media::getSizeLimitMessage(Media::getMediaMaxSizeByContext($context)),
                     ],
                 ];
             }

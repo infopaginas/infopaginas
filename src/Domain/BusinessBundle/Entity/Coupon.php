@@ -4,13 +4,14 @@ namespace Domain\BusinessBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Domain\BusinessBundle\Entity\Translation\CouponTranslation;
 use Oxa\Sonata\AdminBundle\Model\ChangeStateInterface;
 use Oxa\Sonata\AdminBundle\Model\CopyableEntityInterface;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
+use Oxa\Sonata\AdminBundle\Model\OxaPersonalTranslatableInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\ChangeStateTrait;
 use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
 use Oxa\Sonata\MediaBundle\Entity\Media;
-use Sonata\TranslationBundle\Model\Gedmo\TranslatableInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\OxaPersonalTranslatable as PersonalTranslatable;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -22,7 +23,11 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Entity(repositoryClass="Domain\BusinessBundle\Repository\CouponRepository")
  * @Gedmo\TranslationEntity(class="Domain\BusinessBundle\Entity\Translation\CouponTranslation")
  */
-class Coupon implements DefaultEntityInterface, CopyableEntityInterface, TranslatableInterface, ChangeStateInterface
+class Coupon implements
+    DefaultEntityInterface,
+    CopyableEntityInterface,
+    OxaPersonalTranslatableInterface,
+    ChangeStateInterface
 {
     use DefaultEntityTrait;
     use PersonalTranslatable;
@@ -136,16 +141,6 @@ class Coupon implements DefaultEntityInterface, CopyableEntityInterface, Transla
     }
 
     /**
-     * Remove translation
-     *
-     * @param \Domain\BusinessBundle\Entity\Translation\CouponTranslation $translation
-     */
-    public function removeTranslation(\Domain\BusinessBundle\Entity\Translation\CouponTranslation $translation)
-    {
-        $this->translations->removeElement($translation);
-    }
-
-    /**
      * Set image
      *
      * @param \Oxa\Sonata\MediaBundle\Entity\Media $image
@@ -191,5 +186,10 @@ class Coupon implements DefaultEntityInterface, CopyableEntityInterface, Transla
     public function getBusinessProfile()
     {
         return $this->businessProfile;
+    }
+
+    public function getTranslationClass(): string
+    {
+        return CouponTranslation::class;
     }
 }
