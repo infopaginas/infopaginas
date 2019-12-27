@@ -196,7 +196,8 @@ class BusinessProfile implements
     const USER_STATUS_REJECTED    = 'Rejected';
     const USER_STATUS_DEACTIVATED = 'Deactivated';
 
-    const ADDRESS_FIELDS_REGEX_PATTERN = '/^[\s\dA-Za-z_.,#!%&@]*$/';
+    // fields should not contain any of !@$%^*()+={}[]<>? characters
+    const ADDRESS_FIELDS_REGEX_PATTERN = '/^[^!@$%^*()+={}\[\]<>?]*$/';
 
     /**
      * @var int
@@ -571,7 +572,7 @@ class BusinessProfile implements
      *
      * @ORM\Column(name="zip_code", type="string", length=10, nullable=true)
      * @Assert\NotBlank()
-     * @Assert\Regex(pattern=BusinessProfile::ADDRESS_FIELDS_REGEX_PATTERN)
+     * @Assert\Regex(pattern="/^[\d\-]*$/")
      * @Assert\Length(max=10, maxMessage="business_profile.max_length")
      */
     protected $zipCode;
