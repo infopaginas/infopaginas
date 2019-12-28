@@ -34,7 +34,7 @@ class CaseInsensitiveStringFilter extends StringFilter
         $parameterName = $this->getNewParameterName($queryBuilder);
         $this->applyWhere(
             $queryBuilder,
-            sprintf($this->buildSearchQueryWithReplacedAccents(), $alias, $field, $operator, $parameterName)
+            sprintf(self::buildSearchQueryWithReplacedAccents(), $alias, $field, $operator, $parameterName)
         );
 
         if ($data['type'] == ChoiceType::TYPE_EQUAL) {
@@ -61,7 +61,7 @@ class CaseInsensitiveStringFilter extends StringFilter
     /**
      * @return string
      */
-    private function buildSearchQueryWithReplacedAccents()
+    public static function buildSearchQueryWithReplacedAccents()
     {
         $searchString = 'lower(%s.%s)';
 

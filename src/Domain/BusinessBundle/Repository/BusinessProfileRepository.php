@@ -22,6 +22,8 @@ use Domain\SearchBundle\Model\DataType\SearchDTO;
 use Oxa\GeolocationBundle\Model\Geolocation\LocationValueObject;
 use Oxa\GeolocationBundle\Utils\GeolocationUtils;
 use Domain\SearchBundle\Util\SearchDataUtil;
+use Oxa\Sonata\AdminBundle\Filter\CaseInsensitiveStringFilter;
+use Oxa\Sonata\AdminBundle\Util\Helpers\AdminHelper;
 use Oxa\VideoBundle\Entity\VideoMedia;
 use Symfony\Component\Config\Definition\Builder\ExprBuilder;
 use Doctrine\Common\Collections\Criteria;
@@ -531,9 +533,17 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
         $qb
             ->select('bp')
             ->where($qb->expr()->neq('bp.id', ':id'))
-            ->andWhere($qb->expr()->like('lower(bp.name)', ':name'))
+            ->andWhere(
+                sprintf(
+                    CaseInsensitiveStringFilter::buildSearchQueryWithReplacedAccents(),
+                    'bp',
+                    'name',
+                    'LIKE',
+                    'name'
+                )
+            )
             ->setParameter('id', $id)
-            ->setParameter('name', '%' . mb_strtolower($name) . '%')
+            ->setParameter('name', '%' . AdminHelper::convertAccentedString($name) . '%')
             ->setMaxResults(BusinessProfileAdmin::MAX_VALIDATION_RESULT)
             ->orderBy('bp.id');
 
