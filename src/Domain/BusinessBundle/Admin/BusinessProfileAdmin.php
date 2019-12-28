@@ -267,7 +267,9 @@ class BusinessProfileAdmin extends OxaAdmin
             ->add('email');
 
         foreach ($this->getOverviewFilters() as $overviewFilter) {
-            $datagridMapper->add($overviewFilter, 'doctrine_orm_callback',
+            $datagridMapper->add(
+                $overviewFilter,
+                'doctrine_orm_callback',
                 [
                     'callback' => [$this, 'overviewFilterQueryBuilder'],
                 ],
@@ -340,20 +342,37 @@ class BusinessProfileAdmin extends OxaAdmin
             ])
             ->add('paidProfiles', 'doctrine_orm_callback', [
                 'label'      => $this->trans('filter.label_only_paid_profiles', [], $this->getTranslationDomain()),
-                'callback'   => static function ($queryBuilder, $alias, $field, $value) {
+                'callback'   => function ($queryBuilder, $alias, $field, $value) {
+                    return $this->addMinimumActiveSubscriptionToQuery(
+                        $queryBuilder,
+                        $alias,
+                        $field,
+                        $value,
+                        SubscriptionPlanInterface::CODE_PRIORITY
+                    );
+                },
+                'field_type' => 'checkbox',
+            ])
+            ->add('hasSuperVM', 'doctrine_orm_callback', [
+                'label'      => $this->trans('filter.label_has_supervm', [], $this->getTranslationDomain()),
+                'callback'   => function ($queryBuilder, $alias, $field, $value) {
                     if (!$value['value']) {
                         return false;
                     }
-                    $queryBuilder->leftJoin(
-                        sprintf('%s.subscriptions', $alias),
-                        'sub',
-                        Join::WITH,
-                        'sub.status = :subscriptionStatus'
-                    );
-                    $queryBuilder->leftJoin('sub.subscriptionPlan', 'sp');
-                    $queryBuilder->andWhere('sp.code >= :code');
-                    $queryBuilder->setParameter('code', SubscriptionPlanInterface::CODE_PRIORITY);
-                    $queryBuilder->setParameter('subscriptionStatus', StatusInterface::STATUS_ACTIVE);
+                    /** @var QueryBuilder $queryBuilder */
+                    if (isset($this->getFilterParameters()['paidProfiles']['value'])) {
+                        $queryBuilder->setParameter('code', SubscriptionPlanInterface::CODE_PREMIUM_PLATINUM);
+                    } else {
+                        $this->addMinimumActiveSubscriptionToQuery(
+                            $queryBuilder,
+                            $alias,
+                            $field,
+                            $value,
+                            SubscriptionPlanInterface::CODE_PREMIUM_PLATINUM
+                        );
+                    }
+
+                    $queryBuilder->innerJoin(sprintf('%s.extraSearches', $alias), 'es');
 
                     return true;
                 },
@@ -1875,5 +1894,25 @@ class BusinessProfileAdmin extends OxaAdmin
             self::FILTER_DIRECTIONS,
             self::FILTER_CALL_MOBILE,
         ];
+    }
+
+    private function addMinimumActiveSubscriptionToQuery($queryBuilder, $alias, $field, $value, $code): bool
+    {
+        if (!$value['value']) {
+            return false;
+        }
+        /** @var QueryBuilder $queryBuilder */
+        $queryBuilder->leftJoin(
+            sprintf('%s.subscriptions', $alias),
+            'sub',
+            Join::WITH,
+            'sub.status = :subscriptionStatus'
+        );
+        $queryBuilder->leftJoin('sub.subscriptionPlan', 'sp');
+        $queryBuilder->andWhere('sp.code >= :code');
+        $queryBuilder->setParameter('code', $code);
+        $queryBuilder->setParameter('subscriptionStatus', StatusInterface::STATUS_ACTIVE);
+
+        return true;
     }
 }

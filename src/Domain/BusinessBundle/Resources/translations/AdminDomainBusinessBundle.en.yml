@@ -81,6 +81,7 @@ filter:
   label_categories.en: Categories En
   label_has_panorama_id: Has panorama id
   label_only_paid_profiles: Only paid profiles
+  label_has_supervm: Has SuperVM
 
 # interaction report
 interaction_report:
