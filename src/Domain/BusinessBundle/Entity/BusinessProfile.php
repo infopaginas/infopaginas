@@ -125,6 +125,8 @@ class BusinessProfile implements
     const BUSINESS_PROFILE_FIELD_NAME_ES     = 'nameEs';
     const BUSINESS_PROFILE_FIELD_PANORAMA_ID = 'panoramaId';
     const BUSINESS_PROFILE_FIELD_EMAIL       = 'email';
+    const BUSINESS_PROFILE_FIELD_DC_ORDER_ID = 'dcOrderId';
+    const BUSINESS_PROFILE_FIELD_ENABLE_NOT_UNIQUE_PHONE = 'enableNotUniquePhone';
 
     const BUSINESS_PROFILE_FIELD_SERVICE_AREAS_TYPE     = 'serviceAreasType';
     const BUSINESS_PROFILE_FIELD_MILES_OF_MY_BUSINESS   = 'milesOfMyBusiness';
@@ -142,6 +144,7 @@ class BusinessProfile implements
 
     const BUSINESS_PROFILE_FIELD_WEBSITE_TYPE = 'websiteItem';
     const BUSINESS_PROFILE_FIELD_ACTION_URL_TYPE  = 'actionUrlItem';
+    const BUSINESS_PROFILE_FIELD_ACTION_URL_TYPE_TYPE  = 'actionUrlType';
     const BUSINESS_PROFILE_FIELD_TWITTER_URL_TYPE = 'twitterURLItem';
     const BUSINESS_PROFILE_FIELD_FACEBOOK_URL_TYPE   = 'facebookURLItem';
     const BUSINESS_PROFILE_FIELD_GOOGLE_URL_TYPE     = 'googleURLItem';
@@ -312,7 +315,7 @@ class BusinessProfile implements
      * @var string
      *
      * @ORM\Column(name="action_url_type", type="string", length=10, options={"default": BusinessProfile::ACTION_URL_TYPE_ORDER})
-     * @Assert\Choice(callback = "getActionUrlTypesAssert", multiple = false)
+     * @Assert\Choice(callback = {"Domain\BusinessBundle\Entity\BusinessProfile", "getActionUrlTypesAssert"}, multiple = false)
      */
     protected $actionUrlType;
 

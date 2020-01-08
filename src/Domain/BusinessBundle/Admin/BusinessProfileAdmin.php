@@ -1017,7 +1017,7 @@ class BusinessProfileAdmin extends OxaAdmin
             ->tab('Others')
                 ->with('DoubleClick')
                     ->add('dcOrderId', null, [
-                        'label' => 'DC Order Id for Ad Usage Report',
+                        'label' => $this->trans('business_profile.fields.dcOrderId', [], 'AdminDomainBusinessBundle'),
                     ])
                 ->end()
             ->end()
@@ -1350,7 +1350,7 @@ class BusinessProfileAdmin extends OxaAdmin
             ->tab('Others')
                 ->with('DoubleClick')
                     ->add('dcOrderId', null, [
-                        'label' => 'DC Order Id for Ad Usage Report',
+                        'label' => $this->trans('business_profile.fields.dcOrderId', [], 'AdminDomainBusinessBundle'),
                     ])
                 ->end()
             ->end()
