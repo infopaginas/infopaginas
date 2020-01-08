@@ -1385,7 +1385,7 @@ class BusinessProfile implements
             $link = '';
         }
 
-        if (preg_match('/^' . $http . '/', $link)) {
+        if (!$link || preg_match('/^' . $http . '/', $link)) {
             return $link;
         }
 

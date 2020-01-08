@@ -1359,7 +1359,7 @@ class BusinessProfileManager extends Manager
         }
 
         $url = $this->getBusinessProfileUrl($businessProfile);
-        if ($businessProfile->getWebsiteItem()) {
+        if ($businessProfile->getWebsiteLink()) {
             $schemaItem['url']    = $businessProfile->getWebsiteLink();
             $schemaItem['sameAs'] = $url;
         } else {
