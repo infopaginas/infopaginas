@@ -87,7 +87,7 @@ class HomeController extends Controller
 
         $response = null;
         $keyIncrement = $memcached->fetch(CacheUtil::PREFIX_HOMEPAGE_SHORTCUT);
-        if ($keyIncrement) {
+        if ($keyIncrement !== false) {
             $response = $memcached->fetch(
                 CacheUtil::PREFIX_HOMEPAGE_SHORTCUT . $keyIncrement . $type . $title . $locale
             );

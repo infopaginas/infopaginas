@@ -28,7 +28,7 @@ services:
             - { dev-tag: "dev-tag" }
             - "%aws_sdk_cloudwatch_level%"
     memcached:
-        class: Memcached
+        class: Cache\AdapterBundle\ProviderHelper\Memcached
         arguments:
             persistent_id: "%memcached.session_prefix%"
         calls:
