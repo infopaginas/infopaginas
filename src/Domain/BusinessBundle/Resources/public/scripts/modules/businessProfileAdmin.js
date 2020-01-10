@@ -172,14 +172,15 @@ $( document ).ready( function() {
     function handleBusinessProfileMapPinChange() {
         var errorBlock = $( '#google-map' );
         var errors = [];
+        var urlParams = new URLSearchParams( window.location.search );
 
-        if (!currentId && !mapPinUpdated) {
+        if ( !currentId && !mapPinUpdated && !( urlParams.get( 'id' ) || urlParams.get( 'uniqid' ) ) ) {
             errors.push( errorList.map.pin_not_moved );
         }
 
         handlePhoneValidationError( errorBlock, errors );
 
-        return !currentId && !mapPinUpdated;
+        return !currentId && !mapPinUpdated && !( urlParams.get( 'id' ) || urlParams.get( 'uniqid' ) );
     }
 
     function handleServiceAreaTypeChange( elem ) {
