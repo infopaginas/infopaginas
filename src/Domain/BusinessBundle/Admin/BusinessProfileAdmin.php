@@ -703,12 +703,16 @@ class BusinessProfileAdmin extends OxaAdmin
         // Map Block
         $oxaConfig = $this->getConfigurationPool()->getContainer()->get('oxa_config');
 
-        if ($this->getSubject()->getLatitude() && $this->getSubject()->getLongitude()) {
-            $latitude   = $this->getSubject()->getLatitude();
-            $longitude  = $this->getSubject()->getLongitude();
+        $requestData = $this->getRequest()->request->get($this->getRequest()->query->get('uniqid'));
+        if (!empty($requestData['latitude']) && !empty($requestData['longitude'])) {
+            $latitude  = $requestData['latitude'];
+            $longitude = $requestData['longitude'];
+        } elseif ($this->getSubject()->getLatitude() && $this->getSubject()->getLongitude()) {
+            $latitude  = $this->getSubject()->getLatitude();
+            $longitude = $this->getSubject()->getLongitude();
         } else {
-            $latitude   = $oxaConfig->getValue(ConfigInterface::DEFAULT_MAP_COORDINATE_LATITUDE);
-            $longitude  = $oxaConfig->getValue(ConfigInterface::DEFAULT_MAP_COORDINATE_LONGITUDE);
+            $latitude  = $oxaConfig->getValue(ConfigInterface::DEFAULT_MAP_COORDINATE_LATITUDE);
+            $longitude = $oxaConfig->getValue(ConfigInterface::DEFAULT_MAP_COORDINATE_LONGITUDE);
         }
 
         $formMapper
