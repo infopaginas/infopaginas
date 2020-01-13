@@ -23,7 +23,7 @@ imports:
 # Put parameters here that don't need to change on each machine where the app is deployed
 # http://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
-    app_version: '1.20.9'
+    app_version: '1.20.9.1'
     locale: en
     locales: [en, es]
     locale_data:
