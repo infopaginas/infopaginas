@@ -11,6 +11,7 @@ use Domain\ArticleBundle\Entity\Article;
 use Domain\BusinessBundle\Entity\HomepageCarousel;
 use Domain\BusinessBundle\Entity\Media\BusinessGallery;
 use Domain\BusinessBundle\Entity\PaymentMethod;
+use Domain\BusinessBundle\Entity\Testimonial;
 use Oxa\Sonata\AdminBundle\Model\ChangeStateInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\ChangeStateTrait;
 use Oxa\VideoBundle\Entity\VideoMedia;
@@ -168,6 +169,15 @@ class Media extends BaseMedia implements
      * )
      */
     protected $paymentMethod;
+
+    /**
+     * @var Testimonial[]
+     * @ORM\OneToMany(targetEntity="Domain\BusinessBundle\Entity\Testimonial",
+     *     mappedBy="image",
+     *     cascade={"persist"}
+     * )
+     */
+    protected $testimonials;
 
     /**
      * Get id
@@ -638,6 +648,30 @@ class Media extends BaseMedia implements
     public function getVideoMedia()
     {
         return $this->videoMedia;
+    }
+
+    /**
+     * Add testimonial
+     *
+     * @param Testimonial $testimonial
+     *
+     * @return Media
+     */
+    public function addTestimonial(Testimonial $testimonial)
+    {
+        $this->testimonials[] = $testimonial;
+
+        return $this;
+    }
+
+    /**
+     * Remove testimonial
+     *
+     * @param Testimonial $testimonial
+     */
+    public function removeTestimonial(Testimonial $testimonial)
+    {
+        $this->testimonials->removeElement($testimonial);
     }
 
     /**

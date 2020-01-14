@@ -126,6 +126,15 @@ sonata_media:
                 normal:       { width: 444, height: 246, format: 'reference'}
                 normal_webp:  { width: 444, height: 246, quality: 70, format: 'webp'}
                 normal_jp2:   { width: 444, height: 246, quality: 40, format: 'jp2'}
+        testimonial:
+            download:
+                mode: http
+            providers:
+                - sonata.media.provider.image
+            formats:
+                normal:       { width: 300, height: 300, quality: 70, format: 'reference'}
+                normal_webp:  { width: 300, height: 300, quality: 70, format: 'webp'}
+                normal_jp2:   { width: 300, height: 300, quality: 40, format: 'jp2'}
     cdn:
         #define the public base url for the uploaded media
         server:

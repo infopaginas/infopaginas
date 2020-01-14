@@ -55,6 +55,12 @@ services:
         tags:
             - {name: sonata.admin, manager_type: orm, group: admin, label: Categories}
 
+    domain_business.admin.testimonial:
+        class: Domain\BusinessBundle\Admin\TestimonialAdmin
+        arguments: [~, Domain\BusinessBundle\Entity\Testimonial, OxaSonataAdminBundle:CRUD]
+        tags:
+            - {name: sonata.admin, manager_type: orm, group: admin, label: Testimonials}
+
     domain_business.admin.business_profile:
         class: Domain\BusinessBundle\Admin\BusinessProfileAdmin
         arguments: [~, Domain\BusinessBundle\Entity\BusinessProfile, DomainBusinessBundle:BusinessProfileCRUD]

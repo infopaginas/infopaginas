@@ -295,6 +295,17 @@ class BusinessProfile implements
     protected $categories;
 
     /**
+     * @var Testimonial[] - Business testimonials
+     * @ORM\OneToMany(targetEntity="Domain\BusinessBundle\Entity\Testimonial",
+     *     mappedBy="businessProfile",
+     *     cascade={"persist", "remove"},
+     *     orphanRemoval=true
+     *     )
+     * @Assert\Valid
+     */
+    protected $testimonials;
+
+    /**
      * Related to BUSINESS_PROFILE_URL_MAX_LENGTH
      * @var Url - Website
      *
@@ -1166,6 +1177,7 @@ class BusinessProfile implements
         $this->tasks                    = new ArrayCollection();
         $this->mediaUrls                = new ArrayCollection();
         $this->redirectedBusinesses     = new ArrayCollection();
+        $this->testimonials             = new ArrayCollection();
 
         $this->websiteItem        = new Url();
         $this->actionUrlItem      = new Url();
@@ -3636,6 +3648,37 @@ class BusinessProfile implements
     public function removeListCollection(BusinessCustomFieldListCollection $listCollection)
     {
         $this->listCollection->removeElement($listCollection);
+    }
+
+    /**
+     * @return Testimonial[]
+     */
+    public function getTestimonials()
+    {
+        return $this->testimonials;
+    }
+
+    /**
+     * @param Testimonial $testimonial
+     *
+     * @return BusinessProfile
+     */
+    public function addTestimonial(Testimonial $testimonial)
+    {
+        $this->testimonials[] = $testimonial;
+
+        if ($testimonial) {
+            $testimonial->setBusinessProfile($this);
+        }
+        return $this;
+    }
+
+    /**
+     * @param Testimonial $testimonial
+     */
+    public function removeTestimonial(Testimonial $testimonial)
+    {
+        $this->testimonials->removeElement($testimonial);
     }
 
     /**
