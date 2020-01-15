@@ -5,6 +5,8 @@ parameters:
 services:
     dynamicDomainSessionStorage:
         class: Domain\SiteBundle\Utils\DynamicDomainSessionStorage
+        calls:
+            - [ setSaveHandler, ['@session.handler.memcached'] ]
 
     app.aws.credentials:
         class:      Aws\Credentials\Credentials
