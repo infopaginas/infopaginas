@@ -460,6 +460,10 @@ class BusinessProfileAdmin extends OxaAdmin
             $formMapper->tab('Main')->with($value, ['class' => 'col-md-6',])->end()->end();
         }
 
+        if ($subscriptionPlanCode >= SubscriptionPlanInterface::CODE_PREMIUM_GOLD && $businessProfile->getId()) {
+            $formMapper->tab('Main')->with('Testimonials')->end()->end();
+        }
+
         $formMapper
             ->tab('Main')
                 ->with('Main')->end()
@@ -642,6 +646,37 @@ class BusinessProfileAdmin extends OxaAdmin
                 ->end()
             ->end()
         ;
+
+        if ($subscriptionPlanCode >= SubscriptionPlanInterface::CODE_PREMIUM_GOLD && $businessProfile->getId()) {
+            $formMapper
+                ->tab('Main')
+                    ->with('Testimonials')
+                        ->add(
+                            'testimonials',
+                            'sonata_type_collection',
+                            [
+                                'by_reference'  => false,
+                                'required'      => false,
+                                'type_options' => [
+                                    'delete'         => true,
+                                    'delete_options' => [
+                                        'type'         => 'checkbox',
+                                        'type_options' => [
+                                            'mapped'   => false,
+                                            'required' => false,
+                                        ],
+                                    ],
+                                ],
+                            ],
+                            [
+                                'edit'          => 'inline',
+                                'inline'        => 'table',
+                                'allow_delete'  => false,
+                            ]
+                        )
+                    ->end()
+                ->end();
+        }
 
         if ($this->isGranted('ROLE_SUPER_ADMIN')) {
             $formMapper

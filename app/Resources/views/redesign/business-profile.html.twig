@@ -415,6 +415,19 @@
                                 {% endif %}
                             </div>
                         {% endif %}
+
+                        {% if businessProfile.subscriptionPlanCode >= SUBSCRIPTION.CODE.PREMIUM_GOLD and businessProfile.testimonials|length > 0 %}
+                            <div class="sidebar__section section--testimonials">
+                                <h3>{{ 'testimonials' | trans }}</h3>
+                                <div class="page-section testimonials slider section--slider hide-before">
+                                    {% for testimonial in businessProfile.testimonials %}
+                                        <div class="slider__item">
+                                            {% include ':redesign/blocks:testimonial.html.twig' %}
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        {% endif %}
                     </aside>
                 </div><!-- container -->
             </div><!-- profile-body_-container -->
