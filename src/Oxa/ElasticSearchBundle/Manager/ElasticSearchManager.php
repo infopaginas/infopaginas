@@ -18,7 +18,7 @@ class ElasticSearchManager
     public const INDEX_NOT_FOUND_EXCEPTION = 'index_not_found_exception';
     public const INDEX_ALREADY_EXISTS_EXCEPTION = 'resource_already_exists_exception';
 
-    public const AUTO_SUGGEST_BUSINESS_MIN_WORD_LENGTH_ANALYZED = 2;
+    public const AUTO_SUGGEST_BUSINESS_MIN_WORD_LENGTH_ANALYZED = 1;
     public const AUTO_SUGGEST_BUSINESS_MAX_WORD_LENGTH_ANALYZED = 40;
     public const MILES_IN_METER = 0.000621371;
 
