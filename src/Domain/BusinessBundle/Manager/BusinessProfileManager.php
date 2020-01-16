@@ -3104,7 +3104,7 @@ class BusinessProfileManager extends Manager
     {
         return [
             'name^4',
-            'name.folded^4',
+            'name.folded^7',
             'keywords^5',
             'keywords.folded^5',
             'categories_en^5',
