@@ -519,44 +519,6 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
             ->getResult();
     }
 
-    /**
-     * @param string $name
-     * @param string $city
-     * @param int    $id
-     *
-     * @return array
-     */
-    public function getSimilarBusinesses($name, $city, $id)
-    {
-        $qb = $this->createQueryBuilder('bp');
-
-        $qb
-            ->select('bp')
-            ->where($qb->expr()->neq('bp.id', ':id'))
-            ->andWhere(
-                sprintf(
-                    CaseInsensitiveStringFilter::buildSearchQueryWithReplacedAccents(),
-                    'bp',
-                    'name',
-                    'LIKE',
-                    'name'
-                )
-            )
-            ->setParameter('id', $id)
-            ->setParameter('name', '%' . AdminHelper::convertAccentedString($name) . '%')
-            ->setMaxResults(BusinessProfileAdmin::MAX_VALIDATION_RESULT)
-            ->orderBy('bp.id');
-
-        if ($city) {
-            $qb
-                ->andWhere($qb->expr()->like('lower(bp.city)', ':city'))
-                ->setParameter('city', '%' . mb_strtolower($city) . '%');
-        }
-
-        return $qb->getQuery()
-            ->getResult();
-    }
-
     public function getSimilarBusinessesByPhones(array $phones, $id)
     {
         $qb = $this->createQueryBuilder('bp');

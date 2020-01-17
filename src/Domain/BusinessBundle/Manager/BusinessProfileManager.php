@@ -7,6 +7,7 @@ use AntiMattr\GoogleBundle\Analytics\Impression;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
+use Domain\BusinessBundle\Admin\BusinessProfileAdmin;
 use Domain\BusinessBundle\DBAL\Types\UrlType;
 use Domain\BusinessBundle\Entity\Area;
 use Domain\BusinessBundle\Entity\BusinessProfile;
@@ -2473,6 +2474,48 @@ class BusinessProfileManager extends Manager
         return $query;
     }
 
+    protected function getElasticSimilarBusinessSearchQuery(string $name, int $id, string $city = ''): array
+    {
+        $query = [
+            'bool' => [
+                'must' => [
+                    [
+                        'query_string' => [
+                            'default_operator' => 'AND',
+                            'type' => 'most_fields',
+                            'fields' => [
+                                'name',
+                                'name.folded',
+                            ],
+                            'query' => SearchDataUtil::sanitizeElasticSearchQueryString($name),
+                        ],
+                    ],
+                ],
+                'must_not' => [
+                    'match' => [
+                        '_id' => $id,
+                    ],
+                ],
+            ],
+        ];
+
+        if ($city) {
+            $query['bool']['must'][] = [
+                'query_string' => [
+                    'default_operator' => 'AND',
+                    'type' => 'most_fields',
+                    'fields' => [
+                        'city',
+                        'city.folded',
+                    ],
+                    'query' => SearchDataUtil::sanitizeElasticSearchQueryString($city),
+                ],
+            ];
+        }
+
+        return $query;
+    }
+
     /**
      * @param SearchDTO $params
      * @param array     $filters
@@ -3042,6 +3085,7 @@ class BusinessProfileManager extends Manager
         $businessProfileName = SearchDataUtil::sanitizeElasticSearchQueryString($businessProfile->getName());
         $businessProfileDescEn = SearchDataUtil::sanitizeElasticSearchQueryString($businessProfile->getDescriptionEn());
         $businessProfileDescEs = SearchDataUtil::sanitizeElasticSearchQueryString($businessProfile->getDescriptionEs());
+        $businessProfileCity = SearchDataUtil::sanitizeElasticSearchQueryString($businessProfile->getCity());
 
         $businessProfileProdEn = SearchDataUtil::sanitizeElasticSearchQueryString(
             $businessProfile->getTranslation(BusinessProfile::BUSINESS_PROFILE_FIELD_PRODUCT, $enLocale)
@@ -3071,6 +3115,7 @@ class BusinessProfileManager extends Manager
         $data = [
             'id'                   => $businessProfile->getId(),
             'name'                 => $businessProfileName,
+            'city'                 => $businessProfileCity,
             'description_en'       => $businessProfileDescEn,
             'description_es'       => $businessProfileDescEs,
             'products_en'          => $businessProfileProdEn,
@@ -3211,6 +3256,17 @@ class BusinessProfileManager extends Manager
                 ],
             ],
             'name' => [
+                'type' => 'text',
+                'analyzer' => 'autocomplete',
+                'search_analyzer' => 'autocomplete_search',
+                'fields' => [
+                    'folded' => [
+                        'type' => 'text',
+                        'analyzer' => 'folding',
+                    ],
+                ],
+            ],
+            'city' => [
                 'type' => 'text',
                 'analyzer' => 'autocomplete',
                 'search_analyzer' => 'autocomplete_search',
@@ -3717,9 +3773,14 @@ class BusinessProfileManager extends Manager
      */
     public function getSimilarBusinesses($name, $city, $id)
     {
-        $items = $this->getRepository()->getSimilarBusinesses($name, $city, $id);
+        $businessSearchQuery = $this->getElasticSimilarBusinessSearchQuery($name, $id, $city);
 
-        return $items;
+        $searchQuery = $this->getElasticBaseQuery(1, BusinessProfileAdmin::MAX_VALIDATION_RESULT);
+        $searchQuery = $this->addElasticMainQuery($searchQuery, $businessSearchQuery);
+
+        $response = $this->searchElastic(BusinessProfile::ELASTIC_INDEX, $searchQuery);
+
+        return $this->getBusinessDataFromElasticResponse($response);
     }
 
     /**

@@ -418,7 +418,7 @@ class ProfileController extends Controller
 
         $errors = [];
 
-        foreach ($businesses as $business) {
+        foreach ($businesses['data'] as $business) {
             $errors[] = [
                 'id' => $business->getId(),
                 'url' => $this->generateUrl('admin_domain_business_businessprofile_edit', [
