@@ -2821,13 +2821,13 @@ class BusinessProfileManager extends Manager
     {
         $sort = [];
 
-        $sort = array_merge($sort, $this->getElasticSubscriptionSortQuery());
-
         if (SearchDataUtil::ORDER_BY_DISTANCE == $params->getOrderBy()) {
             $sort = array_merge($sort, $this->getElasticGeoSortQuery($params));
             $sort = array_merge($sort, $this->getElasticScoreSortQuery());
+            $sort = array_merge($sort, $this->getElasticSubscriptionSortQuery());
         } else {
             $sort = array_merge($sort, $this->getElasticScoreSortQuery());
+            $sort = array_merge($sort, $this->getElasticSubscriptionSortQuery());
             $sort = array_merge($sort, $this->getElasticGeoSortQuery($params));
         }
 
