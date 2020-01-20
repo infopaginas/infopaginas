@@ -46,6 +46,7 @@ use Symfony\Component\Validator\Constraints\Length;
 use Ivory\CKEditorBundle\Form\Type\CKEditorType;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Doctrine\ORM\Query\Expr\Join;
+use Symfony\Component\Validator\Constraints\Regex;
 
 /**
  * Class BusinessProfileAdmin
@@ -1838,7 +1839,14 @@ class BusinessProfileAdmin extends OxaAdmin
                         [
                             'max' => BusinessProfile::BUSINESS_PROFILE_FIELD_SLOGAN_LENGTH,
                         ]
-                    )
+                    ),
+                    new Regex(
+                        [
+                            'match'   => false,
+                            'pattern' => BusinessProfile::PHONE_NUMBER_LIKE_REGEX_PATTERN,
+                            'message' => 'business_profile.phone_number_check_failed',
+                        ]
+                    ),
                 ],
             ])
             ->add('description' . $localePostfix, CKEditorType::class, [
@@ -1862,7 +1870,14 @@ class BusinessProfileAdmin extends OxaAdmin
                         [
                             'max' => BusinessProfile::BUSINESS_PROFILE_FIELD_DESCRIPTION_LENGTH,
                         ]
-                    )
+                    ),
+                    new Regex(
+                        [
+                            'match'   => false,
+                            'pattern' => BusinessProfile::PHONE_NUMBER_LIKE_REGEX_PATTERN,
+                            'message' => 'business_profile.phone_number_check_failed',
+                        ]
+                    ),
                 ],
             ])
             ->add('product' . $localePostfix, TextareaType::class, [
@@ -1883,7 +1898,14 @@ class BusinessProfileAdmin extends OxaAdmin
                         [
                             'max' => BusinessProfile::BUSINESS_PROFILE_FIELD_PRODUCT_LENGTH,
                         ]
-                    )
+                    ),
+                    new Regex(
+                        [
+                            'match'   => false,
+                            'pattern' => BusinessProfile::PHONE_NUMBER_LIKE_REGEX_PATTERN,
+                            'message' => 'business_profile.phone_number_check_failed',
+                        ]
+                    ),
                 ],
             ])
             ->add('brands' . $localePostfix, TextareaType::class, [
@@ -1901,7 +1923,14 @@ class BusinessProfileAdmin extends OxaAdmin
                         [
                             'max' => BusinessProfile::BUSINESS_PROFILE_FIELD_BRANDS_LENGTH,
                         ]
-                    )
+                    ),
+                    new Regex(
+                        [
+                            'match'   => false,
+                            'pattern' => BusinessProfile::PHONE_NUMBER_LIKE_REGEX_PATTERN,
+                            'message' => 'business_profile.phone_number_check_failed',
+                        ]
+                    ),
                 ],
             ])
         ;
