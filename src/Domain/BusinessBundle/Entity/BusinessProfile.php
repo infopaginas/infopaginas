@@ -201,6 +201,7 @@ class BusinessProfile implements
 
     // fields should not contain any of !@$%^*()+={}[]<>? characters
     const ADDRESS_FIELDS_REGEX_PATTERN = '/^[^!@$%^*()+={}\[\]<>?]*$/';
+    const PHONE_NUMBER_LIKE_REGEX_PATTERN = '/(\()?[\d]{2,}(\)|.|-| |,)?[\d]{2,}(-|.| |,)?[\d]+/';
 
     /**
      * @var int
@@ -266,6 +267,11 @@ class BusinessProfile implements
      * @Gedmo\Translatable(fallback=true)
      * @ORM\Column(name="discount", type="text", length=1000, nullable=true)
      * @Assert\Length(max=1000, maxMessage="business_profile.max_length")
+     * @Assert\Regex(
+     *     match=false,
+     *     pattern=BusinessProfile::PHONE_NUMBER_LIKE_REGEX_PATTERN,
+     *     message="business_profile.phone_number_check_failed"
+     * )
      */
     protected $discount;
 
@@ -534,6 +540,11 @@ class BusinessProfile implements
      * @ORM\Column(name="street_address", type="string", length=255, nullable=true)
      * @Assert\NotBlank()
      * @Assert\Regex(pattern=BusinessProfile::ADDRESS_FIELDS_REGEX_PATTERN)
+     * @Assert\Regex(
+     *     match=false,
+     *     pattern=BusinessProfile::PHONE_NUMBER_LIKE_REGEX_PATTERN,
+     *     message="business_profile.phone_number_check_failed"
+     * )
      * @Assert\Length(max=255, maxMessage="business_profile.max_length")
      */
     protected $streetAddress;
@@ -576,6 +587,11 @@ class BusinessProfile implements
      * @ORM\Column(name="city", type="string", length=255, nullable=true)
      * @Assert\NotBlank()
      * @Assert\Regex(pattern=BusinessProfile::ADDRESS_FIELDS_REGEX_PATTERN)
+     * @Assert\Regex(
+     *     match=false,
+     *     pattern=BusinessProfile::PHONE_NUMBER_LIKE_REGEX_PATTERN,
+     *     message="business_profile.phone_number_check_failed"
+     * )
      * @Assert\Length(max=255, maxMessage="business_profile.max_length")
      */
     protected $city;
@@ -596,6 +612,11 @@ class BusinessProfile implements
      *
      * @ORM\Column(name="custom_address", type="string", length=255, nullable=true)
      * @Assert\Regex(pattern=BusinessProfile::ADDRESS_FIELDS_REGEX_PATTERN)
+     * @Assert\Regex(
+     *     match=false,
+     *     pattern=BusinessProfile::PHONE_NUMBER_LIKE_REGEX_PATTERN,
+     *     message="business_profile.phone_number_check_failed"
+     * )
      * @Assert\Length(max=255, maxMessage="business_profile.max_length")
      */
     protected $customAddress;

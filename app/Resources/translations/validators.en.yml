@@ -2,3 +2,5 @@ form.collectionWorkingHours.overlap: Working Hours should not overlap
 form.collectionWorkingHours.duration: Time start should be more then time end
 form.collectionWorkingHours.blank: Time should not be blank
 form.collectionWorkingHours.invalid: There are conflicts in the timetable, please review your entires.
+business_profile:
+  phone_number_check_failed: This field should not contain phone numbers
