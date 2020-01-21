@@ -46,7 +46,10 @@ class TestimonialAdmin extends OxaAdmin
     {
         $formMapper
             ->add('title')
-            ->add('description', TextareaType::class)
+            ->add('description', TextareaType::class, [
+                'label' => 'Text',
+                'required' => true,
+            ])
             ->add(
                 'image',
                 'sonata_type_model_list',
