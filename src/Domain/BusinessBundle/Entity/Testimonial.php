@@ -39,8 +39,8 @@ class Testimonial implements DefaultEntityInterface, ChangeStateInterface, OxaPe
      * @var string
      *
      * @Gedmo\Translatable(fallback=true)
-     * @ORM\Column(name="title", type="string", length=100)
-     * @Assert\NotBlank()
+     * @ORM\Column(name="title", type="string", length=100, nullable=true)
+     * @Assert\Length(max=100)
      */
     protected $title;
 
@@ -60,6 +60,7 @@ class Testimonial implements DefaultEntityInterface, ChangeStateInterface, OxaPe
      *
      * @Gedmo\Translatable(fallback=true)
      * @ORM\Column(name="description", type="string", length=1000)
+     * @Assert\Length(max=1000)
      * @Assert\NotBlank()
      */
     protected $description;

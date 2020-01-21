@@ -13,11 +13,19 @@ define(['jquery', 'slick'], function( $, Slick ) {
             adaptiveHeight: false,
             variableWidth: false,
             slidesToShow: 1,
+            lazyLoad: 'ondemand',
             prevArrow: '<span class="arrow prev"><i class="fa fa-chevron-circle-left" aria-hidden="true"></i></span>',
             nextArrow: '<span class="arrow next"><i class="fa fa-chevron-circle-right" aria-hidden="true"></i></span>'
         };
 
-        $( '.slider:not(.suggested-slider)' ).slick( sliderParams );
+        $( '.slider:not(.suggested-slider):not(.testimonials)' ).slick( sliderParams );
+
+        var testimonialsSliderParams = sliderParams;
+        testimonialsSliderParams.prevArrow = '<span class="arrow prev"><i class="fa fa-chevron-left" aria-hidden="true"></i></span>';
+        testimonialsSliderParams.nextArrow = '<span class="arrow next"><i class="fa fa-chevron-right" aria-hidden="true"></i></span>';
+        testimonialsSliderParams.autoplay = true;
+        testimonialsSliderParams.adaptiveHeight = true;
+        $( '.slider.testimonials' ).slick( testimonialsSliderParams );
 
       var sliderSuggestedParams = {
         autoplay: false,
