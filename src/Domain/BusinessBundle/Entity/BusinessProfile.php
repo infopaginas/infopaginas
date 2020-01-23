@@ -824,6 +824,11 @@ class BusinessProfile implements
     protected $callsMobile = 0;
 
     /**
+     * @ORM\Column(name="calls_desktop", type="integer", nullable=false, options={"default" = 0})
+     */
+    protected $callsDesktop = 0;
+
+    /**
      * @Gedmo\Locale
      * Used locale to override Translation listener`s locale
      * this is not a mapped field of entity metadata, just a simple property
@@ -1047,6 +1052,25 @@ class BusinessProfile implements
     public function setCallsMobile($callsMobile)
     {
         $this->callsMobile = $callsMobile;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getCallsDesktop()
+    {
+        return $this->callsDesktop;
+    }
+
+    /**
+     * @param int $callsDesktop
+     * @return BusinessProfile
+     */
+    public function setCallsDesktop($callsDesktop)
+    {
+        $this->callsDesktop = $callsDesktop;
 
         return $this;
     }
