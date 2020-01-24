@@ -2862,15 +2862,13 @@ class BusinessProfileManager extends Manager
      */
     protected function getElasticSortQuery(SearchDTO $params)
     {
-        $sort = [];
+        $sort = $this->getElasticSubscriptionSortQuery();
 
         if (SearchDataUtil::ORDER_BY_DISTANCE == $params->getOrderBy()) {
             $sort = array_merge($sort, $this->getElasticGeoSortQuery($params));
             $sort = array_merge($sort, $this->getElasticScoreSortQuery());
-            $sort = array_merge($sort, $this->getElasticSubscriptionSortQuery());
         } else {
             $sort = array_merge($sort, $this->getElasticScoreSortQuery());
-            $sort = array_merge($sort, $this->getElasticSubscriptionSortQuery());
             $sort = array_merge($sort, $this->getElasticGeoSortQuery($params));
         }
 
@@ -3148,8 +3146,8 @@ class BusinessProfileManager extends Manager
     public function getBusinessSearchFields($locale)
     {
         return [
-            'name^4',
-            'name.folded^7',
+            'name^6',
+            'name.folded^5',
             'keywords^5',
             'keywords.folded^5',
             'categories_en^5',
