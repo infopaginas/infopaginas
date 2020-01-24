@@ -331,6 +331,17 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
         return $iterateResult;
     }
 
+    public function getActiveBusinessProfilesCount(): int
+    {
+        return $this->getEntityManager()->createQueryBuilder()
+            ->select('COUNT(bp.id)')
+            ->from('DomainBusinessBundle:BusinessProfile', 'bp')
+            ->where('bp.isActive = TRUE')
+            ->getQuery()
+            ->getSingleScalarResult()
+            ;
+    }
+
     /**
      * @return IterableResult
      */

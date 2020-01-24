@@ -394,6 +394,7 @@ class BusinessProfileAdmin extends OxaAdmin
             ->add('impressions')
             ->add('directions')
             ->add('callsMobile')
+            ->add('callsDesktop')
             ->add('catalogLocality', null, [
                 'sortable' => true,
                 'sort_field_mapping'=> ['fieldName' => 'name'],
@@ -410,13 +411,6 @@ class BusinessProfileAdmin extends OxaAdmin
                 'template' => 'DomainBusinessBundle:Admin:BusinessProfile/list_subscription.html.twig'
             ])
             ->add('registrationDate')
-            ->add(
-                'user',
-                null,
-                [
-                    'label' => 'Business Admin',
-                ]
-            )
             ->add('isActive')
             ->add('isDeleted', null, [
                 'label' => 'Scheduled for deletion',
