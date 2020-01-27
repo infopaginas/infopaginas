@@ -1809,6 +1809,8 @@ class BusinessProfileManager extends Manager
             foreach ($searchResultAds['data'] as $item) {
                 array_unshift($search['data'], $item);
             }
+
+            $search['total']['value'] += $searchResultAds['total']['value'];
         }
 
         return $search;
@@ -2094,8 +2096,8 @@ class BusinessProfileManager extends Manager
             $status = false;
             $message = json_decode($e->getMessage());
 
-            if (!empty($message->error->type) &&
-                $message->error->type === ElasticSearchManager::INDEX_NOT_FOUND_EXCEPTION
+            if (!empty($message->result) &&
+                $message->result === ElasticSearchManager::INDEX_NOT_FOUND_EXCEPTION
             ) {
                 $status = true;
             }
@@ -3396,9 +3398,10 @@ class BusinessProfileManager extends Manager
 
                 $item = $this->buildBusinessProfileElasticData($business);
 
+                $this->handleBusinessAdsElasticData($business, $item);
+
                 if ($item) {
                     $data[] = $item;
-                    $this->handleBusinessAdsElasticData($business, $item);
                 } else {
                     $this->removeItemFromElastic(BusinessProfile::ELASTIC_INDEX, $business->getId());
                 }
@@ -3438,7 +3441,9 @@ class BusinessProfileManager extends Manager
 
         if (!$business->getExtraSearches()->isEmpty()) {
             foreach ($business->getExtraSearches() as $extraSearch) {
-                if ($business->getSubscriptionPlanCode() >= SubscriptionPlanInterface::CODE_PREMIUM_PLATINUM) {
+                if ($parentData &&
+                    $business->getSubscriptionPlanCode() >= SubscriptionPlanInterface::CODE_PREMIUM_PLATINUM
+                ) {
                     $ads[] = $this->buildBusinessProfileChildElasticData($extraSearch, $parentData);
                 } else {
                     $this->removeItemFromElastic(BusinessProfile::ELASTIC_INDEX_AD, $extraSearch->getId());

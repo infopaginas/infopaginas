@@ -113,8 +113,8 @@ class BusinessStatusManager
             $status = false;
             $message = json_decode($e->getMessage());
 
-            if (!empty($message->error->type) &&
-                $message->error->type == ElasticSearchManager::INDEX_NOT_FOUND_EXCEPTION
+            if (!empty($message->result) &&
+                $message->result == ElasticSearchManager::INDEX_NOT_FOUND_EXCEPTION
             ) {
                 $status = true;
             }
