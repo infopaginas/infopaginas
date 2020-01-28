@@ -18,12 +18,16 @@
         var addressInput = document.getElementById('{{ id }}');
         var latitudeInput = document.getElementById('{{ form.parent.vars.id ~ '_latitude' }}');
         var longitudeInput = document.getElementById('{{ form.parent.vars.id ~ '_longitude' }}');
+        var cityInput = document.getElementById('{{ form.parent.vars.id ~ '_city' }}');
+        var streetAddressInput = document.getElementById('{{ form.parent.vars.id ~ '_streetAddress' }}');
+        var zipCodeInput = document.getElementById('{{ form.parent.vars.id ~ '_zipCode' }}');
 
         var MAP_LAT        = {{ latitude }};
         var MAP_LNG        = {{ longitude }};
         var MAP_ZOOM       = {{ zoom }};
         var DEFAULT_CENTER = '{{ map_default_center }}';
         var API_KEY        = '{{ mapbox_api_key }}';
+        var REVERSE_GEOCODING_ENDPOINT = '{{ mapbox_reverse_geocoding_endpoint }}';
     </script>
     <script type="text/javascript" src="{{ absolute_url(asset('bundles/domainbusiness/scripts/mapbox_map_admin.js')) }}"></script>
 
