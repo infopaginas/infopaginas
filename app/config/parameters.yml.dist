@@ -92,4 +92,4 @@ parameters:
         port: '%memcached.port%'
         instance_class: Memcached
     memcached.session_prefix: infopaginas
-    memcached.session_expire: 1440
+    memcached.session_expire: 86400
