@@ -54,7 +54,12 @@ $.getScript( 'https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.js', f
 
             var lngLat = marker.getLngLat();
 
-            updateFieldValue( lngLat.lat, lngLat.lng );
+            $.ajax(REVERSE_GEOCODING_ENDPOINT + lngLat.lng + ',' + lngLat.lat + '.json?access_token=' + mapboxgl.accessToken, {
+                success: handleAddressChange,
+                timeout: 1000,
+            });
+
+            updateCoordinates( lngLat.lat, lngLat.lng );
         });
 
         var geocoder = new MapboxGeocoder({
@@ -113,23 +118,25 @@ $.getScript( 'https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.js', f
 
                     var lngLat = marker.getLngLat();
 
-                    updateFieldValue( lngLat.lat, lngLat.lng );
+                    updateCoordinates( lngLat.lat, lngLat.lng );
                 });
 
-                updateFieldValue( ev.result.geometry.coordinates[1], ev.result.geometry.coordinates[0] );
+                updateCoordinates( ev.result.geometry.coordinates[1], ev.result.geometry.coordinates[0] );
             });
         });
 
         /**
-         * Update input value with new address
+         * Update input value with new coordinates
          */
-        function updateFieldValue( lat, lon ) {
-            if( latitudeInput && longitudeInput ) {
-                latitudeInput.value = lat;
-                longitudeInput.value = lon;
+        function updateCoordinates ( lat, lon ) {
+            updateFieldValue( latitudeInput, lat );
+            updateFieldValue( longitudeInput, lon );
+        }
 
-                $( latitudeInput ).change();
-                $( longitudeInput ).change();
+        function updateFieldValue ( field, value ) {
+            if ( field ) {
+                field.value = value;
+                $( field ).change();
             }
         }
 
@@ -181,6 +188,42 @@ $.getScript( 'https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.js', f
             map.on( 'mouseleave', 'places', function() {
                 popup.remove();
             });
+        }
+
+        function handleAddressChange ( data ) {
+            var city = '';
+            var postcode = '';
+            var streetAddress = '';
+
+            var features = data.features;
+
+            features.forEach( function( item ) {
+                switch ( item.place_type[ 0 ] ) {
+                    case 'address':
+                        if ( item.address ) {
+                            streetAddress = item.address + ' ';
+                        }
+                        streetAddress += item.text;
+                        break;
+                    case 'postcode':
+                        postcode = item.text;
+                        break;
+                    case 'place':
+                        city = item.text;
+                        break;
+                }
+            } );
+
+            if ( confirm(
+                errorList.address.confirm_address_update + '\n' +
+                'City: ' + city + '\n' +
+                'Zip Code: ' + postcode + '\n' +
+                'Street Address: ' + streetAddress
+            ) ) {
+                updateFieldValue( cityInput, city );
+                updateFieldValue( zipCodeInput, postcode );
+                updateFieldValue( streetAddressInput, streetAddress );
+            }
         }
     });
 });
