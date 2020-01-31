@@ -181,9 +181,15 @@ class SearchController extends Controller
     {
         $searchManager = $this->get('domain_search.manager.search');
         $searchDTO = $searchManager->getLocalitySearchDTO($request);
+        /** @var Locality $closestLocality */
         $closestLocality = $this->getBusinessProfileManager()->searchClosestLocalityInElastic($searchDTO);
 
-        return new JsonResponse(['localityId' => $closestLocality->getId()]);
+        return new JsonResponse(
+            [
+                'localityId' => $closestLocality->getId(),
+                'localityName' => $closestLocality->getName(),
+            ]
+        );
     }
 
     /**
