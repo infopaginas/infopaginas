@@ -155,6 +155,16 @@ class ElasticSearchManager
                             'asciifolding',
                         ],
                     ],
+                    'single_characters' => [
+                        'type' => 'custom',
+                        'tokenizer' => 'whitespace',
+                        'filter' => [
+                            'length',
+                            'lowercase',
+                            'asciifolding',
+                            'shingle_filter',
+                        ],
+                    ],
                     'autocomplete' => [
                         'type' => 'custom',
                         'tokenizer' => 'autocomplete',
@@ -172,6 +182,19 @@ class ElasticSearchManager
                         'type' => 'edge_ngram',
                         'min_gram' => self::AUTO_SUGGEST_BUSINESS_MIN_WORD_LENGTH_ANALYZED,
                         'max_gram' => self::AUTO_SUGGEST_BUSINESS_MAX_WORD_LENGTH_ANALYZED,
+                    ],
+                ],
+                'filter' => [
+                    'shingle_filter' => [
+                        'type' => 'shingle',
+                        'min_shingle_size' => 2,
+                        'max_shingle_size' => 4,
+                        'output_unigrams' => true,
+                        'token_separator' => '',
+                    ],
+                    'length' => [
+                        'type' => 'length',
+                        'max' => 1,
                     ],
                 ],
             ],
