@@ -2593,7 +2593,8 @@ class BusinessProfileManager extends Manager
                 'query' => AdminHelper::convertAccentedString($search),
                 'fields' => [
                     'auto_suggest_' . strtolower($locale),
-                    'auto_suggest_' . strtolower($locale) . '.folded'
+                    'auto_suggest_' . strtolower($locale) . '.folded',
+                    'name.single_characters',
                 ],
             ],
         ];
@@ -3150,6 +3151,7 @@ class BusinessProfileManager extends Manager
         return [
             'name^6',
             'name.folded^5',
+            'name.single_characters^3',
             'keywords^5',
             'keywords.folded^5',
             'categories_en^5',
@@ -3264,6 +3266,11 @@ class BusinessProfileManager extends Manager
                         'type' => 'text',
                         'analyzer' => 'folding',
                     ],
+                    'single_characters' => [
+                        'type' => 'text',
+                        'analyzer' => 'single_characters',
+                        'search_analyzer' => 'autocomplete_search',
+                    ]
                 ],
             ],
             'city' => [
