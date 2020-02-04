@@ -71,6 +71,8 @@ class SearchDTO extends AbstractDTO
      */
     public $locale = LocaleHelper::DEFAULT_LOCALE;
 
+    protected $originalQuery;
+
     /**
      * @param string $query
      * @param LocationValueObject   $locationValue
@@ -310,6 +312,25 @@ class SearchDTO extends AbstractDTO
     public function getIsRandomized()
     {
         return $this->isRandomized;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getOriginalQuery()
+    {
+        return $this->originalQuery;
+    }
+
+    /**
+     * @param mixed $originalQuery
+     * @return SearchDTO
+     */
+    public function setOriginalQuery($originalQuery)
+    {
+        $this->originalQuery = $originalQuery;
+
+        return $this;
     }
 
     /**

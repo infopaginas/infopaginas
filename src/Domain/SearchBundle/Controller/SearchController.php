@@ -90,7 +90,7 @@ class SearchController extends Controller
             }
 
             if ($searchDTO->query) {
-                $seoCategories[] = $searchDTO->query;
+                $seoCategories[] = $searchDTO->getOriginalQuery();
             }
 
             $trackingParams = BusinessProfileUtil::getTrackingImpressionParamsData($searchResultsDTO->resultSet);
@@ -280,7 +280,7 @@ class SearchController extends Controller
             }
 
             if ($searchDTO->query) {
-                $seoCategories[] = $searchDTO->query;
+                $seoCategories[] = $searchDTO->getOriginalQuery();
             }
 
             $trackingParams = BusinessProfileUtil::getTrackingImpressionParamsData($searchResultsDTO->resultSet);
@@ -446,7 +446,7 @@ class SearchController extends Controller
             }
 
             if ($searchDTO->query) {
-                $seoCategories[] = $searchDTO->query;
+                $seoCategories[] = $searchDTO->getOriginalQuery();
             }
 
             $trackingParams = BusinessProfileUtil::getTrackingImpressionParamsData($searchResultsDTO->resultSet);
