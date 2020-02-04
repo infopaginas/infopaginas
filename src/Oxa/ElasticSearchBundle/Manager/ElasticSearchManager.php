@@ -182,6 +182,12 @@ class ElasticSearchManager
                         'type' => 'edge_ngram',
                         'min_gram' => self::AUTO_SUGGEST_BUSINESS_MIN_WORD_LENGTH_ANALYZED,
                         'max_gram' => self::AUTO_SUGGEST_BUSINESS_MAX_WORD_LENGTH_ANALYZED,
+                        'token_chars' => [
+                            'letter',
+                            'digit',
+                            'punctuation',
+                            'symbol',
+                        ],
                     ],
                 ],
                 'filter' => [
