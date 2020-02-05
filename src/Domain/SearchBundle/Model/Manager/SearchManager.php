@@ -281,6 +281,7 @@ class SearchManager extends Manager
         $limit      = (int) $this->configService->getSetting(ConfigInterface::DEFAULT_RESULTS_PAGE_SIZE)->getValue();
         $searchDTO  = SearchDataUtil::buildRequestDTO($query, $location, $page, $limit);
         $searchDTO  = $this->setSearchAdsParams($searchDTO);
+        $searchDTO->setOriginalQuery(SearchDataUtil::getQueryFromRequest($request));
 
         $categoryFilter = SearchDataUtil::getCategoryFromRequest($request);
 
@@ -682,6 +683,12 @@ class SearchManager extends Manager
 
             if ($wordLength > ElasticSearchManager::AUTO_SUGGEST_BUSINESS_MAX_WORD_LENGTH_ANALYZED) {
                 $word = mb_substr($word, 0, ElasticSearchManager::AUTO_SUGGEST_BUSINESS_MAX_WORD_LENGTH_ANALYZED);
+            }
+
+            // "fuzzy" operator
+            // https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-query-string-query.html#query-string-fuzziness
+            if ($wordLength > ElasticSearchManager::AUTO_SUGGEST_BUSINESS_MIN_WORD_LENGTH_ANALYZED) {
+                $word .= '~';
             }
 
             $data[] = $word;
