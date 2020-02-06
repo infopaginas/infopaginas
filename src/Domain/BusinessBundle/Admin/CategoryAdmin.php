@@ -12,10 +12,20 @@ use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Route\RouteCollection;
 use Sonata\AdminBundle\Show\ShowMapper;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 
 class CategoryAdmin extends OxaAdmin
 {
+    /**
+     * @param string $name
+     * @param string $template
+     */
+    public function setTemplate($name, $template)
+    {
+        $this->templates['edit'] = 'DomainBusinessBundle:Admin:category_edit.html.twig';
+    }
+
     /**
      * @param DatagridMapper $datagridMapper
      */
@@ -55,6 +65,12 @@ class CategoryAdmin extends OxaAdmin
         $formMapper
             ->add('name')
             ->add('showSuggestion')
+            ->add('keywordText', TextType::class, [
+                'attr' => [
+                    'class' => 'selectize-control',
+                ],
+                'required' => false,
+            ])
             ->add('slug', null, ['read_only' => true, 'required' => false])
         ;
     }

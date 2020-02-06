@@ -2364,8 +2364,8 @@ class BusinessProfileManager extends Manager
                                                     'lat' => $params->locationValue->lat,
                                                     'lng' => $params->locationValue->lng,
                                                     'milesInMeter' => ElasticSearchManager::MILES_IN_METER,
-                                                ]
-                                            ]
+                                                ],
+                                            ],
                                         ],
                                     ],
                                     [
@@ -2407,7 +2407,7 @@ class BusinessProfileManager extends Manager
             return [
                 'match' => [
                     'locality_ids' => $localityId,
-                ]
+                ],
             ];
         }
 
@@ -2532,7 +2532,7 @@ class BusinessProfileManager extends Manager
         if ($category) {
             $filters[] = [
                 'match' => [
-                    'categories_ids' => $category
+                    'categories_ids' => $category,
                 ],
             ];
         }
@@ -2696,7 +2696,7 @@ class BusinessProfileManager extends Manager
                 'match' => [
                     'area_id' => (int) $params->areaId,
                 ],
-            ]
+            ],
         ];
 
         if ($params->characterFilter) {
@@ -3102,17 +3102,7 @@ class BusinessProfileManager extends Manager
             $milesOfMyBusiness = BusinessProfile::DEFAULT_MILES_FROM_MY_BUSINESS;
         }
 
-        $keywords = [];
-
-        if ($businessProfile->getSubscriptionPlanCode() > SubscriptionPlanInterface::CODE_FREE and
-            $businessProfile->getKeywordText()
-        ) {
-            $keywordsData = explode(BusinessProfile::KEYWORD_DELIMITER, $businessProfile->getKeywordText());
-
-            foreach ($keywordsData as $keyword) {
-                $keywords[] = SearchDataUtil::sanitizeElasticSearchQueryString($keyword);
-            }
-        }
+        $keywords = $this->getBusinessProfileKeywords($businessProfile);
 
         $data = [
             'id'                   => $businessProfile->getId(),
@@ -3140,6 +3130,35 @@ class BusinessProfileManager extends Manager
         ];
 
         return $data;
+    }
+
+    private function getBusinessProfileKeywords(BusinessProfile $bp): array
+    {
+        $keywords = [];
+
+        if ($bp->getSubscriptionPlanCode() > SubscriptionPlanInterface::CODE_FREE) {
+            if ($bp->getKeywordText()) {
+                $this->explodeKeywords($bp->getKeywordText(), $keywords);
+            }
+
+            /** @var Category $category */
+            foreach ($bp->getCategories() as $category) {
+                if ($category->getKeywordText()) {
+                    $this->explodeKeywords($category->getKeywordText(), $keywords);
+                }
+            }
+        }
+
+        return $keywords;
+    }
+
+    private function explodeKeywords(string $keywordsString, &$keywords): void
+    {
+        $keywordsData = explode(BusinessProfile::KEYWORD_DELIMITER, $keywordsString);
+
+        foreach ($keywordsData as $keyword) {
+            $keywords[] = SearchDataUtil::sanitizeElasticSearchQueryString($keyword);
+        }
     }
 
     /**
@@ -3224,7 +3243,7 @@ class BusinessProfileManager extends Manager
         $params = self::getBusinessElasticSearchIndexParams();
 
         $params['parent_id'] = [
-            'type' => 'integer'
+            'type' => 'integer',
         ];
 
         return $params;
@@ -3363,13 +3382,13 @@ class BusinessProfileManager extends Manager
                 ],
             ],
             'location' => [
-                'type' => 'geo_point'
+                'type' => 'geo_point',
             ],
             'miles_of_my_business' => [
-                'type' => 'integer'
+                'type' => 'integer',
             ],
             'subscr_rank' => [
-                'type' => 'integer'
+                'type' => 'integer',
             ],
             'service_areas_type' => [
                 'type'  => 'keyword',

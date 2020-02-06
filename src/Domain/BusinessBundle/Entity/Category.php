@@ -187,6 +187,13 @@ class Category implements
      */
     protected $showSuggestion;
 
+    /**
+     * @var string - keyword
+     *
+     * @ORM\Column(name="keyword_text", type="text", nullable=true)
+     */
+    protected $keywordText;
+
     public function setLocale($locale)
     {
         $this->locale = $locale;
@@ -628,5 +635,24 @@ class Category implements
     public function getTranslationClass(): string
     {
         return CategoryTranslation::class;
+    }
+
+    /**
+     * @return string
+     */
+    public function getKeywordText()
+    {
+        return $this->keywordText;
+    }
+
+    /**
+     * @param string $keywordText
+     * @return Category
+     */
+    public function setKeywordText($keywordText)
+    {
+        $this->keywordText = $keywordText;
+
+        return $this;
     }
 }
