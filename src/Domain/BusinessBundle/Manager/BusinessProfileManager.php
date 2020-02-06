@@ -2464,6 +2464,7 @@ class BusinessProfileManager extends Manager
                                         'default_operator' => 'AND',
                                         'fields' => $fields,
                                         'query'  => $params->query,
+                                        'fuzziness' => 2,
                                     ],
                                 ],
                             ],
@@ -3288,8 +3289,8 @@ class BusinessProfileManager extends Manager
                     'single_characters' => [
                         'type' => 'text',
                         'analyzer' => 'single_characters',
-                        'search_analyzer' => 'autocomplete_search',
-                    ],
+                        'search_analyzer' => 'folding',
+                    ]
                 ],
             ],
             'city' => [

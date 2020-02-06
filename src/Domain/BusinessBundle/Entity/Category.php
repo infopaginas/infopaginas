@@ -190,7 +190,7 @@ class Category implements
     /**
      * @var string - keyword
      *
-     * @ORM\Column(name="keyword_text", type="text", length=1000, nullable=true)
+     * @ORM\Column(name="keyword_text", type="text", nullable=true)
      */
     protected $keywordText;
 
