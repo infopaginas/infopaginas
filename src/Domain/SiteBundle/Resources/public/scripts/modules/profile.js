@@ -2,6 +2,8 @@ define(['jquery', 'slick'], function( $, Slick ) {
     'use strict';
 
     $( document ).ready(function () {
+        var suggestedSlider = $( '.slider.suggested-slider' );
+
         var sliderParams = {
             autoplay: true,
             autoplaySpeed: 5000,
@@ -27,48 +29,53 @@ define(['jquery', 'slick'], function( $, Slick ) {
         testimonialsSliderParams.adaptiveHeight = true;
         $( '.slider.testimonials' ).slick( testimonialsSliderParams );
 
-      var sliderSuggestedParams = {
-        autoplay: false,
-        touchThreshold: 10,
-        infinite: false,
-        swipeToSlide: true,
-        arrows: true,
-        dots: false,
-        mobileFirst: true,
-        adaptiveHeight: false,
-        variableWidth: false,
-        slidesToShow: 1,
-        responsive: [
-          {
-            breakpoint: 319,
-            settings: {
-              slidesToShow: 2
-            }
-          },
-          {
-            breakpoint: 620,
-            settings: {
-              slidesToShow: 3
-            }
-          },
-          {
-            breakpoint: 970,
-            settings: {
-              slidesToShow: 4
-            }
-          },
-          {
-            breakpoint: 1215,
-            settings: {
-              slidesToShow: 5
-            }
-          }
-        ],
-        prevArrow: $('.suggested-slider-section .prev.slick-arrow'),
-        nextArrow: $('.suggested-slider-section .next.slick-arrow')
-      };
+        var suggestedBusinessesCount = suggestedSlider.find('.slider__item').length;
+        var slidesToShow_sm = suggestedBusinessesCount < 2 ? suggestedBusinessesCount : 2;
+        var slidesToShow_md = suggestedBusinessesCount < 3 ? suggestedBusinessesCount : 3;
+        var slidesToShow_lg = suggestedBusinessesCount < 4 ? suggestedBusinessesCount : 4;
+        var slidesToShow_xl = suggestedBusinessesCount < 5 ? suggestedBusinessesCount : 5;
 
-        var slider = $( '.slider.suggested-slider' ).slick( sliderSuggestedParams );
+        var sliderSuggestedParams = {
+            autoplay: false,
+            touchThreshold: 10,
+            infinite: false,
+            swipeToSlide: true,
+            arrows: true,
+            dots: false,
+            mobileFirst: true,
+            adaptiveHeight: false,
+            variableWidth: false,
+            responsive: [
+                {
+                    breakpoint: 319,
+                    settings: {
+                        slidesToShow: slidesToShow_sm
+                    }
+                },
+                {
+                    breakpoint: 620,
+                    settings: {
+                        slidesToShow: slidesToShow_md
+                    }
+                },
+                {
+                    breakpoint: 970,
+                    settings: {
+                        slidesToShow: slidesToShow_lg
+                    }
+                },
+                {
+                    breakpoint: 1215,
+                    settings: {
+                        slidesToShow: slidesToShow_xl
+                    }
+                }
+            ],
+            prevArrow: $( '.suggested-slider-section .prev.slick-arrow' ),
+            nextArrow: $( '.suggested-slider-section .next.slick-arrow' )
+        };
+
+        var slider = suggestedSlider.slick( sliderSuggestedParams );
         addSuggestedSliderEvent( slider );
     });
 
