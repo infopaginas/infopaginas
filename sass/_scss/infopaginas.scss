@@ -18,7 +18,7 @@ body {
     padding-top: $bar-height-mb + $toolbar-height-mb;
 
     @media only screen and (min-width: 805px) {
-      padding-top: 45px;
+      padding-top: $bar-height-mb;
     }
   }
 
@@ -1082,7 +1082,7 @@ $bps-border: 1px dotted #bcbcbc;
   @media only screen and (min-width: 805px) {
     display: flex;
     &.no-page-scroll {
-      max-height: 100vh;
+      height: 100vh;
     }
   }
 
@@ -1497,11 +1497,11 @@ $bps-border: 1px dotted #bcbcbc;
 
   @media only screen and (min-width: 805px) {
     &#searchResults {
-      height: calc(100vh - 132px);
+      height: calc(100vh - #{$toolbar-height-mb});
     }
     overflow-y: auto;
     width: 60%;
-    top: 86px;
+    top: $toolbar-height-mb;
     padding-top: 0;
 
     &.search-page {
@@ -2007,9 +2007,26 @@ $thumb-width-mb: 60px;
   transition-timing-function: ease-in-out;
   z-index: 90;
 
+  .suggested-slider-section {
+    &.homepage-carousel-block {
+      margin-top: 0;
+    }
+    .homepage-slider__item {
+      height: $homepage-carousel-height;
+      img {
+        top: 40%;
+        max-height: 90px;
+      }
+
+      @media only screen and (max-width: 805px) {
+        height: $homepage-carousel-height-mobile;
+      }
+    }
+  }
+
   @media only screen and (min-width: 805px) {
     bottom: 0 !important;
-    height: calc(100vh - 45px);
+    height: calc(100vh -  #{$homepage-carousel-height});
     left: auto;
     position: relative;
     transform: translateY(0) !important;
@@ -2017,7 +2034,7 @@ $thumb-width-mb: 60px;
   }
 
   @media only screen and (max-width: 804px) {
-    height: calc( 100vh - 82px );
+    height: calc( 100vh - 82px - #{$homepage-carousel-height-mobile});
   }
 }
 
@@ -2027,11 +2044,11 @@ $thumb-width-mb: 60px;
 }
 
 .map {
-  height: calc(100vh - 45px);
+  height: calc(100vh - #{$homepage-carousel-height});
   width: 100%;
 
   @media only screen and (max-width: 804px) {
-    height: calc(100vh - 82px);
+    height: calc(100vh - 82px - #{$homepage-carousel-height-mobile});
     width: 100%;
   }
 }
@@ -2105,7 +2122,7 @@ $thumb-width-mb: 60px;
     }
 
     &.button--hide-map {
-      top: 25px;
+      top: 10px;
     }
 
     span {
