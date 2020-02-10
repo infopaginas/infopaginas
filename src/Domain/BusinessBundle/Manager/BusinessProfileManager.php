@@ -2464,7 +2464,7 @@ class BusinessProfileManager extends Manager
                                         'default_operator' => 'AND',
                                         'fields' => $fields,
                                         'query'  => $params->query,
-                                        'fuzziness' => 2,
+                                        'fuzziness' => 'auto',
                                     ],
                                 ],
                             ],
