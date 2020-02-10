@@ -844,7 +844,7 @@ class BusinessProfileAdmin extends OxaAdmin
         ;
 
         // Super VM Block
-        if ($businessProfile->getId() and $subscriptionPlanCode >= SubscriptionPlanInterface::CODE_PREMIUM_PLATINUM) {
+        if ($businessProfile->getId() && $subscriptionPlanCode >= SubscriptionPlanInterface::CODE_PREMIUM_PLATINUM) {
             $formMapper
                 ->tab('Main')
                     ->with('SuperVM')
@@ -867,7 +867,7 @@ class BusinessProfileAdmin extends OxaAdmin
         }
 
         // Keyword Block
-        if ($businessProfile->getId() and $subscriptionPlanCode > SubscriptionPlanInterface::CODE_FREE) {
+        if ($businessProfile->getId() && $subscriptionPlanCode > SubscriptionPlanInterface::CODE_FREE) {
             $formMapper
                 ->tab('Main')
                     ->with('Keywords')
@@ -876,6 +876,14 @@ class BusinessProfileAdmin extends OxaAdmin
                                 'class' => 'selectize-control',
                             ],
                             'required' => false,
+                        ])
+                        ->add('relatedKeywords', TextType::class, [
+                            'attr' => [
+                                'class' => 'selectize-control disabled',
+                            ],
+                            'read_only' => true,
+                            'required'  => false,
+                            'disabled'  => true,
                         ])
                     ->end()
                 ->end()

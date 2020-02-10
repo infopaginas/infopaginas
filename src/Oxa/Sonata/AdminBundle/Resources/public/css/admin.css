@@ -422,3 +422,7 @@ div.single-media-preview-block img {
     width: 100%;
     height: 90%;
 }
+
+.selectize-control .selectize-input.disabled {
+    opacity: 1 !important;
+}

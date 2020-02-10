@@ -3140,7 +3140,7 @@ class BusinessProfile implements
     {
         return [
             self::SERVICE_AREAS_AREA_CHOICE_VALUE       => 'Distance',
-            self::SERVICE_AREAS_LOCALITY_CHOICE_VALUE   => 'Locality'
+            self::SERVICE_AREAS_LOCALITY_CHOICE_VALUE   => 'Locality',
         ];
     }
 
@@ -3948,6 +3948,18 @@ class BusinessProfile implements
         return [
             self::FORMAT_CSV => self::FORMAT_CSV,
         ];
+    }
+
+    public function getRelatedKeywords(): string
+    {
+        $keywords = [];
+
+        /** @var Category $category */
+        foreach ($this->getCategories() as $i => $category) {
+            $keywords[] = $category->getKeywordText();
+        }
+
+        return implode(self::KEYWORD_DELIMITER, array_filter($keywords));
     }
 
     /**
