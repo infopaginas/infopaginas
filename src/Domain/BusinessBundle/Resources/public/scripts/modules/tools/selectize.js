@@ -34,12 +34,6 @@ $( document ).ready( function() {
             errors.push( errorList.keyword.minLength );
         }
 
-        var validateOneWord = validators.keyword.oneWord;
-
-        if ( !validateOneWord.test( value )) {
-            errors.push( errorList.keyword.oneWord );
-        }
-
         handleKeywordValidationError( errors );
 
         return !errors.length;
