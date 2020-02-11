@@ -3289,7 +3289,7 @@ class BusinessProfileManager extends Manager
                     'single_characters' => [
                         'type' => 'text',
                         'analyzer' => 'single_characters',
-                        'search_analyzer' => 'folding',
+                        'search_analyzer' => 'autocomplete_search',
                     ]
                 ],
             ],
