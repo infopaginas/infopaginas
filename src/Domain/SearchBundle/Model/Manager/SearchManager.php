@@ -270,7 +270,7 @@ class SearchManager extends Manager
     public function getSearchDTO(Request $request, $isRandomized = true)
     {
         $location = $this->geolocationManager->buildLocationValueFromRequest($request);
-        $query = $this->getSafeSearchString(SearchDataUtil::getQueryFromRequest($request));
+        $query = self::getSafeSearchString(SearchDataUtil::getQueryFromRequest($request));
 
         if (!$location or !$query) {
             return null;
@@ -323,7 +323,7 @@ class SearchManager extends Manager
     {
         $location = $this->geolocationManager->buildLocationValueFromApi($params);
 
-        $query = $this->getSafeSearchString($params['q']);
+        $query = self::getSafeSearchString($params['q']);
 
         $searchDTO  = SearchDataUtil::buildRequestDTO($query, $location, (int)$params['p'], (int)$params['pp']);
         $searchDTO  = $this->setSearchAdsParams($searchDTO);
@@ -656,13 +656,11 @@ class SearchManager extends Manager
      *
      * @return string
      */
-    public function getSafeSearchString($query)
+    public static function getSafeSearchString($query)
     {
-        $words = $this->getSaveSearchWords($query);
+        $words = self::getSaveSearchWords($query);
 
-        $search = implode(' ', $words);
-
-        return $search;
+        return implode(' ', $words);
     }
 
     /**
@@ -670,7 +668,7 @@ class SearchManager extends Manager
      *
      * @return array
      */
-    private function getSaveSearchWords($query)
+    public static function getSaveSearchWords($query)
     {
         $searchString = SearchDataUtil::sanitizeElasticSearchQueryString($query);
 

@@ -1888,7 +1888,7 @@ class BusinessProfileManager extends Manager
      */
     protected function searchCategoryAutoSuggestInElastic($query, $locale, $limit = null)
     {
-        $searchQuery = $this->categoryManager->getElasticAutoSuggestSearchQuery($query, $locale, $limit);
+        $searchQuery = CategoryManager::getElasticAutoSuggestSearchQuery($query, $locale, $limit);
         $response = $this->searchElastic(Category::ELASTIC_INDEX, $searchQuery);
 
         $search = $this->categoryManager->getCategoryFromElasticResponse($response);
@@ -2597,10 +2597,28 @@ class BusinessProfileManager extends Manager
                     'auto_suggest_' . strtolower($locale) . '.folded',
                     'name.single_characters',
                 ],
+                'fuzziness' => 'auto',
             ],
         ];
 
         return $query;
+    }
+
+    public function searchLocalityAutoSuggestInElastic($query, $locale, $limit): array
+    {
+        $searchQuery = CategoryManager::getElasticAutoSuggestSearchQuery($query, $locale, $limit);
+        $response = $this->searchElastic(Locality::ELASTIC_INDEX, $searchQuery);
+
+        $search = $this->localityManager->getLocalityFromElasticResponse($response);
+
+        $result = [];
+
+        foreach ($search['data'] as $i => $locality) {
+            $result[$i]['name'] = $locality->getTranslation('name', $locale);
+            $result[$i]['id'] = $locality->getId();
+        }
+
+        return $result;
     }
 
     /**
