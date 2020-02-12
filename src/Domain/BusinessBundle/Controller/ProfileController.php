@@ -263,6 +263,26 @@ class ProfileController extends Controller
         ]);
     }
 
+    public function getRatingsAction(Request $request): Response
+    {
+        $data = [];
+        $id = $request->request->get('id');
+        if ($id) {
+            $bpManager = $this->getBusinessProfilesManager();
+            /** @var BusinessProfile $businessProfile */
+            $businessProfile = $bpManager->getRepository()->find($id);
+
+            if ($businessProfile &&
+                $businessProfile->getSubscriptionPlanCode() >= SubscriptionPlanInterface::CODE_PREMIUM_PLATINUM
+            ) {
+                $locale = LocaleHelper::getLocale($request->getLocale());
+                $data = $bpManager->getBusinessRatings($businessProfile, $locale);
+            }
+        }
+
+        return $this->render('redesign/blocks/businessProfile/view/ratings.html.twig', ['ratings' => $data]);
+    }
+
     /**
      * @param Request $request
      *

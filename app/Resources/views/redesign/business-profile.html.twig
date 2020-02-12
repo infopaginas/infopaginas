@@ -12,7 +12,7 @@
     <link rel="preload" href="https://api.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.css" as="style" onload="this.rel='stylesheet'" />
     <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.css" />
 
-    {% if businessProfile.getBackground() and hasSubscription(businessProfile, "CODE_PREMIUM_PLUS") %}
+    {% if businessProfile.getBackground() and businessProfile.subscriptionPlanCode >= SUBSCRIPTION.CODE.PREMIUM_PLUS %}
         <style>
             @media only screen and (min-width: 805px) {
                 .business-pr-background-{{ businessProfile.id }} {
@@ -20,6 +20,9 @@
                 }
             }
         </style>
+    {% endif %}
+    {% if businessProfile.subscriptionPlanCode >= SUBSCRIPTION.CODE.PREMIUM_PLATINUM %}
+        <link rel="stylesheet" href="{{ absolute_url(asset('assetic/app_business_rating.css')) }}" />
     {% endif %}
 {% endblock %}
 
@@ -346,6 +349,10 @@
                         {% endif %}
 
                         {% include ':redesign/blocks/banners:static-page-bottom.html.twig' with { 'bannerType': BANNER_CODE.BUSINESS_PAGE_BOTTOM } %}
+
+                        {% if businessProfile.subscriptionPlanCode >= SUBSCRIPTION.CODE.PREMIUM_PLATINUM %}
+                            <div class="ratings"></div>
+                        {% endif %}
 
                         {% if not businessProfile.hideMap %}
                             <section class="page-section profile-map">

@@ -31,6 +31,12 @@ assetic:
             output: 'assetic/app_emergency_css.css'
             filters:
                 - scssphp
+        app_business_rating:
+            inputs:
+                - '../sass/_scss/business-rating.scss'
+            output: 'assetic/app_business_rating.css'
+            filters:
+                - scssphp
         app_common_js:
             inputs:
                 - '@DomainSiteBundle/Resources/public/scripts/require.js'

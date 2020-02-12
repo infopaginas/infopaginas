@@ -397,6 +397,18 @@ $side-padding-mb: 16px;
       min-height: 30px;
     }
   }
+
+  .tripadvisor-logo {
+    text-align: center;
+
+    a {
+      padding: 0;
+    }
+
+    img {
+      max-height: 100%;
+    }
+  }
 }
 
 .about-infopaginas {

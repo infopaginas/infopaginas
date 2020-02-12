@@ -20,6 +20,7 @@ business_profile:
   locality:
       not_empty: Debe elegir una Localidad válida
   phone_number_check_failed: This field should not contain phone numbers
+  no_spaces: Spaces are not allowed
 
 business_profile_phone:
   not_unique_main: 'Error: no puede haber más de un teléfono principal'
