@@ -15,6 +15,8 @@ use Oxa\ManagerArchitectureBundle\Model\Manager\Manager;
 
 class LocalityManager extends Manager
 {
+    public const AUTO_SUGGEST_MAX_LOCALITY_COUNT = 20;
+
     /**
      * @param Locality|null $locality
      *
@@ -103,37 +105,6 @@ class LocalityManager extends Manager
     }
 
     /**
-     * @param string $localityName
-     * @param string $locale
-     *
-     * @return Locality[]
-     */
-    public function getLocalitiesByName(string $localityName, string $locale)
-    {
-        $localities = $this->getRepository()->getLocalitiesByNameAndLocality($localityName, $locale);
-
-        return $localities;
-    }
-
-    /**
-     * @param string $localityName
-     * @param string $locale
-     *
-     * @return array
-     */
-    public function getLocalitiesAutocomplete(string $localityName, string $locale)
-    {
-        $result     = [];
-        $localities = $this->getLocalitiesByName($localityName, $locale);
-
-        foreach ($localities as $locality) {
-            $result[] = $locality->getTranslation('name', $locale);
-        }
-
-        return $result;
-    }
-
-    /**
      * @param string $locale
      *
      * @return Locality[]
@@ -172,7 +143,7 @@ class LocalityManager extends Manager
         $localityEn = $locality->getTranslation(Locality::LOCALITY_FIELD_NAME, $enLocale);
         $localityEs = $locality->getTranslation(Locality::LOCALITY_FIELD_NAME, $esLocale);
 
-        if (!$locality->getIsActive() or !$locality->getLatitude() or !$locality->getLongitude()) {
+        if (!$locality->getIsActive() || !$locality->getLatitude() || !$locality->getLongitude()) {
             return false;
         }
 

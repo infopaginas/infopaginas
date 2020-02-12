@@ -153,13 +153,13 @@ class CategoryManager extends Manager
      *
      * @return array
      */
-    public function getElasticAutoSuggestSearchQuery($query, $locale, $limit = null, $offset = 0)
+    public static function getElasticAutoSuggestSearchQuery($query, $locale, $limit = null, $offset = 0): array
     {
         if (!$limit) {
             $limit = self::AUTO_SUGGEST_MAX_CATEGORY_COUNT;
         }
 
-        $searchQuery = [
+        return [
             'from' => $offset,
             'size' => $limit,
             'track_scores' => true,
@@ -171,6 +171,7 @@ class CategoryManager extends Manager
                         'auto_suggest_' . strtolower($locale),
                         'auto_suggest_' . strtolower($locale) . '.folded',
                     ],
+                    'fuzziness' => 'auto',
                 ],
             ],
             'sort' => [
@@ -179,8 +180,6 @@ class CategoryManager extends Manager
                 ],
             ],
         ];
-
-        return $searchQuery;
     }
 
     /**

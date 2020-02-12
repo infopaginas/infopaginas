@@ -14,6 +14,7 @@ use Domain\BusinessBundle\Util\SlugUtil;
 use Domain\ReportBundle\Manager\CategoryOverviewReportManager;
 use Domain\ReportBundle\Manager\KeywordsReportManager;
 use Domain\ReportBundle\Model\BusinessOverviewModel;
+use Domain\SearchBundle\Model\Manager\SearchManager;
 use Domain\SearchBundle\Util\CacheUtil;
 use Domain\SearchBundle\Util\SearchDataUtil;
 use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
@@ -216,7 +217,7 @@ class SearchController extends Controller
         if (!$response) {
             $businessProfileManager = $this->get('domain_business.manager.business_profile');
             $results = $businessProfileManager->searchCategoryAndBusinessAutosuggestByPhrase(
-                $searchData['q'],
+                SearchManager::getSafeSearchString($searchData['q']),
                 $locale
             );
             $response = (new JsonResponse())->setData($results);
@@ -237,15 +238,25 @@ class SearchController extends Controller
      *
      * @return JsonResponse
      */
-    public function autocompleteLocalityAction(Request $request)
+    public function autocompleteLocalityAction(Request $request): JsonResponse
     {
         $locale = LocaleHelper::getLocale($request->getLocale());
-        $term   = $request->get('term', '');
+        $term = SearchManager::getSafeSearchString($request->get('term', ''));
 
-        $localityManager = $this->get('domain_business.manager.locality');
-        $data = $localityManager->getLocalitiesAutocomplete($term, $locale);
+        $businessProfileManager = $this->get('domain_business.manager.business_profile');
+        $data = $businessProfileManager->searchLocalityAutoSuggestInElastic(
+            $term,
+            $locale,
+            LocalityManager::AUTO_SUGGEST_MAX_LOCALITY_COUNT
+        );
 
-        return (new JsonResponse)->setData($data);
+        $result = [];
+
+        foreach ($data as $item) {
+            $result[] = $item['name'];
+        }
+
+        return (new JsonResponse())->setData($result);
     }
 
     /**
