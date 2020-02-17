@@ -700,6 +700,10 @@ class SearchController extends Controller
         $searchData['localitySlug'] = $localitySlug;
         $searchData['categorySlug'] = $categorySlug;
 
+        $homepageCarouselManager = $this->container->get('domain_business.manager.homepage_carousel_manager');
+        $carouselBusinesses = $homepageCarouselManager->getCarouselBusinessesSortedByRandom();
+        $showCarousel = $homepageCarouselManager->isShowCarousel($carouselBusinesses);
+
         return $this->render(
             ':redesign:catalog.html.twig',
             [
@@ -724,6 +728,8 @@ class SearchController extends Controller
                 'searchDistance'    => SearchDataUtil::ORDER_BY_DISTANCE,
                 'trackingParams'    => $trackingParams,
                 'clickbaitTitle'    => $this->getClickbaitTitleManager()->getClickbaitTitleByLocality($locality),
+                'carouselBusinesses' => $carouselBusinesses,
+                'showCarousel' => $showCarousel,
             ]
         );
     }
