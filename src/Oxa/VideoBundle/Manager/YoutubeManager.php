@@ -68,6 +68,8 @@ class YoutubeManager
 
     private $channelId;
 
+    private $logger;
+
     public function __construct(ContainerInterface $container, $privacyStatus, $channelId)
     {
         $this->container = $container;
@@ -75,6 +77,7 @@ class YoutubeManager
         $this->videoManager      = $container->get('oxa.manager.video');
         $this->configService     = $container->get('oxa_config');
         $this->em                = $container->get('doctrine.orm.entity_manager');
+        $this->logger            = $container->get('logger');
 
         $this->redirectUrl = $container->get('router')->generate(
             'oxa_youtube_oauth_redirect',
@@ -115,7 +118,8 @@ class YoutubeManager
                 $error = $e->getCode();
             }
         } catch (\Google_Exception $e) {
-            $error = self::ERROR_UNKNOWN;
+            $error = $e->getMessage();
+            $this->logger->error($error);
         }
 
         return [
@@ -164,7 +168,8 @@ class YoutubeManager
                 $error = $e->getCode();
             }
         } catch (\Google_Exception $e) {
-            $error = self::ERROR_UNKNOWN;
+            $error = $e->getMessage();
+            $this->logger->error($error);
         }
 
         return [
@@ -246,7 +251,8 @@ class YoutubeManager
                     $error = $e->getCode();
                 }
             } catch (\Google_Exception $e) {
-                $error = self::ERROR_UNKNOWN;
+                $error = $e->getMessage();
+                $this->logger->error($error);
             }
 
             unlink($tempFilePath);
@@ -287,7 +293,8 @@ class YoutubeManager
                 $error = $e->getCode();
             }
         } catch (\Google_Exception $e) {
-            $error = self::ERROR_UNKNOWN;
+            $error = $e->getMessage();
+            $this->logger->error($error);
         }
 
         return [
@@ -355,7 +362,8 @@ class YoutubeManager
                 $error = $e->getCode();
             }
         } catch (\Google_Exception $e) {
-            $error = self::ERROR_UNKNOWN;
+            $error = $e->getMessage();
+            $this->logger->error($error);
         }
 
         if ($error !== false) {
