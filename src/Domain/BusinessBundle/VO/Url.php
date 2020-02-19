@@ -6,7 +6,7 @@ namespace Domain\BusinessBundle\VO;
 use Domain\BusinessBundle\DBAL\Types\UrlType;
 use Symfony\Component\Validator\Constraints as Assert;
 
-class Url
+class Url implements VirtualObjectInterface
 {
     /**
      * @var string
@@ -155,5 +155,10 @@ class Url
     public function __toString()
     {
         return json_encode($this->toArray());
+    }
+
+    public function getChangeSetData(): string
+    {
+        return $this->__toString();
     }
 }
