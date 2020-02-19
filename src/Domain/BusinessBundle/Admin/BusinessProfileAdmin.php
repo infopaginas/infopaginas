@@ -1685,6 +1685,13 @@ class BusinessProfileAdmin extends OxaAdmin
         $exportFields['ID']         = 'id';
         $exportFields['Name']       = 'name';
         $exportFields['Slug']       = 'slug';
+
+        $exportFields['City']          = 'city';
+        $exportFields['StreetAddress'] = 'streetAddress';
+        $exportFields['ZipCode']       = 'zipCode';
+        $exportFields['lat']           = 'latitude';
+        $exportFields['lng']           = 'longitude';
+
         $exportFields['hasVideo']   = 'hasVideo';
         $exportFields['hasMedia']   = 'hasMedia';
         $exportFields['areas']      = 'exportAreas';
