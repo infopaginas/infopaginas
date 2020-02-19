@@ -23,9 +23,13 @@
         </span>
     </div>
     <div class="about__item address hide-mobile">
-        <i class="fa fa-map-marker"></i>
-        <span>
-            {% trans %}infopaginos.address{% endtrans %}
-        </span>
+        <a id="officeAddressLink" href="#" target="_blank" rel="noopener nofollow"
+           data-coordinates="{{ config(CONFIG.OFFICE_COORDINATES) }}"
+        >
+            <i class="fa fa-map-marker"></i>
+            <span>
+                {% trans %}infopaginos.address{% endtrans %}
+            </span>
+        </a>
     </div>
 </footer>

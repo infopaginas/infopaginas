@@ -18,6 +18,11 @@ use Sonata\AdminBundle\Route\RouteCollection;
  */
 class ConfigAdmin extends OxaAdmin
 {
+    protected $datagridValues = array(
+        '_per_page' => 50,
+        '_sort_by'  => 'title',
+    );
+
     /**
      * @param Config $entity
      */
@@ -98,6 +103,7 @@ class ConfigAdmin extends OxaAdmin
             ->add('id')
             ->add('title')
             ->add('format')
+            ->add('description')
             ->add('value', null, array('template' => 'OxaConfigBundle:Admin:show__value.html.twig'))
         ;
     }

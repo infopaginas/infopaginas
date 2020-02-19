@@ -436,8 +436,6 @@ document.addEventListener( 'jQueryLoaded', function() {
             var latitude = this.options.markers[0].latitude;
             var longitude = this.options.markers[0].longitude;
         }
-
-        var ua = navigator.userAgent.toLowerCase();
         var url = '';
 
         if ( (navigator.platform.indexOf( 'iPhone' ) !== -1) ||

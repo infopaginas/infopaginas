@@ -249,6 +249,8 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
     ];
 
     $(document).ready( function() {
+        inicializeFooterMapLink();
+
         if ($( '.ad--bottom' ).is( '.ad--active' )) {
             showMap.addClass( 'floating-offset' );
         }
@@ -471,6 +473,29 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
         }
 
     });
+
+    function inicializeFooterMapLink () {
+        var a = $( '#officeAddressLink' );
+        var coordinatesArray = a.data( 'coordinates' ).split( ',' );
+        var latitude = coordinatesArray[ 0 ];
+        var longitude = coordinatesArray[ 1 ];
+
+        a.attr( 'href', getGoogleMapUrl( latitude, longitude ) );
+    }
+
+    function getGoogleMapUrl ( lat, lng ) {
+        var url = '';
+
+        if ( ( navigator.platform.indexOf( 'iPhone' ) !== -1 ) ||
+            ( navigator.platform.indexOf( 'iPad' ) !== -1 ) ||
+            ( navigator.platform.indexOf( 'iPod' ) !== -1 ) ) {
+            url = 'maps://maps.google.com/maps?daddr=' + lat + ',' + lng + '&amp;ll=';
+        } else {
+            url = 'https://maps.google.com/maps?daddr=' + lat + ',' + lng + '&amp;ll=';
+        }
+
+        return url;
+    }
 
 // Categories menu
 
