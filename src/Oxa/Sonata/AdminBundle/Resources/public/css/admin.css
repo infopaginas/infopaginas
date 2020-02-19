@@ -426,3 +426,14 @@ div.single-media-preview-block img {
 .selectize-control .selectize-input.disabled {
     opacity: 1 !important;
 }
+
+.table-bordered>thead>tr>th {
+    position: sticky;
+    top: -1px;
+    background-color: white;
+    z-index: 1;
+}
+
+.box-body.table-responsive {
+    max-height: calc(100vh - 280px);
+}
