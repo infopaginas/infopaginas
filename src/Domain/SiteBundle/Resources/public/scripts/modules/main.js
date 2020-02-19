@@ -1,7 +1,9 @@
-define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui', 'select2'], function( $, ReportTracker ) {
+define(['jquery', 'tools/reportTracker', 'tools/googleMapLink', 'selectize', 'velocity', 'velocity-ui', 'select2'],
+    function( $, ReportTracker, GoogleMap ) {
     'use strict';
 
     var reportTracker = new ReportTracker;
+    var googleMap = new GoogleMap;
 
     var headerSearch = $( '#searchBox' );
     var header = $( '.header' );
@@ -249,7 +251,7 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
     ];
 
     $(document).ready( function() {
-        inicializeFooterMapLink();
+        initializeFooterMapLink();
 
         if ($( '.ad--bottom' ).is( '.ad--active' )) {
             showMap.addClass( 'floating-offset' );
@@ -474,27 +476,16 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
 
     });
 
-    function inicializeFooterMapLink () {
+    function initializeFooterMapLink () {
         var a = $( '#officeAddressLink' );
-        var coordinatesArray = a.data( 'coordinates' ).split( ',' );
-        var latitude = coordinatesArray[ 0 ];
-        var longitude = coordinatesArray[ 1 ];
 
-        a.attr( 'href', getGoogleMapUrl( latitude, longitude ) );
-    }
+        if (a.length) {
+            var coordinatesArray = a.data( 'coordinates' ).split( ',' );
+            var latitude = coordinatesArray[ 0 ];
+            var longitude = coordinatesArray[ 1 ];
 
-    function getGoogleMapUrl ( lat, lng ) {
-        var url = '';
-
-        if ( ( navigator.platform.indexOf( 'iPhone' ) !== -1 ) ||
-            ( navigator.platform.indexOf( 'iPad' ) !== -1 ) ||
-            ( navigator.platform.indexOf( 'iPod' ) !== -1 ) ) {
-            url = 'maps://maps.google.com/maps?daddr=' + lat + ',' + lng + '&amp;ll=';
-        } else {
-            url = 'https://maps.google.com/maps?daddr=' + lat + ',' + lng + '&amp;ll=';
+            a.attr( 'href', googleMap.getGoogleMapUrl( latitude, longitude ) );
         }
-
-        return url;
     }
 
 // Categories menu
