@@ -11,10 +11,16 @@
         </span>
     </div>
     <div class="about__item phone">
-        <i class="fa fa-phone"></i>
-        <span>
-            {{ config(CONFIG.FOOTER_PHONE_NUMBER) }}
-        </span>
+        <div class="hide-desktop">
+            <a href="tel:+1{{ config(CONFIG.FOOTER_PHONE_NUMBER) }}">
+                <i class="fa fa-phone"></i>
+                <span>{{ config(CONFIG.FOOTER_PHONE_NUMBER) }}</span>
+            </a>
+        </div>
+        <div class="hide-mobile">
+            <i class="fa fa-phone"></i>
+            <span>{{ config(CONFIG.FOOTER_PHONE_NUMBER) }}</span>
+        </div>
     </div>
     <div class="about__item email hide-mobile">
         <i class="fa fa-envelope"></i>
