@@ -12,7 +12,7 @@
     </div>
     <div class="about__item phone">
         <div class="hide-desktop">
-            <a href="tel:+1{{ config(CONFIG.FOOTER_PHONE_NUMBER) }}">
+            <a href="tel:{{ config(CONFIG.FOOTER_PHONE_NUMBER)|international_phone }}">
                 <i class="fa fa-phone"></i>
                 <span>{{ config(CONFIG.FOOTER_PHONE_NUMBER) }}</span>
             </a>

@@ -1064,9 +1064,7 @@ select {
 }
 
 .categories--opened {
-  transition-property: transform;
-  transition-duration: .4s;
-  transition-timing-function: easeOutCubic;
+  transition: transform .4s cubic-bezier(0.215, 0.61, 0.355, 1);
   transition-timing-function: ease-in-out;
 
   @media only screen and (min-width: 805px) {
@@ -1133,8 +1131,7 @@ $bps-border: 1px dotted #bcbcbc;
 
     .bps__table__data {
       max-height: 780px;
-      overflow-y: auto;
-      overflow: overlay;
+      overflow: auto;
     }
 
     .bps__row {
@@ -5783,7 +5780,7 @@ input[type='radio'], input[type='checkbox'] {
   -moz-box-shadow: inset 0px 1px 1px 0px rgba(250, 250, 250, .2);
   box-shadow: inset 0px 1px 1px 0px rgba(250, 250, 250, .2);
   text-shadow: 1px -1px 0px #000;
-  filter: dropshadow(color=#000, offx=1, offy=-1);
+  filter: drop-shadow(color=#000, offx=1, offy=-1);
   line-height: 30px;
   border-width: 1px 0 0 0;
   border-style: solid;
@@ -7003,5 +7000,11 @@ span.no-js-warning-message {
     i {
       font-size: 25px;
     }
+  }
+}
+
+.logout {
+  .fa-sign-out {
+    margin: 7px 3px 7px 0;
   }
 }
