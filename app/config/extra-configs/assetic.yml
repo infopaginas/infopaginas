@@ -107,6 +107,12 @@ assetic:
             output: 'assetic/js/modules/tools/videojsCustomize.min.js'
             filters:
                 - jsqueeze
+        require_google_map_link:
+            inputs:
+                - '@DomainSiteBundle/Resources/public/scripts/modules/tools/googleMapLink.js'
+            output: 'assetic/js/modules/tools/googleMapLink.min.js'
+            filters:
+                - jsqueeze
         video_share_js:
             inputs:
                 - 'assets/scripts/video-js-social-share.js'
