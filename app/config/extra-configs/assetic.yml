@@ -190,12 +190,6 @@ assetic:
             output: 'assetic/js/modules/tools/spin.min.js'
             filters:
                 - jsqueeze
-        tools_directions_js:
-            inputs:
-                - '@DomainSiteBundle/Resources/public/scripts/modules/tools/directions.js'
-            output: 'assetic/js/modules/tools/directions.min.js'
-            filters:
-                - jsqueeze
         tools_select_js:
             inputs:
                 - '@DomainSiteBundle/Resources/public/scripts/modules/tools/select.js'
