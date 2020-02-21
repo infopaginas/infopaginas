@@ -3,6 +3,7 @@ namespace Oxa\Sonata\AdminBundle\Admin;
 
 use Domain\BusinessBundle\Model\DatetimePeriodStatusInterface;
 use Domain\BusinessBundle\Util\Traits\StatusTrait;
+use Domain\BusinessBundle\VO\VirtualObjectInterface;
 use Domain\ReportBundle\Model\UserActionModel;
 use Oxa\Sonata\AdminBundle\Model\ChangeStateInterface;
 use Oxa\Sonata\AdminBundle\Model\CopyableEntityInterface;
@@ -303,7 +304,13 @@ class OxaAdmin extends BaseAdmin
         $changeSet = $uow->getEntityChangeSet($entity);
 
         foreach ($changeSet as $fieldName => $value) {
-            if (is_object($value[0]) || is_object($value[1])) {
+            if ($value[0] instanceof VirtualObjectInterface && $value[1] instanceof VirtualObjectInterface) {
+                $changeSet[$fieldName][0] = $value[0]->getChangeSetData();
+                $changeSet[$fieldName][1] = $value[1]->getChangeSetData();
+                if (strcmp($changeSet[$fieldName][0], $changeSet[$fieldName][1]) === 0) {
+                    unset($changeSet[$fieldName]);
+                }
+            } elseif (is_object($value[0]) || is_object($value[1])) {
                 $changeSet[$fieldName][0] = method_exists($value[0], 'getId') ? $value[0]->getId() : 0;
                 $changeSet[$fieldName][1] = method_exists($value[1], 'getId') ? $value[1]->getId() : 0;
             }
