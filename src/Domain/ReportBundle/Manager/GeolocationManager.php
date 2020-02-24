@@ -2,7 +2,6 @@
 
 namespace Domain\ReportBundle\Manager;
 
-
 use Oxa\MongoDbBundle\Manager\MongoDbManager;
 use Oxa\Sonata\AdminBundle\Model\Manager\DefaultManager;
 
@@ -34,5 +33,4 @@ class GeolocationManager extends DefaultManager
 
         return $result ? true : false;
     }
-
 }
