@@ -21,8 +21,9 @@
 
             <div class="user-logged">
                 <div class="user__tools">
-                    <a href="{{ absolute_url(path('sonata_user_security_logout')) }}" data-bw-gtm-event-click data-bw-gtm-label="{% trans %}Logout{% endtrans %}">
-                        <button type="button" class="logout "><i class="fa fa-sign-out"></i> {% trans %}Logout{% endtrans %}</button>
+                    <a href="{{ absolute_url(path('sonata_user_security_logout')) }}" class="logout"
+                       data-bw-gtm-event-click data-bw-gtm-label="{% trans %}Logout{% endtrans %}">
+                        <i class="fa fa-sign-out"></i>{% trans %}Logout{% endtrans %}
                     </a>
                 </div>
                 <div class="user">
@@ -71,7 +72,7 @@
                 <a href="https://www.infopaginasmedia.com/" target="_blank" data-bw-gtm-label="About Us::https://www.infopaginasmedia.com/" rel="noopener">{% trans %}About Us{% endtrans %}</a>
             </li>
             <li>
-                <a href="{{ absolute_url(path('domain_page_view_contact')) }}" data-bw-gtm-label="Contact Us::{{ absolute_url(path('domain_page_view_contact')) }}"target="_blank">{% trans %}Contact Us{% endtrans %}</a>
+                <a href="{{ absolute_url(path('domain_page_view_contact')) }}" data-bw-gtm-label="Contact Us::{{ absolute_url(path('domain_page_view_contact')) }}" target="_blank">{% trans %}Contact Us{% endtrans %}</a>
             </li>
             <li>
                 <a href="{{ absolute_url(path('domain_page_view_privacy')) }}" target="_blank" data-bw-gtm-label="Privacy Statement::{{ absolute_url(path('domain_page_view_privacy')) }}">{% trans %}Privacy Statement{% endtrans %}</a>

@@ -82,6 +82,7 @@ class BusinessProfileManager extends Manager
     const DEFAULT_LOCALE_NAME = 'San Juan';
     const AUTO_COMPLETE_TYPE  = 'business';
     const AUTO_SUGGEST_MAX_BUSINESSES_COUNT = 5;
+    const INTERNATIONAL_CALL_PREFIX = '+1';
 
     /**
      * @var CategoryManager
@@ -3842,5 +3843,16 @@ class BusinessProfileManager extends Manager
         $items = $this->getRepository()->getSimilarBusinessesByPhones($phones, $id);
 
         return $items;
+    }
+
+    public function getInternationalPhoneNumber(string $phone)
+    {
+        if (strpos($phone, self::INTERNATIONAL_CALL_PREFIX) !== 0) {
+            $phone = self::INTERNATIONAL_CALL_PREFIX . $phone;
+        }
+
+        $phone = str_replace([' ', '-', '(', ')'], '', $phone);
+
+        return $phone;
     }
 }

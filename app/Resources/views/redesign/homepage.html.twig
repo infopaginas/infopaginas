@@ -32,11 +32,11 @@
                             {% endblock %}
                         {% endembed %}
 
-                        <section class="section__title">
+                        <div class="section__title">
                             <a href="{{ absolute_url(path('domain_article_homepage')) }}">
                                 {% trans %}View more articles{% endtrans %}
                             </a>
-                        </section>
+                        </div>
                     </div><!-- main-column -->
 
                     {% include ':redesign/blocks:side-ads-block.html.twig' with { 'bannerType': BANNER_CODE.LANDING_PAGE_RIGHT_LARGE } %}
@@ -50,7 +50,7 @@
 {% block scripts %}
     {{ parent() }}
 
-    <script type="text/javascript">
+    <script>
         requirejs(['{{ absolute_url(asset("assetic/require_common_js.js")) }}'], function(common) {
             require(['{{ absolute_url(asset("assetic/js/modules/tools/homepageCarousel.min.js")) }}'], function() {});
             require(['{{ absolute_url(asset("assetic/js/modules/tools/redirect.min.js")) }}'], function(redirect) {
