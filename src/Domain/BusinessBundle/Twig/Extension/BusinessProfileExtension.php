@@ -20,6 +20,7 @@ use JMS\Serializer\SerializerBuilder;
 use Oxa\Sonata\MediaBundle\Entity\Media;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Translation\TranslatorInterface;
+use Twig\TwigFilter;
 
 /**
  * Class BusinessProfilesChangesetExtension
@@ -174,6 +175,16 @@ class BusinessProfileExtension extends \Twig_Extension
                 $this,
                 'getBusinessProfileMarkers'
             ),
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public function getFilters()
+    {
+        return [
+            new TwigFilter('international_phone', [$this, 'getInternationalPhone']),
         ];
     }
 
@@ -713,6 +724,11 @@ class BusinessProfileExtension extends \Twig_Extension
         ];
 
         return json_encode($markers);
+    }
+
+    public function getInternationalPhone($phone)
+    {
+        return $this->getBusinessProfileManager()->getInternationalPhoneNumber($phone);
     }
 
     /**

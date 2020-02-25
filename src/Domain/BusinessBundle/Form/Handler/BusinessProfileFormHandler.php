@@ -117,7 +117,7 @@ class BusinessProfileFormHandler extends BaseFormHandler implements BusinessForm
             $this->businessProfileNew = $this->form->getData();
             $this->businessProfileNew->setLocale(LocaleHelper::DEFAULT_LOCALE);
 
-            if (!$this->businessProfileOld->isEnableNotUniquePhone()) {
+            if ($this->businessProfileOld && !$this->businessProfileOld->isEnableNotUniquePhone()) {
                 $this->validateNewPhones();
             }
 

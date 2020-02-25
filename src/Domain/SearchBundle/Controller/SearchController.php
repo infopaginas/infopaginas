@@ -14,6 +14,7 @@ use Domain\BusinessBundle\Util\SlugUtil;
 use Domain\ReportBundle\Manager\CategoryOverviewReportManager;
 use Domain\ReportBundle\Manager\KeywordsReportManager;
 use Domain\ReportBundle\Model\BusinessOverviewModel;
+use Domain\SearchBundle\Model\Manager\SearchManager;
 use Domain\SearchBundle\Util\CacheUtil;
 use Domain\SearchBundle\Util\SearchDataUtil;
 use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
@@ -120,25 +121,31 @@ class SearchController extends Controller
         // hardcode for catalog
         $pageRouter = 'domain_search_index';
 
+        $homepageCarouselManager = $this->container->get('domain_business.manager.homepage_carousel_manager');
+        $carouselBusinesses = $homepageCarouselManager->getCarouselBusinessesSortedByRandom();
+        $showCarousel = $homepageCarouselManager->isShowCarousel($carouselBusinesses);
+
         return $this->render(
             ':redesign:search-results.html.twig',
             [
-                'search'            => $searchDTO,
-                'results'           => $searchResultsDTO,
-                'seoData'           => $seoData,
-                'seoTags'           => BusinessProfileUtil::getSeoTags($seoType),
-                'banners'           => $banners,
-                'dcDataDTO'         => $dcDataDTO,
-                'searchData'        => $searchData,
-                'pageRouter'        => $pageRouter,
-                'schemaJsonLD'      => $schema,
-                'markers'           => $locationMarkers,
-                'noFollowRelevance' => SearchDataUtil::ORDER_BY_RELEVANCE != SearchDataUtil::DEFAULT_ORDER_BY_VALUE,
-                'noFollowDistance'  => SearchDataUtil::ORDER_BY_DISTANCE  != SearchDataUtil::DEFAULT_ORDER_BY_VALUE,
-                'searchRelevance'   => SearchDataUtil::ORDER_BY_RELEVANCE,
-                'searchDistance'    => SearchDataUtil::ORDER_BY_DISTANCE,
-                'disableFilters'    => $disableFilters,
-                'trackingParams'    => $trackingParams,
+                'search'              => $searchDTO,
+                'results'             => $searchResultsDTO,
+                'seoData'             => $seoData,
+                'seoTags'             => BusinessProfileUtil::getSeoTags($seoType),
+                'banners'             => $banners,
+                'dcDataDTO'           => $dcDataDTO,
+                'searchData'          => $searchData,
+                'pageRouter'          => $pageRouter,
+                'schemaJsonLD'        => $schema,
+                'markers'             => $locationMarkers,
+                'noFollowRelevance'   => SearchDataUtil::ORDER_BY_RELEVANCE != SearchDataUtil::DEFAULT_ORDER_BY_VALUE,
+                'noFollowDistance'    => SearchDataUtil::ORDER_BY_DISTANCE  != SearchDataUtil::DEFAULT_ORDER_BY_VALUE,
+                'searchRelevance'     => SearchDataUtil::ORDER_BY_RELEVANCE,
+                'searchDistance'      => SearchDataUtil::ORDER_BY_DISTANCE,
+                'disableFilters'      => $disableFilters,
+                'trackingParams'      => $trackingParams,
+                'carouselBusinesses'  => $carouselBusinesses,
+                'showCarousel'        => $showCarousel,
             ]
         );
     }
@@ -210,7 +217,7 @@ class SearchController extends Controller
         if (!$response) {
             $businessProfileManager = $this->get('domain_business.manager.business_profile');
             $results = $businessProfileManager->searchCategoryAndBusinessAutosuggestByPhrase(
-                $searchData['q'],
+                SearchManager::getSafeSearchString($searchData['q']),
                 $locale
             );
             $response = (new JsonResponse())->setData($results);
@@ -231,15 +238,25 @@ class SearchController extends Controller
      *
      * @return JsonResponse
      */
-    public function autocompleteLocalityAction(Request $request)
+    public function autocompleteLocalityAction(Request $request): JsonResponse
     {
         $locale = LocaleHelper::getLocale($request->getLocale());
-        $term   = $request->get('term', '');
+        $term = SearchManager::getSafeSearchString($request->get('term', ''));
 
-        $localityManager = $this->get('domain_business.manager.locality');
-        $data = $localityManager->getLocalitiesAutocomplete($term, $locale);
+        $businessProfileManager = $this->get('domain_business.manager.business_profile');
+        $data = $businessProfileManager->searchLocalityAutoSuggestInElastic(
+            $term,
+            $locale,
+            LocalityManager::AUTO_SUGGEST_MAX_LOCALITY_COUNT
+        );
 
-        return (new JsonResponse)->setData($data);
+        $result = [];
+
+        foreach ($data as $item) {
+            $result[] = $item['name'];
+        }
+
+        return (new JsonResponse())->setData($result);
     }
 
     /**
@@ -683,6 +700,10 @@ class SearchController extends Controller
         $searchData['localitySlug'] = $localitySlug;
         $searchData['categorySlug'] = $categorySlug;
 
+        $homepageCarouselManager = $this->container->get('domain_business.manager.homepage_carousel_manager');
+        $carouselBusinesses = $homepageCarouselManager->getCarouselBusinessesSortedByRandom();
+        $showCarousel = $homepageCarouselManager->isShowCarousel($carouselBusinesses);
+
         return $this->render(
             ':redesign:catalog.html.twig',
             [
@@ -707,6 +728,8 @@ class SearchController extends Controller
                 'searchDistance'    => SearchDataUtil::ORDER_BY_DISTANCE,
                 'trackingParams'    => $trackingParams,
                 'clickbaitTitle'    => $this->getClickbaitTitleManager()->getClickbaitTitleByLocality($locality),
+                'carouselBusinesses' => $carouselBusinesses,
+                'showCarousel' => $showCarousel,
             ]
         );
     }

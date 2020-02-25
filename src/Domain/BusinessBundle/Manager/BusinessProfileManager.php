@@ -86,6 +86,7 @@ class BusinessProfileManager extends Manager
     const DEFAULT_LOCALE_NAME = 'San Juan';
     const AUTO_COMPLETE_TYPE  = 'business';
     const AUTO_SUGGEST_MAX_BUSINESSES_COUNT = 5;
+    const INTERNATIONAL_CALL_PREFIX = '+1';
 
     const GOOGLE_PLACE_API_STATUS_OK = 'OK';
     const GOOGLE_PLACE_API_STATUS_NOT_FOUND = 'NOT_FOUND';
@@ -1897,7 +1898,7 @@ class BusinessProfileManager extends Manager
      */
     protected function searchCategoryAutoSuggestInElastic($query, $locale, $limit = null)
     {
-        $searchQuery = $this->categoryManager->getElasticAutoSuggestSearchQuery($query, $locale, $limit);
+        $searchQuery = CategoryManager::getElasticAutoSuggestSearchQuery($query, $locale, $limit);
         $response = $this->searchElastic(Category::ELASTIC_INDEX, $searchQuery);
 
         $search = $this->categoryManager->getCategoryFromElasticResponse($response);
@@ -2473,7 +2474,7 @@ class BusinessProfileManager extends Manager
                                         'default_operator' => 'AND',
                                         'fields' => $fields,
                                         'query'  => $params->query,
-                                        'fuzziness' => 2,
+                                        'fuzziness' => 'auto',
                                     ],
                                 ],
                             ],
@@ -2606,10 +2607,28 @@ class BusinessProfileManager extends Manager
                     'auto_suggest_' . strtolower($locale) . '.folded',
                     'name.single_characters',
                 ],
+                'fuzziness' => 'auto',
             ],
         ];
 
         return $query;
+    }
+
+    public function searchLocalityAutoSuggestInElastic($query, $locale, $limit): array
+    {
+        $searchQuery = CategoryManager::getElasticAutoSuggestSearchQuery($query, $locale, $limit);
+        $response = $this->searchElastic(Locality::ELASTIC_INDEX, $searchQuery);
+
+        $search = $this->localityManager->getLocalityFromElasticResponse($response);
+
+        $result = [];
+
+        foreach ($search['data'] as $i => $locality) {
+            $result[$i]['name'] = $locality->getTranslation('name', $locale);
+            $result[$i]['id'] = $locality->getId();
+        }
+
+        return $result;
     }
 
     /**
@@ -3298,7 +3317,7 @@ class BusinessProfileManager extends Manager
                     'single_characters' => [
                         'type' => 'text',
                         'analyzer' => 'single_characters',
-                        'search_analyzer' => 'folding',
+                        'search_analyzer' => 'autocomplete_search',
                     ]
                 ],
             ],
@@ -4013,5 +4032,16 @@ class BusinessProfileManager extends Manager
         $result = curl_exec($ch);
 
         return curl_getinfo($ch, CURLINFO_RESPONSE_CODE) == Response::HTTP_OK ? json_decode($result, true) : null;
+    }
+
+    public function getInternationalPhoneNumber(string $phone)
+    {
+        if (strpos($phone, self::INTERNATIONAL_CALL_PREFIX) !== 0) {
+            $phone = self::INTERNATIONAL_CALL_PREFIX . $phone;
+        }
+
+        $phone = str_replace([' ', '-', '(', ')'], '', $phone);
+
+        return $phone;
     }
 }

@@ -7,10 +7,9 @@ business_profile_media_url:
 social_network_feeds: Posts de Redes Sociales
 testimonials: Testimonios
 business_rating:
-  rating_average: 'Average rating: '
+  rating_average: 'Calificación promedio: '
   reviews: Opiniones
   google_places:
-    not_found: 'Google business with id %id% not found. Business profile id: %bp_id%'
     rating: 'Google My Business Rating: '
   yelp:
     rating: 'Yelp rating: '

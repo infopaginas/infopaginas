@@ -3189,7 +3189,7 @@ class BusinessProfile implements
     {
         return [
             self::SERVICE_AREAS_AREA_CHOICE_VALUE       => 'Distance',
-            self::SERVICE_AREAS_LOCALITY_CHOICE_VALUE   => 'Locality'
+            self::SERVICE_AREAS_LOCALITY_CHOICE_VALUE   => 'Locality',
         ];
     }
 
@@ -4004,6 +4004,18 @@ class BusinessProfile implements
         return [
             self::BUSINESS_RATING_TRIP_ADVISOR,
         ];
+    }
+
+    public function getRelatedKeywords(): string
+    {
+        $keywords = [];
+
+        /** @var Category $category */
+        foreach ($this->getCategories() as $i => $category) {
+            $keywords[] = $category->getKeywordText();
+        }
+
+        return implode(self::KEYWORD_DELIMITER, array_filter($keywords));
     }
 
     /**

@@ -113,6 +113,12 @@ assetic:
             output: 'assetic/js/modules/tools/videojsCustomize.min.js'
             filters:
                 - jsqueeze
+        require_google_map_link:
+            inputs:
+                - '@DomainSiteBundle/Resources/public/scripts/modules/tools/googleMapLink.js'
+            output: 'assetic/js/modules/tools/googleMapLink.min.js'
+            filters:
+                - jsqueeze
         video_share_js:
             inputs:
                 - 'assets/scripts/video-js-social-share.js'
@@ -194,12 +200,6 @@ assetic:
             inputs:
                 - '@DomainSiteBundle/Resources/public/scripts/modules/tools/spin.js'
             output: 'assetic/js/modules/tools/spin.min.js'
-            filters:
-                - jsqueeze
-        tools_directions_js:
-            inputs:
-                - '@DomainSiteBundle/Resources/public/scripts/modules/tools/directions.js'
-            output: 'assetic/js/modules/tools/directions.min.js'
             filters:
                 - jsqueeze
         tools_select_js:

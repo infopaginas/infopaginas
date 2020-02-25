@@ -31,7 +31,7 @@
             </a>
         </li>
         <li>
-            <a href="mailto:?subject={% trans %}I wanted you to see this site{% endtrans %}&amp;body={{ currentUrl|url_encode }}."
+            <a href="mailto:?subject={{ 'I wanted you to see this site'|trans|url_encode }}&amp;body={{ currentUrl|url_encode }}."
                target="_blank" rel="noopener nofollow" aria-label="{% trans %}Share on Email{% endtrans %}"
                class="button button-share--email" data-bw-gtm-event-click data-bw-gtm-label="{% trans %}Share on Email{% endtrans %}">
                 <i class="fa fa-envelope"></i>

@@ -124,31 +124,6 @@ class LocalityRepository extends \Doctrine\ORM\EntityRepository
     }
 
     /**
-     * @param string $name
-     * @param string $locale
-     *
-     * @return Locality[]
-     */
-    public function getLocalitiesByNameAndLocality($name, $locale)
-    {
-        $qb = $this->createQueryBuilder('l')
-            ->leftJoin('l.translations', 'lt')
-            ->setParameter('name', '%' . mb_strtolower($name) . '%')
-            ->setParameter('locale', $locale)
-        ;
-
-        $qb->andWhere($qb->expr()->orX(
-            $qb->expr()->like('lower(l.name)', ':name'),
-            $qb->expr()->andX(
-                $qb->expr()->like('lower(lt.content)', ':name'),
-                $qb->expr()->eq('lt.locale', ':locale')
-            )
-        ));
-
-        return $qb->getQuery()->getResult();
-    }
-
-    /**
      * @return IterableResult
      */
     public function getAllLocalitiesIterator()

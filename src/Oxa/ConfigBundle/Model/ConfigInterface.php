@@ -51,4 +51,5 @@ interface ConfigInterface
     const HOMEPAGE_CAROUSEL_MAX_ELEMENT_COUNT   = 'HOMEPAGE_CAROUSEL_MAX_ELEMENT_COUNT';
     const FOOTER_EMAIL                          = 'FOOTER_EMAIL';
     const FOOTER_PHONE_NUMBER                   = 'FOOTER_PHONE_NUMBER';
+    const OFFICE_COORDINATES                    = 'OFFICE_COORDINATES';
 }

@@ -3,6 +3,9 @@
 namespace Oxa\GeolocationBundle\Model\Geolocation;
 
 use Domain\BusinessBundle\Entity\Locality;
+use Domain\BusinessBundle\Manager\BusinessProfileManager;
+use Domain\SearchBundle\Model\Manager\SearchManager;
+use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
 use Oxa\ManagerArchitectureBundle;
 use Symfony\Component\HttpFoundation\Request;
 use Oxa\ManagerArchitectureBundle\Model\Manager\Manager;
@@ -16,18 +19,26 @@ use Domain\BusinessBundle\Manager\LocalityManager;
 class GeolocationManager extends Manager
 {
     protected $confingService;
+    protected $localityManager;
+    protected $bpManager;
 
     /**
      * @param EntityManager $em
      * @param Config $confingService
      * @param LocalityManager $localityManager
+     * @param BusinessProfileManager $bpManager
      */
-    public function __construct(EntityManager $em, Config $confingService, LocalityManager $localityManager)
-    {
+    public function __construct(
+        EntityManager $em,
+        Config $confingService,
+        LocalityManager $localityManager,
+        BusinessProfileManager $bpManager
+    ) {
         parent::__construct($em);
 
         $this->confingService = $confingService;
         $this->localityManager = $localityManager;
+        $this->bpManager = $bpManager;
     }
 
     /**
@@ -49,6 +60,7 @@ class GeolocationManager extends Manager
     public function buildLocationValueFromRequest(Request $request, $useUserGeo = true)
     {
         $geo    = $request->get('geo', null);
+        $locale = LocaleHelper::getLocale($request->getLocale());
 
         $lat        = null;
         $lng        = null;
@@ -73,9 +85,15 @@ class GeolocationManager extends Manager
 
         $ignoreLocality = false;
 
-        if ($geo and $geo != Locality::ALL_LOCALITY) {
-            // get locality by name and locale
-            $locality = $this->localityManager->getLocalityByName($geo);
+        if ($geo && $geo != Locality::ALL_LOCALITY) {
+            // get locality by name
+            $localityData = $this->bpManager->searchLocalityAutoSuggestInElastic(
+                SearchManager::getSafeSearchString($geo),
+                $locale,
+                1
+            );
+            $locality = !empty($localityData[0]['id']) ?
+                $this->em->getRepository(Locality::class)->find($localityData[0]['id']) : null;
         } else {
             // empty search - show default
             $locality = $this->localityManager->getLocalityByName(
@@ -90,9 +108,11 @@ class GeolocationManager extends Manager
         if ($locality) {
             $lat = $locality->getLatitude();
             $lng = $locality->getLongitude();
+            $request->query->set('geo', $locality->getTranslation('name', $locale));
+            $geo = $locality->getTranslation('name', $locale);
         }
 
-        if ($lat and $lng) {
+        if ($lat && $lng) {
             $geoData = [
                 'geo'                       => $geo,
                 'lat'                       => $lat,
@@ -156,7 +176,7 @@ class GeolocationManager extends Manager
             $lat = $latitude ?: $locality->getLatitude();
             $lng = $longitude ?: $locality->getLongitude();
 
-            if ($lat and $lng) {
+            if ($lat && $lng) {
                 $geoData = [
                     'geo' => $locality->getName(),
                     'lat' => $lat,
