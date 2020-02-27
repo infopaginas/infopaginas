@@ -8,7 +8,7 @@
             </div>
         </div>
     {% endif %}
-    {% if ratingName == RATING.YELP %}
+    {% if ratingName == RATING.YELP and rating.data %}
         <div class="rating-row rating-yelp">
             <div>{{ rating.message }}</div>
             <div class="rating-value">
@@ -19,7 +19,7 @@
             </div>
         </div>
     {% endif %}
-    {% if ratingName == RATING.GOOGLE %}
+    {% if ratingName == RATING.GOOGLE and rating.data %}
         <div class="rating-row rating-google">
             <div>{{ rating.message }}</div>
             <div class="rating-value">
@@ -30,7 +30,7 @@
             </div>
         </div>
     {% endif %}
-    {% if ratingName == 'rating_average' %}
+    {% if ratingName == 'rating_average' and rating.data %}
         <div class="rating-row rating-average">
             <div>{{ rating.message }}</div>
             <div class="rating-value">
