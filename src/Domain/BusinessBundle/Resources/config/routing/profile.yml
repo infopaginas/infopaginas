@@ -24,6 +24,12 @@ domain_business_profile_view:
     path:     /b/{citySlug}/{slug}
     defaults: { _controller: DomainBusinessBundle:Profile:view }
 
+domain_business_profile_get_ratings:
+    path:     /b/ratings
+    defaults: { _controller: DomainBusinessBundle:Profile:getRatings }
+    options:
+        expose: true
+
 domain_business_get_localities:
     path:     /locality/list/{businessProfileId}
     defaults: { _controller: DomainBusinessBundle:Profile:localityList, businessProfileId: null }

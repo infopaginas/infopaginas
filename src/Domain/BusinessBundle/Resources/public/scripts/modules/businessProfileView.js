@@ -21,16 +21,19 @@ define( ['jquery', 'bootstrap', 'business/tools/interactions', 'tools/select', '
                 reportProblemModalId: '#reportProblemModal'
             },
             loadingSpinnerContainerId: 'create-review-spinner-container',
-            claimBusinessMessage: '#claimBusinessMessage'
+            claimBusinessMessage: '#claimBusinessMessage',
+            ratings: 'div.ratings'
         };
 
         this.urls = {
             createReviewURL: Routing.generate( 'domain_business_review_save' ),
-            claimBusinessURL: Routing.generate( 'domain_business_claim' )
+            claimBusinessURL: Routing.generate( 'domain_business_claim' ),
+            getRatingsURL: Routing.generate( 'domain_business_profile_get_ratings' )
         };
 
         this.spinner = new Spin();
         this.redirect = new Redirect;
+        this.businessId = $('#businessProfileName').data('business-profile-id');
 
         this.run();
     };
@@ -41,9 +44,33 @@ define( ['jquery', 'bootstrap', 'business/tools/interactions', 'tools/select', '
 
         new interactionsTracker();
 
+        this.initializeBusinessRatings();
         this.handleReviewCreation();
         this.handleBusinessClaim();
         this.handlePrintableCoupons();
+    };
+
+    businessProfileView.prototype.initializeBusinessRatings = function() {
+        if ( this.hasRatings() ) {
+            var self = this;
+
+            $.ajax( {
+                url: this.urls.getRatingsURL,
+                method: 'POST',
+                data: { 'id': this.businessId },
+                success: function( response ) {
+                    self.showBusinessRatings( response );
+                },
+            } );
+        }
+    };
+
+    businessProfileView.prototype.showBusinessRatings = function( data ) {
+        $( this.html.ratings ).append( data );
+    };
+
+    businessProfileView.prototype.hasRatings = function() {
+        return Boolean( $( this.html.ratings ).length );
     };
 
     //build form field id

@@ -75,6 +75,9 @@ parameters:
     validators:
         keyword:
             one_word: '/^[a-zA-Z0-9àèìòùÀÈÌÒÙáéíóúýÁÉÍÓÚÝâêîôûÂÊÎÔÛãñõÃÑÕäëïöüÿÄËÏÖÜŸçÇßØøÅåÆæœ]*$/'
+    yelp_business_endpoint: 'https://api.yelp.com/v3/businesses/'
+    google_places_details_endpoint: 'https://maps.googleapis.com/maps/api/place/details/json'
+    tripadvisor_location_endpoint: 'http://api.tripadvisor.com/api/partner/2.0/location/'
 
 framework:
     #esi:             ~

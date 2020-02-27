@@ -203,6 +203,10 @@ class BusinessProfile implements
     const ADDRESS_FIELDS_REGEX_PATTERN = '/^[^!@$%^*()+={}\[\]<>?]*$/';
     const PHONE_NUMBER_LIKE_REGEX_PATTERN = '/(\()?[\d]{2,}(\)|.|-| |,)?[\d]{2,}(-|.| |,)?[\d]+/';
 
+    const BUSINESS_RATING_YELP = 'rating_yelp';
+    const BUSINESS_RATING_GOOGLE = 'rating_google';
+    const BUSINESS_RATING_TRIP_ADVISOR = 'rating_trip_advisor';
+
     /**
      * @var int
      *
@@ -956,7 +960,7 @@ class BusinessProfile implements
     protected $listCollection;
 
     /**
-     * @var boolean
+     * @var bool
      *
      * @ORM\Column(name="is_draft", type="boolean", options={"default" : 0})
      */
@@ -970,7 +974,7 @@ class BusinessProfile implements
     protected $csvImportFile;
 
     /**
-     * @var boolean
+     * @var bool
      *
      * @ORM\Column(name="enable_not_unique_phone", type="boolean", options={"default" : 0}, nullable=true)
      */
@@ -978,6 +982,51 @@ class BusinessProfile implements
 
     /* @var string */
     private $statusForUser;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(type="string", nullable=true)
+     * @Assert\Url()
+     */
+    protected $yelpURL;
+
+    /**
+     * @var bool
+     *
+     * @ORM\Column(type="boolean", options={"default" : 0}, nullable=true)
+     */
+    protected $isShowYelpRating;
+
+    /** @var string
+     *
+     * @ORM\Column(type="string", nullable=true)
+     * @Assert\Regex(pattern="/^[\S]*$/", message="business_profile.no_spaces")
+     */
+    protected $googlePlaceId;
+
+    /**
+     * @var bool
+     *
+     * @ORM\Column(type="boolean", options={"default" : 0}, nullable=true)
+     */
+    protected $isShowGooglePlaceRating;
+
+    /** @var string
+     *
+     * @ORM\Column(type="string", nullable=true)
+     *
+     * @Assert\Url()
+     * @Assert\Regex("/^.+-d\d+-.+$/")
+     */
+    protected $tripAdvisorUrl;
+
+    /**
+     * @var bool
+     *
+     * @ORM\Column(type="boolean", options={"default" : 0}, nullable=true)
+     */
+    protected $isShowTripAdvisorRating;
 
     /**
      * @return bool
@@ -3943,10 +3992,17 @@ class BusinessProfile implements
     /**
      * @return array
      */
-    public static function getExportFormats()
+    public static function getExportFormats(): array
     {
         return [
             self::FORMAT_CSV => self::FORMAT_CSV,
+        ];
+    }
+
+    public static function getNamesOfProhibitedAggregationRatings(): array
+    {
+        return [
+            self::BUSINESS_RATING_TRIP_ADVISOR,
         ];
     }
 
@@ -4036,5 +4092,140 @@ class BusinessProfile implements
         $this->csvImportFile = $csvImportFile;
 
         return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getYelpURL()
+    {
+        return $this->yelpURL;
+    }
+
+    /**
+     * @param string $yelpURL
+     * @return BusinessProfile
+     */
+    public function setYelpURL($yelpURL)
+    {
+        $this->yelpURL = $yelpURL;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isShowYelpRating()
+    {
+        return $this->isShowYelpRating;
+    }
+
+    /**
+     * @param bool $isShowYelpRating
+     * @return BusinessProfile
+     */
+    public function setIsShowYelpRating($isShowYelpRating)
+    {
+        $this->isShowYelpRating = $isShowYelpRating;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getGooglePlaceId()
+    {
+        return $this->googlePlaceId;
+    }
+
+    /**
+     * @param string $googlePlaceId
+     * @return BusinessProfile
+     */
+    public function setGooglePlaceId($googlePlaceId)
+    {
+        $this->googlePlaceId = $googlePlaceId;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isShowGooglePlaceRating()
+    {
+        return $this->isShowGooglePlaceRating;
+    }
+
+    /**
+     * @param bool $isShowGooglePlaceRating
+     * @return BusinessProfile
+     */
+    public function setIsShowGooglePlaceRating($isShowGooglePlaceRating)
+    {
+        $this->isShowGooglePlaceRating = $isShowGooglePlaceRating;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTripAdvisorUrl()
+    {
+        return $this->tripAdvisorUrl;
+    }
+
+    /**
+     * @param string $tripAdvisorUrl
+     * @return BusinessProfile
+     */
+    public function setTripAdvisorUrl($tripAdvisorUrl)
+    {
+        $this->tripAdvisorUrl = $tripAdvisorUrl;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isShowTripAdvisorRating()
+    {
+        return $this->isShowTripAdvisorRating;
+    }
+
+    /**
+     * @param bool $isShowTripAdvisorRating
+     * @return BusinessProfile
+     */
+    public function setIsShowTripAdvisorRating($isShowTripAdvisorRating)
+    {
+        $this->isShowTripAdvisorRating = $isShowTripAdvisorRating;
+
+        return $this;
+    }
+
+    public function getTripAdvisorId()
+    {
+        $id = null;
+
+        if ($this->tripAdvisorUrl) {
+            $matches = [];
+            preg_match('/(?<=.-d)\d+(?=-.+)/', $this->tripAdvisorUrl, $matches);
+            $id = $matches[0] ?? null;
+        }
+
+        return $id;
+    }
+
+    public function getYelpId()
+    {
+        $yelpBusinessUrlPath = parse_url($this->yelpURL, PHP_URL_PATH);
+        $pathParts = explode('/', $yelpBusinessUrlPath);
+
+        return end($pathParts);
     }
 }

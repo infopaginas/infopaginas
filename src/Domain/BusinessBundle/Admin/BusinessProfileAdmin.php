@@ -21,6 +21,7 @@ use Domain\ReportBundle\Model\BusinessOverviewModel;
 use Domain\ReportBundle\Model\ReportInterface;
 use Domain\ReportBundle\Util\DatesUtil;
 use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
+use Oxa\ConfigBundle\Entity\Config;
 use Oxa\ConfigBundle\Model\ConfigInterface;
 use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
 use Oxa\Sonata\AdminBundle\Form\Type\ModelAutocompleteType;
@@ -1174,6 +1175,26 @@ class BusinessProfileAdmin extends OxaAdmin
                                 'inline'       => 'table',
                             ]
                         )
+                    ->end()
+                ->end()
+                ->tab('Reviews')
+                    ->with('Yelp')
+                        ->add('yelpURL')
+                        ->add('isShowYelpRating', null, [
+                            'label' => 'Show',
+                        ])
+                    ->end()
+                    ->with('Google My Business')
+                        ->add('googlePlaceId')
+                        ->add('isShowGooglePlaceRating', null, [
+                            'label' => 'Show',
+                        ])
+                    ->end()
+                    ->with('TripAdvisor')
+                        ->add('tripAdvisorUrl')
+                        ->add('isShowTripAdvisorRating', null, [
+                            'label' => 'Show',
+                        ])
                     ->end()
                 ->end()
             ;

@@ -178,3 +178,8 @@ twig:
             INSTAGRAM: 'instagram'
             FACEBOOK: 'facebook'
             TWITTER: 'twitter'
+
+        RATING:
+            YELP: 'rating_yelp'
+            GOOGLE: 'rating_google'
+            TRIP_ADVISOR: 'rating_trip_advisor'

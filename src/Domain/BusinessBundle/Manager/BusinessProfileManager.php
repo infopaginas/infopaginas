@@ -4,6 +4,7 @@ namespace Domain\BusinessBundle\Manager;
 
 use AntiMattr\GoogleBundle\Analytics;
 use AntiMattr\GoogleBundle\Analytics\Impression;
+use Cache\AdapterBundle\ProviderHelper\Memcached;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
@@ -46,6 +47,7 @@ use Domain\ReportBundle\Model\ExporterInterface;
 use Domain\ReportBundle\Util\DatesUtil;
 use Domain\SearchBundle\Model\DataType\EmergencySearchDTO;
 use Domain\SearchBundle\Model\Manager\SearchManager;
+use Domain\SearchBundle\Util\CacheUtil;
 use Domain\SearchBundle\Util\SearchDataUtil;
 use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
 use FOS\UserBundle\Model\UserInterface;
@@ -66,10 +68,12 @@ use Sonata\TranslationBundle\Model\Gedmo\AbstractPersonalTranslation;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Form\FormFactory;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 use Oxa\GeolocationBundle\Model\Geolocation\LocationValueObject;
 use Domain\SearchBundle\Model\DataType\SearchDTO;
 use Domain\SearchBundle\Model\DataType\DCDataDTO;
+use Symfony\Component\Translation\TranslatorInterface;
 
 /**
  * Class BusinessProfileManager
@@ -84,6 +88,10 @@ class BusinessProfileManager extends Manager
     const AUTO_SUGGEST_MAX_BUSINESSES_COUNT = 5;
     const INTERNATIONAL_CALL_PREFIX = '+1';
 
+    const GOOGLE_PLACE_API_STATUS_OK = 'OK';
+    const GOOGLE_PLACE_API_STATUS_NOT_FOUND = 'NOT_FOUND';
+    const TRIPADVISOR_LANG_ES = 'es_MX';
+
     /**
      * @var CategoryManager
      */
@@ -94,6 +102,12 @@ class BusinessProfileManager extends Manager
 
     /** @var EmergencyManager */
     protected $emergencyManager;
+
+    /** @var Memcached|object  */
+    protected $memcached;
+
+    /** @var TranslatorInterface */
+    protected $translator;
 
     /** @var  TranslatableListener */
     private $translatableListener;
@@ -126,20 +140,16 @@ class BusinessProfileManager extends Manager
         $this->container = $container;
 
         $this->em = $container->get('doctrine.orm.entity_manager');
-
         $this->categoryManager = $container->get('domain_business.manager.category');
         $this->localityManager = $container->get('domain_business.manager.locality');
         $this->emergencyManager = $container->get('domain_emergency.manager.emergency');
-
         $this->translatableListener = $container->get('sonata_translation.listener.translatable');
-
         $this->formFactory = $container->get('form.factory');
-
         $this->sonataMediaManager = $container->get('sonata.media.manager.media');
-
         $this->analytics = $container->get('google.analytics');
-
         $this->elasticSearchManager = $container->get('oxa_elastic_search.manager.search');
+        $this->memcached = $this->container->get('memcached');
+        $this->translator = $this->container->get('translator');
     }
 
     /**
@@ -685,7 +695,6 @@ class BusinessProfileManager extends Manager
                             $translation->setField($dataNew->field);
                             $translation->setLocale($dataNew->locale);
                             $translation->setContent($dataNew->value);
-
                         } elseif ($dataOld and $dataOld->field and $dataOld->locale) {
                             $translation = $businessProfile->getTranslationItem($dataOld->field, $dataOld->locale);
 
@@ -3840,9 +3849,189 @@ class BusinessProfileManager extends Manager
      */
     public function getSimilarBusinessesByPhones($phones, $id)
     {
-        $items = $this->getRepository()->getSimilarBusinessesByPhones($phones, $id);
+        return $this->getRepository()->getSimilarBusinessesByPhones($phones, $id);
+    }
 
-        return $items;
+    public function getBusinessRatings(BusinessProfile $bp, string $locale = ''): array
+    {
+        $data = [];
+
+        if ($bp->isShowTripAdvisorRating()) {
+            $data[BusinessProfile::BUSINESS_RATING_TRIP_ADVISOR] = [
+                'data' => $this->getTripAdvisorData($bp, $locale),
+                'messages' => [
+                    'rating' => $this->translator->trans('business_rating.trip_advisor.rating'),
+                    'reviews' => $this->translator->trans('business_rating.reviews'),
+                ],
+            ];
+        }
+
+        if ($bp->isShowYelpRating()) {
+            $data[BusinessProfile::BUSINESS_RATING_YELP] = [
+                'data' => $this->getYelpRating($bp),
+                'message' => $this->translator->trans('business_rating.yelp.rating'),
+            ];
+        }
+
+        if ($bp->isShowGooglePlaceRating()) {
+            $data[BusinessProfile::BUSINESS_RATING_GOOGLE] = [
+                'data' => $this->getGooglePlaceRating($bp),
+                'message' => $this->translator->trans('business_rating.google_places.rating'),
+            ];
+        }
+
+        $averageRating = $this->calculateAverageRating($data);
+
+        if ($averageRating) {
+            $data['rating_average'] = [
+                'data' => $averageRating,
+                'message' => $this->translator->trans('business_rating.rating_average'),
+            ];
+        }
+
+        return $data;
+    }
+
+    private function calculateAverageRating(array $data): ?float
+    {
+        $sum = 0;
+        $count = 0;
+
+        foreach ($data as $name => $rating) {
+            if (!in_array($name, BusinessProfile::getNamesOfProhibitedAggregationRatings())) {
+                $sum += $rating['data'];
+                $count++;
+            }
+        }
+
+        return $count > 1 ? round($sum / $count, 1) : null;
+    }
+
+    public function getYelpRating(BusinessProfile $bp): ?float
+    {
+        $rating = null;
+        $yelpBusinessId = $bp->getYelpId();
+
+        if ($yelpBusinessId) {
+            $cacheKey = BusinessProfile::BUSINESS_RATING_YELP . md5($yelpBusinessId);
+            $rating = $this->memcached->get($cacheKey);
+
+            if ($rating === false) {
+                $url = $this->container->getParameter('yelp_business_endpoint') . $yelpBusinessId;
+
+                $ch = curl_init($url);
+
+                $customHeaders = [
+                    'Authorization: Bearer ' . $this->container->getParameter('yelp_api_key'),
+                ];
+                curl_setopt($ch, CURLOPT_HTTPHEADER, $customHeaders);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+                $result = json_decode(curl_exec($ch), true);
+
+                $rating = $result['rating'] ?? null;
+
+                if ($rating) {
+                    $this->memcached->set($cacheKey, $rating, CacheUtil::SECONDS_IN_DAY);
+                }
+            }
+        }
+
+        return $rating;
+    }
+
+    public function getGooglePlaceRating(BusinessProfile $bp): ?float
+    {
+        $rating = null;
+        $placeDetails = $this->getGooglePlaceDetails($bp->getGooglePlaceId(), 'rating');
+
+        if ($placeDetails['status'] === self::GOOGLE_PLACE_API_STATUS_OK) {
+            $rating = $placeDetails['result']['rating'] ?? null;
+        } elseif ($placeDetails['status'] === self::GOOGLE_PLACE_API_STATUS_NOT_FOUND) {
+            $rating = $this->refreshGooglePlaceId($bp);
+        } elseif (!empty($placeDetails['error_message'])) {
+            $this->container->get('logger')->notice($placeDetails['error_message']);
+        }
+
+        return $rating;
+    }
+
+    private function getGooglePlaceDetails(string $placeId, string $fields = 'id'): array
+    {
+        $endpoint = $this->container->getParameter('google_places_details_endpoint');
+        $apiKey = $this->container->getParameter('google_place_api_key');
+        $url = $endpoint . '?place_id=' . $placeId . '&key=' . $apiKey . '&fields=' . $fields;
+
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        return json_decode(curl_exec($ch), true);
+    }
+
+    private function refreshGooglePlaceId(BusinessProfile $bp): ?string
+    {
+        $newPlaceId = null;
+        $placeDetails = $this->getGooglePlaceDetails($bp->getGooglePlaceId());
+
+        if ($placeDetails['status'] === self::GOOGLE_PLACE_API_STATUS_OK) {
+            $newPlaceId = $placeDetails['result']['id'] ?? null;
+            if ($newPlaceId) {
+                $bp->setGooglePlaceId($newPlaceId);
+                $this->em->flush();
+            }
+        } elseif ($placeDetails['status'] === self::GOOGLE_PLACE_API_STATUS_NOT_FOUND) {
+            $this->container->get('logger')->error(
+                $this->translator->trans(
+                    'business_rating.google_places.not_found',
+                    [
+                        '%id%' => $bp->getGooglePlaceId(),
+                        '%bp_id%' => $bp->getId(),
+                    ]
+                )
+            );
+        } else {
+            $this->container->get('logger')->error($placeDetails['error_message']);
+        }
+
+        return $newPlaceId;
+    }
+
+    public function getTripAdvisorData(BusinessProfile $bp, $locale = '')
+    {
+        $data = null;
+        $tripAdvisorId = $bp->getTripAdvisorId();
+
+        if ($tripAdvisorId) {
+            $cacheKey = BusinessProfile::BUSINESS_RATING_TRIP_ADVISOR . md5($tripAdvisorId);
+            $data = $this->memcached->get($cacheKey);
+
+            if ($data === false && $apiData = $this->getTripAdvisorDataFromAPI($tripAdvisorId, $locale)) {
+                $data['rating'] = $apiData['rating'];
+                $data['num_reviews'] = $apiData['num_reviews'];
+                $data['rating_image_url'] = $apiData['rating_image_url'];
+                $data['web_url'] = $apiData['web_url'];
+
+                $this->memcached->set($cacheKey, $data, CacheUtil::SECONDS_IN_DAY);
+            }
+        }
+
+        return $data;
+    }
+
+    private function getTripAdvisorDataFromAPI($id, $locale = ''): ?array
+    {
+        $endpoint = $this->container->getParameter('tripadvisor_location_endpoint');
+        $apiKey = $this->container->getParameter('tripadvisor_api_key');
+        $url = $endpoint . $id . '?key=' . $apiKey;
+
+        if ($locale === LocaleHelper::LOCALE_ES) {
+            $url .= '&lang=' . self::TRIPADVISOR_LANG_ES;
+        }
+
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $result = curl_exec($ch);
+
+        return curl_getinfo($ch, CURLINFO_RESPONSE_CODE) == Response::HTTP_OK ? json_decode($result, true) : null;
     }
 
     public function getInternationalPhoneNumber(string $phone)
