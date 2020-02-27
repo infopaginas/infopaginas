@@ -3856,9 +3856,9 @@ class BusinessProfileManager extends Manager
     {
         $data = [];
 
-        if ($bp->isShowTripAdvisorRating()) {
+        if ($bp->isShowTripAdvisorRating() && $rating = $this->getTripAdvisorData($bp, $locale)) {
             $data[BusinessProfile::BUSINESS_RATING_TRIP_ADVISOR] = [
-                'data' => $this->getTripAdvisorData($bp, $locale),
+                'data' => $rating,
                 'messages' => [
                     'rating' => $this->translator->trans('business_rating.trip_advisor.rating'),
                     'reviews' => $this->translator->trans('business_rating.reviews'),
@@ -3866,16 +3866,16 @@ class BusinessProfileManager extends Manager
             ];
         }
 
-        if ($bp->isShowYelpRating()) {
+        if ($bp->isShowYelpRating() && $rating = $this->getYelpRating($bp)) {
             $data[BusinessProfile::BUSINESS_RATING_YELP] = [
-                'data' => $this->getYelpRating($bp),
+                'data' => $rating,
                 'message' => $this->translator->trans('business_rating.yelp.rating'),
             ];
         }
 
-        if ($bp->isShowGooglePlaceRating()) {
+        if ($bp->isShowGooglePlaceRating() && $rating = $this->getGooglePlaceRating($bp)) {
             $data[BusinessProfile::BUSINESS_RATING_GOOGLE] = [
-                'data' => $this->getGooglePlaceRating($bp),
+                'data' => $rating,
                 'message' => $this->translator->trans('business_rating.google_places.rating'),
             ];
         }
@@ -3937,7 +3937,7 @@ class BusinessProfileManager extends Manager
             }
         }
 
-        return $rating;
+        return null;
     }
 
     public function getGooglePlaceRating(BusinessProfile $bp): ?float
