@@ -38,6 +38,7 @@ class CategoryPdfExporter extends PdfExporterModel
             'DomainReportBundle:Admin/CategoryReport:pdf_report.html.twig',
             [
                 'categoryData' => $categoryData,
+                'areas' => $this->categoryOverviewReportManager->getAreas(),
             ]
         );
 
