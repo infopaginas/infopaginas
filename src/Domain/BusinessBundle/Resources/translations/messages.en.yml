@@ -24,3 +24,5 @@ business_rating:
   rating: 'Yelp rating: '
  trip_advisor:
   rating: 'TripAdvisor Traveler Rating'
+ facebook:
+  rating: 'Facebook rating: '

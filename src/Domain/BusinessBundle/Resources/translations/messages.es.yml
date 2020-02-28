@@ -15,3 +15,5 @@ business_rating:
     rating: 'Yelp rating: '
   trip_advisor:
     rating: 'Calificación de viajeros de TripAdvisor'
+  facebook:
+    rating: 'Facebook rating: '

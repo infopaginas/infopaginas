@@ -183,3 +183,5 @@ twig:
             YELP: 'rating_yelp'
             GOOGLE: 'rating_google'
             TRIP_ADVISOR: 'rating_trip_advisor'
+            FACEBOOK: 'rating_facebook'
+            AVERAGE: 'rating_average'
