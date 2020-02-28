@@ -3880,6 +3880,13 @@ class BusinessProfileManager extends Manager
             ];
         }
 
+        if ($bp->isShowFacebookRating() && $rating = $bp->getFacebookRating()) {
+            $data[BusinessProfile::BUSINESS_RATING_FACEBOOK] = [
+                'data' => round($rating, 1),
+                'message' => $this->translator->trans('business_rating.facebook.rating'),
+            ];
+        }
+
         $averageRating = $this->calculateAverageRating($data);
 
         if ($averageRating) {
@@ -3937,7 +3944,7 @@ class BusinessProfileManager extends Manager
             }
         }
 
-        return null;
+        return $rating;
     }
 
     public function getGooglePlaceRating(BusinessProfile $bp): ?float

@@ -380,6 +380,18 @@ class BusinessProfileAdmin extends OxaAdmin
                 },
                 'field_type' => 'checkbox',
             ])
+            ->add('isShowFacebookRating')
+            ->add('hasFacebookRating', 'doctrine_orm_callback', [
+                'field_type' => 'checkbox',
+                'callback'   => static function ($queryBuilder, $alias, $field, $value) {
+                    if (!$value['value']) {
+                        return false;
+                    }
+                    $queryBuilder->andWhere(sprintf('%s.facebookRating IS NOT NULL', $alias));
+
+                    return true;
+                },
+            ])
         ;
     }
 
@@ -1185,7 +1197,9 @@ class BusinessProfileAdmin extends OxaAdmin
                         ])
                     ->end()
                     ->with('Google My Business')
-                        ->add('googlePlaceId')
+                        ->add('googlePlaceId', null, [
+                            'help' => '<a href="https://developers.google.com/maps/documentation/javascript/examples/places-placeid-finder" target="_blank">Place ID finder</a>',
+                        ])
                         ->add('isShowGooglePlaceRating', null, [
                             'label' => 'Show',
                         ])
@@ -1193,6 +1207,12 @@ class BusinessProfileAdmin extends OxaAdmin
                     ->with('TripAdvisor')
                         ->add('tripAdvisorUrl')
                         ->add('isShowTripAdvisorRating', null, [
+                            'label' => 'Show',
+                        ])
+                    ->end()
+                    ->with('Facebook Page')
+                        ->add('facebookRating')
+                        ->add('isShowFacebookRating', null, [
                             'label' => 'Show',
                         ])
                     ->end()

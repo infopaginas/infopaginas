@@ -206,6 +206,7 @@ class BusinessProfile implements
     const BUSINESS_RATING_YELP = 'rating_yelp';
     const BUSINESS_RATING_GOOGLE = 'rating_google';
     const BUSINESS_RATING_TRIP_ADVISOR = 'rating_trip_advisor';
+    const BUSINESS_RATING_FACEBOOK = 'rating_facebook';
 
     /**
      * @var int
@@ -1027,6 +1028,20 @@ class BusinessProfile implements
      * @ORM\Column(type="boolean", options={"default" : 0}, nullable=true)
      */
     protected $isShowTripAdvisorRating;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(type="float", nullable=true)
+     */
+    protected $facebookRating;
+
+    /**
+     * @var bool
+     *
+     * @ORM\Column(type="boolean", options={"default" : 0}, nullable=true)
+     */
+    protected $isShowFacebookRating;
 
     /**
      * @return bool
@@ -4227,5 +4242,43 @@ class BusinessProfile implements
         $pathParts = explode('/', $yelpBusinessUrlPath);
 
         return end($pathParts);
+    }
+
+    /**
+     * @return float
+     */
+    public function getFacebookRating()
+    {
+        return $this->facebookRating;
+    }
+
+    /**
+     * @param float $facebookRating
+     * @return BusinessProfile
+     */
+    public function setFacebookRating($facebookRating)
+    {
+        $this->facebookRating = $facebookRating;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isShowFacebookRating()
+    {
+        return $this->isShowFacebookRating;
+    }
+
+    /**
+     * @param bool $isShowFacebookRating
+     * @return BusinessProfile
+     */
+    public function setIsShowFacebookRating($isShowFacebookRating)
+    {
+        $this->isShowFacebookRating = $isShowFacebookRating;
+
+        return $this;
     }
 }

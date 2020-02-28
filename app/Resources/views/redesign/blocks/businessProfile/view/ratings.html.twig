@@ -7,31 +7,8 @@
                    href="{{ rating.data.web_url }}"><span>{{ rating.data.num_reviews }} {{ rating.messages.reviews }}</span></a>
             </div>
         </div>
-    {% endif %}
-    {% if ratingName == RATING.YELP and rating.data %}
-        <div class="rating-row rating-yelp">
-            <div>{{ rating.message }}</div>
-            <div class="rating-value">
-                <span>{{ rating.data }}</span>
-                <div class="star-ratings-sprite">
-                    <span style="width: {{ rating.data / 5 * 100 }}%" class="star-ratings-sprite-rating"></span>
-                </div>
-            </div>
-        </div>
-    {% endif %}
-    {% if ratingName == RATING.GOOGLE and rating.data %}
-        <div class="rating-row rating-google">
-            <div>{{ rating.message }}</div>
-            <div class="rating-value">
-                <span>{{ rating.data }}</span>
-                <div class="star-ratings-sprite">
-                    <span style="width: {{ rating.data / 5 * 100 }}%" class="star-ratings-sprite-rating"></span>
-                </div>
-            </div>
-        </div>
-    {% endif %}
-    {% if ratingName == 'rating_average' and rating.data %}
-        <div class="rating-row rating-average">
+    {% elseif rating.data %}
+        <div class="rating-row {{ ratingName }}">
             <div>{{ rating.message }}</div>
             <div class="rating-value">
                 <span>{{ rating.data }}</span>
