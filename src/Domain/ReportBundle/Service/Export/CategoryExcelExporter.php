@@ -80,7 +80,6 @@ class CategoryExcelExporter extends ExcelExporterModel
         $this->setBorderStyle($col, $row);
 
         $col++;
-
         $this->activeSheet->setCellValue(
             $col . $row,
             $this->translator->trans('list.label_impressions', [], 'AdminReportBundle')
@@ -90,7 +89,6 @@ class CategoryExcelExporter extends ExcelExporterModel
         $this->setBorderStyle($col, $row);
 
         $col++;
-
         $this->activeSheet->setCellValue(
             $col . $row,
             $this->translator->trans('list.label_directions', [], 'AdminReportBundle')
@@ -100,7 +98,6 @@ class CategoryExcelExporter extends ExcelExporterModel
         $this->setBorderStyle($col, $row);
 
         $col++;
-
         $this->activeSheet->setCellValue(
             $col . $row,
             $this->translator->trans('list.label_calls_mobile', [], 'AdminReportBundle')
@@ -117,6 +114,17 @@ class CategoryExcelExporter extends ExcelExporterModel
 
         $this->setFontStyle($col, $row);
         $this->setBorderStyle($col, $row);
+
+        foreach ($this->categoryOverviewReportManager->getAreas() as $area) {
+            $col++;
+            $this->activeSheet->setCellValue(
+                $col . $row,
+                $area->getName()
+            );
+
+            $this->setFontStyle($col, $row);
+            $this->setBorderStyle($col, $row);
+        }
 
         foreach ($categoryData['results'] as $rowData) {
             $col = $this->mainTableInitCol;

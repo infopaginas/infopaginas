@@ -85,6 +85,9 @@
             <th>
                 {% trans %}category_report.counter{% endtrans %}
             </th>
+            {% for area in areas %}
+                <th>{{ area.name }}</th>
+            {% endfor %}
         </tr>
         </thead>
 
@@ -106,6 +109,9 @@
                 <td class="sonata-ba-list-field sonata-ba-list-field-string">
                     {{ item.count }}
                 </td>
+                {% for area in areas %}
+                    <td>{{ item[area.name] }}</td>
+                {% endfor %}
             </tr>
         {% endfor %}
         </tbody>
