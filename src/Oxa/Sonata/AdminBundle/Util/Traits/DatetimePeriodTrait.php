@@ -2,6 +2,7 @@
 
 namespace Oxa\Sonata\AdminBundle\Util\Traits;
 
+use DateTime;
 use Oxa\Sonata\UserBundle\Entity\User;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -12,13 +13,13 @@ use Doctrine\ORM\Mapping as ORM;
 trait DatetimePeriodTrait
 {
     /**
-     * @var \DateTime
+     * @var DateTime
      * @ORM\Column(name="start_date", type="datetime")
      */
     protected $startDate;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      * @ORM\Column(name="end_date", type="datetime")
      */
     protected $endDate;
@@ -26,7 +27,7 @@ trait DatetimePeriodTrait
     /**
      * Set startDate
      *
-     * @param \DateTime $startDate
+     * @param DateTime $startDate
      *
      * @return $this
      */
@@ -40,7 +41,7 @@ trait DatetimePeriodTrait
     /**
      * Get startDate
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getStartDate()
     {
@@ -50,7 +51,7 @@ trait DatetimePeriodTrait
     /**
      * Set endDate
      *
-     * @param \DateTime $endDate
+     * @param DateTime $endDate
      *
      * @return $this
      */
@@ -64,7 +65,7 @@ trait DatetimePeriodTrait
     /**
      * Get endDate
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getEndDate()
     {
@@ -72,12 +73,12 @@ trait DatetimePeriodTrait
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function isExpired()
     {
-        if ($this->getEndDate() instanceof \DateTime) {
-            $datetime = new \DateTime('now');
+        if ($this->getEndDate() instanceof DateTime) {
+            $datetime = new DateTime('now');
             $diff = $datetime->diff($this->getEndDate());
 
             return boolval($diff->invert);

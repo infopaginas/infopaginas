@@ -2,6 +2,7 @@
 
 namespace Domain\BusinessBundle\Entity;
 
+use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Domain\BusinessBundle\Entity\Translation\SubscriptionTranslation;
@@ -87,12 +88,15 @@ class Subscription implements
     {
         return $this->id;
     }
+
     /**
      * Constructor
      */
     public function __construct()
     {
         $this->translations = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->startDate = new DateTime('yesterday');
+        $this->endDate = new DateTime('yesterday +1 year');
     }
 
     /**
