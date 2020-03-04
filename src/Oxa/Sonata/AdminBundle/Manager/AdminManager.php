@@ -371,6 +371,7 @@ class AdminManager extends DefaultManager
 
             if ($entity instanceof BusinessProfile) {
                 $entity->setIsActive(false);
+                $this->sendBusinessProfileDeleteEmailMessage($entity);
             } elseif ($entity instanceof Article) {
                 $entity->setIsPublished(false);
             }
@@ -381,5 +382,13 @@ class AdminManager extends DefaultManager
                 $entity
             );
         }
+    }
+    
+    private function sendBusinessProfileDeleteEmailMessage(BusinessProfile $entity)
+    {
+        $mailer = $this->container->get('domain_site.mailer');
+        $user = $this->container->get('security.token_storage')->getToken()->getUser();
+
+        $mailer->sendBusinessProfileDeleteEmailMessage($entity, $user);
     }
 }

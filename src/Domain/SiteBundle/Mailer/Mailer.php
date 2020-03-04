@@ -163,6 +163,27 @@ class Mailer
         $this->send($review->getUser()->getEmail(), $subject, $message, $contentType);
     }
 
+    public function sendBusinessProfileDeleteEmailMessage(BusinessProfile $bp, User $user)
+    {
+        $email   = $this->getConfigService()->getValue(ConfigInterface::DELETE_PROFILE_ALERT_EMAIL_ADDRESS);
+        $subject = $this->getConfigService()->getValue(ConfigInterface::DELETE_PROFILE_ALERT_EMAIL_SUBJECT);
+
+        if ($email && $subject) {
+            $email = explode(',', $email);
+            $message = $this->templateEngine->render(
+                'OxaConfigBundle:Fixtures:mail_business_delete_alert.html.twig',
+                [
+                    'profileId' => $bp->getId(),
+                    'profileName' => $bp->getName(),
+                    'userId' => $user->getId(),
+                    'userName' => $user->getFullName(),
+                ]
+            );
+
+            $this->send($email, $subject, $message, self::CONTENT_TYPE_HTML);
+        }
+    }
+
     /**
      * @param Task   $task
      * @param string $reason
