@@ -52,4 +52,6 @@ interface ConfigInterface
     const FOOTER_EMAIL                          = 'FOOTER_EMAIL';
     const FOOTER_PHONE_NUMBER                   = 'FOOTER_PHONE_NUMBER';
     const OFFICE_COORDINATES                    = 'OFFICE_COORDINATES';
+    const DELETE_PROFILE_ALERT_EMAIL_ADDRESS    = 'DELETE_PROFILE_ALERT_EMAIL_ADDRESS';
+    const DELETE_PROFILE_ALERT_EMAIL_SUBJECT    = 'DELETE_PROFILE_ALERT_EMAIL_SUBJECT';
 }
