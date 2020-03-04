@@ -88,6 +88,7 @@ filter:
   label_has_panorama_id: Has panorama id
   label_only_paid_profiles: Only paid profiles
   label_has_supervm: Has SuperVM
+  label_has_redirect_to: Has redirect to
 
 # interaction report
 interaction_report:
