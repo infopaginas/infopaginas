@@ -404,6 +404,19 @@ class BusinessProfileAdmin extends OxaAdmin
                     return true;
                 },
             ])
+            ->add('hasBusinessRedirectFrom', 'doctrine_orm_callback', [
+                'label'      => $this->trans('filter.label_has_redirect_from', [], $this->getTranslationDomain()),
+                'field_type' => 'checkbox',
+                'callback'   => static function ($queryBuilder, $alias, $field, $value) {
+                    if (!$value['value']) {
+                        return false;
+                    }
+                    $queryBuilder->innerJoin(sprintf('%s.redirectedBusinesses', $alias), 'rb');
+                    $queryBuilder->andWhere(sprintf('rb.businessToRedirect = %s.id', $alias));
+
+                    return true;
+                },
+            ])
         ;
     }
 
