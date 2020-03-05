@@ -1813,7 +1813,7 @@ class BusinessProfileManager extends Manager
 
         $search = $this->setBusinessDynamicValues($search, $coordinates);
 
-        if ($searchResultAds && $searchParams->checkAdsAllowed()) {
+        if ($searchResultAds && $search['total'] && $searchParams->checkAdsAllowed()) {
             $searchResultAds['data'] = array_reverse($searchResultAds['data']);
 
             foreach ($searchResultAds['data'] as $item) {
