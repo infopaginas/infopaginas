@@ -16,6 +16,7 @@ use Psr\Log\LoggerInterface;
 class ElasticSearchManager
 {
     public const INDEX_NOT_FOUND_EXCEPTION = 'not_found';
+    public const INDEX_NOT_FOUND_STATUS_CODE = 404;
     public const INDEX_ALREADY_EXISTS_EXCEPTION = 'resource_already_exists_exception';
 
     public const AUTO_SUGGEST_BUSINESS_MIN_WORD_LENGTH_ANALYZED = 2;
@@ -277,9 +278,7 @@ class ElasticSearchManager
             $status = false;
             $message = json_decode($e->getMessage());
 
-            if (!empty($message->result) &&
-                $message->result == self::INDEX_NOT_FOUND_EXCEPTION
-            ) {
+            if (!empty($message->status) && $message->status == self::INDEX_NOT_FOUND_STATUS_CODE) {
                 $status = true;
             }
         }
@@ -340,7 +339,13 @@ class ElasticSearchManager
         $response = $this->client->bulk($jsonData);
 
         if (!empty($response['errors'])) {
-            $this->logger->error($response['errors']);
+            $itemsWithError = [];
+            foreach ($response['items'] as $item) {
+                if (array_key_exists('error', $item = array_shift($item))) {
+                    $itemsWithError[] = $item;
+                }
+            }
+            $this->logger->error('Bulk indexing error', $itemsWithError);
         }
 
         return $response;
