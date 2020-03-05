@@ -108,8 +108,6 @@ class GeolocationManager extends Manager
         if ($locality) {
             $lat = $locality->getLatitude();
             $lng = $locality->getLongitude();
-            $request->query->set('geo', $locality->getTranslation('name', $locale));
-            $geo = $locality->getTranslation('name', $locale);
         }
 
         if ($lat && $lng) {
