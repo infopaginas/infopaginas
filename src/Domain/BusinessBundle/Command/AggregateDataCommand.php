@@ -21,7 +21,7 @@ class AggregateDataCommand extends ContainerAwareCommand
     {
         $this
             ->setName('domain:business:aggregate-data')
-            ->setDescription('Aggregate impressions, directions, callsMobile, callsDesktop from MongoDB to PostgreSQL')
+            ->setDescription('Aggregate impressions, directions, callsMobile, callsDesktop and visits from MongoDB to PostgreSQL')
         ;
     }
 
@@ -55,6 +55,7 @@ class AggregateDataCommand extends ContainerAwareCommand
             BusinessOverviewModel::TYPE_CODE_IMPRESSION,
             BusinessOverviewModel::TYPE_CODE_DIRECTION_BUTTON,
             BusinessOverviewModel::TYPE_CODE_CALL_DESK_BUTTON,
+            BusinessOverviewModel::TYPE_CODE_VIEW,
         ];
 
         $entityManager = $this->getContainer()
@@ -96,6 +97,10 @@ class AggregateDataCommand extends ContainerAwareCommand
 
                 if (isset($businessCursor[BusinessOverviewModel::TYPE_CODE_CALL_DESK_BUTTON])) {
                     $business->setCallsDesktop($businessCursor[BusinessOverviewModel::TYPE_CODE_CALL_DESK_BUTTON]);
+                }
+
+                if (isset($businessCursor[BusinessOverviewModel::TYPE_CODE_VIEW])) {
+                    $business->setViews($businessCursor[BusinessOverviewModel::TYPE_CODE_VIEW]);
                 }
 
                 $batchCounter++;
