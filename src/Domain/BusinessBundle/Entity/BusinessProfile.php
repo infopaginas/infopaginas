@@ -834,6 +834,11 @@ class BusinessProfile implements
     protected $callsDesktop = 0;
 
     /**
+     * @ORM\Column(type="integer", nullable=false, options={"default" = 0})
+     */
+    protected $views = 0;
+
+    /**
      * @Gedmo\Locale
      * Used locale to override Translation listener`s locale
      * this is not a mapped field of entity metadata, just a simple property
@@ -4278,6 +4283,25 @@ class BusinessProfile implements
     public function setIsShowFacebookRating($isShowFacebookRating)
     {
         $this->isShowFacebookRating = $isShowFacebookRating;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getViews()
+    {
+        return $this->views;
+    }
+
+    /**
+     * @param int $views
+     * @return BusinessProfile
+     */
+    public function setViews($views)
+    {
+        $this->views = $views;
 
         return $this;
     }

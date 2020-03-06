@@ -408,6 +408,7 @@ class BusinessProfileAdmin extends OxaAdmin
             ->add('directions')
             ->add('callsMobile')
             ->add('callsDesktop')
+            ->add('views')
             ->add('catalogLocality', null, [
                 'sortable' => true,
                 'sort_field_mapping'=> ['fieldName' => 'name'],
