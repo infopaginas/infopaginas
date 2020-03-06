@@ -16,10 +16,14 @@ use Psr\Log\LoggerInterface;
 class ElasticSearchManager
 {
     public const INDEX_NOT_FOUND_EXCEPTION = 'not_found';
+    public const INDEX_NOT_FOUND_STATUS_CODE = 404;
     public const INDEX_ALREADY_EXISTS_EXCEPTION = 'resource_already_exists_exception';
 
     public const AUTO_SUGGEST_BUSINESS_MIN_WORD_LENGTH_ANALYZED = 2;
     public const AUTO_SUGGEST_BUSINESS_MAX_WORD_LENGTH_ANALYZED = 40;
+    public const BUSINESS_PHONE_MIN_WORD_LENGTH_ANALYZED = 7;
+    public const BUSINESS_PHONE_MAX_WORD_LENGTH_ANALYZED = 10;
+    public const MAX_NGRAM_DIFF = self::BUSINESS_PHONE_MAX_WORD_LENGTH_ANALYZED - self::BUSINESS_PHONE_MIN_WORD_LENGTH_ANALYZED;
     public const MILES_IN_METER = 0.000621371;
 
     public const ELASTIC_INDEXES = [
@@ -145,6 +149,7 @@ class ElasticSearchManager
             'refresh_interval' => $this->indexRefreshInterval,
             'max_result_window' => $this->maxResultWindow,
             'max_rescore_window' => $this->maxRescoreWindow,
+            'max_ngram_diff' => self::MAX_NGRAM_DIFF,
             'analysis' => [
                 'analyzer' => [
                     'folding' => [
@@ -165,6 +170,13 @@ class ElasticSearchManager
                             'shingle_filter',
                         ],
                     ],
+                    'phone_number' => [
+                        'type' => 'custom',
+                        'char_filter' => [
+                            'phone_char_filter',
+                        ],
+                        'tokenizer' => 'phone_ngram_tokenizer',
+                    ],
                     'autocomplete' => [
                         'type' => 'custom',
                         'tokenizer' => 'autocomplete',
@@ -177,6 +189,13 @@ class ElasticSearchManager
                         'tokenizer' => 'lowercase',
                     ],
                 ],
+                'char_filter' => [
+                    'phone_char_filter' => [
+                        'type' => 'pattern_replace',
+                        'pattern' => '[\(\)\-.\s+]',
+                        'replacement' => '',
+                    ],
+                ],
                 'tokenizer' => [
                     'autocomplete' => [
                         'type' => 'edge_ngram',
@@ -187,6 +206,14 @@ class ElasticSearchManager
                             'digit',
                             'punctuation',
                             'symbol',
+                        ],
+                    ],
+                    'phone_ngram_tokenizer' => [
+                        'type' => 'ngram',
+                        'min_gram' => self::BUSINESS_PHONE_MIN_WORD_LENGTH_ANALYZED,
+                        'max_gram' => self::BUSINESS_PHONE_MAX_WORD_LENGTH_ANALYZED,
+                        'token_chars' => [
+                            'digit',
                         ],
                     ],
                 ],
@@ -277,9 +304,7 @@ class ElasticSearchManager
             $status = false;
             $message = json_decode($e->getMessage());
 
-            if (!empty($message->result) &&
-                $message->result == self::INDEX_NOT_FOUND_EXCEPTION
-            ) {
+            if (!empty($message->status) && $message->status == self::INDEX_NOT_FOUND_STATUS_CODE) {
                 $status = true;
             }
         }
@@ -340,7 +365,13 @@ class ElasticSearchManager
         $response = $this->client->bulk($jsonData);
 
         if (!empty($response['errors'])) {
-            $this->logger->error($response['errors']);
+            $itemsWithError = [];
+            foreach ($response['items'] as $item) {
+                if (array_key_exists('error', $item = array_shift($item))) {
+                    $itemsWithError[] = $item;
+                }
+            }
+            $this->logger->error('Bulk indexing error', $itemsWithError);
         }
 
         return $response;

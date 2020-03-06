@@ -683,9 +683,10 @@ class SearchManager extends Manager
                 $word = mb_substr($word, 0, ElasticSearchManager::AUTO_SUGGEST_BUSINESS_MAX_WORD_LENGTH_ANALYZED);
             }
 
-            // "fuzzy" operator
+            // "fuzzy" operator (exclude phone-number-like words)
             // https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-query-string-query.html#query-string-fuzziness
-            if ($wordLength > ElasticSearchManager::AUTO_SUGGEST_BUSINESS_MIN_WORD_LENGTH_ANALYZED) {
+            if ($wordLength > ElasticSearchManager::AUTO_SUGGEST_BUSINESS_MIN_WORD_LENGTH_ANALYZED &&
+                preg_match('/[^\d.,\-()+]/', $word)) {
                 $word .= '~';
             }
 

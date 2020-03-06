@@ -1813,7 +1813,7 @@ class BusinessProfileManager extends Manager
 
         $search = $this->setBusinessDynamicValues($search, $coordinates);
 
-        if ($searchResultAds && $searchParams->checkAdsAllowed()) {
+        if ($searchResultAds && $search['total'] && $searchParams->checkAdsAllowed()) {
             $searchResultAds['data'] = array_reverse($searchResultAds['data']);
 
             foreach ($searchResultAds['data'] as $item) {
@@ -3131,6 +3131,7 @@ class BusinessProfileManager extends Manager
         }
 
         $keywords = $this->getBusinessProfileKeywords($businessProfile);
+        $mainPhone = $businessProfile->getMainPhone();
 
         $data = [
             'id'                   => $businessProfile->getId(),
@@ -3155,6 +3156,7 @@ class BusinessProfileManager extends Manager
             'subscr_rank'          => $businessProfile->getSubscriptionPlanCode(),
             'neighborhood_ids'     => $neighborhoodIds,
             'categories_ids'       => $categoryIds,
+            'phone'                => $mainPhone ? $mainPhone->getPhone() : '',
         ];
 
         return $data;
@@ -3208,6 +3210,7 @@ class BusinessProfileManager extends Manager
             'categories_es.folded^5',
             'products_' . strtolower($locale) . '^0',
             'products_' . strtolower($locale) . '.folded^0',
+            'phone^4',
         ];
     }
 
@@ -3408,6 +3411,10 @@ class BusinessProfileManager extends Manager
                         'analyzer' => 'folding',
                     ],
                 ],
+            ],
+            'phone' => [
+                'type' => 'text',
+                'analyzer' => 'phone_number',
             ],
             'location' => [
                 'type' => 'geo_point',
