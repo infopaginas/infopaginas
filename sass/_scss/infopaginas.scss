@@ -3320,9 +3320,19 @@ a.tag {
   margin-bottom: .5em;
   text-align: center;
   text-transform: uppercase;
+}
 
+.main-column .section__title {
   @media only screen and (min-width: 805px) {
     margin-top: 85px;
+  }
+}
+
+.search-page {
+  .featured-categories {
+    @media only screen and (max-width: 805px) {
+      padding-left: 20px;
+    }
   }
 }
 
