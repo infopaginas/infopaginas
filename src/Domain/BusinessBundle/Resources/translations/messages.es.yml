@@ -7,13 +7,13 @@ business_profile_media_url:
 social_network_feeds: Posts de Redes Sociales
 testimonials: Testimonios
 business_rating:
-  rating_average: 'Calificación promedio: '
+  rating_average: 'Promedio de los Reviews: '
   reviews: Opiniones
   google_places:
-    rating: 'Google My Business Rating: '
+    rating: 'Reviews de Google: '
   yelp:
-    rating: 'Yelp rating: '
+    rating: 'Reviews de Yelp: '
   trip_advisor:
     rating: 'Calificación de viajeros de TripAdvisor'
   facebook:
-    rating: 'Facebook rating: '
+    rating: 'Reviews de Facebook: '
