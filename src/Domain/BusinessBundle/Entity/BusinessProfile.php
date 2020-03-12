@@ -1049,6 +1049,18 @@ class BusinessProfile implements
     protected $isShowFacebookRating;
 
     /**
+     * @var BusinessProfilePopup
+     *
+     * @ORM\OneToOne(
+     *     targetEntity="Domain\BusinessBundle\Entity\BusinessProfilePopup",
+     *      cascade={"remove"},
+     *      orphanRemoval=true
+     * )
+     * @ORM\JoinColumn(nullable=true)
+     */
+    protected $popup;
+
+    /**
      * @return bool
      */
     public function isEnableNotUniquePhone()
@@ -4302,6 +4314,25 @@ class BusinessProfile implements
     public function setViews($views)
     {
         $this->views = $views;
+
+        return $this;
+    }
+
+    /**
+     * @return BusinessProfilePopup
+     */
+    public function getPopup()
+    {
+        return $this->popup;
+    }
+
+    /**
+     * @param BusinessProfilePopup $popup
+     * @return BusinessProfile
+     */
+    public function setPopup($popup)
+    {
+        $this->popup = $popup;
 
         return $this;
     }

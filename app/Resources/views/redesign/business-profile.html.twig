@@ -443,6 +443,9 @@
     <div class="hide-mobile">
         {% include ':redesign/blocks:footer.html.twig' %}
     </div>
+    {% if businessProfile.popup and businessProfile.popup.message and businessProfile.popup.file %}
+        {% include 'redesign/blocks/modals/business_profile_popup.html.twig' %}
+    {% endif %}
 {% endblock %}
 
 {% block scripts %}

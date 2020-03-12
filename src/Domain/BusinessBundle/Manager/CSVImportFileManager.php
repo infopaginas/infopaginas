@@ -7,65 +7,33 @@ use Domain\BusinessBundle\Entity\BusinessProfilePhone;
 use Domain\BusinessBundle\Entity\CSVImportFile;
 use Domain\BusinessBundle\VO\Url;
 use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
-use Gaufrette\Filesystem;
-use Oxa\ManagerArchitectureBundle\Model\Manager\Manager;
+use Oxa\ManagerArchitectureBundle\Model\Manager\FileUploadManager;
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
-class CSVImportFileManager extends Manager
+class CSVImportFileManager extends FileUploadManager
 {
-    const FILE_TYPE = 'text/csv';
-
     /** @var  ContainerInterface $container */
     protected $container;
-
-    /** @var  Filesystem $filesystem */
-    protected $filesystem;
 
     protected $validator;
 
     /**
      * @param EntityManager $entityManager
-     * @param Filesystem $filesystem
      * @param ValidatorInterface $validator
      * @param ContainerInterface $container
      */
     public function __construct(
         EntityManager $entityManager,
-        Filesystem $filesystem,
         ValidatorInterface $validator,
         ContainerInterface $container
     ) {
-        $this->filesystem = $filesystem;
         $this->validator = $validator;
         $this->container = $container;
         parent::__construct($entityManager);
-    }
-
-    public function upload(CSVImportFile $csvImportFile)
-    {
-        $adapter = $this->filesystem->getAdapter();
-        $tempFilePath = $csvImportFile->getFile();
-
-        $path = sprintf('%s/%s/', date('Y'), date('m'));
-        do {
-            $filename = sprintf('%s.csv', uniqid('', true));
-        } while ($adapter->exists($path . $filename));
-
-        $adapter->setMetadata($path . $filename, [
-            'contentType'   => self::FILE_TYPE,
-            'ACL'           => 'public-read',
-        ]);
-
-        $uploadedSize = $adapter->write($path . $filename, file_get_contents($tempFilePath));
-
-        return [
-            'status' => (bool) $uploadedSize,
-            'link'   => $this->getPublicUrl($path, $filename),
-        ];
     }
 
     public function processCSVImportFiles()
@@ -243,35 +211,12 @@ class CSVImportFileManager extends Manager
         }
     }
 
-    /**
-     * @param string $path
-     * @param string $filename
-     *
-     * @return string
-     */
-    protected function getPublicUrl($path, $filename)
+    protected function getCdnPath(): string
     {
-        $url = sprintf(
-            '%s/%s%s',
-            $this->getCdnPath(),
-            $path,
-            $filename
-        );
-
-        return $url;
-    }
-
-    /**
-     * @return string
-     */
-    protected function getCdnPath()
-    {
-        $path = sprintf(
+        return sprintf(
             '%s/%s',
             $this->container->getParameter('amazon_aws_base_host'),
             $this->container->getParameter('amazon_aws_mass_import_directory')
         );
-
-        return $path;
     }
 }

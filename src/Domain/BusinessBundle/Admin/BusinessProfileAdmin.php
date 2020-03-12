@@ -21,7 +21,6 @@ use Domain\ReportBundle\Model\BusinessOverviewModel;
 use Domain\ReportBundle\Model\ReportInterface;
 use Domain\ReportBundle\Util\DatesUtil;
 use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
-use Oxa\ConfigBundle\Entity\Config;
 use Oxa\ConfigBundle\Model\ConfigInterface;
 use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
 use Oxa\Sonata\AdminBundle\Form\Type\ModelAutocompleteType;
@@ -39,13 +38,11 @@ use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Validator\Constraints\Length;
 use Ivory\CKEditorBundle\Form\Type\CKEditorType;
-use Symfony\Component\Validator\Constraints\NotBlank;
 use Doctrine\ORM\Query\Expr\Join;
 use Symfony\Component\Validator\Constraints\Regex;
 
@@ -508,6 +505,7 @@ class BusinessProfileAdmin extends OxaAdmin
             ->end()
             ->tab('Media')
                 ->with('Gallery')->end()
+                ->with('Popup')->end()
                 ->with('Panorama')->end()
             ->end()
             ->tab('Others')
@@ -1016,6 +1014,18 @@ class BusinessProfileAdmin extends OxaAdmin
                             ],
                         ]
                     )
+                ->end()
+            ->end()
+        ;
+
+        // Popup Block
+        $formMapper
+            ->tab('Media')
+                ->with('Popup')
+                    ->add('popup', 'sonata_type_model_list', [
+                        'required' => false,
+                        'btn_list' => false,
+                    ])
                 ->end()
             ->end()
         ;

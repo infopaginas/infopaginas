@@ -9,6 +9,13 @@ services:
         arguments:
             - '@service_container'
 
+    domain_business.manager.business_profile_popup:
+        class: Domain\BusinessBundle\Manager\BusinessProfilePopupManager
+        arguments:
+            - '@service_container'
+        calls:
+            - ['setFileSystem', ['@business_popup_storage_filesystem']]
+
     domain_business.manager.business_profile_phone:
         class: Domain\BusinessBundle\Manager\BusinessProfilePhoneManager
         arguments:
@@ -304,6 +311,7 @@ services:
         class: Domain\BusinessBundle\Manager\CSVImportFileManager
         arguments:
             - '@doctrine.orm.entity_manager'
-            - '@mass_import_storage_filesystem'
             - '@validator'
             - '@service_container'
+        calls:
+            - ['setFileSystem', ['@mass_import_storage_filesystem']]

@@ -97,7 +97,6 @@ class PostponeExportReportManager
             );
             $this->em->clear();
 
-
             $counter++;
 
             if ($counter >= self::EXPORT_REPORT_LIMIT) {

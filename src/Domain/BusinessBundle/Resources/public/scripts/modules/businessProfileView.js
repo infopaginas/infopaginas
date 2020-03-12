@@ -18,7 +18,8 @@ define( ['jquery', 'bootstrap', 'business/tools/interactions', 'tools/select', '
             modals: {
                 createReviewModalId: '#writeReviewModal',
                 claimBusinessModalId: '#claimBusinessModal',
-                reportProblemModalId: '#reportProblemModal'
+                reportProblemModalId: '#reportProblemModal',
+                popupModalId: '#popupModal'
             },
             loadingSpinnerContainerId: 'create-review-spinner-container',
             claimBusinessMessage: '#claimBusinessMessage',
@@ -48,6 +49,22 @@ define( ['jquery', 'bootstrap', 'business/tools/interactions', 'tools/select', '
         this.handleReviewCreation();
         this.handleBusinessClaim();
         this.handlePrintableCoupons();
+        this.handlePopup();
+    };
+
+    businessProfileView.prototype.handlePopup = function() {
+        var popupModal = $(this.html.modals.popupModalId);
+
+        if ( popupModal.length ) {
+            setTimeout(this.showPopup.bind(this), popupModal.data('time-to-appear') * 1000);
+            popupModal.find('.hide-modal').on('click', function() {
+                popupModal.removeClass('popup--opened');
+            });
+        }
+    };
+
+    businessProfileView.prototype.showPopup = function() {
+        $(this.html.modals.popupModalId).addClass('popup--opened');
     };
 
     businessProfileView.prototype.initializeBusinessRatings = function() {

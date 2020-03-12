@@ -327,6 +327,13 @@ knp_gaufrette:
                 options:
                     create:     true
                     directory:  '%amazon_aws_mass_import_directory%'
+        business_popup_storage:
+            aws_s3:
+                service_id:     aws.s3
+                bucket_name:    %amazon_aws_bucket_name%
+                options:
+                    create:     true
+                    directory:  '%amazon_aws_business_popup_directory%'
     filesystems:
         ipgn:
             adapter:    video_storage
@@ -337,6 +344,9 @@ knp_gaufrette:
         import:
             adapter:    mass_import_storage
             alias:      mass_import_storage_filesystem
+        popup:
+            adapter:    business_popup_storage
+            alias:      business_popup_storage_filesystem
 
 dubture_f_fmpeg:
     ffmpeg_binary: /usr/bin/ffmpeg
