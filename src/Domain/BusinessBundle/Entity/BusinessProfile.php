@@ -2684,13 +2684,25 @@ class BusinessProfile implements
 
     public function getPhonesJSON()
     {
+        return json_encode($this->getPhonesArrayByType());
+    }
+
+    public function getPhonesArrayByType(array $types = [])
+    {
         $phones = $this->phones->toArray();
 
-        $phones = array_map(function ($phone) {
-            return $phone->getPhone();
-        }, $phones);
+        if ($types) {
+            $phones = array_filter($phones, static function ($phone) use ($types) {
+                return in_array($phone->getType(), $types);
+            });
+        }
 
-        return json_encode($phones);
+        return array_map(
+            static function ($phone) {
+                return $phone->getPhone();
+            },
+            $phones
+        );
     }
 
     /**

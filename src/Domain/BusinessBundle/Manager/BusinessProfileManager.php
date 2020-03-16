@@ -3131,7 +3131,12 @@ class BusinessProfileManager extends Manager
         }
 
         $keywords = $this->getBusinessProfileKeywords($businessProfile);
-        $mainPhone = $businessProfile->getMainPhone();
+        $phones = $businessProfile->getPhonesArrayByType(
+            [
+                BusinessProfilePhone::PHONE_TYPE_MAIN,
+                BusinessProfilePhone::PHONE_TYPE_SECONDARY,
+            ]
+        );
 
         $data = [
             'id'                   => $businessProfile->getId(),
@@ -3156,7 +3161,7 @@ class BusinessProfileManager extends Manager
             'subscr_rank'          => $businessProfile->getSubscriptionPlanCode(),
             'neighborhood_ids'     => $neighborhoodIds,
             'categories_ids'       => $categoryIds,
-            'phone'                => $mainPhone ? $mainPhone->getPhone() : '',
+            'phone'                => json_encode($phones),
         ];
 
         return $data;
