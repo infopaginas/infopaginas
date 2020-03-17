@@ -2,8 +2,8 @@
 
 namespace Oxa\Sonata\AdminBundle\Util\Helpers;
 
+use Domain\BusinessBundle\Entity\BusinessProfilePopup;
 use Domain\BusinessBundle\Util\Traits\StatusTrait;
-use Symfony\Component\Validator\Constraints\DateTime;
 
 /**
  * Class AdminHelper
@@ -11,35 +11,36 @@ use Symfony\Component\Validator\Constraints\DateTime;
  */
 class AdminHelper
 {
-    const FILTER_DATE_FORMAT = 'd-m-Y';
+    public const FILTER_DATE_FORMAT = 'd-m-Y';
 
-    const FILTER_DATE_RANGE_FORMAT = 'dd-MM-y';
+    public const FILTER_DATE_RANGE_FORMAT = 'dd-MM-y';
 
-    const PER_PAGE_ALL = 'all';
+    public const PER_PAGE_ALL = 'all';
 
-    const DATE_FORMAT            = 'm/d/Y';
-    const DATE_WEEK_FORMAT       = 'W/Y';
-    const DATE_MONTH_FORMAT      = 'm/Y';
-    const DATETIME_FORMAT        = 'm/d/Y H:i:s';
-    const DATE_FULL_MONTH_FORMAT = 'F, Y';
+    public const DATE_FORMAT            = 'm/d/Y';
+    public const DATE_WEEK_FORMAT       = 'W/Y';
+    public const DATE_MONTH_FORMAT      = 'm/Y';
+    public const DATETIME_FORMAT        = 'm/d/Y H:i:s';
+    public const DATE_FULL_MONTH_FORMAT = 'F, Y';
 
-    const DATE_RANGE_CODE_CUSTOM     = 'custom';
-    const DATE_RANGE_CODE_TODAY      = 'today';
-    const DATE_RANGE_CODE_LAST_WEEK  = 'last_week';
-    const DATE_RANGE_CODE_LAST_MONTH = 'last_month';
-    const DATE_RANGE_CODE_LAST_YEAR  = 'last_year';
+    public const DATE_RANGE_CODE_CUSTOM     = 'custom';
+    public const DATE_RANGE_CODE_TODAY      = 'today';
+    public const DATE_RANGE_CODE_LAST_WEEK  = 'last_week';
+    public const DATE_RANGE_CODE_LAST_MONTH = 'last_month';
+    public const DATE_RANGE_CODE_LAST_YEAR  = 'last_year';
 
-    const PERIOD_OPTION_CODE_DAILY      = 'daily';
-    const PERIOD_OPTION_CODE_WEEKLY     = 'weekly';
-    const PERIOD_OPTION_CODE_PER_MONTH  = 'per_month';
+    public const PERIOD_OPTION_CODE_DAILY      = 'daily';
+    public const PERIOD_OPTION_CODE_WEEKLY     = 'weekly';
+    public const PERIOD_OPTION_CODE_PER_MONTH  = 'per_month';
 
-    const FILTER_DATE_RANGE_CLASS   = 'oxa_filter_date_range';
-    const FILTER_DATE_PERIOD_CLASS  = 'oxa_filter_date_period';
+    public const FILTER_DATE_RANGE_CLASS   = 'oxa_filter_date_range';
+    public const FILTER_DATE_PERIOD_CLASS  = 'oxa_filter_date_period';
 
-    const MAX_IMAGE_FILESIZE = '10M';
-    const MAX_VIDEO_FILESIZE = '128M';
+    public const MAX_IMAGE_FILESIZE = '10M';
+    public const MAX_VIDEO_FILESIZE = '128M';
+    public const MAX_BUSINESS_PROFILE_POPUP_FILESIZE = '5M';
 
-    const MAX_PAGE_RANGE_SIZE = 25;
+    public const MAX_PAGE_RANGE_SIZE = 25;
 
     /**
      * @return array
@@ -261,6 +262,16 @@ class AdminHelper
                 'video/mpeg',
                 'video/x-ms-wmv',
                 'video/x-flv',
+            ]
+        ];
+    }
+
+    public static function getFormPopupFileConstrain(): array
+    {
+        return [
+            'maxSize' => self::MAX_BUSINESS_PROFILE_POPUP_FILESIZE,
+            'mimeTypes' => [
+                BusinessProfilePopup::FILE_MIME_TYPE,
             ]
         ];
     }

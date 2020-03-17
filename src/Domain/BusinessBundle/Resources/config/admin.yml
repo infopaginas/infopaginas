@@ -110,6 +110,12 @@ services:
         tags:
             - {name: sonata.admin, manager_type: orm, group: admin, label: Business Profile Phones}
 
+    domain_business.admin.business_profile_popup:
+        class: Domain\BusinessBundle\Admin\BusinessProfilePopupAdmin
+        arguments: [~, Domain\BusinessBundle\Entity\BusinessProfilePopup, OxaSonataAdminBundle:CRUD]
+        tags:
+            - {name: sonata.admin, manager_type: orm, group: admin, label: Business Profile Popup}
+
     domain_business.admin.business_profile_keyword:
         class: Domain\BusinessBundle\Admin\BusinessProfileKeywordAdmin
         arguments: [~, Domain\BusinessBundle\Entity\BusinessProfileKeyword, OxaSonataAdminBundle:CRUD]

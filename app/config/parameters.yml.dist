@@ -47,6 +47,7 @@ parameters:
     amazon_aws_video_directory: 'video/%sonata_media.cdn.folder%'
     amazon_aws_report_directory: 'report/%sonata_media.cdn.folder%'
     amazon_aws_mass_import_directory: import/%sonata_media.cdn.folder%
+    amazon_aws_business_popup_directory: popup/%sonata_media.cdn.folder%
 
     # Sonata media files path storage
     sonata_media.cdn.host:   '%amazon_aws_base_host%/uploads/media/%sonata_media.cdn.folder%'

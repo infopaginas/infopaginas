@@ -155,7 +155,7 @@ class CSVImportFileAdmin extends OxaAdmin
         $this->saveFile($csvImportFile);
     }
 
-    public function saveFile($csvImportFile)
+    public function saveFile(CSVImportFile $csvImportFile)
     {
         $container = $this->getConfigurationPool()->getContainer();
         $csvImportFileManager = $container->get('domain_business.manager.csv_import_file_manager');
