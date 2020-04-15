@@ -193,7 +193,9 @@ class CategoryOverviewReportManager extends BaseReportManager
             $document[self::MONGO_DB_FIELD_ACTION] = $document['_id']['action'];
             $document[self::MONGO_DB_FIELD_TYPE] = $document['_id']['type'];
             $document[self::MONGO_DB_FIELD_CATEGORY_ID] = $document['_id']['cid'];
-            $document[self::MONGO_DB_FIELD_AREA_ID] = $document['_id']['aid'];
+            if (isset($document['_id']['aid'])) {
+                $document[self::MONGO_DB_FIELD_AREA_ID] = $document['_id']['aid'];
+            }
             $document[self::MONGO_DB_FIELD_COUNT] = (int)$document[self::MONGO_DB_FIELD_COUNT];
             $document[self::MONGO_DB_FIELD_DATE_TIME] = $aggregateStartDate;
 
