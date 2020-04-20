@@ -136,12 +136,6 @@ services:
         calls:
             - [setPositionService, ['@pix_sortable_behavior.position']]
 
-    domain_business.admin.neighborhood_zip:
-        class: Domain\BusinessBundle\Admin\NeighborhoodZipAdmin
-        arguments: [~, Domain\BusinessBundle\Entity\Zip, OxaSonataAdminBundle:CRUD]
-        tags:
-            - {name: sonata.admin, manager_type: orm, group: admin, label: Zips}
-
     domain_business.admin.business_profile_working_hour:
         class: Domain\BusinessBundle\Admin\BusinessProfileWorkingHourAdmin
         arguments: [~, Domain\BusinessBundle\Entity\BusinessProfileWorkingHour, OxaSonataAdminBundle:CRUD]
