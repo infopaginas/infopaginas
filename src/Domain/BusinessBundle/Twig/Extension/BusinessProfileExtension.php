@@ -68,38 +68,26 @@ class BusinessProfileExtension extends \Twig_Extension
     public function getFunctions()
     {
         return [
-            'get_business_profiles_changeset_array' => new TwigFunction($this, 'deserializeChangeSet'),
-            'media_tab_allowed_for_business' => new TwigFunction($this, 'mediaTabAllowedForBusiness'),
-            'get_business_profile_by_uid' => new TwigFunction($this, 'getBusinessProfileByUid'),
-            'get_business_profile_reviews_count' => new TwigFunction(
-                $this,
-                'getBusinessProfileActualReviewsCount'
-            ),
-            'get_business_profile_reviews_avg_rating' => new TwigFunction(
-                $this,
-                'getBusinessProfileActualReviewsAvgRating'
-            ),
-            'get_business_profile_changes_string' => new TwigFunction($this, 'unpackTaskChangeSetRow'),
-            'get_business_profile_translation_changes' => new TwigFunction(
-                $this,
-                'getTaskTranslationChangeSetRow'
-            ),
-            'get_business_profile_image_property_changes' => new TwigFunction(
-                $this,
-                'getTaskImagePropertyChangeSetRow'
-            ),
-            'get_business_profile_phone_icon' => new TwigFunction(
-                $this,
-                'getBusinessProfileIcon'
-            ),
-            'get_business_profile_media_changes' => new TwigFunction($this, 'getMediaChangeSet'),
-            'get_business_profile_images_changes' => new TwigFunction($this, 'getImagesChangeSet'),
-            'normalize_task_changeaction_label' => new TwigFunction($this, 'normalizeTaskChangeActionLabel'),
-            'normalize_task_fieldname_label' => new TwigFunction($this, 'normalizeTaskFieldNameLabel'),
-            'video_section_allowed_for_business' => new TwigFunction($this, 'videoSectionAllowedForBusiness'),
-            'render_task_media_link' => new TwigFunction(
-                $this,
-                'renderTaskMediaLink',
+            new TwigFunction('get_business_profiles_changeset_array', [$this, 'deserializeChangeSet']),
+            new TwigFunction('media_tab_allowed_for_business', [$this, 'mediaTabAllowedForBusiness']),
+            new TwigFunction('get_business_profile_by_uid', [$this, 'getBusinessProfileByUid']),
+            new TwigFunction('get_business_profile_reviews_count', [$this, 'getBusinessProfileActualReviewsCount']),
+            new TwigFunction('get_business_profile_reviews_avg_rating', [$this, 'getBusinessProfileActualReviewsAvgRating']),
+            new TwigFunction('get_business_profile_changes_string', [$this, 'unpackTaskChangeSetRow']),
+            new TwigFunction('get_business_profile_translation_changes', [$this, 'getTaskTranslationChangeSetRow']),
+            new TwigFunction('get_business_profile_image_property_changes', [$this, 'getTaskImagePropertyChangeSetRow']),
+            new TwigFunction('get_business_profile_phone_icon', [$this, 'getBusinessProfileIcon']),
+            new TwigFunction('get_business_profile_media_changes', [$this, 'getMediaChangeSet']),
+            new TwigFunction('get_business_profile_images_changes', [$this, 'getImagesChangeSet']),
+            new TwigFunction('normalize_task_changeaction_label', [$this, 'normalizeTaskChangeActionLabel']),
+            new TwigFunction('normalize_task_fieldname_label', [$this, 'normalizeTaskFieldNameLabel']),
+            new TwigFunction('video_section_allowed_for_business', [$this, 'videoSectionAllowedForBusiness']),
+            new TwigFunction(
+                'render_task_media_link',
+                [
+                    $this,
+                    'renderTaskMediaLink'
+                ],
                 [
                     'needs_environment' => true,
                     'is_safe' => [
@@ -107,9 +95,12 @@ class BusinessProfileExtension extends \Twig_Extension
                     ],
                 ]
             ),
-            'render_task_images_link' => new TwigFunction(
-                $this,
-                'renderTaskImagesLink',
+            new TwigFunction(
+                'render_task_images_link',
+                [
+                    $this,
+                    'renderTaskImagesLink'
+                ],
                 [
                     'needs_environment' => true,
                     'is_safe' => [
@@ -117,9 +108,12 @@ class BusinessProfileExtension extends \Twig_Extension
                     ],
                 ]
             ),
-            'get_business_profile_related_entity_changes_html' => new TwigFunction(
-                $this,
-                'renderBusinessProfileRelatedEntityChanges',
+            new TwigFunction(
+                'get_business_profile_related_entity_changes_html',
+                [
+                    $this,
+                    'renderBusinessProfileRelatedEntityChanges'
+                ],
                 [
                     'needs_environment' => true,
                     'is_safe' => [
@@ -127,9 +121,12 @@ class BusinessProfileExtension extends \Twig_Extension
                     ],
                 ]
             ),
-            'get_business_profile_url_changes_html' => new TwigFunction(
-                $this,
-                'renderBusinessProfileUrlChanges',
+            new TwigFunction(
+                'get_business_profile_url_changes_html',
+                [
+                    $this,
+                    'renderBusinessProfileUrlChanges'
+                ],
                 [
                     'needs_environment' => true,
                     'is_safe' => [
@@ -137,22 +134,22 @@ class BusinessProfileExtension extends \Twig_Extension
                     ],
                 ]
             ),
-            'get_business_profile_open_status' => new TwigFunction($this, 'getBusinessProfileOpenStatus'),
-            'get_business_profile_working_hours_list' => new TwigFunction(
-                $this,
-                'getBusinessProfileWorkingHoursList'
+            new TwigFunction('get_business_profile_open_status', [$this, 'getBusinessProfileOpenStatus']),
+            new TwigFunction('get_business_profile_working_hours_list', [$this, 'getBusinessProfileWorkingHoursList']),
+            new TwigFunction(
+                'get_business_profile_many_to_one_relations_changes_string',
+                [
+                    $this,
+                    'unpackManyToOneRelationsChangeSetRow'
+                ]
             ),
-            'get_business_profile_many_to_one_relations_changes_string' => new TwigFunction(
-                $this,
-                'unpackManyToOneRelationsChangeSetRow'
-            ),
-            'get_business_profile_translation_changes_string' => new TwigFunction(
-                $this,
-                'unpackTranslationChangeSetRow'
-            ),
-            'get_wysiwyg_preview_block' => new TwigFunction(
-                $this,
-                'renderWysiwygPreviewForm',
+            new TwigFunction('get_business_profile_translation_changes_string', [$this, 'unpackTranslationChangeSetRow']),
+            new TwigFunction(
+                'get_wysiwyg_preview_block',
+                [
+                    $this,
+                    'renderWysiwygPreviewForm'
+                ],
                 [
                     'needs_environment' => true,
                     'is_safe' => [
@@ -160,22 +157,10 @@ class BusinessProfileExtension extends \Twig_Extension
                     ],
                 ]
             ),
-            'get_business_profile_categories_json' => new TwigFunction(
-                $this,
-                'getBusinessProfileCategoriesJson'
-            ),
-            'get_business_gallery_media' => new TwigFunction(
-                $this,
-                'getBusinessGalleryMedia'
-            ),
-            'get_business_profile_phones_json' => new TwigFunction(
-                $this,
-                'getBusinessProfilePhonesJson'
-            ),
-            'get_business_profile_markers' => new TwigFunction(
-                $this,
-                'getBusinessProfileMarkers'
-            ),
+            new TwigFunction('get_business_profile_categories_json', [$this, 'getBusinessProfileCategoriesJson']),
+            new TwigFunction('get_business_gallery_media', [$this, 'getBusinessGalleryMedia']),
+            new TwigFunction('get_business_profile_phones_json', [$this, 'getBusinessProfilePhonesJson']),
+            new TwigFunction('get_business_profile_markers', [$this, 'getBusinessProfileMarkers']),
         ];
     }
 

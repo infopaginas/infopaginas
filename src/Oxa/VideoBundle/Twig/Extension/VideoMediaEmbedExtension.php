@@ -31,9 +31,9 @@ class VideoMediaEmbedExtension extends \Twig_Extension
     public function getFunctions()
     {
         return [
-            'render_video_embed' => new TwigFunction(
-                $this,
-                'renderVideoEmbed',
+            new TwigFunction(
+                'render_video_embed',
+                [$this, 'renderVideoEmbed'],
                 [
                     'needs_environment' => true,
                     'is_safe' => [
@@ -42,9 +42,9 @@ class VideoMediaEmbedExtension extends \Twig_Extension
                     ],
                 ]
             ),
-            'render_video_admin_embed' => new TwigFunction(
-                $this,
-                'renderAdminVideoPreview',
+            new TwigFunction(
+                'render_video_admin_embed',
+                [$this, 'renderAdminVideoPreview'],
                 [
                     'needs_environment' => true,
                     'is_safe' => [

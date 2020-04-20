@@ -10,7 +10,9 @@ class EnumLabelsDispatcherExtension extends \Twig_Extension
 {
     public function getFunctions()
     {
-        return ['dispatch_enum_value' => new TwigFunction($this, 'dispatchEnumValue')];
+        return [
+            new TwigFunction('dispatch_enum_value', [$this, 'dispatchEnumValue'])
+        ];
     }
 
     public function dispatchEnumValue($enumValue)

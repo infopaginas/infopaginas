@@ -30,7 +30,7 @@ class EmergencyExtension extends \Twig_Extension
     public function getFunctions()
     {
         return [
-            'get_emergency_pop_up_allowed' => new TwigFunction($this, 'getEmergencyPopupAllowed'),
+            new TwigFunction('get_emergency_pop_up_allowed', [$this, 'getEmergencyPopupAllowed']),
         ];
     }
 

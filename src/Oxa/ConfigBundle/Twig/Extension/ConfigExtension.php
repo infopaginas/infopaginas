@@ -23,12 +23,21 @@ class ConfigExtension extends \Twig_Extension
 
     public function getFunctions()
     {
-        return array('config' => new TwigFunction($this, 'getSetting', [
-            'needs_environment'=> true,
-            'is_safe' => [
-                'all'
-            ]
-        ]));
+        return [
+            new TwigFunction(
+                'config',
+                [
+                    $this,
+                    'getSetting',
+                ],
+                [
+                    'needs_environment' => true,
+                    'is_safe'           => [
+                        'all',
+                    ],
+                ]
+            ),
+        ];
     }
 
     public function getSetting($env, $key)

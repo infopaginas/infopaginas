@@ -16,10 +16,15 @@ class LanguageExtension extends \Twig_Extension
     public function getFunctions()
     {
         return [
-            'get_current_language' => new TwigFunction(
-                $this,
-                'getCurrentLanguage',
-                ['needs_environment' => true]
+            new TwigFunction(
+                'get_current_language',
+                [
+                    $this,
+                    'getCurrentLanguage',
+                ],
+                [
+                    'needs_environment' => true,
+                ]
             ),
         ];
     }

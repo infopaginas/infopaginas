@@ -31,10 +31,10 @@ class ReportExtension extends \Twig_Extension
     public function getFunctions()
     {
         return [
-            'ad_usage_allowed_for_business'  => new TwigFunction($this, 'isAdUsageAllowedForBusiness'),
-            'convert_monthly_formatted_date' => new TwigFunction($this, 'convertMonthlyFormattedDate'),
-            'get_events_with_priority'       => new TwigFunction($this, 'getEventsWithPriority'),
-            'get_month_range_by_period'      => new TwigFunction($this, 'getMothRangeByPeriod'),
+            new TwigFunction('ad_usage_allowed_for_business', [$this, 'isAdUsageAllowedForBusiness']),
+            new TwigFunction('convert_monthly_formatted_date', [$this, 'convertMonthlyFormattedDate']),
+            new TwigFunction('get_events_with_priority', [$this, 'getEventsWithPriority']),
+            new TwigFunction('get_month_range_by_period', [$this, 'getMothRangeByPeriod']),
         ];
     }
 
