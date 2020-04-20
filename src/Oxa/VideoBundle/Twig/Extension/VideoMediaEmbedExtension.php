@@ -4,6 +4,7 @@ namespace Oxa\VideoBundle\Twig\Extension;
 
 use Oxa\VideoBundle\Entity\VideoMedia;
 use Oxa\VideoBundle\Manager\VideoManager;
+use Twig\TwigFunction;
 
 /**
  * Class VideoMediaEmbedExtension
@@ -30,7 +31,7 @@ class VideoMediaEmbedExtension extends \Twig_Extension
     public function getFunctions()
     {
         return [
-            'render_video_embed' => new \Twig_Function_Method(
+            'render_video_embed' => new TwigFunction(
                 $this,
                 'renderVideoEmbed',
                 [
@@ -41,7 +42,7 @@ class VideoMediaEmbedExtension extends \Twig_Extension
                     ],
                 ]
             ),
-            'render_video_admin_embed' => new \Twig_Function_Method(
+            'render_video_admin_embed' => new TwigFunction(
                 $this,
                 'renderAdminVideoPreview',
                 [

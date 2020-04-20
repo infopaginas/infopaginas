@@ -3,13 +3,7 @@
 namespace Domain\ReportBundle\Admin;
 
 use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
-use Oxa\Sonata\AdminBundle\Util\Helpers\AdminHelper;
-use Sonata\AdminBundle\Admin\Admin;
-use Sonata\AdminBundle\Datagrid\DatagridMapper;
-use Sonata\AdminBundle\Datagrid\ListMapper;
-use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Route\RouteCollection;
-use Sonata\AdminBundle\Show\ShowMapper;
 use Domain\ReportBundle\Util\DatesUtil;
 
 class ReportAdmin extends OxaAdmin

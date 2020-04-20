@@ -2,6 +2,8 @@
 
 namespace Domain\SiteBundle\Twig\Extension;
 
+use Twig\TwigFunction;
+
 class LanguageExtension extends \Twig_Extension
 {
     private $defaultLanguage;
@@ -14,7 +16,7 @@ class LanguageExtension extends \Twig_Extension
     public function getFunctions()
     {
         return [
-            'get_current_language' => new \Twig_Function_Method(
+            'get_current_language' => new TwigFunction(
                 $this,
                 'getCurrentLanguage',
                 ['needs_environment' => true]

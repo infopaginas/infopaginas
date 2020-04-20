@@ -548,7 +548,7 @@ class ProfileController extends Controller
      */
     protected function checkBusinessProfileAccess(BusinessProfile $businessProfile)
     {
-        $token = $this->get('security.context')->getToken();
+        $token = $this->get('security.token_storage')->getToken();
         if (!$token) {
             throw $this->createNotFoundException(self::ERROR_ACCESS_NOT_ALLOWED);
         }

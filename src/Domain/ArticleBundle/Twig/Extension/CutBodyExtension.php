@@ -2,6 +2,8 @@
 
 namespace Domain\ArticleBundle\Twig\Extension;
 
+use Twig\TwigFunction;
+
 /**
  * Class CutBodyExtension
  * @package Domain\ArticleBundle\Twig\Extension
@@ -15,7 +17,7 @@ class CutBodyExtension extends \Twig_Extension
     public function getFunctions()
     {
         return [
-            'cut_body_extension' => new \Twig_Function_Method($this, 'cutBody'),
+            'cut_body_extension' => new TwigFunction($this, 'cutBody'),
         ];
     }
 

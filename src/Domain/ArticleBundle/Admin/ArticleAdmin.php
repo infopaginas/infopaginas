@@ -5,7 +5,6 @@ namespace Domain\ArticleBundle\Admin;
 use Domain\ArticleBundle\Entity\Article;
 use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
 use Oxa\Sonata\MediaBundle\Model\OxaMediaInterface;
-use Sonata\AdminBundle\Admin\Admin;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;

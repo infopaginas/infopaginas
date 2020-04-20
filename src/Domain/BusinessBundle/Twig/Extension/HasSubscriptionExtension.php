@@ -4,7 +4,7 @@ namespace Domain\BusinessBundle\Twig\Extension;
 
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\SubscriptionPlan;
-use Domain\BusinessBundle\Model\SubscriptionPlanInterface;
+use Twig\TwigFunction;
 
 /**
  * Class ConfigExtension
@@ -18,7 +18,7 @@ class HasSubscriptionExtension extends \Twig_Extension
     public function getFunctions()
     {
         return array(
-            'hasSubscription' => new \Twig_Function_Method(
+            'hasSubscription' => new TwigFunction(
                 $this,
                 'isSubscribed',
                 [
@@ -28,7 +28,7 @@ class HasSubscriptionExtension extends \Twig_Extension
                     ]
                 ]
             ),
-            'getItemSubscriptionClass' => new \Twig_Function_Method(
+            'getItemSubscriptionClass' => new TwigFunction(
                 $this,
                 'getItemSubscriptionClass',
                 [

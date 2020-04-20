@@ -6,15 +6,12 @@ use Domain\PageBundle\Entity\Page;
 use Domain\PageBundle\Model\PageInterface;
 use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
 use Oxa\Sonata\MediaBundle\Model\OxaMediaInterface;
-use Sonata\AdminBundle\Admin\Admin;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Route\RouteCollection;
 use Sonata\AdminBundle\Show\ShowMapper;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 
 class PageAdmin extends OxaAdmin
 {

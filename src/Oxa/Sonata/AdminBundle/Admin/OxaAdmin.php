@@ -2,20 +2,13 @@
 namespace Oxa\Sonata\AdminBundle\Admin;
 
 use Domain\BusinessBundle\Model\DatetimePeriodStatusInterface;
-use Domain\BusinessBundle\Util\Traits\StatusTrait;
 use Domain\BusinessBundle\VO\VirtualObjectInterface;
 use Domain\ReportBundle\Model\UserActionModel;
 use Oxa\Sonata\AdminBundle\Model\ChangeStateInterface;
-use Oxa\Sonata\AdminBundle\Model\CopyableEntityInterface;
-use Oxa\Sonata\AdminBundle\Model\PostponeRemoveInterface;
-use Oxa\Sonata\MediaBundle\Entity\Media;
 use Pix\SortableBehaviorBundle\Services\PositionHandler;
 use Sonata\AdminBundle\Datagrid\ListMapper;
-use Sonata\AdminBundle\Form\FormMapper;
-use Sonata\AdminBundle\Admin\Admin as BaseAdmin;
-use Sonata\AdminBundle\Datagrid\DatagridMapper;
+use Sonata\AdminBundle\Admin\AbstractAdmin as BaseAdmin;
 use Sonata\AdminBundle\Route\RouteCollection;
-use Sonata\AdminBundle\Show\ShowMapper;
 use Sonata\CoreBundle\Validator\ErrorElement;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 

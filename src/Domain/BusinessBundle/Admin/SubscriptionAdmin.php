@@ -6,14 +6,12 @@ use Domain\BusinessBundle\Entity\Subscription;
 use Domain\BusinessBundle\Util\Traits\StatusTrait;
 use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
 use Oxa\Sonata\AdminBundle\Util\Helpers\AdminHelper;
-use Sonata\AdminBundle\Admin\Admin;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Show\ShowMapper;
 use Sonata\CoreBundle\Validator\ErrorElement;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Validator\ConstraintViolation;
 
 class SubscriptionAdmin extends OxaAdmin
 {

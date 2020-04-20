@@ -7,7 +7,6 @@ use Domain\BusinessBundle\Entity\Locality;
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\SearchBundle\Util\CacheUtil;
 use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
-use Sonata\AdminBundle\Admin\Admin;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;

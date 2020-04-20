@@ -3,6 +3,7 @@
 namespace Domain\EmergencyBundle\Twig\Extension;
 
 use Symfony\Component\HttpFoundation\Session\Session;
+use Twig\TwigFunction;
 
 /**
  * Class EmergencyExtension
@@ -29,7 +30,7 @@ class EmergencyExtension extends \Twig_Extension
     public function getFunctions()
     {
         return [
-            'get_emergency_pop_up_allowed' => new \Twig_Function_Method($this, 'getEmergencyPopupAllowed'),
+            'get_emergency_pop_up_allowed' => new TwigFunction($this, 'getEmergencyPopupAllowed'),
         ];
     }
 
