@@ -73,6 +73,7 @@ use Symfony\Component\PropertyAccess\PropertyAccess;
 use Oxa\GeolocationBundle\Model\Geolocation\LocationValueObject;
 use Domain\SearchBundle\Model\DataType\SearchDTO;
 use Domain\SearchBundle\Model\DataType\DCDataDTO;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 
 /**
@@ -1528,7 +1529,7 @@ class BusinessProfileManager extends Manager
                 'citySlug' => $businessProfile->getCitySlug(),
                 'slug'     => $businessProfile->getSlug(),
             ],
-            true
+            UrlGeneratorInterface::ABSOLUTE_PATH
         );
 
         return $url;

@@ -27,6 +27,7 @@ use Domain\ReportBundle\Manager\BusinessOverviewReportManager;
 use Domain\SearchBundle\Model\DataType\SearchResultsDTO;
 use Domain\BannerBundle\Model\TypeInterface;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * Class SearchController
@@ -507,8 +508,8 @@ class SearchController extends Controller
 
         $router = $this->get('router');
 
-        $staticSearchUrl  = $router->generate('domain_search_index', $request->query->all(), true);
-        $staticCompareUrl = $router->generate('domain_search_compare', $request->query->all(), true);
+        $staticSearchUrl  = $router->generate('domain_search_index', $request->query->all(), UrlGeneratorInterface::ABSOLUTE_PATH);
+        $staticCompareUrl = $router->generate('domain_search_compare', $request->query->all(), UrlGeneratorInterface::ABSOLUTE_PATH);
 
         return new JsonResponse(
             [
