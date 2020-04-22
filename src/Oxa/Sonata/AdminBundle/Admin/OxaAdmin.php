@@ -292,7 +292,7 @@ class OxaAdmin extends BaseAdmin
      */
     public function preUpdate($entity)
     {
-        $uow = $this->getConfigurationPool()->getContainer()->get('Doctrine')->getManager()->getUnitOfWork();
+        $uow = $this->getConfigurationPool()->getContainer()->get('doctrine')->getManager()->getUnitOfWork();
         $uow->computeChangeSets();
         $changeSet = $uow->getEntityChangeSet($entity);
 
