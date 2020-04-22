@@ -15,7 +15,7 @@ services:
 
     oxa.listener.user_crud_action:
         class: Oxa\Sonata\AdminBundle\EventListener\UserCRUDActionListener
-        arguments: [@security.token_storage]
+        arguments: ['@security.token_storage']
         tags:
             - {name: doctrine.event_listener, event: onFlush, priority: 1}
 
@@ -26,7 +26,7 @@ services:
 
     oxa.sonata.twig.admin_extension:
         class: Oxa\Sonata\AdminBundle\Twig\AdminExtension
-        arguments: [@doctrine.orm.entity_manager]
+        arguments: ['@doctrine.orm.entity_manager']
         tags:
             - {name: twig.extension, alias: admin_extension}
 

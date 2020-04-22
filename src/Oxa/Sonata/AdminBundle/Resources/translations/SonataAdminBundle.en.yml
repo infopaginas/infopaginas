@@ -7,7 +7,7 @@ message_physical_delete_confirmation: Are you sure you want to delete physically
 message_batch_physical_delete_confirmation: Are you sure you want to delete physically this item?
 message_batch_physical_delete_confirmation: Are you sure you want to confirm this action and execute it for the 2 selected elements?
 physical_deleting_element: Item to be deleted physically
-delete_item: Delete item: "%object%"
+delete_item: 'Delete item: %object%'
 flash_postpone_delete_success: Item has been scheduled for deletion
 flash_postpone_batch_delete_success: Items have been scheduled for deletion
 action_copy: Copy

@@ -37,7 +37,7 @@ parameters:
     locale_admin:
         url_part: 'admin'
         locale: 'en'
-    videos_upload_path: %assetic.write_to%/uploads/videos
+    videos_upload_path: '%assetic.write_to%/uploads/videos'
     default_image:
         path: '/assets/images/'
         business_image: 'header-logo.png'
@@ -81,7 +81,7 @@ parameters:
 
 framework:
     #esi:             ~
-    translator:      { fallbacks: %locales% }
+    translator:      { fallbacks: '%locales%' }
     default_locale:  "%locale%"
     secret:          "%secret%"
     router:
@@ -213,10 +213,10 @@ doctrine_migrations:
 ivory_google_map:
     geocoder:
         enabled: true
-        class: "Ivory\GoogleMap\Services\Geocoding\Geocoder"
+        class: 'Ivory\GoogleMap\Services\Geocoding\Geocoder'
         provider:
-            class: "Ivory\GoogleMap\Services\Geocoding\GeocoderProvider"
-        adapter: "Geocoder\HttpAdapter\CurlHttpAdapter"
+            class: 'Ivory\GoogleMap\Services\Geocoding\GeocoderProvider'
+        adapter: 'Geocoder\HttpAdapter\CurlHttpAdapter'
 
 hwi_oauth:
     http_client:
@@ -278,7 +278,7 @@ oneup_flysystem:
     adapters:
         my_adapter:
             local:
-                directory: %kernel.root_dir%/cache
+                directory: '%kernel.root_dir%/cache'
     filesystems:
         local:
             adapter: my_adapter
@@ -309,28 +309,28 @@ knp_gaufrette:
         video_storage:
             aws_s3:
                 service_id:     aws.s3
-                bucket_name:    %amazon_aws_bucket_name%
+                bucket_name:    '%amazon_aws_bucket_name%'
                 options:
                     create:     true
                     directory:  '%amazon_aws_video_directory%'
         report_storage:
             aws_s3:
                 service_id:     aws.s3
-                bucket_name:    %amazon_aws_bucket_name%
+                bucket_name:    '%amazon_aws_bucket_name%'
                 options:
                     create:     true
                     directory:  '%amazon_aws_report_directory%'
         mass_import_storage:
             aws_s3:
                 service_id:     aws.s3
-                bucket_name:    %amazon_aws_bucket_name%
+                bucket_name:    '%amazon_aws_bucket_name%'
                 options:
                     create:     true
                     directory:  '%amazon_aws_mass_import_directory%'
         business_popup_storage:
             aws_s3:
                 service_id:     aws.s3
-                bucket_name:    %amazon_aws_bucket_name%
+                bucket_name:    '%amazon_aws_bucket_name%'
                 options:
                     create:     true
                     directory:  '%amazon_aws_business_popup_directory%'

@@ -47,9 +47,9 @@ San Juan: San Juan
 Filter by: Filtrar por
 Category: Categoría
 Neighborhoods: Vecindarios
-%searchQuery% in %searchLocationName%: %searchQuery% en %searchLocationName%
-%page%-%amount% of %resultCount% Results: %page%-%amount% de %resultCount% Resultados
-for %searchQuery% in %searchLocationName%: la  %searchQuery% en %searchLocationName%
+%searchQuery% in %searchLocationName%: '%searchQuery% en %searchLocationName%'
+%page%-%amount% of %resultCount% Results: '%page%-%amount% de %resultCount% Resultados'
+for %searchQuery% in %searchLocationName%: 'la  %searchQuery% en %searchLocationName%'
 Sort by: Organizar por
 Relevance: Relevancia
 Distance: Distancia
@@ -231,7 +231,7 @@ Photos: Fotos
 Video: Vídeo
 Sorry, no results were found.: Lo sentimos, no se encontraron resultados.
 Home: Casa
-%category% in %city%: %category% en %city%
+%category% in %city%: '%category% en %city%'
 Bookstores in San Juan: Librerías en San Juan
 SONs Notebooks: SONs Cuadernos
 
