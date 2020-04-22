@@ -10,10 +10,10 @@ business_profile:
     invalid: Número máximo de dígitos es 10. Solamente los dígitos y el tablero están permitidos
     digit_dash: Solamente los dígitos y el tablero están permitidos
   images:
-    invalid_url: Error: URL de la imagen no válida.
+    invalid_url: 'Error: URL de la imagen no válida.'
     invalid_size: La imagen es mayor que {{ limit }}
   video:
-    invalid_url: Error: la dirección URL del vídeo no es válido.
+    invalid_url: 'Error: la dirección URL del vídeo no es válido.'
   category:
     min_count: En la categoría {{ limit }} mínimo debe seleccionarse
   service_areas_type: Usted debe elegir un área de servicio válido
