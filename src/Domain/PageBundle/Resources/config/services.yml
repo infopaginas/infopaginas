@@ -21,7 +21,6 @@ services:
         - { name: form.type, alias: domain_page_bundle_feedback_form_type }
 
     domain_page.feedback.form:
-        factory_method: createNamed
-        factory_service: form.factory
+        factory: ['@form.factory', 'createNamed']
         class: Symfony\Component\Form\Form
         arguments: [domain_page_bundle_feedback_form_type, domain_page_bundle_feedback_form_type]

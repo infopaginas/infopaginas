@@ -13,8 +13,7 @@ services:
             - '@oxa_config'
 
     domain_emergency.form.business_draft:
-        factory_method: createNamed
-        factory_service: form.factory
+        factory: ['@form.factory', 'createNamed']
         class: Symfony\Component\Form\Form
         arguments:
             - 'domain_emergency_bundle_emergency_draft_business_type'

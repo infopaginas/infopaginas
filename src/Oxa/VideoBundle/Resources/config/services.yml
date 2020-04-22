@@ -48,16 +48,14 @@ services:
 
     #forms section
     domain_business.form.local_file_upload:
-        factory_method: createNamed
-        factory_service: form.factory
+        factory: ['@form.factory', 'createNamed']
         class: Symfony\Component\Form\Form
         arguments:
             - 'oxa_video_bundle_file_upload_form_type'
             - 'oxa_video_bundle_file_upload_form_type'
 
     domain_business.form.url_file_upload:
-        factory_method: createNamed
-        factory_service: form.factory
+        factory: ['@form.factory', 'createNamed']
         class: Symfony\Component\Form\Form
         arguments:
             - 'oxa_video_bundle_url_upload_form_type'

@@ -39,32 +39,27 @@ services:
 
     #forms section
     domain_site.registration.form:
-        factory_method: createNamed
-        factory_service: form.factory
+        factory: ['@form.factory', 'createNamed']
         class: Symfony\Component\Form\Form
         arguments: [domain_site_registration, domain_site_registration]
 
     domain_site.reset_password_request.form:
-        factory_method: createNamed
-        factory_service: form.factory
+        factory: ['@form.factory', 'createNamed']
         class: Symfony\Component\Form\Form
         arguments: [domain_site_reset_password_request, domain_site_reset_password_request]
 
     domain_site.reset_password.form:
-        factory_method: createNamed
-        factory_service: form.factory
+        factory: ['@form.factory', 'createNamed']
         class: Symfony\Component\Form\Form
         arguments: [domain_site_reset_password, domain_site_reset_password]
 
     domain_site.user_profile.form:
-        factory_method: createNamed
-        factory_service: form.factory
+        factory: ['@form.factory', 'createNamed']
         class: Symfony\Component\Form\Form
         arguments: [domain_site_user_profile, domain_site_user_profile]
 
     domain_site.user_password_update.form:
-        factory_method: createNamed
-        factory_service: form.factory
+        factory: ['@form.factory', 'createNamed']
         class: Symfony\Component\Form\Form
         arguments: [domain_site_user_password_update, domain_site_user_password_update]
 
@@ -120,15 +115,15 @@ services:
     domain_site.contains_email:
         class: Domain\SiteBundle\Validator\Constraints\ContainsEmailExpandedValidator
         arguments:
-            - @translator
-            - @validator
+            - '@translator'
+            - '@validator'
         tags:
             - { name: validator.constraint_validator }
 
     domain_site.constraint_email_unique:
         class: Domain\SiteBundle\Validator\Constraints\ConstraintEmailUniqueValidator
         arguments:
-            - @translator
+            - '@translator'
             - '@doctrine.orm.default_entity_manager'
             - '@oxa.manager.users'
         tags:
@@ -137,13 +132,13 @@ services:
     domain_site.constraint_url:
         class: Domain\SiteBundle\Validator\Constraints\ConstraintUrlExpandedValidator
         arguments:
-            - @translator
+            - '@translator'
         tags:
             - { name: validator.constraint_validator }
 
     listener.subdomain_request:
         class: Domain\SiteBundle\EventListener\SubDomainListener
-        arguments: [ @service_container, @router, @twig ]
+        arguments: [ '@service_container', '@router', '@twig' ]
         tags:
             - { name: kernel.event_subscriber }
 
