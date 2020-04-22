@@ -160,14 +160,6 @@ services:
         arguments:
             - "@mongodb.manager"
 
-    domain_site.twig_extension.language:
-        class: Domain\SiteBundle\Twig\Extension\LanguageExtension
-        public: false
-        tags:
-            - { name: twig.extension }
-        calls:
-            - [ setDefaultLanguage, [ '%locale%' ] ]
-
     monolog.logger.elasticsearch:
         tags:
             - { name: monolog.logger, channel: elasticsearch }
