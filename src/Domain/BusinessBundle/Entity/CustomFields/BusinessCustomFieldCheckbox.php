@@ -61,8 +61,7 @@ class BusinessCustomFieldCheckbox implements DefaultEntityInterface, Translatabl
      * @var Section
      *
      * @ORM\ManyToOne(
-     *      targetEntity="Domain\BusinessBundle\Entity\CustomFields\Section",
-     *      inversedBy="businessCustomFieldCheckbox"
+     *      targetEntity="Domain\BusinessBundle\Entity\CustomFields\Section"
      * )
      * @ORM\JoinColumn(name="section_id", referencedColumnName="id", onDelete="SET NULL")
      * @Assert\NotBlank()

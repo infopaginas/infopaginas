@@ -75,8 +75,7 @@ class BusinessCustomFieldList implements DefaultEntityInterface, TranslatableInt
      * @var Section
      *
      * @ORM\ManyToOne(
-     *      targetEntity="Domain\BusinessBundle\Entity\CustomFields\Section",
-     *      inversedBy="businessCustomFieldList"
+     *      targetEntity="Domain\BusinessBundle\Entity\CustomFields\Section"
      * )
      * @ORM\JoinColumn(name="section_id", referencedColumnName="id", onDelete="SET NULL")
      * @Assert\NotBlank()

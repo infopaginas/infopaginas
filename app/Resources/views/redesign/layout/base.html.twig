@@ -63,7 +63,6 @@
         {% endblock %}
     </head>
     <body class="{% block bodyClass %}{% endblock %}">
-        {{ dump(app.request) }}
         {% block googleTagManagerNoScript %}
             {% include ':widgets:google_tag_manager_no_script.html.twig' %}
         {% endblock %}
