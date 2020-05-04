@@ -31,7 +31,6 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
  * @ORM\Table(name="media__media")
  * @ORM\Entity(repositoryClass="Oxa\Sonata\MediaBundle\Repository\MediaRepository")
  * @ORM\HasLifecycleCallbacks
- * @Assert\Callback(methods={"validateMediaSize"})
  */
 class Media extends BaseMedia implements
     OxaMediaInterface,
@@ -675,6 +674,7 @@ class Media extends BaseMedia implements
     }
 
     /**
+     * @Assert\Callback
      * @param ExecutionContextInterface $context
      */
     public function validateMediaSize(ExecutionContextInterface $context)

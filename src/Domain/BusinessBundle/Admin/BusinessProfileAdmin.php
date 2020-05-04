@@ -42,6 +42,7 @@ use Sonata\AdminBundle\Show\ShowMapper;
 use Sonata\CoreBundle\Validator\ErrorElement;
 use Sonata\DoctrineORMAdminBundle\Filter\CallbackFilter;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -280,7 +281,7 @@ class BusinessProfileAdmin extends OxaAdmin
                 [
                     'callback' => [$this, 'overviewFilterQueryBuilder'],
                 ],
-                'choice',
+                ChoiceType::class,
                 $this->getOverviewFilterOptions($overviewFilter)
             );
         }
@@ -327,7 +328,7 @@ class BusinessProfileAdmin extends OxaAdmin
 
                     return true;
                 },
-                'field_type' => 'checkbox',
+                'field_type' => CheckboxType::class,
             ])
             ->add('isDraft', null, [
                 'label' => $this->trans('filter.label_is_draft', [], $this->getTranslationDomain()),
@@ -345,7 +346,7 @@ class BusinessProfileAdmin extends OxaAdmin
 
                     return true;
                 },
-                'field_type' => 'checkbox',
+                'field_type' => CheckboxType::class,
             ])
             ->add('paidProfiles', CallbackFilter::class, [
                 'label'      => $this->trans('filter.label_only_paid_profiles', [], $this->getTranslationDomain()),
@@ -358,7 +359,7 @@ class BusinessProfileAdmin extends OxaAdmin
                         SubscriptionPlanInterface::CODE_PRIORITY
                     );
                 },
-                'field_type' => 'checkbox',
+                'field_type' => CheckboxType::class,
             ])
             ->add('hasSuperVM', CallbackFilter::class, [
                 'label'      => $this->trans('filter.label_has_supervm', [], $this->getTranslationDomain()),
@@ -383,11 +384,11 @@ class BusinessProfileAdmin extends OxaAdmin
 
                     return true;
                 },
-                'field_type' => 'checkbox',
+                'field_type' => CheckboxType::class,
             ])
             ->add('isShowFacebookRating')
             ->add('hasFacebookRating', CallbackFilter::class, [
-                'field_type' => 'checkbox',
+                'field_type' => CheckboxType::class,
                 'callback'   => static function ($queryBuilder, $alias, $field, $value) {
                     if (!$value['value']) {
                         return false;
@@ -399,7 +400,7 @@ class BusinessProfileAdmin extends OxaAdmin
             ])
             ->add('hasBusinessToRedirect', CallbackFilter::class, [
                 'label'      => $this->trans('filter.label_has_redirect_to', [], $this->getTranslationDomain()),
-                'field_type' => 'checkbox',
+                'field_type' => CheckboxType::class,
                 'callback'   => static function ($queryBuilder, $alias, $field, $value) {
                     if (!$value['value']) {
                         return false;
@@ -411,7 +412,7 @@ class BusinessProfileAdmin extends OxaAdmin
             ])
             ->add('hasBusinessRedirectFrom', CallbackFilter::class, [
                 'label'      => $this->trans('filter.label_has_redirect_from', [], $this->getTranslationDomain()),
-                'field_type' => 'checkbox',
+                'field_type' => CheckboxType::class,
                 'callback'   => static function ($queryBuilder, $alias, $field, $value) {
                     if (!$value['value']) {
                         return false;
@@ -570,7 +571,7 @@ class BusinessProfileAdmin extends OxaAdmin
                             'type_options' => [
                                 'delete'         => true,
                                 'delete_options' => [
-                                    'type'         => 'checkbox',
+                                    'type'         => CheckboxType::class,
                                     'type_options' => [
                                         'mapped'   => false,
                                         'required' => false,
@@ -635,10 +636,16 @@ class BusinessProfileAdmin extends OxaAdmin
                     ->add('email', EmailType::class, [
                         'required' => false,
                     ])
-                    ->add('slug', null, [
-                        'read_only' => true,
-                        'required'  => false,
-                    ])
+                    ->add(
+                        'slug',
+                        null,
+                        [
+                            'attr'     => [
+                                'read_only' => true,
+                            ],
+                            'required' => false,
+                        ]
+                    )
                     ->add(
                         'collectionWorkingHours',
                         CollectionType::class,
@@ -702,7 +709,7 @@ class BusinessProfileAdmin extends OxaAdmin
                                 'type_options' => [
                                     'delete'         => true,
                                     'delete_options' => [
-                                        'type'         => 'checkbox',
+                                        'type'         => CheckboxType::class,
                                         'type_options' => [
                                             'mapped'   => false,
                                             'required' => false,
@@ -929,8 +936,8 @@ class BusinessProfileAdmin extends OxaAdmin
                         ->add('relatedKeywords', TextType::class, [
                             'attr' => [
                                 'class' => 'selectize-control disabled',
+                                'read_only' => true,
                             ],
-                            'read_only' => true,
                             'required'  => false,
                             'disabled'  => true,
                         ])
@@ -1094,7 +1101,7 @@ class BusinessProfileAdmin extends OxaAdmin
                             'type_options' => [
                                 'delete'         => true,
                                 'delete_options' => [
-                                    'type'         => 'checkbox',
+                                    'type'         => CheckboxType::class,
                                     'type_options' => [
                                         'mapped'   => false,
                                         'required' => false,

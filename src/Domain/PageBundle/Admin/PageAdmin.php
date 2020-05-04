@@ -137,7 +137,9 @@ class PageAdmin extends OxaAdmin
                 ->with('Status')
                     ->add('url', TextType::class, [
                         'mapped' => false,
-                        'read_only' => true,
+                        'attr' => [
+                            'read_only'     => true,
+                        ],
                         'required' => false,
                         'data' => sprintf(
                             '%s/%s',
@@ -146,8 +148,10 @@ class PageAdmin extends OxaAdmin
                         )
                     ])
                     ->add('slug', null, [
-                        'read_only' => true,
                         'required'  => false,
+                        'attr' => [
+                            'read_only'     => true,
+                        ],
                     ])
                 ->end()
             ;

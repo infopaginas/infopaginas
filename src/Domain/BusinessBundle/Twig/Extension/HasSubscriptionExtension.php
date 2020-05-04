@@ -32,7 +32,7 @@ class HasSubscriptionExtension extends \Twig_Extension
                 ]
             ),
             new TwigFunction(
-                'hasSubscription',
+                'getItemSubscriptionClass',
                 [
                     $this,
                     'getItemSubscriptionClass',

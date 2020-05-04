@@ -41,11 +41,15 @@ class LocalityPseudoAdmin extends OxaAdmin
     {
         $formMapper
             ->add('name', null, [
-                'read_only' => true,
+                'attr' => [
+                    'read_only' => true,
+                ],
                 'required'  => false
             ])
             ->add('slug', null, [
-                'read_only' => true,
+                'attr' => [
+                    'read_only' => true,
+                ],
                 'required'  => false
             ])
         ;

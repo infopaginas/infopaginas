@@ -4,6 +4,8 @@ namespace Oxa\Sonata\AdminBundle\Util\Helpers;
 
 use Domain\BusinessBundle\Entity\BusinessProfilePopup;
 use Domain\BusinessBundle\Util\Traits\StatusTrait;
+use Sonata\CoreBundle\Form\Type\DateTimeRangePickerType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 /**
  * Class AdminHelper
@@ -48,7 +50,7 @@ class AdminHelper
     public static function getDatagridStatusOptions()
     {
         return [
-            'field_type' => 'choice',
+            'field_type' => ChoiceType::class,
             'field_options' => [
                 'required'  => false,
                 'choices'   => StatusTrait::getStatuses()
@@ -127,7 +129,7 @@ class AdminHelper
         // todo: all datePeriod filter logic should be refactored or removed
         // as it has been cut during sonata update as a result of logic conflict
         return [
-            'field_type' => 'choice',
+            'field_type' => ChoiceType::class,
             'field_options' => [
                 'mapped' => false,
                 'required'  => true,
@@ -149,7 +151,7 @@ class AdminHelper
     {
         return [
             'show_filter' => true,
-            'field_type' => 'choice',
+            'field_type' => ChoiceType::class,
             'field_options' => [
                 'mapped' => false,
                 'required'  => true,
@@ -162,26 +164,6 @@ class AdminHelper
     }
 
     /**
-     * Used to set default datetime options
-     *
-     * @return array
-     */
-    public static function getDatagridDateTypeOptions()
-    {
-        return [
-            'field_type' => 'sonata_type_datetime_range_picker',
-            'field_options' => [
-                'field_options' => [
-                    'format' => self::FILTER_DATE_RANGE_FORMAT
-                ],
-                'attr' => [
-                    'class' => self::FILTER_DATE_RANGE_CLASS
-                ]
-            ]
-        ];
-    }
-
-    /**
      * Used to set report options
      *
      * @return array
@@ -190,7 +172,7 @@ class AdminHelper
     {
         return [
             'show_filter' => true,
-            'field_type'  => 'sonata_type_datetime_range_picker',
+            'field_type'  => DateTimeRangePickerType::class,
             'field_options' => [
                 'field_options' => [
                     'format'        => self::FILTER_DATE_RANGE_FORMAT,

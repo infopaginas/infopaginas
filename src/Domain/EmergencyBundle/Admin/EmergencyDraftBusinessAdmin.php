@@ -48,7 +48,7 @@ class EmergencyDraftBusinessAdmin extends OxaAdmin
                 'field_options' => [
                     'choices' => EmergencyDraftBusiness::getStatuses(),
                 ],
-                'field_type' => 'choice',
+                'field_type' => ChoiceType::class,
             ])
         ;
     }

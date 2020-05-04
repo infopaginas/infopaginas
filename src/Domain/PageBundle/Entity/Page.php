@@ -26,7 +26,6 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
  * @ORM\Entity(repositoryClass="Domain\PageBundle\Repository\PageRepository")
  * @ORM\HasLifecycleCallbacks
  * @Gedmo\TranslationEntity(class="Domain\PageBundle\Entity\Translation\PageTranslation")
- * @Assert\Callback(methods={"validatePageActionLink"})
  */
 class Page implements DefaultEntityInterface, OxaPersonalTranslatableInterface, PageInterface, ChangeStateInterface
 {
@@ -675,6 +674,7 @@ class Page implements DefaultEntityInterface, OxaPersonalTranslatableInterface, 
     }
 
     /**
+     * @Assert\Callback
      * @param ExecutionContextInterface $context
      */
     public function validatePageActionLink(ExecutionContextInterface $context)

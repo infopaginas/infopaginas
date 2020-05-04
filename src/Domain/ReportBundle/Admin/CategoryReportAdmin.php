@@ -92,7 +92,7 @@ class CategoryReportAdmin extends ReportAdmin
                     'choices' => CategoryOverviewReportManager::getCategoryPageType(),
                     'choice_translation_domain' => 'AdminReportBundle',
                 ],
-                'field_type' => 'choice'
+                'field_type' => ChoiceType::class
             ])
         ;
     }

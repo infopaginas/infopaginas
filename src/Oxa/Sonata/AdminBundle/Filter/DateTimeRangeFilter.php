@@ -2,6 +2,8 @@
 
 namespace Oxa\Sonata\AdminBundle\Filter;
 
+use Sonata\CoreBundle\Form\Type\DateTimeRangeType;
+
 class DateTimeRangeFilter extends OxaAbstractDateFilter
 {
     /**
@@ -23,6 +25,6 @@ class DateTimeRangeFilter extends OxaAbstractDateFilter
      */
     public function getFieldType()
     {
-        return $this->getOption('field_type', 'sonata_type_datetime_range');
+        return $this->getOption('field_type', DateTimeRangeType::class);
     }
 }

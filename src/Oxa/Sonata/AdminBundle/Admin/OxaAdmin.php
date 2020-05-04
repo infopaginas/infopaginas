@@ -9,6 +9,7 @@ use Pix\SortableBehaviorBundle\Services\PositionHandler;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Admin\AbstractAdmin as BaseAdmin;
 use Sonata\AdminBundle\Route\RouteCollection;
+use Sonata\CoreBundle\Form\Type\DateTimeRangePickerType;
 use Sonata\CoreBundle\Validator\ErrorElement;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
@@ -71,7 +72,7 @@ class OxaAdmin extends BaseAdmin
      * @var array
      */
     protected $defaultDatagridDatetimeTypeOptions = [
-        'field_type' => 'sonata_type_datetime_range_picker',
+        'field_type' => DateTimeRangePickerType::class,
         'field_options' => [
             'field_options' => [
                 'format' => self::FILTER_DATETIME_FORMAT
@@ -85,7 +86,7 @@ class OxaAdmin extends BaseAdmin
      * @var array
      */
     protected $defaultDatagridDateTypeOptions = [
-        'field_type' => 'sonata_type_datetime_range_picker',
+        'field_type' => DateTimeRangePickerType::class,
         'field_options' => [
             'field_options' => [
                 'format' => self::FILTER_DATE_FORMAT

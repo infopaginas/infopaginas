@@ -74,10 +74,12 @@ class LocalityAdmin extends OxaAdmin
                 [
                     'by_reference'  => false,
                     'required'      => false,
-                    'read_only'     => true,
                     'btn_add'       => false,
                     'type_options' => [
                         'delete'    => false,
+                    ],
+                    'attr' => [
+                        'read_only'     => true,
                     ],
                 ],
                 [

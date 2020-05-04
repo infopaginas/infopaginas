@@ -31,7 +31,7 @@ class BusinessReviewAdmin extends OxaAdmin
                     'required' => false,
                     'choices' => BusinessReview::getRatingChoices(),
                 ],
-                'field_type' => 'choice'
+                'field_type' => ChoiceType::class
             ])
             ->add('isActive', null, [], null, [
                 'choices' => [

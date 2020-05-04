@@ -62,14 +62,18 @@ class ArticleGalleryAdmin extends OxaAdmin
 
         if ($isExternal) {
             $property = [
-                'read_only'     => true,
-                'btn_add'       => false,
-                'btn_list'      => false,
-                'btn_delete'    => false,
+                'btn_add'    => false,
+                'btn_list'   => false,
+                'btn_delete' => false,
+                'attr'       => [
+                    'read_only' => true,
+                ],
             ];
         } else {
             $property = [
-                'read_only'     => false,
+                'attr' => [
+                    'read_only' => false,
+                ],
             ];
         }
 

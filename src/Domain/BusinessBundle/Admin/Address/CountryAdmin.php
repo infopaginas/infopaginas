@@ -50,7 +50,15 @@ class CountryAdmin extends OxaAdmin
 
         $formMapper
             ->add('name')
-            ->add('shortName', null, ['read_only' => $disableShortNameEdit])
+            ->add(
+                'shortName',
+                null,
+                [
+                    'attr' => [
+                        'read_only' => $disableShortNameEdit,
+                    ],
+                ]
+            )
         ;
     }
 

@@ -165,7 +165,7 @@ class BaseMediaAdmin extends OxaAdmin
                     'multiple' => false,
                     'expanded' => false,
                 ),
-                'field_type' => 'choice',
+                'field_type' => ChoiceType::class,
             )
         );
     }

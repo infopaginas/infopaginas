@@ -10,8 +10,10 @@ use Oxa\Sonata\AdminBundle\Filter\DateRangeFilter;
 use Oxa\Sonata\AdminBundle\Util\Helpers\AdminHelper;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
+use Sonata\CoreBundle\Form\Type\DateRangePickerType;
 use Sonata\DoctrineORMAdminBundle\Filter\ChoiceFilter;
 use Sonata\DoctrineORMAdminBundle\Filter\ModelFilter;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 /**
  * Class UserActionReportAdmin
@@ -99,11 +101,11 @@ class UserActionReportAdmin extends ReportAdmin
                     'choices' => UserActionModel::EVENT_TYPES,
                     'choice_translation_domain' => 'AdminReportBundle',
                 ],
-                'field_type' => 'choice'
+                'field_type' => ChoiceType::class
             ])
             ->add('date', DateRangeFilter::class, [
                 'show_filter' => $this->checkDateFilter() ?: null,
-                'field_type'  => 'sonata_type_date_range_picker',
+                'field_type' => DateRangePickerType::class,
                 'field_options' => [
                     'field_options' => [
                         'format'        => AdminHelper::FILTER_DATE_RANGE_FORMAT,

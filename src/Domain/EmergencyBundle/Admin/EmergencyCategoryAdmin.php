@@ -48,8 +48,10 @@ class EmergencyCategoryAdmin extends OxaAdmin
             ->add('name')
             ->add('position')
             ->add('slug', null, [
-                'read_only' => true,
-                'required'  => false
+                'required'  => false,
+                'attr'      => [
+                    'read_only'     => true,
+                ],
             ])
         ;
     }

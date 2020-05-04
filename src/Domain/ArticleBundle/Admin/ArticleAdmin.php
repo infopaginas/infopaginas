@@ -149,7 +149,15 @@ class ArticleAdmin extends OxaAdmin
                 )
                 ->add('isPublished')
                 ->add('isOnHomepage')
-                ->add('slug', null, ['read_only' => true])
+                ->add(
+                    'slug',
+                    null,
+                    [
+                        'attr' => [
+                            'read_only'     => true,
+                        ],
+                    ]
+                )
                 ->add('activationDate', DateTimePickerType::class, ['format' => self::FORM_DATETIME_FORMAT])
                 ->add('expirationDate', DateTimePickerType::class, [
                     'format'   => self::FORM_DATETIME_FORMAT,
@@ -180,10 +188,12 @@ class ArticleAdmin extends OxaAdmin
             $property = [
                 'by_reference'  => false,
                 'required'      => false,
-                'read_only'     => true,
                 'btn_add'       => false,
                 'type_options' => [
                     'delete'    => false,
+                ],
+                'attr' => [
+                    'read_only'     => true,
                 ],
             ];
         } else {

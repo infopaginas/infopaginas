@@ -72,7 +72,7 @@ class MediaAdmin extends BaseMediaAdmin
                 'field_options' => [
                     'choices' => $contextsChoices,
                 ],
-                'field_type' => 'choice',
+                'field_type' => ChoiceType::class,
             ]
         );
 

@@ -71,7 +71,16 @@ class CategoryAdmin extends OxaAdmin
                 ],
                 'required' => false,
             ])
-            ->add('slug', null, ['read_only' => true, 'required' => false])
+            ->add(
+                'slug',
+                null,
+                [
+                    'attr' => [
+                        'read_only' => true,
+                    ],
+                    'required'  => false,
+                ]
+            )
         ;
     }
 
