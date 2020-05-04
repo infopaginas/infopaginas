@@ -24,12 +24,6 @@ services:
         calls:
             - [ setContainer, [ '@service_container' ] ]
 
-    oxa.sonata.twig.admin_extension:
-        class: Oxa\Sonata\AdminBundle\Twig\AdminExtension
-        arguments: ['@doctrine.orm.entity_manager']
-        tags:
-            - {name: twig.extension, alias: admin_extension}
-
     oxa.sonata.admin.filter.type.insensitive_string:
         class: Oxa\Sonata\AdminBundle\Filter\CaseInsensitiveStringFilter
         tags:
