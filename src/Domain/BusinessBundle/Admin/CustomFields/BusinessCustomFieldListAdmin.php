@@ -8,6 +8,7 @@ use Oxa\Sonata\AdminBundle\Util\Traits\ShowBusinessNamesOnDeleteTrait;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
+use Sonata\CoreBundle\Form\Type\CollectionType;
 use Sonata\AdminBundle\Show\ShowMapper;
 use Sonata\AdminBundle\Route\RouteCollection;
 
@@ -57,7 +58,7 @@ class BusinessCustomFieldListAdmin extends OxaAdmin
             ->add('section', null, ['required' => true])
             ->add(
                 'listItems',
-                'sonata_type_collection',
+                CollectionType::class,
                 [
                     'by_reference'  => false,
                     'required'      => true,

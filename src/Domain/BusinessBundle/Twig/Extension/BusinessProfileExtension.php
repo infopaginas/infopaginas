@@ -15,6 +15,7 @@ use Domain\BusinessBundle\Model\DayOfWeekModel;
 use Domain\BusinessBundle\Model\SubscriptionPlanInterface;
 use Domain\BusinessBundle\Util\Task\ImagesChangeSetUtil;
 use Domain\BusinessBundle\Util\Task\NormalizerUtil;
+use Domain\EmergencyBundle\Entity\EmergencyBusiness;
 use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
 use JMS\Serializer\SerializerBuilder;
 use Oxa\Sonata\MediaBundle\Entity\Media;

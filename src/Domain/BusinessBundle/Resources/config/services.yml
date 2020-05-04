@@ -92,7 +92,7 @@ services:
         arguments:
             - '%ivory_google_map.map.class%'
         tags:
-            - { name: form.type, alias: google_map }
+            - { name: form.type }
         calls:
             - [ setConfig, [ '@oxa_config' ] ]
 
@@ -101,7 +101,7 @@ services:
         arguments:
             - '%ivory_google_map.map.class%'
         tags:
-            - { name: form.type, alias: google_map_front }
+            - { name: form.type }
         calls:
             - [ setConfig, [ '@oxa_config' ] ]
 
@@ -109,13 +109,13 @@ services:
         class: Domain\BusinessBundle\Form\Type\MediaPreviewType
         arguments: ["@doctrine.orm.entity_manager"]
         tags:
-            - { name: form.type, alias: media_preview }
+            - { name: form.type }
 
     domain_business.form.type.business_profile:
         class: Domain\BusinessBundle\Form\Type\BusinessProfileFormType
         arguments: [null]
         tags:
-            - { name: form.type, alias: domain_business_bundle_business_profile_form_type }
+            - { name: form.type }
         calls:
             - [ setCurrentUser, [ '@session' ] ]
 
@@ -123,7 +123,7 @@ services:
         class: Domain\BusinessBundle\Form\Type\BusinessGalleryType
         arguments: [null]
         tags:
-            - { name: form.type, alias: domain_business_bundle_business_gallery_form_type }
+            - { name: form.type }
 
     domain_business.form.type.entity_hidden:
        class: Domain\BusinessBundle\Form\Type\EntityHiddenType
@@ -135,25 +135,25 @@ services:
         class: Domain\BusinessBundle\Form\Type\BusinessReviewType
         arguments: [null]
         tags:
-            - { name: form.type, alias: domain_business_bundle_business_review_type }
+            - { name: form.type }
 
     domain_business.form.type.business_close_request:
         class: Domain\BusinessBundle\Form\Type\BusinessCloseRequestType
         arguments: [null]
         tags:
-            - { name: form.type, alias: domain_business_bundle_business_close_request_type }
+            - { name: form.type }
 
     domain_business.form.type.business_upgrade_request:
         class: Domain\BusinessBundle\Form\Type\BusinessUpgradeRequestType
         arguments: [null]
         tags:
-            - { name: form.type, alias: domain_business_bundle_business_upgrade_request_type }
+            - { name: form.type }
 
     domain_business.form.type.claim:
         class: Domain\BusinessBundle\Form\Type\BusinessClaimRequestType
         arguments: [null]
         tags:
-            - { name: form.type, alias: domain_business_bundle_business_claim_request_type }
+            - { name: form.type }
 
     #forms section
     domain_business.form.business_profile:
@@ -161,35 +161,35 @@ services:
         class: Symfony\Component\Form\Form
         arguments:
             - 'domain_business_bundle_business_profile_form_type'
-            - 'domain_business_bundle_business_profile_form_type'
+            - 'Domain\BusinessBundle\Form\Type\BusinessProfileFormType'
 
     domain_business.form.claim:
         factory: ['@form.factory', 'createNamed']
         class: Symfony\Component\Form\Form
         arguments:
             - 'domain_business_bundle_business_claim_request_type'
-            - 'domain_business_bundle_business_claim_request_type'
+            - 'Domain\BusinessBundle\Form\Type\BusinessClaimRequestType'
 
     domain_business.form.review:
         factory: ['@form.factory', 'createNamed']
         class: Symfony\Component\Form\Form
         arguments:
             - 'domain_business_bundle_business_review_type'
-            - 'domain_business_bundle_business_review_type'
+            - 'Domain\BusinessBundle\Form\Type\BusinessReviewType'
 
     domain_business.form.business_close_request:
         factory: ['@form.factory', 'createNamed']
         class: Symfony\Component\Form\Form
         arguments:
             - 'domain_business_bundle_business_close_request_type'
-            - 'domain_business_bundle_business_close_request_type'
+            - 'Domain\BusinessBundle\Form\Type\BusinessCloseRequestType'
 
     domain_business.form.business_upgrade_request:
         factory: ['@form.factory', 'createNamed']
         class: Symfony\Component\Form\Form
         arguments:
             - 'domain_business_bundle_business_upgrade_request_type'
-            - 'domain_business_bundle_business_upgrade_request_type'
+            - 'Domain\BusinessBundle\Form\Type\BusinessUpgradeRequestType'
 
     #form handlers section
     domain_business.form.handler.business_profile:

@@ -3,6 +3,7 @@
 namespace Oxa\ConfigBundle\Admin;
 
 use Domain\SearchBundle\Util\CacheUtil;
+use Ivory\CKEditorBundle\Form\Type\CKEditorType;
 use Oxa\ConfigBundle\Entity\Config;
 use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
@@ -10,6 +11,7 @@ use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Show\ShowMapper;
 use Sonata\AdminBundle\Route\RouteCollection;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 /**
  * Class ConfigAdmin
@@ -75,7 +77,7 @@ class ConfigAdmin extends OxaAdmin
                     'class' => 'vertical-resize',
                 ],
             ])
-            ->add('format', 'choice', [
+            ->add('format', ChoiceType::class, [
                 'choices' => [
                     'html' => 'html',
                     'text' => 'text'
@@ -84,7 +86,7 @@ class ConfigAdmin extends OxaAdmin
                     'class' => 'formatter'
                 ]
             ])
-            ->add('value', 'ckeditor', [
+            ->add('value', CKEditorType::class, [
                 'config_name' => 'default',
                 'attr' => [
                     'class' => 'vertical-resize',

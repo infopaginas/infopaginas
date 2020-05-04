@@ -38,13 +38,13 @@ services:
         class: Oxa\VideoBundle\Form\Type\FileUploadType
         arguments: [null]
         tags:
-        - { name: form.type, alias: oxa_video_bundle_file_upload_form_type }
+        - { name: form.type }
 
     oxa_video.form.type.url_file_upload:
         class: Oxa\VideoBundle\Form\Type\UrlUploadType
         arguments: [null]
         tags:
-        - { name: form.type, alias: oxa_video_bundle_url_upload_form_type }
+        - { name: form.type }
 
     #forms section
     domain_business.form.local_file_upload:
@@ -52,14 +52,14 @@ services:
         class: Symfony\Component\Form\Form
         arguments:
             - 'oxa_video_bundle_file_upload_form_type'
-            - 'oxa_video_bundle_file_upload_form_type'
+            - 'Oxa\VideoBundle\Form\Type\FileUploadType'
 
     domain_business.form.url_file_upload:
         factory: ['@form.factory', 'createNamed']
         class: Symfony\Component\Form\Form
         arguments:
             - 'oxa_video_bundle_url_upload_form_type'
-            - 'oxa_video_bundle_url_upload_form_type'
+            - 'Oxa\VideoBundle\Form\Type\UrlUploadType'
 
     #form handlers section
     domain_business.form.handler.local_file_upload:

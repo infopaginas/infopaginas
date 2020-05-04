@@ -5,12 +5,13 @@ namespace Domain\ReportBundle\Admin;
 use Domain\ReportBundle\Entity\UserActionReport;
 use Domain\ReportBundle\Manager\UserActionReportManager;
 use Domain\ReportBundle\Model\UserActionModel;
+use Oxa\Sonata\AdminBundle\Filter\CaseInsensitiveStringFilter;
+use Oxa\Sonata\AdminBundle\Filter\DateRangeFilter;
 use Oxa\Sonata\AdminBundle\Util\Helpers\AdminHelper;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
-use Sonata\AdminBundle\Form\FormMapper;
-use Sonata\AdminBundle\Route\RouteCollection;
-use Sonata\AdminBundle\Show\ShowMapper;
+use Sonata\DoctrineORMAdminBundle\Filter\ChoiceFilter;
+use Sonata\DoctrineORMAdminBundle\Filter\ModelFilter;
 
 /**
  * Class UserActionReportAdmin
@@ -62,7 +63,7 @@ class UserActionReportAdmin extends ReportAdmin
     protected function configureDatagridFilters(DatagridMapper $datagridMapper)
     {
         $datagridMapper
-            ->add('username', 'doctrine_orm_model', [
+            ->add('username', ModelFilter::class, [
                 'show_filter' => !empty($this->datagridValues['username']['value']) ?: null,
                 'field_options' => [
                     'mapped'    => false,
@@ -79,19 +80,19 @@ class UserActionReportAdmin extends ReportAdmin
                     },
                 ],
             ])
-            ->add('entity', 'doctrine_orm_string', [
+            ->add('entity', CaseInsensitiveStringFilter::class, [
                 'show_filter' => !empty($this->datagridValues['entity']['value']) ?: null,
                 'field_options' => [
                     'mapped'    => false,
                 ],
             ])
-            ->add('entityName', 'doctrine_orm_string', [
+            ->add('entityName', CaseInsensitiveStringFilter::class, [
                 'show_filter' => !empty($this->datagridValues['entityName']['value']) ?: null,
                 'field_options' => [
                     'mapped'    => false,
                 ],
             ])
-            ->add('action', 'doctrine_orm_choice', [
+            ->add('action', ChoiceFilter::class, [
                 'show_filter' => !empty($this->datagridValues['action']['value']) ?: null,
                 'field_options' => [
                     'mapped'    => false,
@@ -100,7 +101,7 @@ class UserActionReportAdmin extends ReportAdmin
                 ],
                 'field_type' => 'choice'
             ])
-            ->add('date', 'doctrine_orm_date_range', [
+            ->add('date', DateRangeFilter::class, [
                 'show_filter' => $this->checkDateFilter() ?: null,
                 'field_type'  => 'sonata_type_date_range_picker',
                 'field_options' => [

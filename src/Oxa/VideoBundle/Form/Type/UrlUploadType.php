@@ -18,12 +18,4 @@ class UrlUploadType extends AbstractType
             ->add('url', TextType::class)
         ;
     }
-
-    /**
-     * @return string
-     */
-    public function getName()
-    {
-        return 'oxa_video_bundle_url_upload_form_type';
-    }
 }

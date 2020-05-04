@@ -2,12 +2,16 @@
 
 namespace Domain\BusinessBundle\Admin;
 
+use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\ReportBundle\Model\BusinessOverviewModel;
 use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
+use Oxa\Sonata\MediaBundle\Entity\Media;
 use Oxa\Sonata\MediaBundle\Model\OxaMediaInterface;
+use Oxa\VideoBundle\Entity\VideoMedia;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
+use Sonata\AdminBundle\Form\Type\ModelListType;
 use Sonata\AdminBundle\Show\ShowMapper;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
@@ -73,26 +77,34 @@ class HomepageCarouselAdmin extends OxaAdmin
     protected function configureFormFields(FormMapper $formMapper)
     {
         $formMapper
-            ->add('businessProfile', 'sonata_type_model_list', [
+            ->add('businessProfile', ModelListType::class, [
                 'required'   => true,
                 'btn_add'    => false,
                 'btn_delete' => false,
+                'model_manager' => $this->modelManager,
+                'class' => BusinessProfile::class,
             ])
             ->add('position')
-            ->add('image', 'sonata_type_model_list',
+            ->add(
+                'image',
+                ModelListType::class,
                 [
                     'constraints' => [new NotBlank()],
                     'sonata_help' => 'homepageCarouselImageRatioHelpMessage',
+                    'model_manager' => $this->modelManager,
+                    'class' => Media::class,
                 ],
                 [
                     'link_parameters' => [
                         'context'  => OxaMediaInterface::CONTEXT_HOMEPAGE_CAROUSEL,
                         'provider' => OxaMediaInterface::PROVIDER_IMAGE,
-                    ]
+                    ],
                 ]
             )
-            ->add('video', 'sonata_type_model_list', [
+            ->add('video', ModelListType::class, [
                 'required' => false,
+                'model_manager' => $this->modelManager,
+                'class' => VideoMedia::class,
             ])
             ->end()
         ;

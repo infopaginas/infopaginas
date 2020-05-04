@@ -7,9 +7,11 @@ use Domain\BusinessBundle\Entity\Locality;
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\SearchBundle\Util\CacheUtil;
 use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
+use Oxa\Sonata\AdminBundle\Filter\DateTimeRangeFilter;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
+use Sonata\CoreBundle\Form\Type\CollectionType;
 use Sonata\AdminBundle\Show\ShowMapper;
 
 class LocalityAdmin extends OxaAdmin
@@ -31,7 +33,7 @@ class LocalityAdmin extends OxaAdmin
                 'show_filter' => true,
             ])
             ->add('area')
-            ->add('updatedAt', 'doctrine_orm_datetime_range', $this->defaultDatagridDateTypeOptions)
+            ->add('updatedAt', DateTimeRangeFilter::class, $this->defaultDatagridDateTypeOptions)
             ->add('updatedUser')
         ;
     }
@@ -68,7 +70,7 @@ class LocalityAdmin extends OxaAdmin
             ])
             ->add(
                 'pseudos',
-                'sonata_type_collection',
+                CollectionType::class,
                 [
                     'by_reference'  => false,
                     'required'      => false,

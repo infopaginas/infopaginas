@@ -17,13 +17,13 @@ services:
         class: Symfony\Component\Form\Form
         arguments:
             - 'domain_emergency_bundle_emergency_draft_business_type'
-            - 'domain_emergency_bundle_emergency_draft_business_type'
+            - 'Domain\EmergencyBundle\Form\Type\EmergencyDraftBusinessType'
 
     domain_emergency.form.type.draft:
         class: Domain\EmergencyBundle\Form\Type\EmergencyDraftBusinessType
         arguments: [null]
         tags:
-            - { name: form.type, alias: domain_emergency_bundle_emergency_draft_business_type }
+            - { name: form.type }
 
     domain_emergency.form.handler.draft:
         class: Domain\EmergencyBundle\Form\Handler\EmergencyDraftBusinessFormHandler

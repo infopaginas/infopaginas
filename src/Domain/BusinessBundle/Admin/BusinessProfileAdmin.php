@@ -6,12 +6,14 @@ use Doctrine\ORM\QueryBuilder;
 use Domain\BusinessBundle\DBAL\Types\TaskType;
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\Category;
+use Domain\BusinessBundle\Entity\Locality;
 use Domain\BusinessBundle\Entity\Media\BusinessGallery;
 use Domain\BusinessBundle\Entity\Subscription;
 use Domain\BusinessBundle\Entity\SubscriptionPlan;
 use Domain\BusinessBundle\Form\Handler\BusinessFormHandlerInterface;
 use Domain\BusinessBundle\Form\Type\BusinessGalleryAdminType;
 use Domain\BusinessBundle\Form\Type\CustomUrlType;
+use Domain\BusinessBundle\Form\Type\GoogleMapType;
 use Domain\BusinessBundle\Model\StatusInterface;
 use Domain\BusinessBundle\Model\SubscriptionPlanInterface;
 use Domain\BusinessBundle\Validator\Constraints\BusinessProfilePhoneTypeValidator;
@@ -23,16 +25,22 @@ use Domain\ReportBundle\Util\DatesUtil;
 use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
 use Oxa\ConfigBundle\Model\ConfigInterface;
 use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
+use Oxa\Sonata\AdminBundle\Filter\DateTimeRangeFilter;
 use Oxa\Sonata\AdminBundle\Form\Type\ModelAutocompleteType;
 use Oxa\Sonata\AdminBundle\Util\Helpers\AdminHelper;
+use Oxa\Sonata\MediaBundle\Entity\Media;
 use Oxa\Sonata\MediaBundle\Form\Type\CollectionMediaType;
 use Oxa\Sonata\MediaBundle\Model\OxaMediaInterface;
+use Oxa\VideoBundle\Entity\VideoMedia;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
+use Sonata\CoreBundle\Form\Type\CollectionType;
+use Sonata\AdminBundle\Form\Type\ModelListType;
 use Sonata\AdminBundle\Route\RouteCollection;
 use Sonata\AdminBundle\Show\ShowMapper;
 use Sonata\CoreBundle\Validator\ErrorElement;
+use Sonata\DoctrineORMAdminBundle\Filter\CallbackFilter;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
@@ -268,7 +276,7 @@ class BusinessProfileAdmin extends OxaAdmin
         foreach ($this->getOverviewFilters() as $overviewFilter) {
             $datagridMapper->add(
                 $overviewFilter,
-                'doctrine_orm_callback',
+                CallbackFilter::class,
                 [
                     'callback' => [$this, 'overviewFilterQueryBuilder'],
                 ],
@@ -296,7 +304,7 @@ class BusinessProfileAdmin extends OxaAdmin
             ->add('subscriptions.subscriptionPlan', null, [
                 'label' => $this->trans('filter.label_subscription_plan', [], $this->getTranslationDomain()),
             ])
-            ->add('registrationDate', 'doctrine_orm_datetime_range', $this->defaultDatagridDatetimeTypeOptions)
+            ->add('registrationDate', DateTimeRangeFilter::class, $this->defaultDatagridDatetimeTypeOptions)
             ->add('isActive')
             ->add('isDeleted', null, [
                 'label' => 'Scheduled for deletion',
@@ -307,7 +315,7 @@ class BusinessProfileAdmin extends OxaAdmin
             ->add('categories.searchTextEs', null, [
                 'label' => $this->trans('filter.label_categories.es', [], $this->getTranslationDomain()),
             ])
-            ->add('tasks.type', 'doctrine_orm_callback', [
+            ->add('tasks.type', CallbackFilter::class, [
                 'label'      => $this->trans('filter.label_created_by_user', [], $this->getTranslationDomain()),
                 'callback'   => function ($queryBuilder, $alias, $field, $value) {
                     if (!$value['value']) {
@@ -324,10 +332,10 @@ class BusinessProfileAdmin extends OxaAdmin
             ->add('isDraft', null, [
                 'label' => $this->trans('filter.label_is_draft', [], $this->getTranslationDomain()),
             ], null, [
-                'placeholder' => $this->trans('all', [], 'AdminReportBundle'),
-            ])
+                      'placeholder' => $this->trans('all', [], 'AdminReportBundle'),
+                  ])
             ->add('csvImportFile')
-            ->add('hasPanoramaId', 'doctrine_orm_callback', [
+            ->add('hasPanoramaId', CallbackFilter::class, [
                 'label'      => $this->trans('filter.label_has_panorama_id', [], $this->getTranslationDomain()),
                 'callback'   => static function ($queryBuilder, $alias, $field, $value) {
                     if (!$value['value']) {
@@ -339,7 +347,7 @@ class BusinessProfileAdmin extends OxaAdmin
                 },
                 'field_type' => 'checkbox',
             ])
-            ->add('paidProfiles', 'doctrine_orm_callback', [
+            ->add('paidProfiles', CallbackFilter::class, [
                 'label'      => $this->trans('filter.label_only_paid_profiles', [], $this->getTranslationDomain()),
                 'callback'   => function ($queryBuilder, $alias, $field, $value) {
                     return $this->addMinimumActiveSubscriptionToQuery(
@@ -352,7 +360,7 @@ class BusinessProfileAdmin extends OxaAdmin
                 },
                 'field_type' => 'checkbox',
             ])
-            ->add('hasSuperVM', 'doctrine_orm_callback', [
+            ->add('hasSuperVM', CallbackFilter::class, [
                 'label'      => $this->trans('filter.label_has_supervm', [], $this->getTranslationDomain()),
                 'callback'   => function ($queryBuilder, $alias, $field, $value) {
                     if (!$value['value']) {
@@ -378,7 +386,7 @@ class BusinessProfileAdmin extends OxaAdmin
                 'field_type' => 'checkbox',
             ])
             ->add('isShowFacebookRating')
-            ->add('hasFacebookRating', 'doctrine_orm_callback', [
+            ->add('hasFacebookRating', CallbackFilter::class, [
                 'field_type' => 'checkbox',
                 'callback'   => static function ($queryBuilder, $alias, $field, $value) {
                     if (!$value['value']) {
@@ -389,7 +397,7 @@ class BusinessProfileAdmin extends OxaAdmin
                     return true;
                 },
             ])
-            ->add('hasBusinessToRedirect', 'doctrine_orm_callback', [
+            ->add('hasBusinessToRedirect', CallbackFilter::class, [
                 'label'      => $this->trans('filter.label_has_redirect_to', [], $this->getTranslationDomain()),
                 'field_type' => 'checkbox',
                 'callback'   => static function ($queryBuilder, $alias, $field, $value) {
@@ -401,7 +409,7 @@ class BusinessProfileAdmin extends OxaAdmin
                     return true;
                 },
             ])
-            ->add('hasBusinessRedirectFrom', 'doctrine_orm_callback', [
+            ->add('hasBusinessRedirectFrom', CallbackFilter::class, [
                 'label'      => $this->trans('filter.label_has_redirect_from', [], $this->getTranslationDomain()),
                 'field_type' => 'checkbox',
                 'callback'   => static function ($queryBuilder, $alias, $field, $value) {
@@ -481,8 +489,8 @@ class BusinessProfileAdmin extends OxaAdmin
         // define block
         $formMapper
             ->tab('Main')
-                ->with('Subscription')->end()
-                ->with('Common')->end()
+            ->with('Subscription')->end()
+            ->with('Common')->end()
             ->end()
         ;
 
@@ -532,10 +540,12 @@ class BusinessProfileAdmin extends OxaAdmin
             $formMapper
                 ->tab('Main')
                     ->with('Main')
-                        ->add('businessToRedirect', 'sonata_type_model_list', [
+                        ->add('businessToRedirect', ModelListType::class, [
                             'required'   => false,
                             'btn_delete' => 'delete',
                             'btn_add'    => false,
+                            'model_manager' => $this->modelManager,
+                            'class' => BusinessProfile::class,
                         ], [
                             'link_parameters' => [
                                 'onlyPaidProfiles'  => true,
@@ -553,7 +563,7 @@ class BusinessProfileAdmin extends OxaAdmin
                 ->with('Subscription')
                     ->add(
                         'subscriptions',
-                        'sonata_type_collection',
+                        CollectionType::class,
                         [
                             'by_reference'  => false,
                             'required'      => true,
@@ -631,7 +641,7 @@ class BusinessProfileAdmin extends OxaAdmin
                     ])
                     ->add(
                         'collectionWorkingHours',
-                        'sonata_type_collection',
+                        CollectionType::class,
                         [
                             'by_reference'  => false,
                             'required'      => false,
@@ -654,7 +664,7 @@ class BusinessProfileAdmin extends OxaAdmin
                     ])
                     ->add(
                         'phones',
-                        'sonata_type_collection',
+                        CollectionType::class,
                         [
                             'by_reference' => false,
                             'required' => false,
@@ -685,7 +695,7 @@ class BusinessProfileAdmin extends OxaAdmin
                     ->with('Testimonials')
                         ->add(
                             'testimonials',
-                            'sonata_type_collection',
+                            CollectionType::class,
                             [
                                 'by_reference'  => false,
                                 'required'      => false,
@@ -742,10 +752,12 @@ class BusinessProfileAdmin extends OxaAdmin
                             'spellcheck' => 'true',
                         ],
                     ])
-                    ->add('catalogLocality', 'sonata_type_model_list', [
+                    ->add('catalogLocality', ModelListType::class, [
                         'required'      => true,
                         'btn_delete'    => false,
                         'btn_add'       => false,
+                        'model_manager' => $this->modelManager,
+                        'class' => Locality::class,
                     ])
                     ->add('zipCode', null, [
                         'required' => true
@@ -785,13 +797,13 @@ class BusinessProfileAdmin extends OxaAdmin
         $formMapper
             ->tab('Main')
                 ->with('Map')
-                ->add('latitude')
-                ->add('longitude')
-                ->add('map', 'google_map', [
-                    'latitude'  => $latitude,
-                    'longitude' => $longitude,
-                    'mapped'    => false,
-                ])
+                    ->add('latitude')
+                    ->add('longitude')
+                    ->add('map', GoogleMapType::class, [
+                        'latitude'  => $latitude,
+                        'longitude' => $longitude,
+                        'mapped'    => false,
+                    ])
                 ->end()
             ->end()
         ;
@@ -887,7 +899,7 @@ class BusinessProfileAdmin extends OxaAdmin
                     ->with('SuperVM')
                         ->add(
                             'extraSearches',
-                            'sonata_type_collection',
+                            CollectionType::class,
                             [
                                 'by_reference'  => false,
                                 'required'      => false,
@@ -988,10 +1000,12 @@ class BusinessProfileAdmin extends OxaAdmin
                     ])
                     ->add(
                         'logo',
-                        'sonata_type_model_list',
+                        ModelListType::class,
                         [
                             'required' => false,
                             'help'     => 'business_profile.help.logo',
+                            'model_manager' => $this->modelManager,
+                            'class' => Media::class,
                         ],
                         [
                             'link_parameters' => [
@@ -1002,10 +1016,12 @@ class BusinessProfileAdmin extends OxaAdmin
                     )
                     ->add(
                         'background',
-                        'sonata_type_model_list',
+                        ModelListType::class,
                         [
                             'required' => false,
                             'help'     => 'business_profile.help.background',
+                            'model_manager' => $this->modelManager,
+                            'class' => Media::class,
                         ],
                         [
                             'link_parameters' => [
@@ -1022,9 +1038,11 @@ class BusinessProfileAdmin extends OxaAdmin
         $formMapper
             ->tab('Media')
                 ->with('Popup')
-                    ->add('popup', 'sonata_type_model_list', [
+                    ->add('popup', ModelListType::class, [
                         'required' => false,
                         'btn_list' => false,
+                        'model_manager' => $this->modelManager,
+                        'class' => Media::class,
                     ])
                 ->end()
             ->end()
@@ -1046,9 +1064,11 @@ class BusinessProfileAdmin extends OxaAdmin
                     ->with('Video')
                         ->add(
                             'video',
-                            'sonata_type_model_list',
+                            ModelListType::class,
                             [
                                 'required' => false,
+                                'model_manager' => $this->modelManager,
+                                'class' => VideoMedia::class,
                             ],
                             [
                                 'link_parameters' => [
@@ -1067,7 +1087,7 @@ class BusinessProfileAdmin extends OxaAdmin
                 ->with('Coupons')
                     ->add(
                         'coupons',
-                        'sonata_type_collection',
+                        CollectionType::class,
                         [
                             'by_reference'  => false,
                             'required'      => false,
@@ -1121,7 +1141,7 @@ class BusinessProfileAdmin extends OxaAdmin
                     ->with('Slugs')
                         ->add(
                             'aliases',
-                            'sonata_type_collection',
+                            CollectionType::class,
                             [
                                 'by_reference'  => false,
                                 'required'      => false,
@@ -1144,7 +1164,7 @@ class BusinessProfileAdmin extends OxaAdmin
                     ->with('Social Networks Feeds')
                         ->add(
                             'mediaUrls',
-                            'sonata_type_collection',
+                            CollectionType::class,
                             [
                                 'by_reference'  => false,
                                 'required'      => false,
@@ -1167,7 +1187,7 @@ class BusinessProfileAdmin extends OxaAdmin
                     ->with('Checkboxes')
                         ->add(
                             'checkboxCollection',
-                            'sonata_type_collection',
+                            CollectionType::class,
                             [
                                 'by_reference' => false,
                                 'required'     => false,
@@ -1182,7 +1202,7 @@ class BusinessProfileAdmin extends OxaAdmin
                     ->with('Text Areas')
                         ->add(
                             'textAreaCollection',
-                            'sonata_type_collection',
+                            CollectionType::class,
                             [
                                 'by_reference' => false,
                                 'required'     => false,
@@ -1197,7 +1217,7 @@ class BusinessProfileAdmin extends OxaAdmin
                     ->with('Radio Buttons')
                         ->add(
                             'radioButtonCollection',
-                            'sonata_type_collection',
+                            CollectionType::class,
                             [
                                 'by_reference' => false,
                                 'required'     => false,
@@ -1212,7 +1232,7 @@ class BusinessProfileAdmin extends OxaAdmin
                     ->with('Lists')
                         ->add(
                             'listCollection',
-                            'sonata_type_collection',
+                            CollectionType::class,
                             [
                                 'by_reference' => false,
                                 'required'     => false,

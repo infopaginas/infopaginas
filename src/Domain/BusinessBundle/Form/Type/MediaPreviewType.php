@@ -16,12 +16,4 @@ class MediaPreviewType extends AbstractType
     {
         return EntityHiddenType::class;
     }
-
-    /**
-     * @return string
-     */
-    public function getName()
-    {
-        return 'media_preview';
-    }
 }

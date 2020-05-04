@@ -313,7 +313,6 @@ class BusinessProfileFormType extends AbstractType
                     'class' => 'text-editor',
                 ],
             ]);
-        ;
     }
 
     /**
@@ -325,13 +324,5 @@ class BusinessProfileFormType extends AbstractType
             'allow_extra_fields' => true,
             'data_class'         => 'Domain\BusinessBundle\Entity\BusinessProfile',
         ]);
-    }
-
-    /**
-     * @return string
-     */
-    public function getName()
-    {
-        return 'domain_business_bundle_business_profile_form_type';
     }
 }

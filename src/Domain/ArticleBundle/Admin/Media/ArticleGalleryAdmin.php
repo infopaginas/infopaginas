@@ -4,9 +4,11 @@ namespace Domain\ArticleBundle\Admin\Media;
 
 use Domain\ArticleBundle\Entity\Media\ArticleGallery;
 use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
+use Oxa\Sonata\MediaBundle\Entity\Media;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
+use Sonata\AdminBundle\Form\Type\ModelListType;
 use Sonata\AdminBundle\Show\ShowMapper;
 use Oxa\Sonata\MediaBundle\Model\OxaMediaInterface;
 
@@ -74,8 +76,11 @@ class ArticleGalleryAdmin extends OxaAdmin
         $formMapper
             ->add(
                 'media',
-                'sonata_type_model_list',
-                $property,
+                ModelListType::class,
+                array_merge($property, [
+                    'class' => Media::class,
+                    'model_manager' => $this->modelManager,
+                ]),
                 [
                     'link_parameters' => [
                         'required' => true,

@@ -98,12 +98,4 @@ class BusinessProfileWorkingHourType extends AbstractType
             'allow_extra_fields' => true,
         ]);
     }
-
-    /**
-     * @return string
-     */
-    public function getName()
-    {
-        return 'domain_business_bundle_business_profile_working_hour_type';
-    }
 }

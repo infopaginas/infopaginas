@@ -5,9 +5,13 @@ namespace Domain\ReportBundle\Admin;
 use Domain\ReportBundle\Entity\CategoryReport;
 use Domain\ReportBundle\Manager\CategoryOverviewReportManager;
 use Domain\ReportBundle\Util\Helpers\ChartHelper;
+use Oxa\Sonata\AdminBundle\Filter\CaseInsensitiveStringFilter;
+use Oxa\Sonata\AdminBundle\Filter\DateTimeRangeFilter;
 use Oxa\Sonata\AdminBundle\Util\Helpers\AdminHelper;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
+use Sonata\DoctrineORMAdminBundle\Filter\ChoiceFilter;
+use Sonata\DoctrineORMAdminBundle\Filter\ModelFilter;
 
 /**
  * Class CategoryReportAdmin
@@ -59,21 +63,21 @@ class CategoryReportAdmin extends ReportAdmin
     protected function configureDatagridFilters(DatagridMapper $datagridMapper)
     {
         $datagridMapper
-            ->add('name', 'doctrine_orm_string', [
+            ->add('name', CaseInsensitiveStringFilter::class, [
                 'show_filter' => !empty($this->datagridValues['name']['value']) ?: null,
                 'field_options' => [
                     'mapped' => false,
                 ],
             ])
-            ->add('searchTextEs', 'doctrine_orm_string', [
+            ->add('searchTextEs', CaseInsensitiveStringFilter::class, [
                 'label' => 'Name Esp',
                 'show_filter' => !empty($this->datagridValues['searchTextEs']['value']) ?: null,
                 'field_options' => [
                     'mapped' => false,
                 ],
             ])
-            ->add('date', 'doctrine_orm_datetime_range', AdminHelper::getReportDateTypeOptions())
-            ->add('locality', 'doctrine_orm_model', [
+            ->add('date', DateTimeRangeFilter::class, AdminHelper::getReportDateTypeOptions())
+            ->add('locality', ModelFilter::class, [
                 'show_filter' => !empty($this->datagridValues['locality']['value']) ?: null,
                 'field_options' => [
                     'mapped'    => false,
@@ -81,7 +85,7 @@ class CategoryReportAdmin extends ReportAdmin
                     'class' => 'Domain\BusinessBundle\Entity\Locality',
                 ],
             ])
-            ->add('type', 'doctrine_orm_choice', [
+            ->add('type', ChoiceFilter::class, [
                 'show_filter' => !empty($this->datagridValues['type']['value']) ?: null,
                 'field_options' => [
                     'mapped'    => false,

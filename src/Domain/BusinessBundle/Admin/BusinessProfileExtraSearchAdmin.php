@@ -4,7 +4,9 @@ namespace Domain\BusinessBundle\Admin;
 
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\BusinessProfileExtraSearch;
+use Domain\BusinessBundle\Entity\Category;
 use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
+use Oxa\Sonata\AdminBundle\Form\Type\ModelAutocompleteType;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
@@ -86,13 +88,15 @@ class BusinessProfileExtraSearchAdmin extends OxaAdmin
     protected function configureFormFields(FormMapper $formMapper)
     {
         $formMapper
-            ->add('categories', 'sonata_type_model_autocomplete', [
+            ->add('categories', ModelAutocompleteType::class, [
                 'property' => [
                     'name',
                     'searchTextEs',
                 ],
                 'multiple' => true,
                 'required' => true,
+                'model_manager' => $this->modelManager,
+                'class' => Category::class,
             ])
             ->add('areas', null, [
                 'multiple' => true,

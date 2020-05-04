@@ -18,9 +18,9 @@ services:
         class: Domain\PageBundle\Form\Type\FeedbackFormType
         arguments: [null]
         tags:
-        - { name: form.type, alias: domain_page_bundle_feedback_form_type }
+        - { name: form.type }
 
     domain_page.feedback.form:
         factory: ['@form.factory', 'createNamed']
         class: Symfony\Component\Form\Form
-        arguments: [domain_page_bundle_feedback_form_type, domain_page_bundle_feedback_form_type]
+        arguments: ['domain_page_bundle_feedback_form_type', 'Domain\PageBundle\Form\Type\FeedbackFormType']

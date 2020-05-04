@@ -55,8 +55,8 @@ class UserController extends Controller
             DatesUtil::getLastMonth()
         );
 
-        $closeBusinessProfileForm = $this->createForm(new BusinessCloseRequestType());
-        $upgradeBusinessProfileForm = $this->createForm(new BusinessUpgradeRequestType());
+        $closeBusinessProfileForm = $this->createForm(BusinessCloseRequestType::class);
+        $upgradeBusinessProfileForm = $this->createForm(BusinessUpgradeRequestType::class);
 
         return $this->render(':redesign:user-profile.html.twig', [
             'profileForm'                => $profileForm->createView(),

@@ -5,12 +5,16 @@ namespace Domain\BusinessBundle\Admin;
 use Domain\BusinessBundle\Entity\Subscription;
 use Domain\BusinessBundle\Util\Traits\StatusTrait;
 use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
+use Oxa\Sonata\AdminBundle\Filter\DateTimeRangeFilter;
 use Oxa\Sonata\AdminBundle\Util\Helpers\AdminHelper;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Show\ShowMapper;
+use Sonata\CoreBundle\Form\Type\DateTimePickerType;
 use Sonata\CoreBundle\Validator\ErrorElement;
+use Sonata\DoctrineORMAdminBundle\Filter\ChoiceFilter;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 class SubscriptionAdmin extends OxaAdmin
@@ -24,11 +28,11 @@ class SubscriptionAdmin extends OxaAdmin
             ->add('id')
             ->add('businessProfile.name')
             ->add('subscriptionPlan')
-            ->add('status', 'doctrine_orm_choice', AdminHelper::getDatagridStatusOptions())
-            ->add('startDate', 'doctrine_orm_datetime_range', $this->defaultDatagridDatetimeTypeOptions)
-            ->add('endDate', 'doctrine_orm_datetime_range', $this->defaultDatagridDatetimeTypeOptions)
-            ->add('createdAt', 'doctrine_orm_datetime_range', $this->defaultDatagridDatetimeTypeOptions)
-            ->add('updatedAt', 'doctrine_orm_datetime_range', $this->defaultDatagridDatetimeTypeOptions)
+            ->add('status', ChoiceFilter::class, AdminHelper::getDatagridStatusOptions())
+            ->add('startDate', DateTimeRangeFilter::class, $this->defaultDatagridDatetimeTypeOptions)
+            ->add('endDate', DateTimeRangeFilter::class, $this->defaultDatagridDatetimeTypeOptions)
+            ->add('createdAt', DateTimeRangeFilter::class, $this->defaultDatagridDatetimeTypeOptions)
+            ->add('updatedAt', DateTimeRangeFilter::class, $this->defaultDatagridDatetimeTypeOptions)
         ;
     }
 
@@ -68,7 +72,7 @@ class SubscriptionAdmin extends OxaAdmin
         if ($this->getRoot()->getClass() != $this->getClass()) {
             $formMapper
                 ->with('General')
-                    ->add('id', 'text', [
+                    ->add('id', TextType::class, [
                         'read_only' => true,
                         'mapped' => false,
                         'disabled' => true,
@@ -92,17 +96,17 @@ class SubscriptionAdmin extends OxaAdmin
         $formMapper
             ->with('General')
                 ->add('businessProfile')
-                ->add('status', 'choice', ['choices' => StatusTrait::getStatuses()])
+                ->add('status', ChoiceType::class, ['choices' => StatusTrait::getStatuses()])
                 ->add('subscriptionPlan')
             ->end()
             ->with('Period')
-                ->add('startDate', 'sonata_type_datetime_picker', [
+                ->add('startDate', DateTimePickerType::class, [
                     'format' => self::FORM_DATETIME_FORMAT,
                     'attr' => [
                         'class' => 'start-date',
                     ],
                 ])
-                ->add('endDate', 'sonata_type_datetime_picker', [
+                ->add('endDate', DateTimePickerType::class, [
                     'format' => self::FORM_DATETIME_FORMAT,
                     'attr' => [
                         'class' => 'end-date',
@@ -110,9 +114,9 @@ class SubscriptionAdmin extends OxaAdmin
                 ])
             ->end()
             ->with('Status')
-                ->add('createdAt', 'sonata_type_datetime_picker', $systemDatetimeOptions)
+                ->add('createdAt', DateTimePickerType::class, $systemDatetimeOptions)
                 ->add('createdUser', TextType::class, $systemUserOptions)
-                ->add('updatedAt', 'sonata_type_datetime_picker', $systemDatetimeOptions)
+                ->add('updatedAt', DateTimePickerType::class, $systemDatetimeOptions)
                 ->add('updatedUser', TextType::class, $systemUserOptions)
             ->end()
         ;

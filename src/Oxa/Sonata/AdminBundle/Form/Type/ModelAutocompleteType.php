@@ -5,12 +5,12 @@ namespace Oxa\Sonata\AdminBundle\Form\Type;
 use Sonata\AdminBundle\Form\DataTransformer\ModelToIdPropertyTransformer;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\EventListener\ResizeFormListener;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 /**
  * This type defines a standard text field with autocomplete feature.
  *
@@ -19,7 +19,6 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
  */
 class ModelAutocompleteType extends AbstractType
 {
-
     /**
      * {@inheritdoc}
      */
@@ -35,15 +34,11 @@ class ModelAutocompleteType extends AbstractType
         $builder->setAttribute(
             'disabled',
             $options['disabled']
-            // NEXT_MAJOR: Remove this when bumping Symfony constraint to 2.8+
-            || (array_key_exists('read_only', $options) && $options['read_only'])
         );
         $builder->setAttribute('to_string_callback', $options['to_string_callback']);
 
         if ($options['multiple']) {
-            $resizeListener = new ResizeFormListener(
-                'hidden', array(), true, true, true
-            );
+            $resizeListener = new ResizeFormListener(HiddenType::class, [], true, true, true);
 
             $builder->addEventSubscriber($resizeListener);
         }
@@ -84,16 +79,6 @@ class ModelAutocompleteType extends AbstractType
         $view->vars['template'] = $options['template'];
 
         $view->vars['context'] = $options['context'];
-    }
-
-    /**
-     * NEXT_MAJOR: Remove method, when bumping requirements to SF 2.7+.
-     *
-     * {@inheritdoc}
-     */
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
-    {
-        $this->configureOptions($resolver);
     }
 
     /**
@@ -160,5 +145,4 @@ class ModelAutocompleteType extends AbstractType
     {
         return $this->getBlockPrefix();
     }
-
 }

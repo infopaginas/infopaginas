@@ -8,6 +8,7 @@ use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
+use Sonata\CoreBundle\Form\Type\CollectionType;
 use Sonata\AdminBundle\Show\ShowMapper;
 use Sonata\AdminBundle\Route\RouteCollection;
 
@@ -67,7 +68,7 @@ class LandingPageShortCutAdmin extends OxaAdmin
                 ->with('Searches')
                 ->add(
                     'searchItems',
-                    'sonata_type_collection',
+                    CollectionType::class,
                     [
                         'by_reference'  => false,
                         'required'      => true,

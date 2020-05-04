@@ -40,12 +40,4 @@ class BusinessLogoType extends AbstractType
             'data_class' => 'Oxa\Sonata\MediaBundle\Entity\Media',
         ]);
     }
-
-    /**
-     * @return string
-     */
-    public function getName()
-    {
-        return 'domain_business_bundle_business_logo_type';
-    }
 }

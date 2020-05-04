@@ -13,6 +13,9 @@ use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Route\RouteCollection;
 use Sonata\AdminBundle\Show\ShowMapper;
+use Sonata\CoreBundle\Form\Type\CollectionType;
+use Sonata\DoctrineORMAdminBundle\Filter\ChoiceFilter;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 class TaskAdmin extends OxaAdmin
 {
@@ -85,8 +88,8 @@ class TaskAdmin extends OxaAdmin
         ];
 
         $datagridMapper
-            ->add('type', 'doctrine_orm_choice', [], 'choice', $typeFieldOptions)
-            ->add('status', 'doctrine_orm_choice', [], 'choice', $statusFieldOptions)
+            ->add('type', ChoiceFilter::class, [], ChoiceType::class, $typeFieldOptions)
+            ->add('status', ChoiceFilter::class, [], ChoiceType::class, $statusFieldOptions)
         ;
     }
 
@@ -118,14 +121,13 @@ class TaskAdmin extends OxaAdmin
 
         $formMapper->add(
             'businessProfile.businessReviews',
-            'sonata_type_collection',
+            CollectionType::class,
             [
                 'by_reference' => true,
                 'label' => 'Business Reviews',
                 'type_options' => [
                     'delete' => false
                 ],
-                'cascade_validation' => true,
                 'required' => false,
                 'btn_add' => false,
                 'disabled' => true,

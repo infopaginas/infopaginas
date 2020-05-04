@@ -63,9 +63,9 @@ class ReportsController extends Controller
         $overviewData = $businessOverviewReportManager->getBusinessOverviewReportData($params);
         $keywordsData = $this->prepareKeywordsResponse($params);
 
-        $filtersForm = $this->createForm(new BusinessReportFilterType());
+        $filtersForm = $this->createForm(BusinessReportFilterType::class);
 
-        $closeBusinessProfileForm = $this->createForm(new BusinessCloseRequestType());
+        $closeBusinessProfileForm = $this->createForm(BusinessCloseRequestType::class);
 
         return $this->render(
             ':redesign:business-profile-report.html.twig',
@@ -309,7 +309,7 @@ class ReportsController extends Controller
             throw $this->createNotFoundException();
         }
 
-        $filtersForm = $this->createForm(new BusinessChartFilterType());
+        $filtersForm = $this->createForm(BusinessChartFilterType::class);
 
         return $this->render(':redesign:chart-preview.html.twig', [
             'business' => $businessProfile,

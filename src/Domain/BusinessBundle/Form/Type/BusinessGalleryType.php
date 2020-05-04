@@ -46,12 +46,4 @@ class BusinessGalleryType extends AbstractType
             'allow_extra_fields' => true,
         ]);
     }
-
-    /**
-     * @return string
-     */
-    public function getName()
-    {
-        return 'domain_business_bundle_business_gallery_type';
-    }
 }

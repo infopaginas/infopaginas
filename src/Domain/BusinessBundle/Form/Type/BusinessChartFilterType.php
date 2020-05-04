@@ -26,10 +26,7 @@ class BusinessChartFilterType extends BusinessReportFilterType
         ]);
     }
 
-    /**
-     * @return string
-     */
-    public function getName()
+    public function getBlockPrefix()
     {
         return 'domain_business_bundle_business_chart_filter_type';
     }

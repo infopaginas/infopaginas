@@ -123,10 +123,10 @@ class HomeController extends Controller
      */
     public function authModalRedesignAction()
     {
-        $loginForm                = $this->createForm(new LoginType());
-        $registrationForm         = $this->createForm(new RegistrationType());
-        $resetPasswordRequestForm = $this->createForm(new ResetPasswordRequestType());
-        $resetPasswordForm        = $this->createForm(new ResetPasswordType());
+        $loginForm                = $this->createForm(LoginType::class);
+        $registrationForm         = $this->createForm(RegistrationType::class);
+        $resetPasswordRequestForm = $this->createForm(ResetPasswordRequestType::class);
+        $resetPasswordForm        = $this->createForm(ResetPasswordType::class);
 
         return $this->render(
             ':redesign/blocks:auth_modal.html.twig',

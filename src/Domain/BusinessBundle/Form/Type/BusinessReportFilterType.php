@@ -88,10 +88,7 @@ class BusinessReportFilterType extends AbstractType
         ]);
     }
 
-    /**
-     * @return string
-     */
-    public function getName()
+    public function getBlockPrefix()
     {
         return 'domain_business_bundle_business_report_filter_type';
     }

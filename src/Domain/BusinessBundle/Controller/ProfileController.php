@@ -100,7 +100,7 @@ class ProfileController extends Controller
         $this->checkBusinessProfileAccess($businessProfile);
 
         $businessProfileForm      = $this->getBusinessProfileForm($businessProfile);
-        $closeBusinessProfileForm = $this->createForm(new BusinessCloseRequestType());
+        $closeBusinessProfileForm = $this->createForm(BusinessCloseRequestType::class);
 
         return $this->render(':redesign:business-profile-edit.html.twig', [
             'businessProfileForm'      => $businessProfileForm->createView(),
@@ -213,7 +213,7 @@ class ProfileController extends Controller
         $showClaimBlock =  $this->getBusinessProfilesManager()->getClaimButtonPermitted($businessProfile);
 
         if ($showClaimBlock) {
-            $claimBusinessForm = $this->createForm(new BusinessClaimRequestType())->createView();
+            $claimBusinessForm = $this->createForm(BusinessClaimRequestType::class)->createView();
         } else {
             $claimBusinessForm = null;
         }
@@ -239,7 +239,7 @@ class ProfileController extends Controller
         }
 
         $contactForm = $this->createForm(
-            new FeedbackFormType(),
+            FeedbackFormType::class,
             ['businessName' => $businessProfile->getName()],
             ['isReportProblem' => true]
         );

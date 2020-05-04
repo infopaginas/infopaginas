@@ -40,12 +40,4 @@ class BusinessBackgroundType extends AbstractType
             'data_class' => 'Oxa\Sonata\MediaBundle\Entity\Media',
         ]);
     }
-
-    /**
-     * @return string
-     */
-    public function getName()
-    {
-        return 'domain_business_bundle_business_background_type';
-    }
 }

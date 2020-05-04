@@ -2,11 +2,13 @@
 
 namespace Oxa\Sonata\MediaBundle\Admin;
 
+use Oxa\Sonata\AdminBundle\Filter\DateTimeRangeFilter;
 use Oxa\Sonata\AdminBundle\Util\Helpers\AdminHelper;
 use Sonata\AdminBundle\Route\RouteCollection;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
+use Sonata\DoctrineORMAdminBundle\Filter\ChoiceFilter;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Component\Validator\Constraints\File;
@@ -65,7 +67,7 @@ class MediaAdmin extends BaseMediaAdmin
 
         $datagridMapper->add(
             'context',
-            'doctrine_orm_choice',
+            ChoiceFilter::class,
             [
                 'field_options' => [
                     'choices' => $contextsChoices,
@@ -76,7 +78,7 @@ class MediaAdmin extends BaseMediaAdmin
 
         $datagridMapper->add(
             'providerName',
-            'doctrine_orm_choice',
+            ChoiceFilter::class,
             [
                 'show_filter' => false,
             ]
@@ -84,7 +86,7 @@ class MediaAdmin extends BaseMediaAdmin
 
         $datagridMapper
             ->add('name')
-            ->add('createdAt', 'doctrine_orm_datetime_range', $this->defaultDatagridDatetimeTypeOptions)
+            ->add('createdAt', DateTimeRangeFilter::class, $this->defaultDatagridDatetimeTypeOptions)
         ;
     }
 

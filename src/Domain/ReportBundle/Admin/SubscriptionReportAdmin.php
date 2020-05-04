@@ -7,6 +7,7 @@ use Domain\ReportBundle\Entity\SubscriptionReport;
 use Domain\ReportBundle\Manager\SubscriptionReportManager;
 use Domain\ReportBundle\Util\Helpers\ChartHelper;
 use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
+use Oxa\Sonata\AdminBundle\Filter\DateTimeRangeFilter;
 use Oxa\Sonata\AdminBundle\Util\Helpers\AdminHelper;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
@@ -26,7 +27,7 @@ class SubscriptionReportAdmin extends ReportAdmin
      */
     protected function configureDatagridFilters(DatagridMapper $datagridMapper)
     {
-        $datagridMapper->add('date', 'doctrine_orm_datetime_range', AdminHelper::getReportDateTypeOptions());
+        $datagridMapper->add('date', DateTimeRangeFilter::class, AdminHelper::getReportDateTypeOptions());
     }
 
     /**
