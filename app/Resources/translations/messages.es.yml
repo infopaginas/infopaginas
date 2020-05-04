@@ -93,13 +93,13 @@ Phone Number: Teléfono
 (787) 594-7273: (787) 594-7273
 Logout: Cerrar sesión
 Twitter: Twitter
-twitter.example.email.placeholder: https://twitter.com/user
+twitter.example.email.placeholder: 'https://twitter.com/user'
 Facebook: Facebook
-facebook.example.email.placeholder: https://www.facebook.com/user
+facebook.example.email.placeholder: 'https://www.facebook.com/user'
 Google Plus: Google Plus
-plus.google.example.email.placeholder: https://plus.google.com/user
+plus.google.example.email.placeholder: 'https://plus.google.com/user'
 Youtube: Youtube
-youtube.example.email.placeholder: https://www.youtube.com/user
+youtube.example.email.placeholder: 'https://www.youtube.com/user'
 No reviews found.: No se encontraron comentarios.
 My Business Profiles: Mis perfiles
 No business profiles found.: No se encontraron perfiles.
@@ -117,7 +117,7 @@ Business Address: Dirección de Negocio
 Sons Notebook: Sons Notebook
 Subscription: Suscripción
 Free: Gratis
-website.example.placeholder: http://sonsnotebook.com
+website.example.placeholder: 'http://sonsnotebook.com'
 Phone number: Teléfono
 Phone: Teléfono
 Ext: Ext
@@ -132,7 +132,7 @@ business.add.product.placeholder: Actualmente El sistema ofrece HIJOS kit de arr
 Brands: Marcas
 Organize, store, plan, prioritize: Organizar, almacenar, planificar, priorizar
 Tags: Tags
-business.add.workingHours.placeholder: lunes - viernes 9 a.m. - 7 p.m. sábado de 9:00 am-2:00pm
+business.add.workingHours.placeholder: 'lunes - viernes 9 a.m. - 7 p.m. sábado de 9:00 am-2:00pm'
 Fullness: Plenitud
 Map: Mapa
 Service Areas: Áreas de servicio
