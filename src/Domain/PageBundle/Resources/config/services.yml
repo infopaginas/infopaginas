@@ -10,7 +10,7 @@ services:
         scope: request
         arguments:
             - '@domain_page.feedback.form'
-            - '@request'
+            - '@request_stack'
             - '@translator.default'
             - '@domain_report.manager.feedback_report_manager'
 

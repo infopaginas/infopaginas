@@ -67,7 +67,7 @@ services:
         scope: request
         arguments:
             - '@domain_business.form.local_file_upload'
-            - '@request'
+            - '@request_stack'
             - '@oxa.manager.video'
 
     domain_business.form.handler.url_file_upload:
@@ -75,5 +75,5 @@ services:
         scope: request
         arguments:
             - '@domain_business.form.url_file_upload'
-            - '@request'
+            - '@request_stack'
             - '@oxa.manager.video'

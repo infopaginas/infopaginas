@@ -324,7 +324,7 @@ class SearchController extends Controller
             ]
         );
 
-        $pageRouter = $this->container->get('request')->attributes->get('_route');
+        $pageRouter = $this->container->get('request_stack')->getCurrentRequest()->attributes->get('_route');
 
         $seoData = $this->getBusinessProfileManager()->getBusinessProfileSearchSeoData($locationName, $seoCategories);
 
@@ -403,7 +403,7 @@ class SearchController extends Controller
             ]
         );
 
-        $pageRouter = $this->container->get('request')->attributes->get('_route');
+        $pageRouter = $this->container->get('request_stack')->getCurrentRequest()->attributes->get('_route');
 
         $seoData = $this->getBusinessProfileManager()->getBusinessProfileCatalogSeoData($locality, $seoCategory);
 

@@ -176,9 +176,9 @@
                                                         {% if field.title %}
                                                             <span class="section-title">{{ field.title }}: </span>
                                                         {% endif %}
-                                                        {% if field.value is sameas(true) %}
+                                                        {% if field.value is same as(true) %}
                                                             <i class="fa fa-check-square"></i>
-                                                        {% elseif field.value is sameas(false) %}
+                                                        {% elseif field.value is same as(false) %}
                                                             <i class="fa fa-times"></i>
                                                         {% else %}
                                                             {{ field.value }}

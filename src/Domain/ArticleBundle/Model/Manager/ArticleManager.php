@@ -208,7 +208,7 @@ class ArticleManager extends Manager
      */
     private function getPublisherLogo()
     {
-        $request = $this->container->get('request');
+        $request = $this->container->get('request_stack')->getCurrentRequest();
 
         $image = $this->container->getParameter('default_image');
         $url = $request->getScheme() . '://' . $request->getHost() . $image['path'] . $image['article']['image'];

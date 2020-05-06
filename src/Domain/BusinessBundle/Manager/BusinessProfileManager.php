@@ -1491,7 +1491,7 @@ class BusinessProfileManager extends Manager
 
                 $url = $this->getMediaPublicUrl($photo->getMedia(), 'preview');
             } else {
-                $request = $this->container->get('request');
+                $request = $this->container->get('request_stack')->getCurrentRequest();
                 $image   = $this->container->getParameter('default_image');
 
                 $url = $request->getScheme() . '://' . $request->getHost() . $image['path'] . $image['business_image'];

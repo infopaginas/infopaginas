@@ -69,7 +69,7 @@ services:
         scope: request
         arguments:
             - '@domain_site.registration.form'
-            - '@request'
+            - '@request_stack'
             - '@fos_user.user_manager'
             - '@oxa.manager.groups'
             - '@domain_site.mailer'
@@ -79,7 +79,7 @@ services:
         scope: request
         arguments:
             - '@domain_site.reset_password_request.form'
-            - '@request'
+            - '@request_stack'
             - '@fos_user.user_manager'
             - '@fos_user.util.token_generator'
             - '@domain_site.mailer'
@@ -90,7 +90,7 @@ services:
         scope: request
         arguments:
             - '@domain_site.reset_password.form'
-            - '@request'
+            - '@request_stack'
             - '@fos_user.user_manager'
             - '@translator.default'
 
@@ -99,7 +99,7 @@ services:
         scope: request
         arguments:
             - '@domain_site.user_profile.form'
-            - '@request'
+            - '@request_stack'
             - '@fos_user.user_manager'
             - '@security.token_storage'
 
@@ -108,7 +108,7 @@ services:
         scope: request
         arguments:
             - '@domain_site.user_password_update.form'
-            - '@request'
+            - '@request_stack'
             - '@fos_user.user_manager'
             - '@security.token_storage'
 

@@ -34,11 +34,6 @@ services:
         class: Domain\BusinessBundle\Manager\BusinessGalleryManager
         arguments: ['@doctrine.orm.entity_manager', '@sonata.media.manager.media']
 
-    domain_business.manager.address_manager:
-        class: Domain\BusinessBundle\Manager\AddressManager
-        calls:
-            - [ setContainer, [ '@service_container' ] ]
-
     domain_business.manager.section_manager:
         class: Domain\BusinessBundle\Manager\SectionManager
         arguments: ['@doctrine.orm.entity_manager']
@@ -197,7 +192,7 @@ services:
         scope: request
         arguments:
             - '@domain_business.form.business_profile'
-            - '@request'
+            - '@request_stack'
             - '@service_container'
 
     domain_business.form.handler.claim:
@@ -205,7 +200,7 @@ services:
         scope: request
         arguments:
             - '@domain_business.form.claim'
-            - '@request'
+            - '@request_stack'
             - '@service_container'
 
     domain_business.form.handler.review:
@@ -213,7 +208,7 @@ services:
         scope: request
         arguments:
             - '@domain_business.form.review'
-            - '@request'
+            - '@request_stack'
             - '@domain_business.manager.review'
             - '@domain_business.manager.business_profile'
             - '@domain_business.manager.tasks'
@@ -224,7 +219,7 @@ services:
         scope: request
         arguments:
             - '@domain_business.form.business_close_request'
-            - '@request'
+            - '@request_stack'
             - '@domain_business.manager.business_profile'
             - '@domain_business.manager.tasks'
             - '@translator'
@@ -234,7 +229,7 @@ services:
         scope: request
         arguments:
             - '@domain_business.form.business_upgrade_request'
-            - '@request'
+            - '@request_stack'
             - '@domain_site.mailer'
             - '@security.token_storage'
             - '@translator'

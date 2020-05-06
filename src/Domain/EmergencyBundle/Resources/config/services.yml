@@ -30,7 +30,7 @@ services:
         scope: request
         arguments:
             - '@domain_emergency.form.business_draft'
-            - '@request'
+            - '@request_stack'
             - '@domain_emergency.manager.emergency'
             - '@translator'
 

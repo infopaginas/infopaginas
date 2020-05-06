@@ -19,7 +19,7 @@ class MediaAdminController extends CRUDController
             throw new AccessDeniedException();
         }
 
-        $mediaContext = $this->get('request')->get('context', $this->get('sonata.media.pool')->getDefaultContext());
+        $mediaContext = $this->get('request_stack')->getCurrentRequest()->get('context', $this->get('sonata.media.pool')->getDefaultContext());
 
         $parameters = $this->admin->getPersistentParameters();
         $providers  = $this->get('sonata.media.pool')->getProvidersByContext($mediaContext);
