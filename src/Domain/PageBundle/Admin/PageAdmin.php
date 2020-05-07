@@ -4,7 +4,7 @@ namespace Domain\PageBundle\Admin;
 
 use Domain\PageBundle\Entity\Page;
 use Domain\PageBundle\Model\PageInterface;
-use Ivory\CKEditorBundle\Form\Type\CKEditorType;
+use FOS\CKEditorBundle\Form\Type\CKEditorType;
 use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
 use Oxa\Sonata\MediaBundle\Entity\Media;
 use Oxa\Sonata\MediaBundle\Model\OxaMediaInterface;

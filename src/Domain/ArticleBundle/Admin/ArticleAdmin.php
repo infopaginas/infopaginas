@@ -4,7 +4,7 @@ namespace Domain\ArticleBundle\Admin;
 
 use Domain\ArticleBundle\Entity\Article;
 use Domain\BusinessBundle\Entity\Category;
-use Ivory\CKEditorBundle\Form\Type\CKEditorType;
+use FOS\CKEditorBundle\Form\Type\CKEditorType;
 use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
 use Oxa\Sonata\AdminBundle\Filter\DateTimeRangeFilter;
 use Oxa\Sonata\MediaBundle\Entity\Media;

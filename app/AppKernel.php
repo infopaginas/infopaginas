@@ -34,7 +34,7 @@ class AppKernel extends Kernel
             new Doctrine\Bundle\FixturesBundle\DoctrineFixturesBundle(),
 
             new FM\ElfinderBundle\FMElfinderBundle(),
-            new Ivory\CKEditorBundle\IvoryCKEditorBundle(),
+            new FOS\CKEditorBundle\FOSCKEditorBundle(),
             new Knp\Bundle\MarkdownBundle\KnpMarkdownBundle(),
             new Knp\Bundle\GaufretteBundle\KnpGaufretteBundle(),
             new Doctrine\Bundle\MigrationsBundle\DoctrineMigrationsBundle(),

@@ -3,7 +3,7 @@
 namespace Oxa\ConfigBundle\Admin;
 
 use Domain\SearchBundle\Util\CacheUtil;
-use Ivory\CKEditorBundle\Form\Type\CKEditorType;
+use FOS\CKEditorBundle\Form\Type\CKEditorType;
 use Oxa\ConfigBundle\Entity\Config;
 use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
