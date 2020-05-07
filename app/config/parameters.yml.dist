@@ -23,6 +23,7 @@ parameters:
     mailer_user:       ~
     mailer_password:   ~
 
+    fos_user_email: info@infopaginas.com
     # A secret key that's used to generate certain security-related tokens
     secret:            ThisTokenIsNotSoSecretChangeIt
 

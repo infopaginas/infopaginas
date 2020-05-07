@@ -95,6 +95,11 @@ framework:
         enable_annotations: true
     templating:
         engines: ['twig']
+        form:
+            resources:
+                - 'SonataFormatterBundle:Form:formatter.html.twig'
+                - 'OxaSonataMediaBundle:Form:media_widgets.html.twig'
+                - 'SonataCoreBundle:Form:datepicker.html.twig'
     trusted_hosts:   ~
     trusted_proxies: ~
     session:
@@ -112,11 +117,6 @@ framework:
 twig:
     debug:            "%kernel.debug%"
     strict_variables: "%kernel.debug%"
-    form:
-        resources:
-            - 'SonataFormatterBundle:Form:formatter.html.twig'
-            - 'OxaSonataMediaBundle:Form:media_widgets.html.twig'
-            - 'SonataCoreBundle:Form:datepicker.html.twig'
     form_themes:
         - 'DomainBusinessBundle:Form:fields.html.twig'
     globals:

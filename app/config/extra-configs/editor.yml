@@ -46,6 +46,7 @@ fm_elfinder:
                         upload_max_size: 10M
 
 sonata_formatter:
+    default_formatter: text
     formatters:
         markdown:
             service: sonata.formatter.text.markdown

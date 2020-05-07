@@ -9,6 +9,9 @@ fos_user:
         user_manager: sonata.user.orm.user_manager
     resetting:
         token_ttl: 3600
+    from_email:
+        address:     '%fos_user_email%'
+        sender_name: '%fos_user_email%'
 sonata_user:
     class:
         user: Oxa\Sonata\UserBundle\Entity\User
