@@ -47,7 +47,6 @@ class AppKernel extends Kernel
             new Sonata\TranslationBundle\SonataTranslationBundle(),
             new Fresh\DoctrineEnumBundle\FreshDoctrineEnumBundle(),
             new Pix\SortableBehaviorBundle\PixSortableBehaviorBundle(),
-            new Ivory\GoogleMapBundle\IvoryGoogleMapBundle(),
             new HWI\Bundle\OAuthBundle\HWIOAuthBundle(),
             new FOS\JsRoutingBundle\FOSJsRoutingBundle(),
             new Alsatian\PostgresSearchBundle\AlsatianPostgresSearchBundle(),

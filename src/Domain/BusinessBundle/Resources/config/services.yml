@@ -84,8 +84,6 @@ services:
     #form types section
     domain_business.form.type.google_map:
         class: Domain\BusinessBundle\Form\Type\GoogleMapType
-        arguments:
-            - '%ivory_google_map.map.class%'
         tags:
             - { name: form.type }
         calls:
@@ -93,8 +91,6 @@ services:
 
     domain_business.form.type.google_map_front:
         class: Domain\BusinessBundle\Form\Type\GoogleMapFrontType
-        arguments:
-            - '%ivory_google_map.map.class%'
         tags:
             - { name: form.type }
         calls:

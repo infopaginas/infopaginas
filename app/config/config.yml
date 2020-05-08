@@ -210,14 +210,6 @@ doctrine_migrations:
     table_name: migration_versions
     name: Application Migrations
 
-ivory_google_map:
-    geocoder:
-        enabled: true
-        class: 'Ivory\GoogleMap\Services\Geocoding\Geocoder'
-        provider:
-            class: 'Ivory\GoogleMap\Services\Geocoding\GeocoderProvider'
-        adapter: 'Geocoder\HttpAdapter\CurlHttpAdapter'
-
 hwi_oauth:
     http_client:
         timeout: 10
