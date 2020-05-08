@@ -1,11 +1,11 @@
 <?php
+
 namespace Oxa\Sonata\AdminBundle\Admin;
 
 use Domain\BusinessBundle\Model\DatetimePeriodStatusInterface;
 use Domain\BusinessBundle\VO\VirtualObjectInterface;
 use Domain\ReportBundle\Model\UserActionModel;
 use Oxa\Sonata\AdminBundle\Model\ChangeStateInterface;
-use Pix\SortableBehaviorBundle\Services\PositionHandler;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Admin\AbstractAdmin as BaseAdmin;
 use Sonata\AdminBundle\Route\RouteCollection;
@@ -105,16 +105,6 @@ class OxaAdmin extends BaseAdmin
     );
 
     /**
-     * @var int
-     */
-    public $lastPosition = 1;
-
-    /**
-     * @var PositionHandler $positionService
-     */
-    public $positionService;
-
-    /**
      * Allows to use such functionality in filter as: include or not include, between or not between, etc
      *
      * @var bool
@@ -132,12 +122,6 @@ class OxaAdmin extends BaseAdmin
      * @var bool
      */
     public $allowBatchRestore = false;
-
-    public function setPositionService(PositionHandler $positionHandler)
-    {
-        $this->positionService = $positionHandler;
-        $this->lastPosition = $this->positionService->getLastPosition($this->getRoot()->getClass());
-    }
 
     /**
      * Basic admin configuration

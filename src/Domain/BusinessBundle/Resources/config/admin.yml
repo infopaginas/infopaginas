@@ -133,8 +133,6 @@ services:
         arguments: [~, Domain\BusinessBundle\Entity\BusinessProfileMediaUrl, OxaSonataAdminBundle:CRUD]
         tags:
             - {name: sonata.admin, manager_type: orm, group: admin, label: Business Profile Media URLs}
-        calls:
-            - [setPositionService, ['@pix_sortable_behavior.position']]
 
     domain_business.admin.business_profile_working_hour:
         class: Domain\BusinessBundle\Admin\BusinessProfileWorkingHourAdmin
@@ -153,8 +151,6 @@ services:
         arguments: [~, Domain\BusinessBundle\Entity\LandingPageShortCutSearch, OxaSonataAdminBundle:CRUD]
         tags:
             - {name: sonata.admin, manager_type: orm, group: admin, label: Landing Page Shortcut Searches}
-        calls:
-            - [setPositionService, ['@pix_sortable_behavior.position']]
 
     domain_business.admin.clickbait_title:
         class: Domain\BusinessBundle\Admin\ClickbaitTitleAdmin
@@ -179,8 +175,6 @@ services:
         arguments: [~, Domain\BusinessBundle\Entity\CustomFields\Section, OxaSonataAdminBundle:CRUD]
         tags:
             - {name: sonata.admin, manager_type: orm, group: admin, label: Section}
-        calls:
-            - [setPositionService, ['@pix_sortable_behavior.position']]
 
     domain_business.admin.business_custom_fields_checkbox:
         class: Domain\BusinessBundle\Admin\CustomFields\BusinessCustomFieldCheckboxAdmin
@@ -217,8 +211,6 @@ services:
         arguments: [~, Domain\BusinessBundle\Entity\CustomFields\BusinessCustomFieldRadioButtonItem, OxaSonataAdminBundle:CRUD]
         tags:
             - {name: sonata.admin, manager_type: orm, group: admin, label: Radio Button item}
-        calls:
-            - [setPositionService, ['@pix_sortable_behavior.position']]
 
     domain_business.admin.radio_button_collection:
         class: Domain\BusinessBundle\Admin\CustomFields\BusinessCustomFieldRadioButtonCollectionAdmin
@@ -237,8 +229,6 @@ services:
         arguments: [~, Domain\BusinessBundle\Entity\CustomFields\BusinessCustomFieldListItem, OxaSonataAdminBundle:CRUD]
         tags:
             - {name: sonata.admin, manager_type: orm, group: admin, label: List item}
-        calls:
-            - [setPositionService, ['@pix_sortable_behavior.position']]
 
     domain_business.admin.list_collection:
         class: Domain\BusinessBundle\Admin\CustomFields\BusinessCustomFieldListCollectionAdmin
@@ -251,5 +241,3 @@ services:
         arguments: [~, Domain\BusinessBundle\Entity\HomepageCarousel, DomainBusinessBundle:HomepageCarouselCRUD]
         tags:
             - {name: sonata.admin, manager_type: orm, group: admin, label: Homepage Carousel}
-        calls:
-            - [setPositionService, ['@pix_sortable_behavior.position']]
