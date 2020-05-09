@@ -2,20 +2,13 @@
 
 namespace Domain\ReportBundle\Admin;
 
-use Doctrine\ORM\Query;
 use Domain\ReportBundle\Entity\SubscriptionReport;
 use Domain\ReportBundle\Manager\SubscriptionReportManager;
 use Domain\ReportBundle\Util\Helpers\ChartHelper;
-use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
 use Oxa\Sonata\AdminBundle\Filter\DateTimeRangeFilter;
 use Oxa\Sonata\AdminBundle\Util\Helpers\AdminHelper;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
-use Sonata\AdminBundle\Form\FormMapper;
-use Sonata\AdminBundle\Route\RouteCollection;
-use Sonata\AdminBundle\Show\ShowMapper;
-use Sonata\CoreBundle\Form\Type\EqualType;
-
 /**
  * Class SubscriptionReportAdmin
  * @package Domain\ReportBundle\Admin

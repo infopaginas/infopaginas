@@ -11,7 +11,7 @@ class MediaAdminController extends CRUDController
     /**
      * @throws \Symfony\Component\Security\Core\Exception\AccessDeniedException
      *
-     * @return \Symfony\Bundle\FrameworkBundle\Controller\Response|\Symfony\Component\HttpFoundation\Response
+     * @return Response|\Symfony\Component\HttpFoundation\Response
      */
     public function createAction()
     {
@@ -44,14 +44,14 @@ class MediaAdminController extends CRUDController
      * @param array                                           $parameters
      * @param null|\Symfony\Component\HttpFoundation\Response $response
      *
-     * @return \Symfony\Bundle\FrameworkBundle\Controller\Response
+     * @return Response
      */
     public function render($view, array $parameters = array(), Response $response = null)
     {
         $parameters['media_pool']            = $this->container->get('sonata.media.pool');
         $parameters['persistent_parameters'] = $this->admin->getPersistentParameters();
 
-        return parent::render($view, $parameters);
+        return $this->renderWithExtraParams($view, $parameters);
     }
 
     /**

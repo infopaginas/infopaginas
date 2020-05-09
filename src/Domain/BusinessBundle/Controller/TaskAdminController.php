@@ -60,7 +60,7 @@ class TaskAdminController extends CRUDController
         $totalRejectedTasksCount = $this->tasksManager->getTotalRejectedTasksCount();
         $totalCompleteTasksCount = $this->tasksManager->getTotalIncompleteTasksCount();
 
-        return $this->render(
+        return $this->renderWithExtraParams(
             $this->admin->getTemplate('list'),
             [
                 'action'                  => 'list',
@@ -108,7 +108,7 @@ class TaskAdminController extends CRUDController
 
         $this->admin->setSubject($object);
 
-        return $this->render(
+        return $this->renderWithExtraParams(
             $this->admin->getTemplate('show'),
             [
                 'action'   => 'show',

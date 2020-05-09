@@ -11,7 +11,7 @@ use Oxa\Sonata\AdminBundle\Filter\DateRangeFilter;
 use Oxa\Sonata\AdminBundle\Util\Helpers\AdminHelper;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
-use Sonata\CoreBundle\Form\Type\DateRangePickerType;
+use Sonata\Form\Type\DateRangePickerType;
 use Sonata\DoctrineORMAdminBundle\Filter\ChoiceFilter;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 

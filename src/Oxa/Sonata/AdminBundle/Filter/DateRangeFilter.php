@@ -2,7 +2,7 @@
 
 namespace Oxa\Sonata\AdminBundle\Filter;
 
-use Sonata\CoreBundle\Form\Type\DateRangeType;
+use Sonata\Form\Type\DateRangeType;
 
 class DateRangeFilter extends OxaAbstractDateFilter
 {

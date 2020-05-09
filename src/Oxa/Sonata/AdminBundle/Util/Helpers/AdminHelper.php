@@ -4,7 +4,7 @@ namespace Oxa\Sonata\AdminBundle\Util\Helpers;
 
 use Domain\BusinessBundle\Entity\BusinessProfilePopup;
 use Domain\BusinessBundle\Util\Traits\StatusTrait;
-use Sonata\CoreBundle\Form\Type\DateTimeRangePickerType;
+use Sonata\Form\Type\DateTimeRangePickerType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 /**

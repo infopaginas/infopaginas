@@ -6,13 +6,14 @@ use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Manager\BusinessProfileManager;
 use Domain\ReportBundle\Model\BusinessOverviewModel;
 use Domain\ReportBundle\Util\DatesUtil;
+use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
 /**
  * Class ReportExtension
  * @package Domain\BusinessBundle\Twig\Extension
  */
-class ReportExtension extends \Twig_Extension
+class ReportExtension extends AbstractExtension
 {
     /** @var BusinessProfileManager */
     private $businessProfileManager;

@@ -4,9 +4,10 @@ namespace Domain\BusinessBundle\Twig\Extension;
 
 use Domain\BusinessBundle\DBAL\Types\TaskStatusType;
 use Domain\BusinessBundle\DBAL\Types\TaskType;
+use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
-class EnumLabelsDispatcherExtension extends \Twig_Extension
+class EnumLabelsDispatcherExtension extends AbstractExtension
 {
     public function getFunctions()
     {

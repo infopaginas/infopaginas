@@ -9,8 +9,8 @@ use Oxa\Sonata\AdminBundle\Model\ChangeStateInterface;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Admin\AbstractAdmin as BaseAdmin;
 use Sonata\AdminBundle\Route\RouteCollection;
-use Sonata\CoreBundle\Form\Type\DateTimeRangePickerType;
-use Sonata\CoreBundle\Validator\ErrorElement;
+use Sonata\Form\Type\DateTimeRangePickerType;
+use Sonata\Form\Validator\ErrorElement;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class OxaAdmin extends BaseAdmin

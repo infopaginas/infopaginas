@@ -4,12 +4,11 @@ namespace Oxa\Sonata\AdminBundle\Util\Traits;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Sonata\TranslationBundle\Model\Gedmo\AbstractPersonalTranslation;
-use Sonata\TranslationBundle\Traits\Gedmo\PersonalTranslatable;
-use Symfony\Component\Validator\Constraints as Assert;
+use Sonata\TranslationBundle\Traits\Gedmo\PersonalTranslatableTrait;
 
 trait OxaPersonalTranslatable
 {
-    use PersonalTranslatable;
+    use PersonalTranslatableTrait;
 
     /**
      * @var ArrayCollection $translations

@@ -4,13 +4,14 @@ namespace Domain\BusinessBundle\Twig\Extension;
 
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\SubscriptionPlan;
+use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
 /**
  * Class ConfigExtension
  * @package Oxa\ConfigBundle\Twig\Extension
  */
-class HasSubscriptionExtension extends \Twig_Extension
+class HasSubscriptionExtension extends AbstractExtension
 {
     /**
      * @return array

@@ -21,6 +21,8 @@ use JMS\Serializer\SerializerBuilder;
 use Oxa\Sonata\MediaBundle\Entity\Media;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Translation\TranslatorInterface;
+use Twig\Environment;
+use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
 use Twig\TwigFunction;
 
@@ -28,7 +30,7 @@ use Twig\TwigFunction;
  * Class BusinessProfilesChangesetExtension
  * @package Domain\BusinessBundle\Twig\Extension
  */
-class BusinessProfileExtension extends \Twig_Extension
+class BusinessProfileExtension extends AbstractExtension
 {
     /** @var BusinessProfileManager */
     private $businessProfileManager;
@@ -428,7 +430,7 @@ class BusinessProfileExtension extends \Twig_Extension
         return $data;
     }
 
-    public function renderTaskMediaLink(\Twig_Environment $environment, $data)
+    public function renderTaskMediaLink(Environment $environment, $data)
     {
         $html = $environment->render(
             ':redesign/blocks/task:task_media_link.html.twig',
@@ -440,7 +442,7 @@ class BusinessProfileExtension extends \Twig_Extension
         return $html;
     }
 
-    public function renderTaskImagesLink(\Twig_Environment $environment, $data)
+    public function renderTaskImagesLink(Environment $environment, $data)
     {
         $html = $environment->render(
             ':redesign/blocks/task:task_images_link.html.twig',
@@ -452,7 +454,7 @@ class BusinessProfileExtension extends \Twig_Extension
         return $html;
     }
 
-    public function renderBusinessProfileRelatedEntityChanges(\Twig_Environment $environment, $json)
+    public function renderBusinessProfileRelatedEntityChanges(Environment $environment, $json)
     {
         $data = [];
         $raw = json_decode($json);
@@ -487,7 +489,7 @@ class BusinessProfileExtension extends \Twig_Extension
         return $html;
     }
 
-    public function renderBusinessProfileUrlChanges(\Twig_Environment $environment, $json)
+    public function renderBusinessProfileUrlChanges(Environment $environment, $json)
     {
         $data = [];
         $properties = json_decode($json);
@@ -542,12 +544,12 @@ class BusinessProfileExtension extends \Twig_Extension
     }
 
     /**
-     * @param \Twig_Environment $environment
+     * @param Environment $environment
      * @param string $name
      * @param string $raw
      * @return string
      */
-    public function renderWysiwygPreviewForm(\Twig_Environment $environment, $name, $raw)
+    public function renderWysiwygPreviewForm(Environment $environment, $name, $raw)
     {
         $form = $this->businessProfileManager->getWysiwygPreviewForm($name, $raw);
 

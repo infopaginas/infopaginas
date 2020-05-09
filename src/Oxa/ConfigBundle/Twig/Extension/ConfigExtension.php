@@ -3,13 +3,14 @@
 namespace Oxa\ConfigBundle\Twig\Extension;
 
 use Oxa\ConfigBundle\Service\Config;
+use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
 /**
  * Class ConfigExtension
  * @package Oxa\ConfigBundle\Twig\Extension
  */
-class ConfigExtension extends \Twig_Extension
+class ConfigExtension extends AbstractExtension
 {
     private $config;
 
