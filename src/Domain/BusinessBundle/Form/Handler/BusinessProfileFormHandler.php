@@ -2,15 +2,12 @@
 
 namespace Domain\BusinessBundle\Form\Handler;
 
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
-use Domain\BusinessBundle\DBAL\Types\TaskType;
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\Category;
 use Domain\BusinessBundle\Entity\Media\BusinessGallery;
 use Domain\BusinessBundle\Manager\BusinessProfileManager;
 use Domain\BusinessBundle\Manager\TasksManager;
-use Domain\BusinessBundle\Model\DayOfWeekModel;
 use Domain\BusinessBundle\Model\SubscriptionPlanInterface;
 use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
 use FOS\UserBundle\Entity\User;
@@ -22,9 +19,9 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Translation\Translator;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
  * Class BusinessProfileFormHandler
@@ -32,8 +29,8 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
  */
 class BusinessProfileFormHandler extends BaseFormHandler implements BusinessFormHandlerInterface
 {
-    /** @var Request  */
-    protected $request;
+    /** @var RequestStack  */
+    protected $requestStack;
 
     /** @var array */
     protected $requestParams;
@@ -65,19 +62,13 @@ class BusinessProfileFormHandler extends BaseFormHandler implements BusinessForm
     /** @var ContainerInterface $container */
     protected $container;
 
-    /**
-     * FreeBusinessProfileFormHandler constructor.
-     * @param FormInterface $form
-     * @param Request $request
-     * @param ContainerInterface $container
-     */
     public function __construct(
         FormInterface $form,
-        Request $request,
+        RequestStack $requestStack,
         ContainerInterface $container
     ) {
         $this->form               = $form;
-        $this->request            = $request;
+        $this->requestStack       = $requestStack;
         $this->container          = $container;
 
         $this->businessProfileManager = $this->container->get('domain_business.manager.business_profile');
@@ -97,9 +88,9 @@ class BusinessProfileFormHandler extends BaseFormHandler implements BusinessForm
      */
     public function process()
     {
-        $businessProfileId   = $this->request->get('businessProfileId', false);
+        $businessProfileId   = $this->requestStack->getCurrentRequest()->get('businessProfileId', false);
 
-        $this->requestParams = $this->request->request->all()[$this->form->getName()];
+        $this->requestParams = $this->requestStack->getCurrentRequest()->request->all()[$this->form->getName()];
 
         if ($businessProfileId !== false) {
             $this->businessProfileOld = $this->businessProfileManager->find($businessProfileId);
@@ -111,8 +102,8 @@ class BusinessProfileFormHandler extends BaseFormHandler implements BusinessForm
             throw new \Exception('You cannot edit this business');
         }
 
-        if ($this->request->getMethod() == Request::METHOD_POST) {
-            $this->form->handleRequest($this->request);
+        if ($this->requestStack->getCurrentRequest()->getMethod() == Request::METHOD_POST) {
+            $this->form->handleRequest($this->requestStack->getCurrentRequest());
 
             $this->businessProfileNew = $this->form->getData();
             $this->businessProfileNew->setLocale(LocaleHelper::DEFAULT_LOCALE);
@@ -188,7 +179,7 @@ class BusinessProfileFormHandler extends BaseFormHandler implements BusinessForm
             $message = self::MESSAGE_BUSINESS_PROFILE_UPDATED;
         }
 
-        $session = $this->request->getSession();
+        $session = $this->requestStack->getCurrentRequest()->getSession();
 
         if ($session) {
             $session->getFlashBag()->add(

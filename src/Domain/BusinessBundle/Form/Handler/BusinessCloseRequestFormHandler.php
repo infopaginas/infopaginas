@@ -7,12 +7,13 @@ use Domain\BusinessBundle\Manager\TasksManager;
 use Oxa\ManagerArchitectureBundle\Form\Handler\BaseFormHandler;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Translation\TranslatorInterface;
 
 class BusinessCloseRequestFormHandler extends BaseFormHandler implements BusinessFormHandlerInterface
 {
-    /** @var Request $request */
-    private $request;
+    /** @var RequestStack $requestStack */
+    private $requestStack;
 
     /** @var BusinessProfileManager $businessProfileManager */
     private $businessProfileManager;
@@ -25,13 +26,13 @@ class BusinessCloseRequestFormHandler extends BaseFormHandler implements Busines
 
     public function __construct(
         FormInterface $form,
-        Request $request,
+        RequestStack $requestStack,
         BusinessProfileManager $businessProfileManager,
         TasksManager $tasksManager,
         TranslatorInterface $translator
     ) {
         $this->form                   = $form;
-        $this->request                = $request;
+        $this->requestStack           = $requestStack;
         $this->businessProfileManager = $businessProfileManager;
         $this->tasksManager           = $tasksManager;
         $this->translator             = $translator;
@@ -42,8 +43,8 @@ class BusinessCloseRequestFormHandler extends BaseFormHandler implements Busines
      */
     public function process()
     {
-        if ($this->request->getMethod() == 'POST') {
-            $this->form->handleRequest($this->request);
+        if ($this->getRequest()->getMethod() == 'POST') {
+            $this->form->handleRequest($this->requestStack->getCurrentRequest());
 
             if ($this->form->isValid()) {
                 $this->onSuccess();
@@ -71,7 +72,7 @@ class BusinessCloseRequestFormHandler extends BaseFormHandler implements Busines
         $closureReason = $this->form->get('reason')->getData();
         $this->tasksManager->createCloseProfileConfirmationRequest($businessProfile, $closureReason);
 
-        $session = $this->request->getSession();
+        $session = $this->getRequest()->getSession();
 
         if ($session) {
             $session->getFlashBag()->add(
@@ -81,12 +82,9 @@ class BusinessCloseRequestFormHandler extends BaseFormHandler implements Busines
         }
     }
 
-    /**
-     * @return Request
-     */
-    private function getRequest() : Request
+    private function getRequest(): Request
     {
-        return $this->request;
+        return $this->requestStack->getCurrentRequest();
     }
 
     /**
