@@ -218,7 +218,9 @@ class UserAdmin extends OxaAdmin
                         'email',
                         [
                             'required' => true,
-                            'pattern'  => ContainsEmailExpandedValidator::EMAIL_REGEX_PATTERN,
+                            'attr' => [
+                                'pattern' => ContainsEmailExpandedValidator::EMAIL_REGEX_PATTERN,
+                            ]
                         ]
                     )
                     ->add(

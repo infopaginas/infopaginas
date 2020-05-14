@@ -38,7 +38,7 @@ class ContainsEmailExpandedValidator extends ConstraintValidator
      */
     public function validate($value, Constraint $constraint)
     {
-        $isCustomValid = $this->validator->validateValue($value, new Email());
+        $isCustomValid = $this->validator->validate($value, new Email());
 
         if ($value && count($isCustomValid) == 0 && !preg_match('/' . self::EMAIL_REGEX_PATTERN . '/', $value)) {
             $this->context

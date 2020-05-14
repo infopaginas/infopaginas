@@ -3,6 +3,7 @@
 namespace Oxa\Sonata\MediaBundle\Controller;
 
 use Oxa\Sonata\AdminBundle\Controller\CRUDController;
+use Symfony\Bridge\Twig\Extension\FormExtension;
 use Symfony\Component\Finder\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -19,7 +20,9 @@ class MediaAdminController extends CRUDController
             throw new AccessDeniedException();
         }
 
-        $mediaContext = $this->get('request_stack')->getCurrentRequest()->get('context', $this->get('sonata.media.pool')->getDefaultContext());
+        $mediaContext = $this->get('request_stack')
+            ->getCurrentRequest()
+            ->get('context', $this->get('sonata.media.pool')->getDefaultContext());
 
         $parameters = $this->admin->getPersistentParameters();
         $providers  = $this->get('sonata.media.pool')->getProvidersByContext($mediaContext);
@@ -82,7 +85,10 @@ class MediaAdminController extends CRUDController
         $formView = $datagrid->getForm()->createView();
 
         // set the theme for the current Admin Form
-        $this->get('twig')->getExtension('form')->renderer->setTheme($formView, $this->admin->getFilterTheme());
+        $this->get('twig')
+            ->getExtension(FormExtension::class)
+            ->renderer
+            ->setTheme($formView, $this->admin->getFilterTheme());
 
         return $this->render(
             $this->admin->getTemplate('list'),

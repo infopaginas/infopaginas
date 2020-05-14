@@ -360,7 +360,7 @@ class Task implements DefaultEntityInterface, TaskInterface, ChangeStateInterfac
         if ($this->getId()) {
             $result = sprintf(
                 '[%s] Task: %s',
-                TaskType::getChoices()[$this->getType()],
+                array_flip(TaskType::getChoices())[$this->getType()],
                 $this->getBusinessProfile()->getName()
             );
         } else {

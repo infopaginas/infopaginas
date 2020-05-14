@@ -18,11 +18,11 @@ use Fresh\DoctrineEnumBundle\DBAL\Types\AbstractEnumType;
  */
 final class TaskType extends AbstractEnumType
 {
-    const TASK_PROFILE_CREATE = 'PROFILE_CREATE';
-    const TASK_PROFILE_UPDATE = 'PROFILE_UPDATE';
-    const TASK_PROFILE_CLOSE  = 'PROFILE_CLOSE';
-    const TASK_REVIEW_APPROVE = 'REVIEW_APPROVE';
-    const TASK_PROFILE_CLAIM  = 'PROFILE_CLAIM';
+    public const TASK_PROFILE_CREATE = 'PROFILE_CREATE';
+    public const TASK_PROFILE_UPDATE = 'PROFILE_UPDATE';
+    public const TASK_PROFILE_CLOSE  = 'PROFILE_CLOSE';
+    public const TASK_REVIEW_APPROVE = 'REVIEW_APPROVE';
+    public const TASK_PROFILE_CLAIM  = 'PROFILE_CLAIM';
 
     protected static $choices = [
         self::TASK_PROFILE_CREATE => 'Create Profile',

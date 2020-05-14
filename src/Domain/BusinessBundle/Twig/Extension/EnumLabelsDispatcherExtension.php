@@ -18,7 +18,7 @@ class EnumLabelsDispatcherExtension extends AbstractExtension
 
     public function dispatchEnumValue($enumValue)
     {
-        $appEnumValues = array_merge(TaskType::getChoices(), TaskStatusType::getChoices());
+        $appEnumValues = array_flip(array_merge(TaskType::getChoices(), TaskStatusType::getChoices()));
         return $appEnumValues[$enumValue] ?? '';
     }
 
