@@ -61,6 +61,12 @@ services:
         tags:
             - {name: sonata.admin, manager_type: orm, group: admin, label: Testimonials}
 
+    domain_business.admin.zip:
+        class: Domain\BusinessBundle\Admin\ZipAdmin
+        arguments: [~, Domain\BusinessBundle\Entity\Zip, OxaSonataAdminBundle:CRUD]
+        tags:
+            - {name: sonata.admin, manager_type: orm, group: admin, label: Zips}
+
     domain_business.admin.business_profile:
         class: Domain\BusinessBundle\Admin\BusinessProfileAdmin
         arguments: [~, Domain\BusinessBundle\Entity\BusinessProfile, DomainBusinessBundle:BusinessProfileCRUD]
