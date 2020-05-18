@@ -15,10 +15,6 @@
         ]
     },
     "repositories": {
-        "infopaginas-doctrine": {
-            "type": "git",
-            "url": "https://git.oxagile.com/infopaginas/infopaginas_doctrine2.git"
-        },
         "google-bundle": {
             "type": "git",
             "url": "https://git.oxagile.com/infopaginas/infopaginas_google_bundle.git"
@@ -32,7 +28,7 @@
         "php": "~7.2.0",
         "ext-json": "*",
         "symfony/symfony": "2.8.52",
-        "doctrine/orm": "dev-master#28c51ab00bededfb8909af25ae31cf0a9c799d9b",
+        "doctrine/orm": "^2.5.13",
         "doctrine/doctrine-bundle": "~1.4",
         "symfony/assetic-bundle": "~2.3",
         "symfony/swiftmailer-bundle": "~2.3",
@@ -40,7 +36,7 @@
         "sensio/distribution-bundle": "~4.0",
         "sensio/framework-extra-bundle": "^3.0.2",
         "incenteev/composer-parameter-handler": "~2.0",
-        "sonata-project/admin-bundle": "~3.10.3",
+        "sonata-project/admin-bundle": "3.10.3",
         "sonata-project/doctrine-orm-admin-bundle": "~3.0.5",
         "sonata-project/user-bundle": "~3.2.0",
         "sonata-project/easy-extends-bundle": "~2.1.10",
@@ -84,7 +80,7 @@
         "guzzle/guzzle": "~3.9.3",
         "elasticsearch/elasticsearch": "^7.4",
         "google/apiclient": "~1.1.7",
-        "mongodb/mongodb": "~1.1.2",
+        "mongodb/mongodb": "~1.5",
         "exercise/htmlpurifier-bundle": "^0.2.4",
         "pulse00/ffmpeg-bundle": "^0.6",
         "egulias/email-validator": "~1.2",
