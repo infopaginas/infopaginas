@@ -10209,7 +10209,6 @@
                 }
             ],
             "description": "This bundle generates code for you",
-            "abandoned": "symfony/maker-bundle",
             "time": "2017-03-15T01:02:10+00:00"
         }
     ],
