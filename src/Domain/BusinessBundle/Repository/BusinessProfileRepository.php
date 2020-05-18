@@ -22,6 +22,8 @@ use Domain\SearchBundle\Model\DataType\SearchDTO;
 use Oxa\GeolocationBundle\Model\Geolocation\LocationValueObject;
 use Oxa\GeolocationBundle\Utils\GeolocationUtils;
 use Domain\SearchBundle\Util\SearchDataUtil;
+use Oxa\Sonata\AdminBundle\Filter\CaseInsensitiveStringFilter;
+use Oxa\Sonata\AdminBundle\Util\Helpers\AdminHelper;
 use Oxa\VideoBundle\Entity\VideoMedia;
 use Symfony\Component\Config\Definition\Builder\ExprBuilder;
 use Doctrine\Common\Collections\Criteria;
@@ -329,6 +331,17 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
         return $iterateResult;
     }
 
+    public function getActiveBusinessProfilesCount(): int
+    {
+        return $this->getEntityManager()->createQueryBuilder()
+            ->select('COUNT(bp.id)')
+            ->from('DomainBusinessBundle:BusinessProfile', 'bp')
+            ->where('bp.isActive = TRUE')
+            ->getQuery()
+            ->getSingleScalarResult()
+            ;
+    }
+
     /**
      * @return IterableResult
      */
@@ -512,36 +525,6 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
             ->where('bp.isActive = :true')
             ->setParameter('true', true)
             ->orderBy('bp.id');
-
-        return $qb->getQuery()
-            ->getResult();
-    }
-
-    /**
-     * @param string $name
-     * @param string $city
-     * @param int    $id
-     *
-     * @return array
-     */
-    public function getSimilarBusinesses($name, $city, $id)
-    {
-        $qb = $this->createQueryBuilder('bp');
-
-        $qb
-            ->select('bp')
-            ->where($qb->expr()->neq('bp.id', ':id'))
-            ->andWhere($qb->expr()->like('lower(bp.name)', ':name'))
-            ->setParameter('id', $id)
-            ->setParameter('name', '%' . mb_strtolower($name) . '%')
-            ->setMaxResults(BusinessProfileAdmin::MAX_VALIDATION_RESULT)
-            ->orderBy('bp.id');
-
-        if ($city) {
-            $qb
-                ->andWhere($qb->expr()->like('lower(bp.city)', ':city'))
-                ->setParameter('city', '%' . mb_strtolower($city) . '%');
-        }
 
         return $qb->getQuery()
             ->getResult();

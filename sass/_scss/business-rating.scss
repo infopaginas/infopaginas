@@ -1,0 +1,61 @@
+$star-size: 22px;
+
+.ratings {
+  margin-bottom: 15px;
+
+  @media only screen and (min-width: 640px) {
+    width: 60%;
+  }
+
+  .rating-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+
+    h3 {
+      margin: 0;
+    }
+
+    .rating-value {
+      display: flex;
+
+      span {
+        margin-right: 5px;
+      }
+    }
+  }
+
+  .rating-trip-advisor {
+    margin-bottom: 10px;
+
+    span {
+      color: dimgrey;
+      font-size: 14px;
+      line-height: 14px;
+      text-decoration: underline;
+      vertical-align: bottom;
+      margin-left: 5px;
+    }
+  }
+}
+
+.star-ratings-sprite {
+  background: url('../assets/images/grey-star-icon.svg') repeat-x;
+  font-size: 0;
+  height: $star-size;
+  background-size: $star-size;
+  line-height: 0;
+  overflow: hidden;
+  text-indent: -999em;
+  width: calc(#{$star-size} * 5) !important;
+  margin: 0 auto;
+
+  &-rating {
+    background: url('../assets/images/green-star-icon.svg') repeat-x;
+    float: left;
+    height: $star-size;
+    background-size: $star-size;
+    display:block;
+  }
+
+}

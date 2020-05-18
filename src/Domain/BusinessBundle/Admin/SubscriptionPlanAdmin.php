@@ -45,7 +45,6 @@ class SubscriptionPlanAdmin extends OxaAdmin
     {
         $formMapper
             ->add('name')
-            ->add('rank')
         ;
     }
 
@@ -68,7 +67,7 @@ class SubscriptionPlanAdmin extends OxaAdmin
      */
     public function isGranted($name, $object = null)
     {
-        $deniedActions = $this->getAllowViewOnlyAction();
+        $deniedActions = $this->getDeleteDeniedAction();
 
         if (in_array($name, $deniedActions)) {
             return false;

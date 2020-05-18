@@ -21,7 +21,7 @@ class AggregateDataCommand extends ContainerAwareCommand
     {
         $this
             ->setName('domain:business:aggregate-data')
-            ->setDescription('Aggregate impressions, directions, callsMobile from MongoDB to PostgreSQL')
+            ->setDescription('Aggregate impressions, directions, callsMobile, callsDesktop from MongoDB to PostgreSQL')
         ;
     }
 
@@ -54,6 +54,7 @@ class AggregateDataCommand extends ContainerAwareCommand
             BusinessOverviewModel::TYPE_CODE_CALL_MOB_BUTTON,
             BusinessOverviewModel::TYPE_CODE_IMPRESSION,
             BusinessOverviewModel::TYPE_CODE_DIRECTION_BUTTON,
+            BusinessOverviewModel::TYPE_CODE_CALL_DESK_BUTTON,
         ];
 
         $entityManager = $this->getContainer()
@@ -63,8 +64,12 @@ class AggregateDataCommand extends ContainerAwareCommand
             ->getRepository(BusinessProfile::class)
             ->getActiveBusinessProfilesIterator();
 
+        $businessesCount = $entityManager
+            ->getRepository(BusinessProfile::class)
+            ->getActiveBusinessProfilesCount();
+
         $batchCounter = 0;
-        $progressBar = new ProgressBar($output, count($businesses));
+        $progressBar = new ProgressBar($output, $businessesCount);
         $progressBar->start();
 
         foreach ($businesses as $row) {
@@ -87,6 +92,10 @@ class AggregateDataCommand extends ContainerAwareCommand
 
                 if (isset($businessCursor[BusinessOverviewModel::TYPE_CODE_CALL_MOB_BUTTON])) {
                     $business->setCallsMobile($businessCursor[BusinessOverviewModel::TYPE_CODE_CALL_MOB_BUTTON]);
+                }
+
+                if (isset($businessCursor[BusinessOverviewModel::TYPE_CODE_CALL_DESK_BUTTON])) {
+                    $business->setCallsDesktop($businessCursor[BusinessOverviewModel::TYPE_CODE_CALL_DESK_BUTTON]);
                 }
 
                 $batchCounter++;

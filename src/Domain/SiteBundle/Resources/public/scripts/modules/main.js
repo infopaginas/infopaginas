@@ -1,7 +1,9 @@
-define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui', 'select2'], function( $, ReportTracker ) {
+define(['jquery', 'tools/reportTracker', 'tools/googleMapLink', 'selectize', 'velocity', 'velocity-ui', 'select2'],
+    function( $, ReportTracker, GoogleMap ) {
     'use strict';
 
     var reportTracker = new ReportTracker;
+    var googleMap = new GoogleMap;
 
     var headerSearch = $( '#searchBox' );
     var header = $( '.header' );
@@ -206,8 +208,9 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
 
     function getMapTranslateY() {
         var toolBar    = $( '.toolbar' );
-        var translateY = toolBar.position().top + toolBar.height() - resultsMap.position().top;
-        var mapHeight  = $( window ).height() - (toolBar.position().top + toolBar.height());
+        var carousel   = $('homepage-carousel-block');
+        var translateY = toolBar.position().top + toolBar.height() - resultsMap.position().top + carousel.height();
+        var mapHeight  = $( window ).height() - (toolBar.position().top + toolBar.height() + carousel.height());
 
         resultsMap.css( 'height', mapHeight );
         resultsMap.css( 'bottom', translateY );
@@ -218,18 +221,18 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
     var openMapSequence = [
         { e: showMap, p: { translateX: 0, translateY: 120 }, o: { duration: 400, easing: "easeOutCubic", complete: triggerMapResize } },
         { e: resultsMap, p: { translateY: function() {return getMapTranslateY()} }, o: { duration: 600, delay: 200, easing: "easeOutCubic", sequenceQueue: false } },
-        { e: hideMap, p: { translateX: 0, translateY: -120 }, o: { duration: 200, easing: "easeOutCubic", complete: openMapSequenceHideBlock } }
+        { e: hideMap, p: { translateX: 0, translateY: 0 }, o: { duration: 200, easing: "easeOutCubic", complete: openMapSequenceHideBlock } }
     ];
 
     var closeMapSequence = [
-        { e: hideMap, p: { translateX: 0, translateY: 120 }, o: { duration: 300, easing: "easeOutCubic", sequenceQueue: false, complete: closeMapSequenceHideBlock } },
+        { e: hideMap, p: { translateX: 0, translateY: 0 }, o: { duration: 300, easing: "easeOutCubic", sequenceQueue: false, complete: closeMapSequenceHideBlock } },
         { e: resultsMap, p: { translateX: 0, translateY: 0 }, o: { duration: 600, delay: 200, easing: "easeOutCubic", sequenceQueue: false } },
         { e: showMap, p: { translateX: 0, translateY: 0 }, o: { duration: 300, easing: "easeOutCubic", complete: triggerMapResize } },
     ];
 
     var openMapDeskSequence = [
         { e: showMap, p: { translateX: 500, translateY: 0 }, o: { duration: 200, easing: "easeOuCubic", sequenceQueue: false } },
-        { e: hideMap, p: { translateX: -520, translateY: 0 }, o: { duration: 200, easing: "easeOutCubic", complete: triggerMapResize } }
+        { e: hideMap, p: { translateX: -550, translateY: 0 }, o: { duration: 200, easing: "easeOutCubic", complete: triggerMapResize } }
     ];
 
     var closeMapDeskSequence = [
@@ -248,6 +251,8 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
     ];
 
     $(document).ready( function() {
+        initializeFooterMapLink();
+
         if ($( '.ad--bottom' ).is( '.ad--active' )) {
             showMap.addClass( 'floating-offset' );
         }
@@ -470,6 +475,18 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
         }
 
     });
+
+    function initializeFooterMapLink () {
+        var a = $( '#officeAddressLink' );
+
+        if (a.length) {
+            var coordinatesArray = a.data( 'coordinates' ).split( ',' );
+            var latitude = coordinatesArray[ 0 ];
+            var longitude = coordinatesArray[ 1 ];
+
+            a.attr( 'href', googleMap.getGoogleMapUrl( latitude, longitude ) );
+        }
+    }
 
 // Categories menu
 
@@ -801,6 +818,7 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
         if ( mapScriptInit ) {
             map.resize();
         }
+        $( '.slider.suggested-slider' ).slick( 'slickNext' );
     }
 
     function triggerMapRequested() {

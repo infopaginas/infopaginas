@@ -75,6 +75,9 @@ parameters:
     validators:
         keyword:
             one_word: '/^[a-zA-Z0-9àèìòùÀÈÌÒÙáéíóúýÁÉÍÓÚÝâêîôûÂÊÎÔÛãñõÃÑÕäëïöüÿÄËÏÖÜŸçÇßØøÅåÆæœ]*$/'
+    yelp_business_endpoint: 'https://api.yelp.com/v3/businesses/'
+    google_places_details_endpoint: 'https://maps.googleapis.com/maps/api/place/details/json'
+    tripadvisor_location_endpoint: 'http://api.tripadvisor.com/api/partner/2.0/location/'
 
 framework:
     #esi:             ~
@@ -120,6 +123,7 @@ twig:
         app_version: '%app_version%'
         google_badge_partner_id: '%google_badge_partner_id%'
         mapbox_api_key: '%mapbox_api_key%'
+        mapbox_reverse_geocoding_endpoint: 'https://api.mapbox.com/geocoding/v5/mapbox.places/'
         san_juan_coordinates: '%san_juan_coordinates%'
         map_default_center: '%map_default_center%'
         map_default_zoom: '%map_default_zoom%'
@@ -351,7 +355,6 @@ aws:
 
 elastic_search:
     host: '%elastic_search.host%'
-    document_index: '%elastic_search.document_index%'
     indexing_page: 100
 
 mongo_db:

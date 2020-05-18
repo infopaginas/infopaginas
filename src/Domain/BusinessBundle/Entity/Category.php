@@ -43,7 +43,7 @@ class Category implements
     const CATEGORY_ARTICLE_CODE = '99999';
     const CATEGORY_ARTICLE_SLUG = 'infopaginas-media';
 
-    const ELASTIC_DOCUMENT_TYPE = 'Category';
+    const ELASTIC_INDEX = 'category';
     const FLAG_IS_UPDATED = 'isUpdated';
 
     const ALLOW_DELETE_ASSOCIATED_FIELD_CATALOG_ITEMS = 'catalogItems';
@@ -186,6 +186,13 @@ class Category implements
      * @ORM\Column(name="show_suggestion", type="boolean", options={"default" : 0})
      */
     protected $showSuggestion;
+
+    /**
+     * @var string - keyword
+     *
+     * @ORM\Column(name="keyword_text", type="text", nullable=true)
+     */
+    protected $keywordText;
 
     public function setLocale($locale)
     {
@@ -628,5 +635,24 @@ class Category implements
     public function getTranslationClass(): string
     {
         return CategoryTranslation::class;
+    }
+
+    /**
+     * @return string
+     */
+    public function getKeywordText()
+    {
+        return $this->keywordText;
+    }
+
+    /**
+     * @param string $keywordText
+     * @return Category
+     */
+    public function setKeywordText($keywordText)
+    {
+        $this->keywordText = $keywordText;
+
+        return $this;
     }
 }

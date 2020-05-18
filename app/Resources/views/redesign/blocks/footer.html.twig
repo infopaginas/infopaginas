@@ -11,10 +11,16 @@
         </span>
     </div>
     <div class="about__item phone">
-        <i class="fa fa-phone"></i>
-        <span>
-            {{ config(CONFIG.FOOTER_PHONE_NUMBER) }}
-        </span>
+        <div class="hide-desktop">
+            <a href="tel:{{ config(CONFIG.FOOTER_PHONE_NUMBER)|international_phone }}">
+                <i class="fa fa-phone"></i>
+                <span>{{ config(CONFIG.FOOTER_PHONE_NUMBER) }}</span>
+            </a>
+        </div>
+        <div class="hide-mobile">
+            <i class="fa fa-phone"></i>
+            <span>{{ config(CONFIG.FOOTER_PHONE_NUMBER) }}</span>
+        </div>
     </div>
     <div class="about__item email hide-mobile">
         <i class="fa fa-envelope"></i>
@@ -23,9 +29,13 @@
         </span>
     </div>
     <div class="about__item address hide-mobile">
-        <i class="fa fa-map-marker"></i>
-        <span>
-            {% trans %}infopaginos.address{% endtrans %}
-        </span>
+        <a id="officeAddressLink" href="#" target="_blank" rel="noopener nofollow"
+           data-coordinates="{{ config(CONFIG.OFFICE_COORDINATES) }}"
+        >
+            <i class="fa fa-map-marker"></i>
+            <span>
+                {% trans %}infopaginos.address{% endtrans %}
+            </span>
+        </a>
     </div>
 </footer>

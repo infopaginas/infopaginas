@@ -13,3 +13,16 @@ business_profile_media_url:
   twitter: Twitter
 
 social_network_feeds: Social Media Posts
+testimonials: Testimonials
+business_rating:
+ rating_average: 'Average Review Rating: '
+ reviews: Reviews
+ google_places:
+  not_found: 'Google business with id %id% not found. Business profile id: %bp_id%'
+  rating: 'Google Reviews: '
+ yelp:
+  rating: 'Yelp Reviews: '
+ trip_advisor:
+  rating: 'TripAdvisor Traveler Rating'
+ facebook:
+  rating: 'Facebook Reviews: '

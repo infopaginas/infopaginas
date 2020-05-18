@@ -21,6 +21,7 @@ use Domain\ReportBundle\Model\BusinessOverviewModel;
 use Domain\ReportBundle\Model\ReportInterface;
 use Domain\ReportBundle\Util\DatesUtil;
 use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
+use Oxa\ConfigBundle\Entity\Config;
 use Oxa\ConfigBundle\Model\ConfigInterface;
 use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
 use Oxa\Sonata\AdminBundle\Form\Type\ModelAutocompleteType;
@@ -46,6 +47,7 @@ use Symfony\Component\Validator\Constraints\Length;
 use Ivory\CKEditorBundle\Form\Type\CKEditorType;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Doctrine\ORM\Query\Expr\Join;
+use Symfony\Component\Validator\Constraints\Regex;
 
 /**
  * Class BusinessProfileAdmin
@@ -267,7 +269,9 @@ class BusinessProfileAdmin extends OxaAdmin
             ->add('email');
 
         foreach ($this->getOverviewFilters() as $overviewFilter) {
-            $datagridMapper->add($overviewFilter, 'doctrine_orm_callback',
+            $datagridMapper->add(
+                $overviewFilter,
+                'doctrine_orm_callback',
                 [
                     'callback' => [$this, 'overviewFilterQueryBuilder'],
                 ],
@@ -340,24 +344,53 @@ class BusinessProfileAdmin extends OxaAdmin
             ])
             ->add('paidProfiles', 'doctrine_orm_callback', [
                 'label'      => $this->trans('filter.label_only_paid_profiles', [], $this->getTranslationDomain()),
-                'callback'   => static function ($queryBuilder, $alias, $field, $value) {
+                'callback'   => function ($queryBuilder, $alias, $field, $value) {
+                    return $this->addMinimumActiveSubscriptionToQuery(
+                        $queryBuilder,
+                        $alias,
+                        $field,
+                        $value,
+                        SubscriptionPlanInterface::CODE_PRIORITY
+                    );
+                },
+                'field_type' => 'checkbox',
+            ])
+            ->add('hasSuperVM', 'doctrine_orm_callback', [
+                'label'      => $this->trans('filter.label_has_supervm', [], $this->getTranslationDomain()),
+                'callback'   => function ($queryBuilder, $alias, $field, $value) {
                     if (!$value['value']) {
                         return false;
                     }
-                    $queryBuilder->leftJoin(
-                        sprintf('%s.subscriptions', $alias),
-                        'sub',
-                        Join::WITH,
-                        'sub.status = :subscriptionStatus'
-                    );
-                    $queryBuilder->leftJoin('sub.subscriptionPlan', 'sp');
-                    $queryBuilder->andWhere('sp.code >= :code');
-                    $queryBuilder->setParameter('code', SubscriptionPlanInterface::CODE_PRIORITY);
-                    $queryBuilder->setParameter('subscriptionStatus', StatusInterface::STATUS_ACTIVE);
+                    /** @var QueryBuilder $queryBuilder */
+                    if (isset($this->getFilterParameters()['paidProfiles']['value'])) {
+                        $queryBuilder->setParameter('code', SubscriptionPlanInterface::CODE_PREMIUM_PLATINUM);
+                    } else {
+                        $this->addMinimumActiveSubscriptionToQuery(
+                            $queryBuilder,
+                            $alias,
+                            $field,
+                            $value,
+                            SubscriptionPlanInterface::CODE_PREMIUM_PLATINUM
+                        );
+                    }
+
+                    $queryBuilder->innerJoin(sprintf('%s.extraSearches', $alias), 'es');
 
                     return true;
                 },
                 'field_type' => 'checkbox',
+            ])
+            ->add('isShowFacebookRating')
+            ->add('hasFacebookRating', 'doctrine_orm_callback', [
+                'field_type' => 'checkbox',
+                'callback'   => static function ($queryBuilder, $alias, $field, $value) {
+                    if (!$value['value']) {
+                        return false;
+                    }
+                    $queryBuilder->andWhere(sprintf('%s.facebookRating IS NOT NULL', $alias));
+
+                    return true;
+                },
             ])
         ;
     }
@@ -374,6 +407,7 @@ class BusinessProfileAdmin extends OxaAdmin
             ->add('impressions')
             ->add('directions')
             ->add('callsMobile')
+            ->add('callsDesktop')
             ->add('catalogLocality', null, [
                 'sortable' => true,
                 'sort_field_mapping'=> ['fieldName' => 'name'],
@@ -382,18 +416,14 @@ class BusinessProfileAdmin extends OxaAdmin
             ->add('phones', null, [
                 'template' => 'OxaSonataAdminBundle:ListFields:list_orm_one_to_many.html.twig',
             ])
+            ->add('Address', null, [
+                'template' => 'DomainBusinessBundle:Admin:BusinessProfile/full_address.html.twig'
+            ])
             ->add('hasImages')
             ->add('subscriptionPlan', null, [
                 'template' => 'DomainBusinessBundle:Admin:BusinessProfile/list_subscription.html.twig'
             ])
             ->add('registrationDate')
-            ->add(
-                'user',
-                null,
-                [
-                    'label' => 'Business Admin',
-                ]
-            )
             ->add('isActive')
             ->add('isDeleted', null, [
                 'label' => 'Scheduled for deletion',
@@ -436,6 +466,10 @@ class BusinessProfileAdmin extends OxaAdmin
         // form translatable block
         foreach (LocaleHelper::getLocaleList() as $key => $value) {
             $formMapper->tab('Main')->with($value, ['class' => 'col-md-6',])->end()->end();
+        }
+
+        if ($subscriptionPlanCode >= SubscriptionPlanInterface::CODE_PREMIUM_GOLD && $businessProfile->getId()) {
+            $formMapper->tab('Main')->with('Testimonials')->end()->end();
         }
 
         $formMapper
@@ -621,6 +655,37 @@ class BusinessProfileAdmin extends OxaAdmin
             ->end()
         ;
 
+        if ($subscriptionPlanCode >= SubscriptionPlanInterface::CODE_PREMIUM_GOLD && $businessProfile->getId()) {
+            $formMapper
+                ->tab('Main')
+                    ->with('Testimonials')
+                        ->add(
+                            'testimonials',
+                            'sonata_type_collection',
+                            [
+                                'by_reference'  => false,
+                                'required'      => false,
+                                'type_options' => [
+                                    'delete'         => true,
+                                    'delete_options' => [
+                                        'type'         => 'checkbox',
+                                        'type_options' => [
+                                            'mapped'   => false,
+                                            'required' => false,
+                                        ],
+                                    ],
+                                ],
+                            ],
+                            [
+                                'edit'          => 'inline',
+                                'inline'        => 'table',
+                                'allow_delete'  => false,
+                            ]
+                        )
+                    ->end()
+                ->end();
+        }
+
         if ($this->isGranted('ROLE_SUPER_ADMIN')) {
             $formMapper
                 ->tab('Main')
@@ -681,12 +746,16 @@ class BusinessProfileAdmin extends OxaAdmin
         // Map Block
         $oxaConfig = $this->getConfigurationPool()->getContainer()->get('oxa_config');
 
-        if ($this->getSubject()->getLatitude() && $this->getSubject()->getLongitude()) {
-            $latitude   = $this->getSubject()->getLatitude();
-            $longitude  = $this->getSubject()->getLongitude();
+        $requestData = $this->getRequest()->request->get($this->getRequest()->query->get('uniqid'));
+        if (!empty($requestData['latitude']) && !empty($requestData['longitude'])) {
+            $latitude  = $requestData['latitude'];
+            $longitude = $requestData['longitude'];
+        } elseif ($this->getSubject()->getLatitude() && $this->getSubject()->getLongitude()) {
+            $latitude  = $this->getSubject()->getLatitude();
+            $longitude = $this->getSubject()->getLongitude();
         } else {
-            $latitude   = $oxaConfig->getValue(ConfigInterface::DEFAULT_MAP_COORDINATE_LATITUDE);
-            $longitude  = $oxaConfig->getValue(ConfigInterface::DEFAULT_MAP_COORDINATE_LONGITUDE);
+            $latitude  = $oxaConfig->getValue(ConfigInterface::DEFAULT_MAP_COORDINATE_LATITUDE);
+            $longitude = $oxaConfig->getValue(ConfigInterface::DEFAULT_MAP_COORDINATE_LONGITUDE);
         }
 
         $formMapper
@@ -788,7 +857,7 @@ class BusinessProfileAdmin extends OxaAdmin
         ;
 
         // Super VM Block
-        if ($businessProfile->getId() and $subscriptionPlanCode >= SubscriptionPlanInterface::CODE_PREMIUM_PLATINUM) {
+        if ($businessProfile->getId() && $subscriptionPlanCode >= SubscriptionPlanInterface::CODE_PREMIUM_PLATINUM) {
             $formMapper
                 ->tab('Main')
                     ->with('SuperVM')
@@ -811,7 +880,7 @@ class BusinessProfileAdmin extends OxaAdmin
         }
 
         // Keyword Block
-        if ($businessProfile->getId() and $subscriptionPlanCode > SubscriptionPlanInterface::CODE_FREE) {
+        if ($businessProfile->getId() && $subscriptionPlanCode > SubscriptionPlanInterface::CODE_FREE) {
             $formMapper
                 ->tab('Main')
                     ->with('Keywords')
@@ -820,6 +889,14 @@ class BusinessProfileAdmin extends OxaAdmin
                                 'class' => 'selectize-control',
                             ],
                             'required' => false,
+                        ])
+                        ->add('relatedKeywords', TextType::class, [
+                            'attr' => [
+                                'class' => 'selectize-control disabled',
+                            ],
+                            'read_only' => true,
+                            'required'  => false,
+                            'disabled'  => true,
                         ])
                     ->end()
                 ->end()
@@ -995,7 +1072,7 @@ class BusinessProfileAdmin extends OxaAdmin
             ->tab('Others')
                 ->with('DoubleClick')
                     ->add('dcOrderId', null, [
-                        'label' => 'DC Order Id for Ad Usage Report',
+                        'label' => $this->trans('business_profile.fields.dcOrderId', [], 'AdminDomainBusinessBundle'),
                     ])
                 ->end()
             ->end()
@@ -1110,6 +1187,34 @@ class BusinessProfileAdmin extends OxaAdmin
                                 'inline'       => 'table',
                             ]
                         )
+                    ->end()
+                ->end()
+                ->tab('Reviews')
+                    ->with('Yelp')
+                        ->add('yelpURL')
+                        ->add('isShowYelpRating', null, [
+                            'label' => 'Show',
+                        ])
+                    ->end()
+                    ->with('Google My Business')
+                        ->add('googlePlaceId', null, [
+                            'help' => '<a href="https://developers.google.com/maps/documentation/javascript/examples/places-placeid-finder" target="_blank">Place ID finder</a>',
+                        ])
+                        ->add('isShowGooglePlaceRating', null, [
+                            'label' => 'Show',
+                        ])
+                    ->end()
+                    ->with('TripAdvisor')
+                        ->add('tripAdvisorUrl')
+                        ->add('isShowTripAdvisorRating', null, [
+                            'label' => 'Show',
+                        ])
+                    ->end()
+                    ->with('Facebook Page')
+                        ->add('facebookRating')
+                        ->add('isShowFacebookRating', null, [
+                            'label' => 'Show',
+                        ])
                     ->end()
                 ->end()
             ;
@@ -1328,7 +1433,7 @@ class BusinessProfileAdmin extends OxaAdmin
             ->tab('Others')
                 ->with('DoubleClick')
                     ->add('dcOrderId', null, [
-                        'label' => 'DC Order Id for Ad Usage Report',
+                        'label' => $this->trans('business_profile.fields.dcOrderId', [], 'AdminDomainBusinessBundle'),
                     ])
                 ->end()
             ->end()
@@ -1784,7 +1889,14 @@ class BusinessProfileAdmin extends OxaAdmin
                         [
                             'max' => BusinessProfile::BUSINESS_PROFILE_FIELD_SLOGAN_LENGTH,
                         ]
-                    )
+                    ),
+                    new Regex(
+                        [
+                            'match'   => false,
+                            'pattern' => BusinessProfile::PHONE_NUMBER_LIKE_REGEX_PATTERN,
+                            'message' => 'business_profile.phone_number_check_failed',
+                        ]
+                    ),
                 ],
             ])
             ->add('description' . $localePostfix, CKEditorType::class, [
@@ -1808,7 +1920,14 @@ class BusinessProfileAdmin extends OxaAdmin
                         [
                             'max' => BusinessProfile::BUSINESS_PROFILE_FIELD_DESCRIPTION_LENGTH,
                         ]
-                    )
+                    ),
+                    new Regex(
+                        [
+                            'match'   => false,
+                            'pattern' => BusinessProfile::PHONE_NUMBER_LIKE_REGEX_PATTERN,
+                            'message' => 'business_profile.phone_number_check_failed',
+                        ]
+                    ),
                 ],
             ])
             ->add('product' . $localePostfix, TextareaType::class, [
@@ -1829,7 +1948,14 @@ class BusinessProfileAdmin extends OxaAdmin
                         [
                             'max' => BusinessProfile::BUSINESS_PROFILE_FIELD_PRODUCT_LENGTH,
                         ]
-                    )
+                    ),
+                    new Regex(
+                        [
+                            'match'   => false,
+                            'pattern' => BusinessProfile::PHONE_NUMBER_LIKE_REGEX_PATTERN,
+                            'message' => 'business_profile.phone_number_check_failed',
+                        ]
+                    ),
                 ],
             ])
             ->add('brands' . $localePostfix, TextareaType::class, [
@@ -1847,7 +1973,14 @@ class BusinessProfileAdmin extends OxaAdmin
                         [
                             'max' => BusinessProfile::BUSINESS_PROFILE_FIELD_BRANDS_LENGTH,
                         ]
-                    )
+                    ),
+                    new Regex(
+                        [
+                            'match'   => false,
+                            'pattern' => BusinessProfile::PHONE_NUMBER_LIKE_REGEX_PATTERN,
+                            'message' => 'business_profile.phone_number_check_failed',
+                        ]
+                    ),
                 ],
             ])
         ;
@@ -1879,5 +2012,25 @@ class BusinessProfileAdmin extends OxaAdmin
             self::FILTER_DIRECTIONS,
             self::FILTER_CALL_MOBILE,
         ];
+    }
+
+    private function addMinimumActiveSubscriptionToQuery($queryBuilder, $alias, $field, $value, $code): bool
+    {
+        if (!$value['value']) {
+            return false;
+        }
+        /** @var QueryBuilder $queryBuilder */
+        $queryBuilder->leftJoin(
+            sprintf('%s.subscriptions', $alias),
+            'sub',
+            Join::WITH,
+            'sub.status = :subscriptionStatus'
+        );
+        $queryBuilder->leftJoin('sub.subscriptionPlan', 'sp');
+        $queryBuilder->andWhere('sp.code >= :code');
+        $queryBuilder->setParameter('code', $code);
+        $queryBuilder->setParameter('subscriptionStatus', StatusInterface::STATUS_ACTIVE);
+
+        return true;
     }
 }

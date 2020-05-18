@@ -312,7 +312,6 @@ class CSVImportFile implements DefaultEntityInterface
     {
         $importFields = [
             BusinessProfile::BUSINESS_PROFILE_FIELD_PANORAMA_ID => 'business_profile.fields.panorama_id',
-            BusinessProfile::BUSINESS_PROFILE_FIELD_WEBSITE_TYPE => 'business_profile.fields.website',
             BusinessProfile::BUSINESS_PROFILE_FIELD_EMAIL => 'business_profile.fields.email',
             BusinessProfile::BUSINESS_PROFILE_FIELD_STREET_ADDRESS => 'business_profile.fields.streetAddress',
             BusinessProfile::BUSINESS_PROFILE_FIELD_STREET_NUMBER => 'business_profile.fields.streetNumber',
@@ -324,6 +323,13 @@ class CSVImportFile implements DefaultEntityInterface
             BusinessProfile::BUSINESS_PROFILE_FIELD_CUSTOM_ADDRESS => 'business_profile.fields.customAddress',
             BusinessProfile::BUSINESS_PROFILE_FIELD_HIDE_ADDRESS => 'business_profile.fields.hideAddress',
             BusinessProfile::BUSINESS_PROFILE_FIELD_HIDE_MAP => 'business_profile.fields.hideMap',
+            BusinessProfile::BUSINESS_PROFILE_FIELD_LATITUDE => 'business_profile.fields.latitude',
+            BusinessProfile::BUSINESS_PROFILE_FIELD_LONGITUDE => 'business_profile.fields.longitude',
+            BusinessProfile::BUSINESS_PROFILE_FIELD_DC_ORDER_ID => 'business_profile.fields.dcOrderId',
+
+            BusinessProfile::BUSINESS_PROFILE_FIELD_WEBSITE_TYPE => 'business_profile.fields.website',
+            BusinessProfile::BUSINESS_PROFILE_FIELD_ACTION_URL_TYPE => 'business_profile.fields.actionURL',
+            BusinessProfile::BUSINESS_PROFILE_FIELD_ACTION_URL_TYPE_TYPE => 'business_profile.fields.actionURLType',
             BusinessProfile::BUSINESS_PROFILE_FIELD_TRIP_LINKEDIN_URL_TYPE => 'business_profile.fields.linkedInURL',
             BusinessProfile::BUSINESS_PROFILE_FIELD_TWITTER_URL_TYPE => 'business_profile.fields.twitterURL',
             BusinessProfile::BUSINESS_PROFILE_FIELD_FACEBOOK_URL_TYPE => 'business_profile.fields.facebookURL',
@@ -331,6 +337,7 @@ class CSVImportFile implements DefaultEntityInterface
             BusinessProfile::BUSINESS_PROFILE_FIELD_YOUTUBE_URL_TYPE => 'business_profile.fields.youtubeURL',
             BusinessProfile::BUSINESS_PROFILE_FIELD_INSTAGRAM_URL_TYPE => 'business_profile.fields.instagramURL',
             BusinessProfile::BUSINESS_PROFILE_FIELD_TRIP_ADVISOR_URL_TYPE => 'business_profile.fields.tripAdvisorURL',
+
             self::BUSINESS_PROFILE_PHONE_MAIN => 'business_profile.fields.phone_main',
             self::BUSINESS_PROFILE_PHONE_SECONDARY => 'business_profile.fields.phone_secondary',
             self::BUSINESS_PROFILE_PHONE_FAX => 'business_profile.fields.phone_fax',

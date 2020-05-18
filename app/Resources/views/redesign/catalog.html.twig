@@ -87,6 +87,9 @@
                 {% include ':redesign/blocks/mapbox:mapLogo.html.twig' %}
             </div>
             <span id="map-markers" hidden data-mapbox-markers="{{ markers }}"></span>
+            {% if carouselBusinesses and showCarousel %}
+                {% include ':redesign/blocks:homepage_carousel.html.twig' with {carouselBusinesses: carouselBusinesses} %}
+            {% endif %}
         </section><!-- results-map -->
 
         {% include ':redesign/blocks/banners:search-page-float.html.twig' with { 'bannerType': BANNER_CODE.SEARCH_FLOAT_BOTTOM } %}
@@ -107,6 +110,7 @@
             require(['{{ absolute_url(asset("assetic/js/modules/tools/redirect.min.js")) }}'], function(redirect) {
                 var redirect = new redirect();
             });
+            require(['{{ absolute_url(asset("assetic/js/modules/tools/homepageCarousel.min.js")) }}'], function() {});
         });
     </script>
 

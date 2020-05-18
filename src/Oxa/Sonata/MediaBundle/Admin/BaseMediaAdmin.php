@@ -90,7 +90,10 @@ class BaseMediaAdmin extends OxaAdmin
             return array();
         }
 
-        $context   = $this->getRequest()->get('context', $this->pool->getDefaultContext());
+        $filterParams = $this->getRequest()->get('filter');
+        $context = $filterParams['context']['value'] ??
+            $this->getRequest()->get('context', $this->pool->getDefaultContext());
+
         $providers = $this->pool->getProvidersByContext($context);
         $provider  = $this->getRequest()->get('provider');
 

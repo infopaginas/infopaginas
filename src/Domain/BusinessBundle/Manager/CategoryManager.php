@@ -77,7 +77,7 @@ class CategoryManager extends Manager
     /**
      * @param Category $category
      *
-     * @return array
+     * @return array|bool
      */
     public function buildCategoryElasticData(Category $category)
     {
@@ -100,27 +100,6 @@ class CategoryManager extends Manager
         return $data;
     }
 
-    /**
-     * @param bool $sourceEnabled
-     *
-     * @return array
-     */
-    public function getCategoryElasticSearchMapping($sourceEnabled = true)
-    {
-        $properties = $this->getCategoryElasticSearchIndexParams();
-
-        $data = [
-            Category::ELASTIC_DOCUMENT_TYPE => [
-                '_source' => [
-                    'enabled' => $sourceEnabled,
-                ],
-                'properties' => $properties,
-            ],
-        ];
-
-        return $data;
-    }
-
     public function getUpdatedCategoriesIterator()
     {
         $categories = $this->getRepository()->getUpdatedCategoriesIterator();
@@ -138,34 +117,32 @@ class CategoryManager extends Manager
     /**
      * @return array
      */
-    public function getCategoryElasticSearchIndexParams()
+    public static function getCategoryElasticSearchIndexParams(): array
     {
-        $params = [
+        return [
             'auto_suggest_en' => [
-                'type' => 'string',
+                'type' => 'text',
                 'analyzer' => 'autocomplete',
                 'search_analyzer' => 'autocomplete_search',
                 'fields' => [
                     'folded' => [
-                        'type' => 'string',
+                        'type' => 'text',
                         'analyzer' => 'folding',
                     ],
                 ],
             ],
             'auto_suggest_es' => [
-                'type' => 'string',
+                'type' => 'text',
                 'analyzer' => 'autocomplete',
                 'search_analyzer' => 'autocomplete_search',
                 'fields' => [
                     'folded' => [
-                        'type' => 'string',
+                        'type' => 'text',
                         'analyzer' => 'folding',
                     ],
                 ],
             ],
         ];
-
-        return $params;
     }
 
     /**
@@ -176,13 +153,13 @@ class CategoryManager extends Manager
      *
      * @return array
      */
-    public function getElasticAutoSuggestSearchQuery($query, $locale, $limit = null, $offset = 0)
+    public static function getElasticAutoSuggestSearchQuery($query, $locale, $limit = null, $offset = 0): array
     {
         if (!$limit) {
             $limit = self::AUTO_SUGGEST_MAX_CATEGORY_COUNT;
         }
 
-        $searchQuery = [
+        return [
             'from' => $offset,
             'size' => $limit,
             'track_scores' => true,
@@ -194,6 +171,7 @@ class CategoryManager extends Manager
                         'auto_suggest_' . strtolower($locale),
                         'auto_suggest_' . strtolower($locale) . '.folded',
                     ],
+                    'fuzziness' => 'auto',
                 ],
             ],
             'sort' => [
@@ -202,8 +180,6 @@ class CategoryManager extends Manager
                 ],
             ],
         ];
-
-        return $searchQuery;
     }
 
     /**

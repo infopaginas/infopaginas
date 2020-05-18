@@ -12,6 +12,7 @@ class CacheUtil
     public const ID_CONFIGS = 'configs';
 
     public const SECONDS_IN_MONTH = 2592000;
+    public const SECONDS_IN_DAY = 86400;
     public const AUTOCOMPLETE_CACHE_LIFETIME = 300;
     public const HOMEPAGE_SHORTCUT_CACHE_LIFETIME = self::SECONDS_IN_MONTH;
 

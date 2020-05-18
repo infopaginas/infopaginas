@@ -1,12 +1,12 @@
 define(['jquery', 'underscore',  'abstract/view', 'js-cookie', 'jquery-ui'], function( $, _, view, cookie ) {
-    'use strict'
+    'use strict';
 
     var geolocation = function ( options ) {
         this.position = null;
         this.init(options);
 
         return this;
-    }
+    };
 
     geolocation.prototype = new view();
 
@@ -18,6 +18,8 @@ define(['jquery', 'underscore',  'abstract/view', 'js-cookie', 'jquery-ui'], fun
             autoCompleteMinLen : 2,
             refreshPositionTimeout : 600, // secs
             cookieKey : 'geo_location_data',
+            searchLocationInput : '#searchLocation',
+            getLocalityByCoordUrl: Routing.generate( 'domain_search_closest_locality_by_coord' ),
         };
         $.extend( this.options, options );
 
@@ -30,46 +32,45 @@ define(['jquery', 'underscore',  'abstract/view', 'js-cookie', 'jquery-ui'], fun
         if ( cookieString ) {
             this.position = JSON.parse( cookieString );
 
-            if ( !this.options.locationBox.val() ) {
-                // start geo if custom field is empty
-                this.setToForm();
-            } else {
-                this.setToUserLocationForm();
+            if ( this.position.localityName && this.position.coords.latitude && this.position.coords.longitude ) {
+                this.setSearchGroData();
+                this.autofillLocation();
             }
         } else {
             this.initPosition();
         }
 
         this.locationAutocomplete();
-    }
+    };
 
-    geolocation.prototype.isGelocationAvailable = function () {
-        return !!navigator.geolocation;
-    }
+    geolocation.prototype.autofillLocation = function( ) {
+        if ( !$( this.options.searchLocationInput ).val() ) {
+            $( this.options.searchLocationInput ).val( this.position.localityName );
+        }
+    };
 
-    geolocation.prototype.getLocationsNameByLatLng = function ( lat, lng ) {
+    geolocation.prototype.getLocalityNameByLatLng = function ( lat, lng ) {
         var self = this;
 
-        $.when(
-            $.get(window.location.protocol + this.options.geoCodeApiURL + (lat + ',' + lng))
-        ).then(
-            this.onLocationsNameByLatLngSuccess.bind(self),
-            this.onGeoLocationError.bind(self)
-        );
-    }
+        $.ajax( self.options.getLocalityByCoordUrl, {
+            data: {'clt': lat, 'clg': lng},
+            success: function( data ) {
+                self.position.localityName = data['localityName'];
 
-    geolocation.prototype.onLocationsNameByLatLngSuccess = function ( data ) {
-        this.extractAddress(data);
-        this.setToCookie();
-        this.saveLocationToDatabase();
-        this.setToForm();
-    }
+                self.autofillLocation();
+                self.setToCookie();
+                self.saveLocationToDatabase();
+                self.setSearchGroData();
+            },
+            timeout: 2000,
+        } );
+    };
 
     geolocation.prototype.setToCookie = function () {
         var expiresDate = new Date(new Date().getTime() + this.options.refreshPositionTimeout * 1000);
 
         var cookieString = {
-            address: this.position.address,
+            localityName: this.position.localityName,
             coords:
                 {
                     latitude: this.position.coords.latitude,
@@ -78,7 +79,7 @@ define(['jquery', 'underscore',  'abstract/view', 'js-cookie', 'jquery-ui'], fun
         };
 
         cookie.set( this.options.cookieKey, JSON.stringify(cookieString), { expires: expiresDate } );
-    }
+    };
 
     geolocation.prototype.saveLocationToDatabase = function () {
         var coordsObject = { 'geolocation' : {
@@ -89,58 +90,33 @@ define(['jquery', 'underscore',  'abstract/view', 'js-cookie', 'jquery-ui'], fun
         $( document ).trigger( 'trackingMapResult', coordsObject );
     };
 
-    geolocation.prototype.setToForm = function () {
+    geolocation.prototype.setSearchGroData = function () {
         // set to form fields coordinates and address
-        this.$( this.options.searchLocation ).val( this.position.address );
-        this.$( this.options.searchLocationGeoLoc ).val( this.position.address );
-
-        this.$( this.options.searchLatSelector ).val( this.position.coords.latitude );
-        this.$( this.options.searchLngSelector ).val( this.position.coords.longitude );
-    };
-
-    geolocation.prototype.setToUserLocationForm = function () {
-        // set to form fields coordinates and address
-        this.$( this.options.searchLocationGeoLoc ).val( this.position.address );
+        this.$( this.options.searchLocationGeoLoc ).val( this.position.localityName );
 
         this.$( this.options.searchLatSelector ).val( this.position.coords.latitude );
         this.$( this.options.searchLngSelector ).val( this.position.coords.longitude );
     };
 
     geolocation.prototype.onGeoLocationError = function ( data ) {
-    }
-
-    geolocation.prototype.extractAddress = function ( arrayData ) {
-        var mainAddr = arrayData.results[0];
-
-        var city = null, zip = null, fullAddr;
-
-        if( mainAddr && 'address_components' in mainAddr && mainAddr.address_components ) {
-            _.each( mainAddr.address_components, function( item ) {
-                if ( _.contains( item.types, 'locality' ) ) {
-                    city = item.long_name;
-                }
-            })
-        }
-
-        fullAddr = ( !_.isNull(city) ? city : '' );
-
-        this.position.address = fullAddr;
-    }
+    };
 
     geolocation.prototype.setPosition = function ( position ) {
         this.position = position;
 
-        this.getLocationsNameByLatLng(
+        this.getLocalityNameByLatLng(
             this.position.coords.latitude,
             this.position.coords.longitude
         );
 
         return this;
-    }
+    };
 
     geolocation.prototype.initPosition = function () {
-        navigator.geolocation.getCurrentPosition(this.setPosition.bind(this), this.onGeoLocationError.bind(this))
-    }
+        if (window.navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(this.setPosition.bind(this), this.onGeoLocationError.bind(this))
+        }
+    };
 
     geolocation.prototype.locationAutocomplete = function ( ) {
         this.options.locationBox.autocomplete({
@@ -148,7 +124,7 @@ define(['jquery', 'underscore',  'abstract/view', 'js-cookie', 'jquery-ui'], fun
             minLength: this.options.autoCompleteMinLen,
             select: this.onAutoCompleteSelect
         });
-    }
+    };
 
     return geolocation;
-})
+});

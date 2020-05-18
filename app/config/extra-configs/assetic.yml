@@ -31,6 +31,12 @@ assetic:
             output: 'assetic/app_emergency_css.css'
             filters:
                 - scssphp
+        app_business_rating:
+            inputs:
+                - '../sass/_scss/business-rating.scss'
+            output: 'assetic/app_business_rating.css'
+            filters:
+                - scssphp
         app_common_js:
             inputs:
                 - '@DomainSiteBundle/Resources/public/scripts/require.js'
@@ -105,6 +111,12 @@ assetic:
             inputs:
                 - '@DomainSiteBundle/Resources/public/scripts/modules/tools/videojsCustomize.js'
             output: 'assetic/js/modules/tools/videojsCustomize.min.js'
+            filters:
+                - jsqueeze
+        require_google_map_link:
+            inputs:
+                - '@DomainSiteBundle/Resources/public/scripts/modules/tools/googleMapLink.js'
+            output: 'assetic/js/modules/tools/googleMapLink.min.js'
             filters:
                 - jsqueeze
         video_share_js:
@@ -188,12 +200,6 @@ assetic:
             inputs:
                 - '@DomainSiteBundle/Resources/public/scripts/modules/tools/spin.js'
             output: 'assetic/js/modules/tools/spin.min.js'
-            filters:
-                - jsqueeze
-        tools_directions_js:
-            inputs:
-                - '@DomainSiteBundle/Resources/public/scripts/modules/tools/directions.js'
-            output: 'assetic/js/modules/tools/directions.min.js'
             filters:
                 - jsqueeze
         tools_select_js:

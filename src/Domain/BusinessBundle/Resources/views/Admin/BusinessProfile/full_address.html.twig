@@ -1,0 +1,10 @@
+{% extends 'SonataAdminBundle:CRUD:base_list_field.html.twig' %}
+
+{% block field%}
+    {% if object.getCustomAddress() %}
+        {{ object.getCustomAddress() }}
+    {% else %}
+        <strong>{{ object.getStreetAddress() }}</strong>,
+        {{ object.getCity() }}, {{ object.getCountry() }} {{ object.getZipCode() }}
+    {% endif %}
+{% endblock %}

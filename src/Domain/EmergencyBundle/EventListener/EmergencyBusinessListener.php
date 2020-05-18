@@ -81,7 +81,7 @@ class EmergencyBusinessListener implements EventSubscriber
         $entity = $args->getEntity();
 
         if ($entity instanceof EmergencyBusiness) {
-            $this->businessProfileManager->removeEmergencyBusinessFromElastic($entity->getId());
+            $this->businessProfileManager->removeItemFromElastic(EmergencyBusiness::ELASTIC_INDEX, $entity->getId());
         }
     }
 

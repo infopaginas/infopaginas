@@ -9,7 +9,7 @@ sonata_media:
         media:              Oxa\Sonata\MediaBundle\Entity\Media
         gallery:            Oxa\Sonata\MediaBundle\Entity\Gallery
         gallery_has_media:  Oxa\Sonata\MediaBundle\Entity\GalleryHasMedia
-    admin_format:   { width: 200 , quality: 90, format: 'reference'}
+    admin_format:   { width: 200 , quality: 90, format: 'admin'}
     contexts:
         # when you add a new one or edit context name,
         # edit OxaMediaInterface constans
@@ -126,6 +126,15 @@ sonata_media:
                 normal:       { width: 444, height: 246, format: 'reference'}
                 normal_webp:  { width: 444, height: 246, quality: 70, format: 'webp'}
                 normal_jp2:   { width: 444, height: 246, quality: 40, format: 'jp2'}
+        testimonial:
+            download:
+                mode: http
+            providers:
+                - sonata.media.provider.image
+            formats:
+                preview:       { width: 120, height: 120, quality: 70, format: 'reference'}
+                preview_webp:  { width: 120, height: 120, quality: 70, format: 'webp'}
+                preview_jp2:   { width: 120, height: 120, quality: 40, format: 'jp2'}
     cdn:
         #define the public base url for the uploaded media
         server:

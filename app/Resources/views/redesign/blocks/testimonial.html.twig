@@ -1,0 +1,18 @@
+{% from 'widgets/picture_macros.html.twig' import picture %}
+
+<div class="wrapper">
+    {% if testimonial.image %}
+        {{ picture(testimonial.image, 'preview', true, testimonial.title) }}
+    {% else %}
+        <img src="{{ absolute_url(asset('redesign/img/person-icon.svg')) }}"
+             alt="Default" class="default-image">
+    {% endif %}
+    <div class="testimonial-description">
+        {{ testimonial.description }}
+    </div>
+    <div class="star-rating">
+        {% for i in 1..5 %}
+            <span class="fa fa-star fa-star-selected"></span>
+        {% endfor %}
+    </div>
+</div>

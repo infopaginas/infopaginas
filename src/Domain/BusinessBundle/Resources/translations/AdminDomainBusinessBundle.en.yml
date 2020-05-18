@@ -48,7 +48,7 @@ business_profile:
     phone_main: Main Phone
     phone_secondary: Secondary Phone
     phone_fax: Fax
-    website: Website
+    website: Website URL
     email: Email
     productEn: Product English
     productEs: Product Spanish
@@ -73,6 +73,12 @@ business_profile:
     tripAdvisorURL: TripAdvisor URL
     sloganEn: Slogan English
     sloganEs: Slogan Spanish
+    latitude: Latitude
+    longitude: Longitude
+    actionURL: Action URL
+    actionURLType: Action URL Type
+    dcOrderId: DC Order Id for Ad Usage Report
+    notUniquePhone: Enable not Unique Phones
 
 filter:
   label_is_draft: Draft
@@ -81,6 +87,7 @@ filter:
   label_categories.en: Categories En
   label_has_panorama_id: Has panorama id
   label_only_paid_profiles: Only paid profiles
+  label_has_supervm: Has SuperVM
 
 # interaction report
 interaction_report:

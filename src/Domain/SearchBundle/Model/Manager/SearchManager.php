@@ -64,12 +64,7 @@ class SearchManager extends Manager
     {
         $search = $this->businessProfileManager->search($searchParams);
         $results = $search['data'];
-        $totalResults = $search['total'];
-
-        if (!$results) {
-            // todo - change logic to 40 miles
-            $results  = [];
-        }
+        $totalResults = $search['total']['value'];
 
         $categories    = [];
         $neighborhoods = [];
@@ -111,7 +106,7 @@ class SearchManager extends Manager
         $search = $this->businessProfileManager->searchCatalog($searchParams);
 
         $results = $search['data'];
-        $totalResults = $search['total'];
+        $totalResults = $search['total']['value'];
 
         if ($results) {
             $pagesCount   = ceil($totalResults/$searchParams->limit);
@@ -146,7 +141,7 @@ class SearchManager extends Manager
         $search = $this->businessProfileManager->searchSuggestedBusinesses($searchParams);
 
         $results      = $search['data'];
-        $totalResults = $search['total'];
+        $totalResults = $search['total']['value'];
 
         if ($results) {
             $pagesCount = ceil($totalResults/$searchParams->limit);
@@ -175,7 +170,7 @@ class SearchManager extends Manager
         $search = $this->businessProfileManager->searchClosestBusinesses($searchParams);
 
         $response = [
-            'total' => $search['total'],
+            'total' => $search['total']['value'],
             'data'  => [],
         ];
 
@@ -275,7 +270,7 @@ class SearchManager extends Manager
     public function getSearchDTO(Request $request, $isRandomized = true)
     {
         $location = $this->geolocationManager->buildLocationValueFromRequest($request);
-        $query = $this->getSafeSearchString(SearchDataUtil::getQueryFromRequest($request));
+        $query = self::getSafeSearchString(SearchDataUtil::getQueryFromRequest($request));
 
         if (!$location or !$query) {
             return null;
@@ -286,6 +281,7 @@ class SearchManager extends Manager
         $limit      = (int) $this->configService->getSetting(ConfigInterface::DEFAULT_RESULTS_PAGE_SIZE)->getValue();
         $searchDTO  = SearchDataUtil::buildRequestDTO($query, $location, $page, $limit);
         $searchDTO  = $this->setSearchAdsParams($searchDTO);
+        $searchDTO->setOriginalQuery(SearchDataUtil::getQueryFromRequest($request));
 
         $categoryFilter = SearchDataUtil::getCategoryFromRequest($request);
 
@@ -327,7 +323,7 @@ class SearchManager extends Manager
     {
         $location = $this->geolocationManager->buildLocationValueFromApi($params);
 
-        $query = $this->getSafeSearchString($params['q']);
+        $query = self::getSafeSearchString($params['q']);
 
         $searchDTO  = SearchDataUtil::buildRequestDTO($query, $location, (int)$params['p'], (int)$params['pp']);
         $searchDTO  = $this->setSearchAdsParams($searchDTO);
@@ -660,13 +656,11 @@ class SearchManager extends Manager
      *
      * @return string
      */
-    public function getSafeSearchString($query)
+    public static function getSafeSearchString($query)
     {
-        $words = $this->getSaveSearchWords($query);
+        $words = self::getSaveSearchWords($query);
 
-        $search = implode(' ', $words);
-
-        return $search;
+        return implode(' ', $words);
     }
 
     /**
@@ -674,7 +668,7 @@ class SearchManager extends Manager
      *
      * @return array
      */
-    private function getSaveSearchWords($query)
+    public static function getSaveSearchWords($query)
     {
         $searchString = SearchDataUtil::sanitizeElasticSearchQueryString($query);
 
@@ -685,13 +679,17 @@ class SearchManager extends Manager
         foreach ($words as $word) {
             $wordLength = mb_strlen($word);
 
-            if ($wordLength >= ElasticSearchManager::AUTO_SUGGEST_BUSINESS_MIN_WORD_LENGTH_ANALYZED) {
-                if ($wordLength > ElasticSearchManager::AUTO_SUGGEST_BUSINESS_MAX_WORD_LENGTH_ANALYZED) {
-                    $word = mb_substr($word, 0, ElasticSearchManager::AUTO_SUGGEST_BUSINESS_MAX_WORD_LENGTH_ANALYZED);
-                }
-
-                $data[] = $word;
+            if ($wordLength > ElasticSearchManager::AUTO_SUGGEST_BUSINESS_MAX_WORD_LENGTH_ANALYZED) {
+                $word = mb_substr($word, 0, ElasticSearchManager::AUTO_SUGGEST_BUSINESS_MAX_WORD_LENGTH_ANALYZED);
             }
+
+            // "fuzzy" operator
+            // https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-query-string-query.html#query-string-fuzziness
+            if ($wordLength > ElasticSearchManager::AUTO_SUGGEST_BUSINESS_MIN_WORD_LENGTH_ANALYZED) {
+                $word .= '~';
+            }
+
+            $data[] = $word;
         }
 
         return $data;

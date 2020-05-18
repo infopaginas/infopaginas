@@ -27,7 +27,6 @@
 
     &.dragging {
         cursor: pointer;
-        cursor: hand;
     }
 }
 .slick-slider .slick-track,
@@ -334,6 +333,7 @@
     padding: 0 15px 15px 15px;
     margin: 5px;
     height: 230px;
+    text-align: center;
 
     @media only screen and (max-width: 800px) {
       padding: 0 5px 15px 5px;
@@ -451,7 +451,7 @@
 
 .homepage-slider-main {
   &.slider {
-    height: 298px;
+    height: $homepage-carousel-height;
   }
 }
 

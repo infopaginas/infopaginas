@@ -145,6 +145,7 @@ twig:
             GOOGLE_OPTIMIZATION_CONTAINER_ID: 'GOOGLE_CONTAINER_ID'
             FOOTER_EMAIL: 'FOOTER_EMAIL'
             FOOTER_PHONE_NUMBER: 'FOOTER_PHONE_NUMBER'
+            OFFICE_COORDINATES: 'OFFICE_COORDINATES'
 
         EMERGENCY_FILTER:
             ALL:    'all'
@@ -177,3 +178,10 @@ twig:
             INSTAGRAM: 'instagram'
             FACEBOOK: 'facebook'
             TWITTER: 'twitter'
+
+        RATING:
+            YELP: 'rating_yelp'
+            GOOGLE: 'rating_google'
+            TRIP_ADVISOR: 'rating_trip_advisor'
+            FACEBOOK: 'rating_facebook'
+            AVERAGE: 'rating_average'

@@ -2,6 +2,7 @@
 
 namespace Domain\ReportBundle\Manager;
 
+use Domain\BusinessBundle\Entity\Area;
 use Domain\BusinessBundle\Entity\Locality;
 use Domain\BusinessBundle\Repository\CategoryRepository;
 use Domain\BusinessBundle\Repository\LocalityRepository;
@@ -14,6 +15,7 @@ use Domain\ReportBundle\Util\DatesUtil;
 use Oxa\MongoDbBundle\Manager\MongoDbManager;
 use Oxa\Sonata\AdminBundle\Util\Helpers\AdminHelper;
 use Domain\BusinessBundle\Entity\Category;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class CategoryOverviewReportManager extends BaseReportManager
 {
@@ -29,13 +31,15 @@ class CategoryOverviewReportManager extends BaseReportManager
     const MONGO_DB_FIELD_COUNT = 'count';
     const MONGO_DB_FIELD_DATE_TIME = 'datetime';
     const MONGO_DB_FIELD_TYPE = 'type';
-
+    const MONGO_DB_FIELD_AREA_ID = 'area_id';
     const MONGO_DB_FIELD_LOCALITY_ID = 'locality_id';
 
 
     const CATEGORY_TYPE_BUSINESS = 'business';
     const CATEGORY_TYPE_CATALOG  = 'catalog';
     const VISITORS = 'visitors';
+
+    protected $areas;
 
     /** @var MongoDbManager $mongoDbManager */
     protected $mongoDbManager;
@@ -47,6 +51,12 @@ class CategoryOverviewReportManager extends BaseReportManager
     public function __construct(MongoDbManager $mongoDbManager)
     {
         $this->mongoDbManager = $mongoDbManager;
+    }
+
+    public function getAreas()
+    {
+        return $this->areas ??
+            $this->areas = $this->getEntityManager()->getRepository(Area::class)->findBy([], ['id' => 'ASC']);
     }
 
     /**
@@ -161,6 +171,7 @@ class CategoryOverviewReportManager extends BaseReportManager
                             'action' => '$' . self::MONGO_DB_FIELD_ACTION,
                             'cid' => '$' . self::MONGO_DB_FIELD_CATEGORY_ID,
                             'type' => '$' . self::MONGO_DB_FIELD_TYPE,
+                            'aid' => '$' . self::MONGO_DB_FIELD_AREA_ID,
                         ],
                     ],
                 ],
@@ -182,6 +193,9 @@ class CategoryOverviewReportManager extends BaseReportManager
             $document[self::MONGO_DB_FIELD_ACTION] = $document['_id']['action'];
             $document[self::MONGO_DB_FIELD_TYPE] = $document['_id']['type'];
             $document[self::MONGO_DB_FIELD_CATEGORY_ID] = $document['_id']['cid'];
+            if (isset($document['_id']['aid'])) {
+                $document[self::MONGO_DB_FIELD_AREA_ID] = $document['_id']['aid'];
+            }
             $document[self::MONGO_DB_FIELD_COUNT] = (int)$document[self::MONGO_DB_FIELD_COUNT];
             $document[self::MONGO_DB_FIELD_DATE_TIME] = $aggregateStartDate;
 
@@ -291,6 +305,9 @@ class CategoryOverviewReportManager extends BaseReportManager
             ],
         ];
 
+        $visitorsByAreaQueriesArray = $this->getVisitorsByAreaQueries();
+        $aggregationQuery[1]['$group'] += $visitorsByAreaQueriesArray;
+
         $cursor = $this->mongoDbManager->aggregateData(
             self::MONGO_DB_COLLECTION_NAME_AGGREGATE,
             $aggregationQuery
@@ -318,11 +335,19 @@ class CategoryOverviewReportManager extends BaseReportManager
                             CategoryOverviewModel::TYPE_CODE_DIRECTION_BUTTON => $direction,
                             self::VISITORS => $visitors,
                         ];
+
+                        foreach ($this->getAreas() as $area) {
+                            $result[$categoryId][$area->getName()] = $document['area_' . $area->getId()];
+                        }
                     } else {
                         $result[$categoryId][CategoryOverviewModel::TYPE_CODE_IMPRESSION] += $impressions;
                         $result[$categoryId][CategoryOverviewModel::TYPE_CODE_CALL_MOB_BUTTON] += $callMob;
                         $result[$categoryId][CategoryOverviewModel::TYPE_CODE_DIRECTION_BUTTON] += $direction;
                         $result[$categoryId][self::VISITORS] += $visitors;
+
+                        foreach ($this->getAreas() as $area) {
+                            $result[$categoryId][$area->getName()] += $document['area_' . $area->getId()];
+                        }
                     }
                 }
             }
@@ -395,6 +420,47 @@ class CategoryOverviewReportManager extends BaseReportManager
     protected function getCatalogCategoryEventSubQuery($event)
     {
         return $this->getCategoryEventSubQuery($event, BusinessOverviewModel::TYPE_CODE_CATEGORY_CATALOG);
+    }
+
+    protected function getVisitorsByAreaQueries(): array
+    {
+        $data = [];
+
+        foreach ($this->getAreas() as $area) {
+            $data['area_' . $area->getId()] = [
+                '$sum' => [
+                    '$cond' => [
+                        [
+                            '$and' => [
+                                [
+                                    '$eq' => [
+                                        '$' . self::MONGO_DB_FIELD_TYPE,
+                                        BusinessOverviewModel::TYPE_CODE_CATEGORY_CATALOG,
+                                    ],
+                                ],
+                                [
+                                    '$eq' => [
+                                        '$' . self::MONGO_DB_FIELD_ACTION,
+                                        CategoryOverviewModel::TYPE_CODE_IMPRESSION,
+                                    ],
+                                ],
+                                [
+                                    '$eq' => [
+                                        '$' . self::MONGO_DB_FIELD_AREA_ID,
+                                        $area->getId(),
+                                    ],
+                                ],
+                            ],
+                        ],
+                        '$' . self::MONGO_DB_FIELD_COUNT,
+                        0,
+                    ],
+                ],
+            ];
+
+        }
+
+        return $data;
     }
 
     /**
@@ -502,6 +568,14 @@ class CategoryOverviewReportManager extends BaseReportManager
             self::MONGO_DB_FIELD_DATE_TIME => $date,
             self::MONGO_DB_FIELD_ACTION => BusinessOverviewModel::TYPE_CODE_IMPRESSION,
         ];
+
+        if ($type == BusinessOverviewModel::TYPE_CODE_CATEGORY_CATALOG) {
+            /** @var Locality $locality */
+            $locality = $this->getEntityManager()->getRepository(Locality::class)->find($localityId);
+            if ($locality) {
+                $data[self::MONGO_DB_FIELD_AREA_ID] = $locality->getArea()->getId();
+            }
+        }
 
         return $data;
     }
@@ -697,9 +771,12 @@ class CategoryOverviewReportManager extends BaseReportManager
         $directions  = [];
         $callsMobile = [];
 
-        foreach ($categoryIds as $categoryId) {
+        foreach ($categoryIds as $i => $categoryId) {
+            $spanishName = '';
+
             if (!empty($mapping[$categoryId])) {
-                $label = $mapping[$categoryId];
+                $label = $mapping[$categoryId]['name'];
+                $spanishName = $mapping[$categoryId]['searchTextEs'];
             } else {
                 $label = $categoryId . ' - item was deleted';
             }
@@ -719,13 +796,18 @@ class CategoryOverviewReportManager extends BaseReportManager
             $counts[]      = $visitor;
 
             // table
-            $data[] = [
-                'name' => $label,
+            $data[$i] = [
+                'name' => $label . ' / ' . $spanishName,
                 CategoryOverviewModel::TYPE_CODE_IMPRESSION => $impression,
                 CategoryOverviewModel::TYPE_CODE_DIRECTION_BUTTON => $direction,
                 CategoryOverviewModel::TYPE_CODE_CALL_MOB_BUTTON => $callMobile,
                 'count' => $visitor,
             ];
+
+            // visitors count per Area data
+            foreach ($this->getAreas() as $area) {
+                $data[$i][$area->getName()] = $categoryOverviewData[$area->getName()];
+            }
         }
 
         $total = $categoryOverviewResult['total'];
@@ -777,7 +859,8 @@ class CategoryOverviewReportManager extends BaseReportManager
         $categories = $this->getCategoryRepository()->getAvailableCategoryNameByIds($categoryIds);
 
         foreach ($categories as $category) {
-            $data[$category['id']] = $category['name'];
+            $data[$category['id']]['name'] = $category['name'];
+            $data[$category['id']]['searchTextEs'] = $category['searchTextEs'];
         }
 
         return $data;

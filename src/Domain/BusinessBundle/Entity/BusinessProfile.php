@@ -100,8 +100,8 @@ class BusinessProfile implements
     const TRANSLATION_LANG_EN = 'En';
     const TRANSLATION_LANG_ES = 'Es';
 
-    const ELASTIC_DOCUMENT_TYPE = 'BusinessProfile';
-    const ELASTIC_DOCUMENT_TYPE_AD = 'BusinessProfileAd';
+    const ELASTIC_INDEX = 'business_profile';
+    const ELASTIC_INDEX_AD = 'business_profile_ad';
     const FLAG_IS_UPDATED = 'isUpdated';
 
     const ELASTIC_LOCALITIES_FILED = 'locality_ids';
@@ -125,6 +125,8 @@ class BusinessProfile implements
     const BUSINESS_PROFILE_FIELD_NAME_ES     = 'nameEs';
     const BUSINESS_PROFILE_FIELD_PANORAMA_ID = 'panoramaId';
     const BUSINESS_PROFILE_FIELD_EMAIL       = 'email';
+    const BUSINESS_PROFILE_FIELD_DC_ORDER_ID = 'dcOrderId';
+    const BUSINESS_PROFILE_FIELD_ENABLE_NOT_UNIQUE_PHONE = 'enableNotUniquePhone';
 
     const BUSINESS_PROFILE_FIELD_SERVICE_AREAS_TYPE     = 'serviceAreasType';
     const BUSINESS_PROFILE_FIELD_MILES_OF_MY_BUSINESS   = 'milesOfMyBusiness';
@@ -142,6 +144,7 @@ class BusinessProfile implements
 
     const BUSINESS_PROFILE_FIELD_WEBSITE_TYPE = 'websiteItem';
     const BUSINESS_PROFILE_FIELD_ACTION_URL_TYPE  = 'actionUrlItem';
+    const BUSINESS_PROFILE_FIELD_ACTION_URL_TYPE_TYPE  = 'actionUrlType';
     const BUSINESS_PROFILE_FIELD_TWITTER_URL_TYPE = 'twitterURLItem';
     const BUSINESS_PROFILE_FIELD_FACEBOOK_URL_TYPE   = 'facebookURLItem';
     const BUSINESS_PROFILE_FIELD_GOOGLE_URL_TYPE     = 'googleURLItem';
@@ -198,6 +201,12 @@ class BusinessProfile implements
 
     // fields should not contain any of !@$%^*()+={}[]<>? characters
     const ADDRESS_FIELDS_REGEX_PATTERN = '/^[^!@$%^*()+={}\[\]<>?]*$/';
+    const PHONE_NUMBER_LIKE_REGEX_PATTERN = '/(\()?[\d]{2,}(\)|.|-| |,)?[\d]{2,}(-|.| |,)?[\d]+/';
+
+    const BUSINESS_RATING_YELP = 'rating_yelp';
+    const BUSINESS_RATING_GOOGLE = 'rating_google';
+    const BUSINESS_RATING_TRIP_ADVISOR = 'rating_trip_advisor';
+    const BUSINESS_RATING_FACEBOOK = 'rating_facebook';
 
     /**
      * @var int
@@ -263,6 +272,11 @@ class BusinessProfile implements
      * @Gedmo\Translatable(fallback=true)
      * @ORM\Column(name="discount", type="text", length=1000, nullable=true)
      * @Assert\Length(max=1000, maxMessage="business_profile.max_length")
+     * @Assert\Regex(
+     *     match=false,
+     *     pattern=BusinessProfile::PHONE_NUMBER_LIKE_REGEX_PATTERN,
+     *     message="business_profile.phone_number_check_failed"
+     * )
      */
     protected $discount;
 
@@ -292,6 +306,17 @@ class BusinessProfile implements
     protected $categories;
 
     /**
+     * @var Testimonial[] - Business testimonials
+     * @ORM\OneToMany(targetEntity="Domain\BusinessBundle\Entity\Testimonial",
+     *     mappedBy="businessProfile",
+     *     cascade={"persist", "remove"},
+     *     orphanRemoval=true
+     *     )
+     * @Assert\Valid
+     */
+    protected $testimonials;
+
+    /**
      * Related to BUSINESS_PROFILE_URL_MAX_LENGTH
      * @var Url - Website
      *
@@ -312,7 +337,7 @@ class BusinessProfile implements
      * @var string
      *
      * @ORM\Column(name="action_url_type", type="string", length=10, options={"default": BusinessProfile::ACTION_URL_TYPE_ORDER})
-     * @Assert\Choice(callback = "getActionUrlTypesAssert", multiple = false)
+     * @Assert\Choice(callback = {"Domain\BusinessBundle\Entity\BusinessProfile", "getActionUrlTypesAssert"}, multiple = false)
      */
     protected $actionUrlType;
 
@@ -520,6 +545,11 @@ class BusinessProfile implements
      * @ORM\Column(name="street_address", type="string", length=255, nullable=true)
      * @Assert\NotBlank()
      * @Assert\Regex(pattern=BusinessProfile::ADDRESS_FIELDS_REGEX_PATTERN)
+     * @Assert\Regex(
+     *     match=false,
+     *     pattern=BusinessProfile::PHONE_NUMBER_LIKE_REGEX_PATTERN,
+     *     message="business_profile.phone_number_check_failed"
+     * )
      * @Assert\Length(max=255, maxMessage="business_profile.max_length")
      */
     protected $streetAddress;
@@ -562,6 +592,11 @@ class BusinessProfile implements
      * @ORM\Column(name="city", type="string", length=255, nullable=true)
      * @Assert\NotBlank()
      * @Assert\Regex(pattern=BusinessProfile::ADDRESS_FIELDS_REGEX_PATTERN)
+     * @Assert\Regex(
+     *     match=false,
+     *     pattern=BusinessProfile::PHONE_NUMBER_LIKE_REGEX_PATTERN,
+     *     message="business_profile.phone_number_check_failed"
+     * )
      * @Assert\Length(max=255, maxMessage="business_profile.max_length")
      */
     protected $city;
@@ -582,6 +617,11 @@ class BusinessProfile implements
      *
      * @ORM\Column(name="custom_address", type="string", length=255, nullable=true)
      * @Assert\Regex(pattern=BusinessProfile::ADDRESS_FIELDS_REGEX_PATTERN)
+     * @Assert\Regex(
+     *     match=false,
+     *     pattern=BusinessProfile::PHONE_NUMBER_LIKE_REGEX_PATTERN,
+     *     message="business_profile.phone_number_check_failed"
+     * )
      * @Assert\Length(max=255, maxMessage="business_profile.max_length")
      */
     protected $customAddress;
@@ -789,6 +829,11 @@ class BusinessProfile implements
     protected $callsMobile = 0;
 
     /**
+     * @ORM\Column(name="calls_desktop", type="integer", nullable=false, options={"default" = 0})
+     */
+    protected $callsDesktop = 0;
+
+    /**
      * @Gedmo\Locale
      * Used locale to override Translation listener`s locale
      * this is not a mapped field of entity metadata, just a simple property
@@ -916,7 +961,7 @@ class BusinessProfile implements
     protected $listCollection;
 
     /**
-     * @var boolean
+     * @var bool
      *
      * @ORM\Column(name="is_draft", type="boolean", options={"default" : 0})
      */
@@ -930,7 +975,7 @@ class BusinessProfile implements
     protected $csvImportFile;
 
     /**
-     * @var boolean
+     * @var bool
      *
      * @ORM\Column(name="enable_not_unique_phone", type="boolean", options={"default" : 0}, nullable=true)
      */
@@ -938,6 +983,65 @@ class BusinessProfile implements
 
     /* @var string */
     private $statusForUser;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(type="string", nullable=true)
+     * @Assert\Url()
+     */
+    protected $yelpURL;
+
+    /**
+     * @var bool
+     *
+     * @ORM\Column(type="boolean", options={"default" : 0}, nullable=true)
+     */
+    protected $isShowYelpRating;
+
+    /** @var string
+     *
+     * @ORM\Column(type="string", nullable=true)
+     * @Assert\Regex(pattern="/^[\S]*$/", message="business_profile.no_spaces")
+     */
+    protected $googlePlaceId;
+
+    /**
+     * @var bool
+     *
+     * @ORM\Column(type="boolean", options={"default" : 0}, nullable=true)
+     */
+    protected $isShowGooglePlaceRating;
+
+    /** @var string
+     *
+     * @ORM\Column(type="string", nullable=true)
+     *
+     * @Assert\Url()
+     * @Assert\Regex("/^.+-d\d+-.+$/")
+     */
+    protected $tripAdvisorUrl;
+
+    /**
+     * @var bool
+     *
+     * @ORM\Column(type="boolean", options={"default" : 0}, nullable=true)
+     */
+    protected $isShowTripAdvisorRating;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(type="float", nullable=true)
+     */
+    protected $facebookRating;
+
+    /**
+     * @var bool
+     *
+     * @ORM\Column(type="boolean", options={"default" : 0}, nullable=true)
+     */
+    protected $isShowFacebookRating;
 
     /**
      * @return bool
@@ -1012,6 +1116,25 @@ class BusinessProfile implements
     public function setCallsMobile($callsMobile)
     {
         $this->callsMobile = $callsMobile;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getCallsDesktop()
+    {
+        return $this->callsDesktop;
+    }
+
+    /**
+     * @param int $callsDesktop
+     * @return BusinessProfile
+     */
+    public function setCallsDesktop($callsDesktop)
+    {
+        $this->callsDesktop = $callsDesktop;
 
         return $this;
     }
@@ -1131,7 +1254,7 @@ class BusinessProfile implements
     /**
      * @var string - keyword
      *
-     * @ORM\Column(name="keyword_text", type="text", length=1000, nullable=true)
+     * @ORM\Column(name="keyword_text", type="text", nullable=true)
      */
     private $keywordText;
 
@@ -1163,16 +1286,17 @@ class BusinessProfile implements
         $this->tasks                    = new ArrayCollection();
         $this->mediaUrls                = new ArrayCollection();
         $this->redirectedBusinesses     = new ArrayCollection();
+        $this->testimonials             = new ArrayCollection();
 
-        $this->websiteItem =        new Url();
-        $this->actionUrlItem =      new Url();
-        $this->facebookURLItem =    new Url();
-        $this->googleURLItem =      new Url();
-        $this->instagramURLItem =   new Url();
-        $this->linkedInURLItem =    new Url();
+        $this->websiteItem        = new Url();
+        $this->actionUrlItem      = new Url();
+        $this->facebookURLItem    = new Url();
+        $this->googleURLItem      = new Url();
+        $this->instagramURLItem   = new Url();
+        $this->linkedInURLItem    = new Url();
         $this->tripAdvisorURLItem = new Url();
-        $this->twitterURLItem =     new Url();
-        $this->youtubeURLItem =     new Url();
+        $this->twitterURLItem     = new Url();
+        $this->youtubeURLItem     = new Url();
 
         $this->isClosed  = false;
         $this->isUpdated = true;
@@ -1385,7 +1509,7 @@ class BusinessProfile implements
             $link = '';
         }
 
-        if (preg_match('/^' . $http . '/', $link)) {
+        if (!$link || preg_match('/^' . $http . '/', $link)) {
             return $link;
         }
 
@@ -3080,7 +3204,7 @@ class BusinessProfile implements
     {
         return [
             self::SERVICE_AREAS_AREA_CHOICE_VALUE       => 'Distance',
-            self::SERVICE_AREAS_LOCALITY_CHOICE_VALUE   => 'Locality'
+            self::SERVICE_AREAS_LOCALITY_CHOICE_VALUE   => 'Locality',
         ];
     }
 
@@ -3636,6 +3760,37 @@ class BusinessProfile implements
     }
 
     /**
+     * @return Testimonial[]
+     */
+    public function getTestimonials()
+    {
+        return $this->testimonials;
+    }
+
+    /**
+     * @param Testimonial $testimonial
+     *
+     * @return BusinessProfile
+     */
+    public function addTestimonial(Testimonial $testimonial)
+    {
+        $this->testimonials[] = $testimonial;
+
+        if ($testimonial) {
+            $testimonial->setBusinessProfile($this);
+        }
+        return $this;
+    }
+
+    /**
+     * @param Testimonial $testimonial
+     */
+    public function removeTestimonial(Testimonial $testimonial)
+    {
+        $this->testimonials->removeElement($testimonial);
+    }
+
+    /**
      * get list of bilingual fields
      * @return array
      */
@@ -3852,11 +4007,30 @@ class BusinessProfile implements
     /**
      * @return array
      */
-    public static function getExportFormats()
+    public static function getExportFormats(): array
     {
         return [
             self::FORMAT_CSV => self::FORMAT_CSV,
         ];
+    }
+
+    public static function getNamesOfProhibitedAggregationRatings(): array
+    {
+        return [
+            self::BUSINESS_RATING_TRIP_ADVISOR,
+        ];
+    }
+
+    public function getRelatedKeywords(): string
+    {
+        $keywords = [];
+
+        /** @var Category $category */
+        foreach ($this->getCategories() as $i => $category) {
+            $keywords[] = $category->getKeywordText();
+        }
+
+        return implode(self::KEYWORD_DELIMITER, array_filter($keywords));
     }
 
     /**
@@ -3931,6 +4105,179 @@ class BusinessProfile implements
     public function setCsvImportFile($csvImportFile)
     {
         $this->csvImportFile = $csvImportFile;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getYelpURL()
+    {
+        return $this->yelpURL;
+    }
+
+    /**
+     * @param string $yelpURL
+     * @return BusinessProfile
+     */
+    public function setYelpURL($yelpURL)
+    {
+        $this->yelpURL = $yelpURL;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isShowYelpRating()
+    {
+        return $this->isShowYelpRating;
+    }
+
+    /**
+     * @param bool $isShowYelpRating
+     * @return BusinessProfile
+     */
+    public function setIsShowYelpRating($isShowYelpRating)
+    {
+        $this->isShowYelpRating = $isShowYelpRating;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getGooglePlaceId()
+    {
+        return $this->googlePlaceId;
+    }
+
+    /**
+     * @param string $googlePlaceId
+     * @return BusinessProfile
+     */
+    public function setGooglePlaceId($googlePlaceId)
+    {
+        $this->googlePlaceId = $googlePlaceId;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isShowGooglePlaceRating()
+    {
+        return $this->isShowGooglePlaceRating;
+    }
+
+    /**
+     * @param bool $isShowGooglePlaceRating
+     * @return BusinessProfile
+     */
+    public function setIsShowGooglePlaceRating($isShowGooglePlaceRating)
+    {
+        $this->isShowGooglePlaceRating = $isShowGooglePlaceRating;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTripAdvisorUrl()
+    {
+        return $this->tripAdvisorUrl;
+    }
+
+    /**
+     * @param string $tripAdvisorUrl
+     * @return BusinessProfile
+     */
+    public function setTripAdvisorUrl($tripAdvisorUrl)
+    {
+        $this->tripAdvisorUrl = $tripAdvisorUrl;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isShowTripAdvisorRating()
+    {
+        return $this->isShowTripAdvisorRating;
+    }
+
+    /**
+     * @param bool $isShowTripAdvisorRating
+     * @return BusinessProfile
+     */
+    public function setIsShowTripAdvisorRating($isShowTripAdvisorRating)
+    {
+        $this->isShowTripAdvisorRating = $isShowTripAdvisorRating;
+
+        return $this;
+    }
+
+    public function getTripAdvisorId()
+    {
+        $id = null;
+
+        if ($this->tripAdvisorUrl) {
+            $matches = [];
+            preg_match('/(?<=.-d)\d+(?=-.+)/', $this->tripAdvisorUrl, $matches);
+            $id = $matches[0] ?? null;
+        }
+
+        return $id;
+    }
+
+    public function getYelpId()
+    {
+        $yelpBusinessUrlPath = parse_url($this->yelpURL, PHP_URL_PATH);
+        $pathParts = explode('/', $yelpBusinessUrlPath);
+
+        return end($pathParts);
+    }
+
+    /**
+     * @return float
+     */
+    public function getFacebookRating()
+    {
+        return $this->facebookRating;
+    }
+
+    /**
+     * @param float $facebookRating
+     * @return BusinessProfile
+     */
+    public function setFacebookRating($facebookRating)
+    {
+        $this->facebookRating = $facebookRating;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isShowFacebookRating()
+    {
+        return $this->isShowFacebookRating;
+    }
+
+    /**
+     * @param bool $isShowFacebookRating
+     * @return BusinessProfile
+     */
+    public function setIsShowFacebookRating($isShowFacebookRating)
+    {
+        $this->isShowFacebookRating = $isShowFacebookRating;
 
         return $this;
     }
