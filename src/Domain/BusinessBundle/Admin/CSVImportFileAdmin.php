@@ -23,8 +23,8 @@ class CSVImportFileAdmin extends OxaAdmin
      */
     public function setTemplate($name, $template)
     {
-        $this->templates['edit'] = 'DomainBusinessBundle:Admin:csv_import_edit.html.twig';
-        $this->templates['show'] = 'DomainBusinessBundle:Admin:csv_import_show.html.twig';
+        $this->getTemplateRegistry()->setTemplate('edit', 'DomainBusinessBundle:Admin:csv_import_edit.html.twig');
+        $this->getTemplateRegistry()->setTemplate('show', 'DomainBusinessBundle:Admin:csv_import_show.html.twig');
     }
 
     /**

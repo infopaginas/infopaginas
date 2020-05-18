@@ -23,7 +23,7 @@ class CategoryAdmin extends OxaAdmin
      */
     public function setTemplate($name, $template)
     {
-        $this->templates['edit'] = 'DomainBusinessBundle:Admin:category_edit.html.twig';
+        $this->getTemplateRegistry()->setTemplate('edit', 'DomainBusinessBundle:Admin:category_edit.html.twig');
     }
 
     /**

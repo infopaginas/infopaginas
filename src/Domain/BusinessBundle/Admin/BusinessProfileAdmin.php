@@ -1665,8 +1665,8 @@ class BusinessProfileAdmin extends OxaAdmin
      */
     public function setTemplate($name, $template)
     {
-        $this->templates['edit'] = 'DomainBusinessBundle:Admin:edit.html.twig';
-        $this->templates['show'] = 'DomainBusinessBundle:Admin:show.html.twig';
+        $this->getTemplateRegistry()->setTemplate('edit', 'DomainBusinessBundle:Admin:edit.html.twig');
+        $this->getTemplateRegistry()->setTemplate('show', 'DomainBusinessBundle:Admin:show.html.twig');
     }
 
     /**
