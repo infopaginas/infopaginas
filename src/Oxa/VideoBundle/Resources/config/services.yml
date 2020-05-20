@@ -1,8 +1,4 @@
 services:
-    #services section
-    oxa.service.http_client:
-        class: GuzzleHttp\Client
-
     #managers section
     oxa.manager.video:
         class: Oxa\VideoBundle\Manager\VideoManager
