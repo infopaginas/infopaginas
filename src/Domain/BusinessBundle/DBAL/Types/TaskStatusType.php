@@ -18,9 +18,9 @@ use Fresh\DoctrineEnumBundle\DBAL\Types\AbstractEnumType;
  */
 final class TaskStatusType extends AbstractEnumType
 {
-    public const TASK_STATUS_OPEN      = 'OPEN';
-    public const TASK_STATUS_CLOSED    = 'CLOSED';
-    public const TASK_STATUS_REJECTED  = 'REJECTED';
+    public const TASK_STATUS_OPEN     = 'OPEN';
+    public const TASK_STATUS_CLOSED   = 'CLOSED';
+    public const TASK_STATUS_REJECTED = 'REJECTED';
 
     protected static $choices = [
         self::TASK_STATUS_OPEN     => 'Incomplete',

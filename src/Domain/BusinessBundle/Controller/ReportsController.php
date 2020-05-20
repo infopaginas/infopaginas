@@ -25,7 +25,6 @@ use Domain\ReportBundle\Service\Export\BusinessInteractionReportExcelExporter;
 use Domain\ReportBundle\Util\DatesUtil;
 use Oxa\Sonata\AdminBundle\Util\Helpers\AdminHelper;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;

@@ -3,16 +3,15 @@
 namespace Domain\BusinessBundle\Controller;
 
 use Domain\BusinessBundle\Entity\HomepageCarousel;
-use Oxa\ConfigBundle\Entity\Config;
 use Oxa\ConfigBundle\Model\ConfigInterface;
-use Sonata\AdminBundle\Controller\CRUDController;
+use Pix\SortableBehaviorBundle\Controller\SortableAdminController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
 /**
  * Class BusinessProfileCRUDController
  * @package Domain\BusinessBundle\Controller
  */
-class HomepageCarouselCRUDController extends CRUDController
+class HomepageCarouselCRUDController extends SortableAdminController
 {
     public function createAction()
     {

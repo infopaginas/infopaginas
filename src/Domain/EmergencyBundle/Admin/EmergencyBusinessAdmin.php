@@ -7,7 +7,9 @@ use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\Category;
 use Domain\BusinessBundle\Form\Type\GoogleMapType;
 use Domain\BusinessBundle\Validator\Constraints\BusinessProfileWorkingHourTypeValidator;
+use Domain\EmergencyBundle\Entity\EmergencyArea;
 use Domain\EmergencyBundle\Entity\EmergencyBusiness;
+use Domain\EmergencyBundle\Entity\EmergencyCategory;
 use Oxa\ConfigBundle\Model\ConfigInterface;
 use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
@@ -206,14 +208,14 @@ class EmergencyBusinessAdmin extends OxaAdmin
                     'btn_delete'    => false,
                     'btn_add'       => false,
                     'model_manager' => $this->modelManager,
-                    'class'         => Area::class,
+                    'class'         => EmergencyArea::class,
                 ])
                 ->add('category', ModelListType::class, [
                     'required'      => true,
                     'btn_delete'    => false,
                     'btn_add'       => false,
                     'model_manager' => $this->modelManager,
-                    'class'         => Category::class,
+                    'class'         => EmergencyCategory::class,
                 ])
             ->end()
         ;

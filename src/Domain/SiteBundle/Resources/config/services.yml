@@ -41,27 +41,27 @@ services:
     domain_site.registration.form:
         factory: ['@form.factory', 'createNamed']
         class: Symfony\Component\Form\Form
-        arguments: ['domain_site_registration', 'Domain\SiteBundle\Form\Type\RegistrationType']
+        arguments: ['registration', 'Domain\SiteBundle\Form\Type\RegistrationType']
 
     domain_site.reset_password_request.form:
         factory: ['@form.factory', 'createNamed']
         class: Symfony\Component\Form\Form
-        arguments: ['domain_site_reset_password_request', 'Domain\SiteBundle\Form\Type\ResetPasswordRequestType']
+        arguments: ['reset_password_request', 'Domain\SiteBundle\Form\Type\ResetPasswordRequestType']
 
     domain_site.reset_password.form:
         factory: ['@form.factory', 'createNamed']
         class: Symfony\Component\Form\Form
-        arguments: ['domain_site_reset_password', 'Domain\SiteBundle\Form\Type\ResetPasswordType']
+        arguments: ['reset_password', 'Domain\SiteBundle\Form\Type\ResetPasswordType']
 
     domain_site.user_profile.form:
         factory: ['@form.factory', 'createNamed']
         class: Symfony\Component\Form\Form
-        arguments: ['domain_site_user_profile', 'Domain\SiteBundle\Form\Type\UserProfileType']
+        arguments: ['user_profile', 'Domain\SiteBundle\Form\Type\UserProfileType']
 
     domain_site.user_password_update.form:
         factory: ['@form.factory', 'createNamed']
         class: Symfony\Component\Form\Form
-        arguments: ['domain_site_user_password_update', 'Domain\SiteBundle\Form\Type\PasswordUpdateType']
+        arguments: ['password_update', 'Domain\SiteBundle\Form\Type\PasswordUpdateType']
 
     #form handlers section
     domain_site.registration.form.handler:

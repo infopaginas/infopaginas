@@ -9,6 +9,7 @@ use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\DoctrineORMAdminBundle\Filter\ChoiceFilter;
 use Sonata\MediaBundle\Form\DataTransformer\ProviderDataTransformer;
 use Sonata\MediaBundle\Provider\Pool;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 /**
  * Class BaseMediaAdmin

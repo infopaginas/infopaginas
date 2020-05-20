@@ -556,10 +556,10 @@ class Page implements DefaultEntityInterface, OxaPersonalTranslatableInterface, 
     public static function getContactSubjects()
     {
         return [
-            self::CONTACT_SUBJECT_CREATE_BUSINESS => 'contact.form.subject_type.create_business',
-            self::CONTACT_SUBJECT_BUG => 'contact.form.subject_type.bug',
-            self::CONTACT_SUBJECT_ADS => 'contact.form.subject_type.ads',
-            self::CONTACT_SUBJECT_OTHER => 'contact.form.subject_type.other',
+            'contact.form.subject_type.create_business' => self::CONTACT_SUBJECT_CREATE_BUSINESS,
+            'contact.form.subject_type.bug'             => self::CONTACT_SUBJECT_BUG,
+            'contact.form.subject_type.ads'             => self::CONTACT_SUBJECT_ADS,
+            'contact.form.subject_type.other'           => self::CONTACT_SUBJECT_OTHER,
         ];
     }
 

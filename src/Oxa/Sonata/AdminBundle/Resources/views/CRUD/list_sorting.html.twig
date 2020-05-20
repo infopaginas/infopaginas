@@ -2,25 +2,25 @@
 
 {% block field%}
     {% if admin.isGranted('EDIT', object) and admin.hasRoute('edit') %}
-        {% set pix_position = sortableObjectPosition(object) %}
-            {% if pix_position < admin.lastPosition %}
+        {% set pix_position = currentObjectPosition(object) %}
+            {% if pix_position < lastPosition(object) %}
                 <a class="btn btn-sm btn-default btn-list-sorting" href="{{ admin.generateObjectUrl('move', object, {'position': 'bottom'}) }}" title="{{ 'move_to_bottom'|trans }}">
-                    {{- 'icon_move_to_bottom'|trans -}}
+                    <i class="fa fa-angle-double-down"></i>
                 </a>
             {% endif %}
-            {% if pix_position < admin.lastPosition %}
+            {% if pix_position < lastPosition(object) %}
                 <a class="btn btn-sm btn-default btn-list-sorting" href="{{ admin.generateObjectUrl('move', object, {'position': 'down'}) }}" title="{{ 'move_down'|trans }}">
-                    {{- 'icon_move_down'|trans -}}
+                    <i class="fa fa-angle-down"></i>
                 </a>
             {% endif %}
             {% if pix_position > 0 %}
                 <a class="btn btn-sm btn-default btn-list-sorting" href="{{ admin.generateObjectUrl('move', object, {'position': 'up'}) }}" title="{{ 'move_up'|trans }}">
-                    {{- 'icon_move_up'|trans -}}
+                    <i class="fa fa-angle-up"></i>
                 </a>
             {% endif %}
             {% if pix_position > 0 %}
                 <a class="btn btn-sm btn-default btn-list-sorting" href="{{ admin.generateObjectUrl('move', object, {'position': 'top'}) }}" title="{{ 'move_to_top'|trans }}">
-                    {{- 'icon_move_to_top'|trans -}}
+                    <i class="fa fa-angle-double-up"></i>
                 </a>
             {% endif %}
     {% endif %}

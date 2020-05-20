@@ -12,6 +12,8 @@ use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\DoctrineORMAdminBundle\Filter\ChoiceFilter;
 use Sonata\DoctrineORMAdminBundle\Filter\ModelFilter;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Domain\BusinessBundle\Entity\Locality;
 
 /**
  * Class CategoryReportAdmin
@@ -81,8 +83,7 @@ class CategoryReportAdmin extends ReportAdmin
                 'show_filter' => !empty($this->datagridValues['locality']['value']) ?: null,
                 'field_options' => [
                     'mapped'    => false,
-                    'property'  => 'name',
-                    'class' => 'Domain\BusinessBundle\Entity\Locality',
+                    'class'     => Locality::class,
                 ],
             ])
             ->add('type', ChoiceFilter::class, [

@@ -255,8 +255,8 @@ class BusinessProfileAdmin extends OxaAdmin
 
         return [
             'choices' => [
-                '<'  => '< ' . $borderValue,
-                '>=' => '>= ' . $borderValue,
+                '< ' . $borderValue  => '<',
+                '>= ' . $borderValue => '>=',
             ]
         ];
     }

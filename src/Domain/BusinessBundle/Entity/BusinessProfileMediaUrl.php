@@ -166,9 +166,9 @@ class BusinessProfileMediaUrl
     public static function getAvailableTypes()
     {
         return [
-            self::TYPE_INSTAGRAM => 'business_profile_media_url.type.instagram',
-            self::TYPE_FACEBOOK  => 'business_profile_media_url.type.facebook',
-            self::TYPE_TWITTER   => 'business_profile_media_url.type.twitter',
+            'business_profile_media_url.type.instagram' => self::TYPE_INSTAGRAM,
+            'business_profile_media_url.type.facebook'  => self::TYPE_FACEBOOK,
+            'business_profile_media_url.type.twitter'   => self::TYPE_TWITTER,
         ];
     }
 }

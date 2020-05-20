@@ -170,7 +170,7 @@ class BusinessProfilePhone implements ChangeStateInterface
      */
     public static function getTypesAssert()
     {
-        return array_keys(self::getTypes());
+        return array_values(self::getTypes());
     }
 
     /**
@@ -199,9 +199,9 @@ class BusinessProfilePhone implements ChangeStateInterface
     public static function getTypes()
     {
         return [
-            self::PHONE_TYPE_MAIN       => 'business_profile_phone.type.main',
-            self::PHONE_TYPE_SECONDARY  => 'business_profile_phone.type.secondary',
-            self::PHONE_TYPE_FAX        => 'business_profile_phone.type.fax',
+            'business_profile_phone.type.main'      => self::PHONE_TYPE_MAIN,
+            'business_profile_phone.type.secondary' => self::PHONE_TYPE_SECONDARY,
+            'business_profile_phone.type.fax'       => self::PHONE_TYPE_FAX,
         ];
     }
 

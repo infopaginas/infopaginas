@@ -28,7 +28,7 @@ class Task implements DefaultEntityInterface, TaskInterface, ChangeStateInterfac
     use DefaultEntityTrait;
     use ChangeStateTrait;
 
-    const REJECT_REASON_BUSINESS_ALREADY_CLAIMED = 'Business already claimed';
+    public const REJECT_REASON_BUSINESS_ALREADY_CLAIMED = 'Business already claimed';
 
     /**
      * @var int
@@ -360,7 +360,7 @@ class Task implements DefaultEntityInterface, TaskInterface, ChangeStateInterfac
         if ($this->getId()) {
             $result = sprintf(
                 '[%s] Task: %s',
-                array_flip(TaskType::getChoices())[$this->getType()],
+                TaskType::getReadableValues()[$this->getType()],
                 $this->getBusinessProfile()->getName()
             );
         } else {

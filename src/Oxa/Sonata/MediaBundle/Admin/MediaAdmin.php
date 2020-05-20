@@ -9,6 +9,7 @@ use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\DoctrineORMAdminBundle\Filter\ChoiceFilter;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Component\Validator\Constraints\File;
@@ -70,7 +71,7 @@ class MediaAdmin extends BaseMediaAdmin
             ChoiceFilter::class,
             [
                 'field_options' => [
-                    'choices' => $contextsChoices,
+                    'choices' => array_flip($contextsChoices),
                 ],
                 'field_type' => ChoiceType::class,
             ]

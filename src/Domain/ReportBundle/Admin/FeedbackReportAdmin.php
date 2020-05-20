@@ -97,7 +97,7 @@ class FeedbackReportAdmin extends ReportAdmin
                 'show_filter' => !empty($this->datagridValues['subject']['value']) ?: null,
                 'field_options' => [
                     'mapped'    => false,
-                    'choices' => Page::getAllSubjects(),
+                    'choices' => array_flip(Page::getAllSubjects()),
                 ],
                 'field_type' => ChoiceType::class
             ])
@@ -105,7 +105,7 @@ class FeedbackReportAdmin extends ReportAdmin
                 'show_filter' => !empty($this->datagridValues['locale']['value']) ?: null,
                 'field_options' => [
                     'mapped'    => false,
-                    'choices' => LocaleHelper::getLocaleList(),
+                    'choices' => array_flip(LocaleHelper::getLocaleList()),
                 ],
                 'field_type' => ChoiceType::class
             ])
@@ -115,7 +115,6 @@ class FeedbackReportAdmin extends ReportAdmin
                 'field_options' => [
                     'field_options' => [
                         'format'        => AdminHelper::FILTER_DATE_RANGE_FORMAT,
-                        'empty_value'   => false,
                     ],
                     'mapped'    => false,
                     'required'  => true,
@@ -132,8 +131,8 @@ class FeedbackReportAdmin extends ReportAdmin
         $filterParam = $this->getFilterParameters();
 
         $this->feedbacks = $this->getFeedbackReportManager()->getFeedbackReportData($filterParam);
-        $this->locales = LocaleHelper::getLocaleList();
-        $this->subjects = Page::getAllSubjects();
+        $this->locales   = LocaleHelper::getLocaleList();
+        $this->subjects  = Page::getAllSubjects();
     }
 
     /**
@@ -149,12 +148,13 @@ class FeedbackReportAdmin extends ReportAdmin
      */
     protected function checkDateFilter()
     {
-        if (!empty($this->datagridValues['date']['value']['start']) or
+        if (
+            !empty($this->datagridValues['date']['value']['start']) ||
             !empty($this->datagridValues['date']['value']['end'])
         ) {
             return true;
-        } else {
-            return false;
         }
+
+        return false;
     }
 }

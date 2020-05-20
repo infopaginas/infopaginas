@@ -12,6 +12,7 @@ use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Form\Type\ModelListType;
+use Sonata\AdminBundle\Route\RouteCollection;
 use Sonata\AdminBundle\Show\ShowMapper;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
@@ -131,6 +132,14 @@ class HomepageCarouselAdmin extends OxaAdmin
                 'eventType'     => BusinessOverviewModel::TYPE_CODE_VIDEO_WATCHED,
                 'template' => 'DomainBusinessBundle:Admin:BusinessProfile/report_data.html.twig',
             ])
+        ;
+    }
+
+    protected function configureRoutes(RouteCollection $collection)
+    {
+        $collection
+            ->remove('export')
+            ->add('move', $this->getRouterIdParameter() . '/move/{position}')
         ;
     }
 }

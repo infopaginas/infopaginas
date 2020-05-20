@@ -57,13 +57,11 @@ class ProfileController extends Controller
      */
     protected function getMediaContextTypes()
     {
-        $types = [
+        return [
             OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_LOGO        => 'Logo',
             OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_BACKGROUND  => 'Background',
             OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_IMAGES      => 'Photo',
         ];
-
-        return $types;
     }
 
     /**

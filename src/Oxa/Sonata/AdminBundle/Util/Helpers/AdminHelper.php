@@ -72,21 +72,6 @@ class AdminHelper
     }
 
     /**
-     * Get date period values for choice form type
-     * @return array
-     */
-    public static function getDatePeriodValues()
-    {
-        return [
-            self::DATE_RANGE_CODE_TODAY      => 'filter.label.today',
-            self::DATE_RANGE_CODE_LAST_WEEK  => 'filter.label.last_week',
-            self::DATE_RANGE_CODE_LAST_MONTH => 'filter.label.last_month',
-            self::DATE_RANGE_CODE_LAST_YEAR  => 'filter.label.last_year',
-            self::DATE_RANGE_CODE_CUSTOM     => 'filter.label.custom',
-        ];
-    }
-
-    /**
      * Get date range for each date code
      * @return array
      */
@@ -124,29 +109,6 @@ class AdminHelper
     /**
      * @return array
      */
-    public static function getDatagridDatePeriodOptions()
-    {
-        // todo: all datePeriod filter logic should be refactored or removed
-        // as it has been cut during sonata update as a result of logic conflict
-        return [
-            'field_type' => ChoiceType::class,
-            'field_options' => [
-                'mapped' => false,
-                'required'  => true,
-                'empty_value'  => false,
-                'empty_data'  => self::DATE_RANGE_CODE_LAST_WEEK,
-                'choices'   => self::getDatePeriodValues(),
-                'translation_domain' => 'SonataAdminBundle',
-                'attr' => [
-                    'class' => self::FILTER_DATE_PERIOD_CLASS
-                ]
-            ],
-        ];
-    }
-
-    /**
-     * @return array
-     */
     public static function getDatagridPeriodOptionOptions()
     {
         return [
@@ -155,9 +117,8 @@ class AdminHelper
             'field_options' => [
                 'mapped' => false,
                 'required'  => true,
-                'empty_value'  => false,
                 'empty_data'  => self::PERIOD_OPTION_CODE_DAILY,
-                'choices'   => self::getPeriodOptionValues(),
+                'choices'   => array_flip(self::getPeriodOptionValues()),
                 'translation_domain' => 'SonataAdminBundle'
             ],
         ];
@@ -176,7 +137,6 @@ class AdminHelper
             'field_options' => [
                 'field_options' => [
                     'format'        => self::FILTER_DATE_RANGE_FORMAT,
-                    'empty_value'   => false,
                 ],
                 'attr' => [
                     'class' => self::FILTER_DATE_RANGE_CLASS,

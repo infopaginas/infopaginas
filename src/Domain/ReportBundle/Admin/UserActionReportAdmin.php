@@ -69,7 +69,6 @@ class UserActionReportAdmin extends ReportAdmin
                 'show_filter' => !empty($this->datagridValues['username']['value']) ?: null,
                 'field_options' => [
                     'mapped'    => false,
-                    'property'  => 'fullName',
                     'class' => 'Oxa\Sonata\UserBundle\Entity\User',
                     'query_builder' => function (\Oxa\Sonata\UserBundle\Entity\Repository\UserRepository $rep) {
                         return $rep->findByRolesQb(
@@ -98,7 +97,7 @@ class UserActionReportAdmin extends ReportAdmin
                 'show_filter' => !empty($this->datagridValues['action']['value']) ?: null,
                 'field_options' => [
                     'mapped'    => false,
-                    'choices' => UserActionModel::EVENT_TYPES,
+                    'choices' => array_flip(UserActionModel::EVENT_TYPES),
                     'choice_translation_domain' => 'AdminReportBundle',
                 ],
                 'field_type' => ChoiceType::class
@@ -109,7 +108,6 @@ class UserActionReportAdmin extends ReportAdmin
                 'field_options' => [
                     'field_options' => [
                         'format'        => AdminHelper::FILTER_DATE_RANGE_FORMAT,
-                        'empty_value'   => false,
                     ],
                     'mapped'    => false,
                     'required'  => true,
@@ -140,9 +138,11 @@ class UserActionReportAdmin extends ReportAdmin
     /**
      * @return UserActionReportManager
      */
-    protected function getUserActionReportManager() : UserActionReportManager
+    protected function getUserActionReportManager(): UserActionReportManager
     {
-        return $this->getConfigurationPool()->getContainer()->get('domain_report.manager.user_action_report_manager');
+        return $this->getConfigurationPool()
+            ->getContainer()
+            ->get('domain_report.manager.user_action_report_manager');
     }
 
     /**
@@ -150,12 +150,13 @@ class UserActionReportAdmin extends ReportAdmin
      */
     protected function checkDateFilter()
     {
-        if (!empty($this->datagridValues['date']['value']['start']) or
+        if (
+            !empty($this->datagridValues['date']['value']['start']) ||
             !empty($this->datagridValues['date']['value']['end'])
         ) {
             return true;
-        } else {
-            return false;
         }
+
+        return false;
     }
 }

@@ -9,6 +9,7 @@ use Domain\BusinessBundle\Validator\Constraints\BusinessProfilePhoneTypeValidato
 use Domain\BusinessBundle\Validator\Constraints\BusinessProfileWorkingHourTypeValidator;
 use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
 use FOS\CKEditorBundle\Form\Type\CKEditorType;
+use Oxa\Sonata\AdminBundle\Form\Type\ModelAutocompleteType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;

@@ -179,7 +179,7 @@ class PageLink implements ChangeStateInterface
      */
     public static function getTypesAssert()
     {
-        return array_keys(self::getTypes());
+        return array_values(self::getTypes());
     }
 
     /**
@@ -188,8 +188,8 @@ class PageLink implements ChangeStateInterface
     public static function getTypes()
     {
         return [
-            self::PAGE_LINK_TYPE_LINK   => 'page_link.type.link',
-            self::PAGE_LINK_TYPE_OFFER  => 'page_link.type.offer',
+            'page_link.type.link'  => self::PAGE_LINK_TYPE_LINK,
+            'page_link.type.offer' => self::PAGE_LINK_TYPE_OFFER,
         ];
     }
 }

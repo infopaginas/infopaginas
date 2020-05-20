@@ -98,7 +98,7 @@ class SubscriptionAdmin extends OxaAdmin
         $formMapper
             ->with('General')
                 ->add('businessProfile')
-                ->add('status', ChoiceType::class, ['choices' => StatusTrait::getStatuses()])
+                ->add('status', ChoiceType::class, ['choices' => array_flip(StatusTrait::getStatuses())])
                 ->add('subscriptionPlan')
             ->end()
             ->with('Period')

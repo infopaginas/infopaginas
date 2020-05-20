@@ -119,6 +119,7 @@ twig:
     strict_variables: "%kernel.debug%"
     form_themes:
         - 'DomainBusinessBundle:Form:fields.html.twig'
+        - 'SonataCoreBundle:Form:datepicker.html.twig'
     globals:
         app_version: '%app_version%'
         google_badge_partner_id: '%google_badge_partner_id%'

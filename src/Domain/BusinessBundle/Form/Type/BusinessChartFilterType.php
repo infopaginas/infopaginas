@@ -21,7 +21,7 @@ class BusinessChartFilterType extends BusinessReportFilterType
             'label_attr' => [
                 'class' => 'title-label',
             ],
-            'choices' => BusinessOverviewModel::getAllChartEventTypesWithTranslation(),
+            'choices' => array_flip(BusinessOverviewModel::getAllChartEventTypesWithTranslation()),
             'data'    => BusinessOverviewModel::DEFAULT_CHART_TYPE,
         ]);
     }
