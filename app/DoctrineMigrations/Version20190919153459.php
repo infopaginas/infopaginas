@@ -2,7 +2,7 @@
 
 namespace Application\Migrations;
 
-use Doctrine\DBAL\Migrations\AbstractMigration;
+use Doctrine\Migrations\AbstractMigration;
 use Doctrine\DBAL\Schema\Schema;
 use Oxa\ConfigBundle\Entity\Config;
 use Oxa\ConfigBundle\Model\ConfigInterface;
@@ -20,7 +20,7 @@ class Version20190919153459 extends AbstractMigration implements ContainerAwareI
         $this->em = $this->container->get('doctrine.orm.entity_manager');
     }
 
-    public function up(Schema $schema)
+    public function up(Schema $schema): void
     {
         if (!$this->checkNewConfigValue(ConfigInterface::FOOTER_EMAIL)) {
             $configFooterEmail = new Config();
@@ -54,7 +54,7 @@ class Version20190919153459 extends AbstractMigration implements ContainerAwareI
         $this->em->flush();
     }
 
-    public function down(Schema $schema)
+    public function down(Schema $schema): void
     {
     }
 

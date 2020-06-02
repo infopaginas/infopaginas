@@ -2,7 +2,7 @@
 
 namespace Application\Migrations;
 
-use Doctrine\DBAL\Migrations\AbstractMigration;
+use Doctrine\Migrations\AbstractMigration;
 use Doctrine\DBAL\Schema\Schema;
 use Domain\BusinessBundle\Entity\Subscription;
 use Domain\BusinessBundle\Entity\SubscriptionPlan;
@@ -33,7 +33,7 @@ class Version20170612094249 extends AbstractMigration implements ContainerAwareI
     /**
      * @param Schema $schema
      */
-    public function up(Schema $schema)
+    public function up(Schema $schema): void
     {
         $this->addSql("DROP TABLE IF EXISTS subscription_report_subscription");
         $this->downgradeSuperVmSubscriptions();
@@ -47,7 +47,7 @@ class Version20170612094249 extends AbstractMigration implements ContainerAwareI
     /**
      * @param Schema $schema
      */
-    public function down(Schema $schema)
+    public function down(Schema $schema): void
     {
 
     }
