@@ -2,7 +2,7 @@
 
 namespace Application\Migrations;
 
-use Doctrine\DBAL\Migrations\AbstractMigration;
+use Doctrine\Migrations\AbstractMigration;
 use Doctrine\DBAL\Schema\Schema;
 
 class Version20170714120212 extends AbstractMigration
@@ -10,7 +10,7 @@ class Version20170714120212 extends AbstractMigration
     /**
      * @param Schema $schema
      */
-    public function up(Schema $schema)
+    public function up(Schema $schema): void
     {
         $this->addSql('DROP TABLE IF EXISTS campaign, campaign_areas, campaign_translation CASCADE');
         $this->addSql('DROP TABLE IF EXISTS category_report_category');
@@ -36,7 +36,7 @@ class Version20170714120212 extends AbstractMigration
     /**
      * @param Schema $schema
      */
-    public function down(Schema $schema)
+    public function down(Schema $schema): void
     {
 
     }

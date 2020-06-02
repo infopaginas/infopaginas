@@ -2,7 +2,7 @@
 
 namespace Application\Migrations;
 
-use Doctrine\DBAL\Migrations\AbstractMigration;
+use Doctrine\Migrations\AbstractMigration;
 use Doctrine\DBAL\Schema\Schema;
 use Domain\EmergencyBundle\Entity\EmergencyArea;
 use Domain\EmergencyBundle\Entity\EmergencyCategory;
@@ -41,7 +41,7 @@ class Version20170926112607 extends AbstractMigration implements ContainerAwareI
     /**
      * @param Schema $schema
      */
-    public function up(Schema $schema)
+    public function up(Schema $schema): void
     {
         $areas = $this->getEmergencyAreas();
 
@@ -75,7 +75,7 @@ class Version20170926112607 extends AbstractMigration implements ContainerAwareI
     /**
      * @param Schema $schema
      */
-    public function down(Schema $schema)
+    public function down(Schema $schema): void
     {
 
     }
