@@ -201,7 +201,7 @@ class BusinessProfile implements
 
     // fields should not contain any of !@$%^*()+={}[]<>? characters
     const ADDRESS_FIELDS_REGEX_PATTERN = '/^[^!@$%^*()+={}\[\]<>?]*$/';
-    const PHONE_NUMBER_LIKE_REGEX_PATTERN = '/(\()?[\d]{2,}(\)|.|-| |,)?[\d]{2,}(-|.| |,)?[\d]+/';
+    const PHONE_NUMBER_LIKE_REGEX_PATTERN = '/[\d]{2,}[\).\- ,|]+[\d]{2,}[\-. ,|]+[\d]{2,}/';
 
     const BUSINESS_RATING_YELP = 'rating_yelp';
     const BUSINESS_RATING_GOOGLE = 'rating_google';
