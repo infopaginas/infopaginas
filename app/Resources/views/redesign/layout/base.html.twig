@@ -1,6 +1,6 @@
 {% spaceless %}
 <!DOCTYPE html>
-<html class="no-js" lang="{{ get_current_language() }}">
+<html class="no-js" lang="{{ app.request.locale }}">
     <head>
         <meta charset="utf-8" />
         <title>{% if seoData is defined and seoData.seoTitle %}{{ seoData.seoTitle }}{% else %}Infopáginas{% endif %}</title>

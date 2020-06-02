@@ -50,10 +50,7 @@ class CustomUrlType extends AbstractType
         ]);
     }
 
-    /**
-     * @return string
-     */
-    public function getName()
+    public function getBlockPrefix()
     {
         return 'domain_business_bundle_custom_url_type';
     }

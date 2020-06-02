@@ -2,7 +2,7 @@
 {% set admin  = block_context.settings.admin %}
 {% set locale_switcher_route = block_context.settings.locale_switcher_route %}
 
-{% if (object.id and (object is translatable)) %}
+{% if (object and object.id and (object is translatable)) %}
     <div class="locale_switcher">
         {% spaceless %}
             {% for locale in sonata_translation_locales %}

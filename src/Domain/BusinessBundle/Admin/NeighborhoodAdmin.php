@@ -2,13 +2,12 @@
 
 namespace Domain\BusinessBundle\Admin;
 
-use Domain\BusinessBundle\Entity\Neighborhood;
-use Domain\BusinessBundle\Entity\BusinessProfile;
 use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
-use Sonata\AdminBundle\Admin\Admin;
+use Oxa\Sonata\AdminBundle\Filter\DateTimeRangeFilter;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
+use Sonata\Form\Type\CollectionType;
 use Sonata\AdminBundle\Show\ShowMapper;
 
 class NeighborhoodAdmin extends OxaAdmin
@@ -30,7 +29,7 @@ class NeighborhoodAdmin extends OxaAdmin
                 'show_filter' => true,
             ])
             ->add('locality')
-            ->add('updatedAt', 'doctrine_orm_datetime_range', $this->defaultDatagridDateTypeOptions)
+            ->add('updatedAt', DateTimeRangeFilter::class, $this->defaultDatagridDateTypeOptions)
             ->add('updatedUser')
         ;
     }
@@ -64,7 +63,7 @@ class NeighborhoodAdmin extends OxaAdmin
             ])
             ->add(
                 'zips',
-                'sonata_type_collection',
+                CollectionType::class,
                 [
                     'by_reference' => false,
                     'required' => false,

@@ -4,10 +4,12 @@ namespace Domain\BusinessBundle\Admin;
 
 use Domain\BusinessBundle\Entity\PaymentMethod;
 use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
+use Oxa\Sonata\MediaBundle\Entity\Media;
 use Oxa\Sonata\MediaBundle\Model\OxaMediaInterface;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
+use Sonata\AdminBundle\Form\Type\ModelListType;
 use Sonata\AdminBundle\Route\RouteCollection;
 use Sonata\AdminBundle\Show\ShowMapper;
 
@@ -47,9 +49,11 @@ class PaymentMethodAdmin extends OxaAdmin
             ->add('name')
             ->add(
                 'image',
-                'sonata_type_model_list',
+                ModelListType::class,
                 [
                     'required' => true,
+                    'model_manager' => $this->modelManager,
+                    'class'         => Media::class,
                 ],
                 [
                     'link_parameters' => [

@@ -4,11 +4,9 @@ namespace Domain\BusinessBundle\Admin\Address;
 
 use Domain\BusinessBundle\Entity\Address\Country;
 use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
-use Sonata\AdminBundle\Admin\Admin;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
-use Sonata\AdminBundle\Route\RouteCollection;
 use Sonata\AdminBundle\Show\ShowMapper;
 
 class CountryAdmin extends OxaAdmin
@@ -52,7 +50,15 @@ class CountryAdmin extends OxaAdmin
 
         $formMapper
             ->add('name')
-            ->add('shortName', null, ['read_only' => $disableShortNameEdit])
+            ->add(
+                'shortName',
+                null,
+                [
+                    'attr' => [
+                        'read_only' => $disableShortNameEdit,
+                    ],
+                ]
+            )
         ;
     }
 

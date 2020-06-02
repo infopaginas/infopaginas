@@ -52,7 +52,7 @@ use Domain\SearchBundle\Util\SearchDataUtil;
 use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
 use FOS\UserBundle\Model\UserInterface;
 use Gedmo\Translatable\TranslatableListener;
-use Ivory\CKEditorBundle\Form\Type\CKEditorType;
+use FOS\CKEditorBundle\Form\Type\CKEditorType;
 use Oxa\ElasticSearchBundle\Manager\ElasticSearchManager;
 use Oxa\GeolocationBundle\Utils\GeolocationUtils;
 use Oxa\ManagerArchitectureBundle\Model\Manager\Manager;
@@ -73,6 +73,7 @@ use Symfony\Component\PropertyAccess\PropertyAccess;
 use Oxa\GeolocationBundle\Model\Geolocation\LocationValueObject;
 use Domain\SearchBundle\Model\DataType\SearchDTO;
 use Domain\SearchBundle\Model\DataType\DCDataDTO;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 
 /**
@@ -1490,7 +1491,7 @@ class BusinessProfileManager extends Manager
 
                 $url = $this->getMediaPublicUrl($photo->getMedia(), 'preview');
             } else {
-                $request = $this->container->get('request');
+                $request = $this->container->get('request_stack')->getCurrentRequest();
                 $image   = $this->container->getParameter('default_image');
 
                 $url = $request->getScheme() . '://' . $request->getHost() . $image['path'] . $image['business_image'];
@@ -1528,7 +1529,7 @@ class BusinessProfileManager extends Manager
                 'citySlug' => $businessProfile->getCitySlug(),
                 'slug'     => $businessProfile->getSlug(),
             ],
-            true
+            UrlGeneratorInterface::ABSOLUTE_PATH
         );
 
         return $url;

@@ -2,17 +2,14 @@
 
 namespace Domain\BusinessBundle\Form\Handler;
 
-use Domain\BusinessBundle\Entity\Review\BusinessReview;
 use Domain\BusinessBundle\Manager\BusinessProfileManager;
-use Domain\BusinessBundle\Manager\BusinessReviewManager;
 use Domain\BusinessBundle\Manager\TasksManager;
 use Oxa\ManagerArchitectureBundle\Form\Handler\BaseFormHandler;
-use Oxa\ManagerArchitectureBundle\Model\Interfaces\FormHandlerInterface;
 use Oxa\Sonata\UserBundle\Entity\User;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
  * Class ReviewFormHandler
@@ -20,11 +17,11 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
  */
 class BusinessClaimFormHandler extends BaseFormHandler
 {
-    const BUSINESS_NOT_FOUND_ERROR_MESSAGE = 'Business id not found';
-    const USER_NOT_FOUND_ERROR_MESSAGE = 'Unknown user';
+    private const BUSINESS_NOT_FOUND_ERROR_MESSAGE = 'Business id not found';
+    private const USER_NOT_FOUND_ERROR_MESSAGE = 'Unknown user';
 
-    /** @var Request $request */
-    private $request;
+    /** @var RequestStack $requestStack */
+    private $requestStack;
 
     /** @var BusinessProfileManager $businessProfileManager */
     private $businessProfileManager;
@@ -32,17 +29,17 @@ class BusinessClaimFormHandler extends BaseFormHandler
     /** @var TasksManager $tasksManager */
     private $tasksManager;
 
-    public function __construct(FormInterface $form, Request $request, ContainerInterface $container)
+    public function __construct(FormInterface $form, RequestStack $requestStack, ContainerInterface $container)
     {
-        $this->form               = $form;
-        $this->request            = $request;
-        $this->container          = $container;
+        $this->form         = $form;
+        $this->requestStack = $requestStack;
+        $this->container    = $container;
 
         $this->businessProfileManager = $this->container->get('domain_business.manager.business_profile');
         $this->tasksManager           = $this->container->get('domain_business.manager.tasks');
 
-        $tokenStorage             = $this->container->get('security.token_storage');
-        $this->currentUser        = $tokenStorage->getToken()->getUser();
+        $tokenStorage      = $this->container->get('security.token_storage');
+        $this->currentUser = $tokenStorage->getToken()->getUser();
     }
 
     /**
@@ -50,8 +47,8 @@ class BusinessClaimFormHandler extends BaseFormHandler
      */
     public function process()
     {
-        if ($this->request->getMethod() == Request::METHOD_POST) {
-            $this->form->handleRequest($this->request);
+        if ($this->requestStack->getCurrentRequest()->getMethod() == Request::METHOD_POST) {
+            $this->form->handleRequest($this->requestStack->getCurrentRequest());
 
             if ($this->form->isValid()) {
                 $this->onSuccess();
@@ -64,7 +61,7 @@ class BusinessClaimFormHandler extends BaseFormHandler
 
     private function onSuccess()
     {
-        $businessProfileId = $this->request->request->get('businessProfileId', false);
+        $businessProfileId = $this->requestStack->getCurrentRequest()->request->get('businessProfileId', false);
 
         if (!($this->currentUser instanceof User)) {
             throw new \Exception(self::USER_NOT_FOUND_ERROR_MESSAGE);

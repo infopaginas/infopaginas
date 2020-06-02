@@ -7,15 +7,11 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Domain\BusinessBundle\Entity\Translation\SubscriptionTranslation;
 use Domain\BusinessBundle\Model\DatetimePeriodStatusInterface;
-use Domain\BusinessBundle\Model\StatusInterface;
 use Domain\BusinessBundle\Util\Traits\DatetimePeriodStatusTrait;
-use Domain\BusinessBundle\Util\Traits\StatusTrait;
 use Oxa\Sonata\AdminBundle\Model\ChangeStateInterface;
-use Oxa\Sonata\AdminBundle\Model\DatetimePeriodInterface;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
 use Oxa\Sonata\AdminBundle\Model\OxaPersonalTranslatableInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\ChangeStateTrait;
-use Oxa\Sonata\AdminBundle\Util\Traits\DatetimePeriodTrait;
 use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Oxa\Sonata\AdminBundle\Util\Traits\OxaPersonalTranslatable as PersonalTranslatable;
@@ -38,8 +34,6 @@ class Subscription implements
     use PersonalTranslatable;
     use DatetimePeriodStatusTrait;
     use ChangeStateTrait;
-
-    const PROPERTY_NAME_UPDATED_AT = 'updatedAt';
 
     /**
      * @var int

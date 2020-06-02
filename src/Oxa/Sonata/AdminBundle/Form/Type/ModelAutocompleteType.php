@@ -5,12 +5,12 @@ namespace Oxa\Sonata\AdminBundle\Form\Type;
 use Sonata\AdminBundle\Form\DataTransformer\ModelToIdPropertyTransformer;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\EventListener\ResizeFormListener;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 /**
  * This type defines a standard text field with autocomplete feature.
  *
@@ -19,7 +19,6 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
  */
 class ModelAutocompleteType extends AbstractType
 {
-
     /**
      * {@inheritdoc}
      */
@@ -35,15 +34,12 @@ class ModelAutocompleteType extends AbstractType
         $builder->setAttribute(
             'disabled',
             $options['disabled']
-            // NEXT_MAJOR: Remove this when bumping Symfony constraint to 2.8+
-            || (array_key_exists('read_only', $options) && $options['read_only'])
         );
         $builder->setAttribute('to_string_callback', $options['to_string_callback']);
+        $builder->setAttribute('target_admin_access_action', $options['target_admin_access_action']);
 
         if ($options['multiple']) {
-            $resizeListener = new ResizeFormListener(
-                'hidden', array(), true, true, true
-            );
+            $resizeListener = new ResizeFormListener(HiddenType::class, [], true, true, true);
 
             $builder->addEventSubscriber($resizeListener);
         }
@@ -87,16 +83,6 @@ class ModelAutocompleteType extends AbstractType
     }
 
     /**
-     * NEXT_MAJOR: Remove method, when bumping requirements to SF 2.7+.
-     *
-     * {@inheritdoc}
-     */
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
-    {
-        $this->configureOptions($resolver);
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function configureOptions(OptionsResolver $resolver)
@@ -133,6 +119,9 @@ class ModelAutocompleteType extends AbstractType
             'req_param_name_page_number' => '_page',
             'req_param_name_items_per_page' => '_per_page',
 
+            // security
+            'target_admin_access_action' => 'list',
+
             // CSS classes
             'container_css_class' => '',
             'dropdown_css_class' => '',
@@ -160,5 +149,4 @@ class ModelAutocompleteType extends AbstractType
     {
         return $this->getBlockPrefix();
     }
-
 }

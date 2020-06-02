@@ -8,29 +8,28 @@ use Domain\EmergencyBundle\Entity\EmergencyBusiness;
 use Domain\ReportBundle\Util\DatesUtil;
 use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
 use Symfony\Component\PropertyAccess\PropertyAccess;
-use Symfony\Component\Validator\Constraints\DateTime;
 
 class DayOfWeekModel
 {
-    const CODE_MONDAY    = 'MON';
-    const CODE_TUESDAY   = 'TUE';
-    const CODE_WEDNESDAY = 'WED';
-    const CODE_THURSDAY  = 'THU';
-    const CODE_FRIDAY    = 'FRI';
-    const CODE_SATURDAY  = 'SAT';
-    const CODE_SUNDAY    = 'SUN';
-    const CODE_WEEKDAY   = 'WD';
-    const CODE_WEEKEND   = 'WE';
+    public const CODE_MONDAY    = 'MON';
+    public const CODE_TUESDAY   = 'TUE';
+    public const CODE_WEDNESDAY = 'WED';
+    public const CODE_THURSDAY  = 'THU';
+    public const CODE_FRIDAY    = 'FRI';
+    public const CODE_SATURDAY  = 'SAT';
+    public const CODE_SUNDAY    = 'SUN';
+    public const CODE_WEEKDAY   = 'WD';
+    public const CODE_WEEKEND   = 'WE';
 
     // see https://developers.google.com/search/docs/data-types/local-businesses
-    const SCHEMA_ORG_OPEN_ALL_DAY_OPEN_TIME  = '00:00';
-    const SCHEMA_ORG_OPEN_ALL_DAY_CLOSE_TIME = '23:59';
+    public const SCHEMA_ORG_OPEN_ALL_DAY_OPEN_TIME  = '00:00';
+    public const SCHEMA_ORG_OPEN_ALL_DAY_CLOSE_TIME = '23:59';
 
-    const SCHEMA_ORG_CLOSE_ALL_DAY_OPEN_TIME  = '00:00';
-    const SCHEMA_ORG_CLOSE_ALL_DAY_CLOSE_TIME = '00:00';
+    public const SCHEMA_ORG_CLOSE_ALL_DAY_OPEN_TIME  = '00:00';
+    public const SCHEMA_ORG_CLOSE_ALL_DAY_CLOSE_TIME = '00:00';
 
-    const SCHEMA_ORG_OPEN_TIME_FORMAT = 'H:i';
-    const FORM_DEFAULT_FORMAT = 'h:i a';
+    public const SCHEMA_ORG_OPEN_TIME_FORMAT = 'H:i';
+    public const FORM_DEFAULT_FORMAT         = 'h:i a';
 
     /**
      * @return array
@@ -38,13 +37,13 @@ class DayOfWeekModel
     public static function getDayOfWeekMapping()
     {
         return [
-            self::CODE_MONDAY    => 'Monday',
-            self::CODE_TUESDAY   => 'Tuesday',
-            self::CODE_WEDNESDAY => 'Wednesday',
-            self::CODE_THURSDAY  => 'Thursday',
-            self::CODE_FRIDAY    => 'Friday',
-            self::CODE_SATURDAY  => 'Saturday',
-            self::CODE_SUNDAY    => 'Sunday',
+            'Monday'    => self::CODE_MONDAY,
+            'Tuesday'   => self::CODE_TUESDAY,
+            'Wednesday' => self::CODE_WEDNESDAY,
+            'Thursday'  => self::CODE_THURSDAY,
+            'Friday'    => self::CODE_FRIDAY,
+            'Saturday'  => self::CODE_SATURDAY,
+            'Sunday'    => self::CODE_SUNDAY,
         ];
     }
 

@@ -7,6 +7,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class RedirectController extends Controller
 {
@@ -163,7 +164,7 @@ class RedirectController extends Controller
         $redirectUrl = $router->generate(
             $data['route'],
             $data['params'],
-            true
+            UrlGeneratorInterface::ABSOLUTE_PATH
         );
 
         return $redirectUrl;

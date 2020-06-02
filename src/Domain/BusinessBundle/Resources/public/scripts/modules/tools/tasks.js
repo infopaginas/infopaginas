@@ -35,7 +35,7 @@ $( document ).ready(function() {
         }
     });
 
-    if ( phones.length > 0 && businessProfileId ) {
+    if ( phones && phones.length > 0 && businessProfileId ) {
         var data = {
             phones: phones,
         };

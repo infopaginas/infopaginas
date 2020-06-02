@@ -47,9 +47,9 @@ San Juan: San Juan
 Filter by: Filter by
 Category: Category
 Neighborhoods: Neighborhoods
-%searchQuery% in %searchLocationName%: %searchQuery% in %searchLocationName%
-%page%-%amount% of %resultCount% Results: %page%-%amount% of %resultCount% Results
-for %searchQuery% in %searchLocationName%: for %searchQuery% in %searchLocationName%
+%searchQuery% in %searchLocationName%: '%searchQuery% in %searchLocationName%'
+%page%-%amount% of %resultCount% Results: '%page%-%amount% of %resultCount% Results'
+for %searchQuery% in %searchLocationName%: 'for %searchQuery% in %searchLocationName%'
 Sort by: Sort by
 Relevance: Relevance
 Distance: Distance
@@ -232,7 +232,7 @@ Photos: Photos
 Video: Video
 Sorry, no results were found.: Sorry, no results were found.
 Home: Home
-%category% in %city%: %category% in %city%
+%category% in %city%: '%category% in %city%'
 SONs Notebooks: SONs Notebooks
 
 Reports: Reports
@@ -278,7 +278,7 @@ Excel: Excel
 Print: Print
 
 Content: Content
-business.profile.edit.note: Please note: changes will be applied after approval
+business.profile.edit.note: 'Please note: changes will be applied after approval'
 Please enter a search term: Please enter a search term
 business_profile:
   interaction_chart:
@@ -453,19 +453,19 @@ Reset: Reset
 Reason: Reason
 Remove: Remove
 Video status pending: Your video is being converted. It will be submitted for approval to our administrators and then published automatically.
-Video status error: Error: something went wrong, please try to upload the video again with the following formats: MP4, WMV, FLV, AVI, MPG, MOV
+Video status error: 'Error: something went wrong, please try to upload the video again with the following formats: MP4, WMV, FLV, AVI, MPG, MOV'
 
 business_profile.names_blank: Name field should be filled for at least one language
-business_profile.image_count_limit: Error: too much images added. Max files count =
+business_profile.image_count_limit: 'Error: too much images added. Max files count ='
 business_profile.size_limit: The video is larger than 128 MB
 business_profile.video.size_limit: The video is larger than 128 MB
 business_profile.image.size_limit: The image is larger than 10 MB
 business_profile.background.size_limit: The image is larger than 1 MB
-business_profile.url.empty: Error: URL field should not be empty.
+business_profile.url.empty: 'Error: URL field should not be empty.'
 business_profile.video_count_limit: Only one video can be uploaded at a time
 business_profile.max_length: Please use max {{ limit }} symbols
-business_profile.logo.image_count_limit: Error: only single logo is allowed
-business_profile.background.image_count_limit: Error: only single background is allowed
+business_profile.logo.image_count_limit: 'Error: only single logo is allowed'
+business_profile.background.image_count_limit: 'Error: only single background is allowed'
 business_profile.lang.es: in Spanish
 business_profile.lang.en: in English
 
@@ -617,7 +617,7 @@ user:
   reset_password:
     token:
       invalid: You currently do not have valid link for update your password
-      empty: Error: Empty token.
+      empty: 'Error: Empty token.'
   auth:
     validation_failure: Validation failure
     registration_success: Successfully registered. Please login with your credentials
@@ -725,7 +725,6 @@ emergency.business_draft.phone.title: Phone
 emergency.business_draft.area.title: Area
 emergency.business_draft.address: Address
 emergency.business_draft.working_hours: Working Hours
-emergency.business_draft.payment.placeholder: Start Typing
 emergency.business_draft.payment.placeholder: Start Typing
 emergency.business_draft.payment.title: Payment Methods
 emergency.business_draft.category.title.others: Others

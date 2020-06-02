@@ -90,7 +90,7 @@ services:
 
     domain_report.google_analytics.client_provider:
         class: Domain\ReportBundle\Google\Analytics\ClientProvider
-        arguments: ['analytics@infopaginas-142911.iam.gserviceaccount.com', %kernel.root_dir%/config/key.p12]
+        arguments: ['analytics@infopaginas-142911.iam.gserviceaccount.com', '%kernel.root_dir%/config/key.p12']
 
     domain_report.manager.ad_usage:
         class: Domain\ReportBundle\Manager\AdUsageReportManager

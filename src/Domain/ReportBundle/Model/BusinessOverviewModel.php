@@ -4,41 +4,41 @@ namespace Domain\ReportBundle\Model;
 
 class BusinessOverviewModel implements ReportInterface
 {
-    const TYPE_CODE_IMPRESSION = 'impressions';
-    const TYPE_CODE_VIEW       = 'views';
-    const TYPE_CODE_KEYWORD    = 'keyword';
-    const TYPE_CODE_ADS        = 'ads';
-    const TYPE_CODE_SOCIAL_NETWORKS = 'social_networks';
-    const TYPE_CODE_CATEGORY_BUSINESS   = 'category_business';
-    const TYPE_CODE_CATEGORY_CATALOG    = 'category_catalog';
-    const TYPE_CODE_GEOLOCATION = 'geolocation';
+    public const TYPE_CODE_IMPRESSION        = 'impressions';
+    public const TYPE_CODE_VIEW              = 'views';
+    public const TYPE_CODE_KEYWORD           = 'keyword';
+    public const TYPE_CODE_ADS               = 'ads';
+    public const TYPE_CODE_SOCIAL_NETWORKS   = 'social_networks';
+    public const TYPE_CODE_CATEGORY_BUSINESS = 'category_business';
+    public const TYPE_CODE_CATEGORY_CATALOG  = 'category_catalog';
+    public const TYPE_CODE_GEOLOCATION       = 'geolocation';
 
-    const TYPE_CODE_DIRECTION_BUTTON       = 'directionButton';
-    const TYPE_CODE_MAP_SHOW_BUTTON        = 'mapShowButton';
-    const TYPE_CODE_MAP_MARKER_BUTTON      = 'mapMarkerButton';
-    const TYPE_CODE_WEB_BUTTON             = 'webButton';
-    const TYPE_CODE_WEB_ACTION_BUTTON      = 'webActionButton';
-    const TYPE_CODE_CALL_MOB_BUTTON        = 'callMobButton';
-    const TYPE_CODE_CALL_DESK_BUTTON       = 'callDeskButton';
-    const TYPE_CODE_ADD_COMPARE_BUTTON     = 'addCompareButton';
-    const TYPE_CODE_REMOVE_COMPARE_BUTTON  = 'removeCompareButton';
+    public const TYPE_CODE_DIRECTION_BUTTON       = 'directionButton';
+    public const TYPE_CODE_MAP_SHOW_BUTTON        = 'mapShowButton';
+    public const TYPE_CODE_MAP_MARKER_BUTTON      = 'mapMarkerButton';
+    public const TYPE_CODE_WEB_BUTTON             = 'webButton';
+    public const TYPE_CODE_WEB_ACTION_BUTTON      = 'webActionButton';
+    public const TYPE_CODE_CALL_MOB_BUTTON        = 'callMobButton';
+    public const TYPE_CODE_CALL_DESK_BUTTON       = 'callDeskButton';
+    public const TYPE_CODE_ADD_COMPARE_BUTTON     = 'addCompareButton';
+    public const TYPE_CODE_REMOVE_COMPARE_BUTTON  = 'removeCompareButton';
 
-    const TYPE_CODE_FACEBOOK_SHARE  = 'facebookShare';
-    const TYPE_CODE_TWITTER_SHARE   = 'twitterShare';
+    public const TYPE_CODE_FACEBOOK_SHARE  = 'facebookShare';
+    public const TYPE_CODE_TWITTER_SHARE   = 'twitterShare';
 
-    const TYPE_CODE_LINKED_IN_VISIT    = 'linkedInVisit';
-    const TYPE_CODE_FACEBOOK_VISIT     = 'facebookVisit';
-    const TYPE_CODE_TWITTER_VISIT      = 'twitterVisit';
-    const TYPE_CODE_GOOGLE_VISIT       = 'googleVisit';
-    const TYPE_CODE_YOUTUBE_VISIT      = 'youtubeVisit';
-    const TYPE_CODE_INSTAGRAM_VISIT    = 'instagramVisit';
-    const TYPE_CODE_TRIP_ADVISOR_VISIT = 'tripAdvisorVisit';
+    public const TYPE_CODE_LINKED_IN_VISIT    = 'linkedInVisit';
+    public const TYPE_CODE_FACEBOOK_VISIT     = 'facebookVisit';
+    public const TYPE_CODE_TWITTER_VISIT      = 'twitterVisit';
+    public const TYPE_CODE_GOOGLE_VISIT       = 'googleVisit';
+    public const TYPE_CODE_YOUTUBE_VISIT      = 'youtubeVisit';
+    public const TYPE_CODE_INSTAGRAM_VISIT    = 'instagramVisit';
+    public const TYPE_CODE_TRIP_ADVISOR_VISIT = 'tripAdvisorVisit';
 
-    const TYPE_CODE_VIDEO_WATCHED  = 'videoWatched';
-    const TYPE_CODE_REVIEW_CLICK   = 'reviewClick';
-    const TYPE_CODE_EMAIL_CLICK    = 'emailClick';
+    public const TYPE_CODE_VIDEO_WATCHED  = 'videoWatched';
+    public const TYPE_CODE_REVIEW_CLICK   = 'reviewClick';
+    public const TYPE_CODE_EMAIL_CLICK    = 'emailClick';
 
-    const EVENT_TYPES = [
+    public const EVENT_TYPES = [
         self::TYPE_CODE_VIEW                  => 'interaction_report.event.view',
         self::TYPE_CODE_IMPRESSION            => 'interaction_report.event.impression',
         self::TYPE_CODE_DIRECTION_BUTTON      => 'interaction_report.button.direction',
@@ -64,11 +64,11 @@ class BusinessOverviewModel implements ReportInterface
         self::TYPE_CODE_EMAIL_CLICK           => 'interaction_report.email.click',
     ];
 
-    const EVENT_PRIORITY_MAIN   = 'main';
-    const EVENT_PRIORITY_COMMON = 'common';
-    const EVENT_PRIORITY_HIDDEN = 'hidden';
+    public const DEFAULT_CHART_TYPE = self::TYPE_CODE_IMPRESSION;
 
-    const DEFAULT_CHART_TYPE = self::TYPE_CODE_IMPRESSION;
+    private const EVENT_PRIORITY_MAIN   = 'main';
+    private const EVENT_PRIORITY_COMMON = 'common';
+    private const EVENT_PRIORITY_HIDDEN = 'hidden';
 
     /**
      * @return array
@@ -184,9 +184,7 @@ class BusinessOverviewModel implements ReportInterface
     {
         $allowedEvents = self::getChartEventTypes();
 
-        $result = array_intersect_key(self::EVENT_TYPES, array_flip($allowedEvents));
-
-        return $result;
+        return array_intersect_key(self::EVENT_TYPES, array_flip($allowedEvents));
     }
 
     /**
@@ -194,9 +192,7 @@ class BusinessOverviewModel implements ReportInterface
      */
     public static function getAllChartEventTypesWithTranslation()
     {
-        $allowedEvents = self::getChartEventTypes();
-
-        $result = array_intersect_key(self::EVENT_TYPES, array_flip($allowedEvents));
+        $result = self::getChartEventTypesWithTranslation();
 
         $result[self::TYPE_CODE_ADS]     = 'report.type.ads';
         $result[self::TYPE_CODE_KEYWORD] = 'report.type.keywords';

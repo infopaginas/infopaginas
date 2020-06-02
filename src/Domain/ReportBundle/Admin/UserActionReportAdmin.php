@@ -5,12 +5,15 @@ namespace Domain\ReportBundle\Admin;
 use Domain\ReportBundle\Entity\UserActionReport;
 use Domain\ReportBundle\Manager\UserActionReportManager;
 use Domain\ReportBundle\Model\UserActionModel;
+use Oxa\Sonata\AdminBundle\Filter\CaseInsensitiveStringFilter;
+use Oxa\Sonata\AdminBundle\Filter\DateRangeFilter;
 use Oxa\Sonata\AdminBundle\Util\Helpers\AdminHelper;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
-use Sonata\AdminBundle\Form\FormMapper;
-use Sonata\AdminBundle\Route\RouteCollection;
-use Sonata\AdminBundle\Show\ShowMapper;
+use Sonata\Form\Type\DateRangePickerType;
+use Sonata\DoctrineORMAdminBundle\Filter\ChoiceFilter;
+use Sonata\DoctrineORMAdminBundle\Filter\ModelFilter;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 /**
  * Class UserActionReportAdmin
@@ -62,11 +65,10 @@ class UserActionReportAdmin extends ReportAdmin
     protected function configureDatagridFilters(DatagridMapper $datagridMapper)
     {
         $datagridMapper
-            ->add('username', 'doctrine_orm_model', [
+            ->add('username', ModelFilter::class, [
                 'show_filter' => !empty($this->datagridValues['username']['value']) ?: null,
                 'field_options' => [
                     'mapped'    => false,
-                    'property'  => 'fullName',
                     'class' => 'Oxa\Sonata\UserBundle\Entity\User',
                     'query_builder' => function (\Oxa\Sonata\UserBundle\Entity\Repository\UserRepository $rep) {
                         return $rep->findByRolesQb(
@@ -79,34 +81,33 @@ class UserActionReportAdmin extends ReportAdmin
                     },
                 ],
             ])
-            ->add('entity', 'doctrine_orm_string', [
+            ->add('entity', CaseInsensitiveStringFilter::class, [
                 'show_filter' => !empty($this->datagridValues['entity']['value']) ?: null,
                 'field_options' => [
                     'mapped'    => false,
                 ],
             ])
-            ->add('entityName', 'doctrine_orm_string', [
+            ->add('entityName', CaseInsensitiveStringFilter::class, [
                 'show_filter' => !empty($this->datagridValues['entityName']['value']) ?: null,
                 'field_options' => [
                     'mapped'    => false,
                 ],
             ])
-            ->add('action', 'doctrine_orm_choice', [
+            ->add('action', ChoiceFilter::class, [
                 'show_filter' => !empty($this->datagridValues['action']['value']) ?: null,
                 'field_options' => [
                     'mapped'    => false,
-                    'choices' => UserActionModel::EVENT_TYPES,
+                    'choices' => array_flip(UserActionModel::EVENT_TYPES),
                     'choice_translation_domain' => 'AdminReportBundle',
                 ],
-                'field_type' => 'choice'
+                'field_type' => ChoiceType::class
             ])
-            ->add('date', 'doctrine_orm_date_range', [
+            ->add('date', DateRangeFilter::class, [
                 'show_filter' => $this->checkDateFilter() ?: null,
-                'field_type'  => 'sonata_type_date_range_picker',
+                'field_type' => DateRangePickerType::class,
                 'field_options' => [
                     'field_options' => [
                         'format'        => AdminHelper::FILTER_DATE_RANGE_FORMAT,
-                        'empty_value'   => false,
                     ],
                     'mapped'    => false,
                     'required'  => true,
@@ -137,9 +138,11 @@ class UserActionReportAdmin extends ReportAdmin
     /**
      * @return UserActionReportManager
      */
-    protected function getUserActionReportManager() : UserActionReportManager
+    protected function getUserActionReportManager(): UserActionReportManager
     {
-        return $this->getConfigurationPool()->getContainer()->get('domain_report.manager.user_action_report_manager');
+        return $this->getConfigurationPool()
+            ->getContainer()
+            ->get('domain_report.manager.user_action_report_manager');
     }
 
     /**
@@ -147,12 +150,13 @@ class UserActionReportAdmin extends ReportAdmin
      */
     protected function checkDateFilter()
     {
-        if (!empty($this->datagridValues['date']['value']['start']) or
+        if (
+            !empty($this->datagridValues['date']['value']['start']) ||
             !empty($this->datagridValues['date']['value']['end'])
         ) {
             return true;
-        } else {
-            return false;
         }
+
+        return false;
     }
 }

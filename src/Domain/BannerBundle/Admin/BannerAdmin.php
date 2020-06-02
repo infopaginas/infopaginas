@@ -4,6 +4,7 @@ namespace Domain\BannerBundle\Admin;
 
 use Domain\BannerBundle\Entity\Banner;
 use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
+use Oxa\Sonata\AdminBundle\Filter\DateTimeRangeFilter;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
@@ -22,7 +23,7 @@ class BannerAdmin extends OxaAdmin
             ->add('title')
             ->add('description')
             ->add('isPublished')
-            ->add('updatedAt', 'doctrine_orm_datetime_range', $this->defaultDatagridDateTypeOptions)
+            ->add('updatedAt', DateTimeRangeFilter::class, $this->defaultDatagridDateTypeOptions)
             ->add('updatedUser')
         ;
     }

@@ -3,6 +3,7 @@
 namespace Oxa\Sonata\MediaBundle\Controller;
 
 use Oxa\Sonata\AdminBundle\Controller\CRUDController;
+use Symfony\Bridge\Twig\Extension\FormExtension;
 use Symfony\Component\Finder\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -11,7 +12,7 @@ class MediaAdminController extends CRUDController
     /**
      * @throws \Symfony\Component\Security\Core\Exception\AccessDeniedException
      *
-     * @return \Symfony\Bundle\FrameworkBundle\Controller\Response|\Symfony\Component\HttpFoundation\Response
+     * @return Response|\Symfony\Component\HttpFoundation\Response
      */
     public function createAction()
     {
@@ -19,7 +20,9 @@ class MediaAdminController extends CRUDController
             throw new AccessDeniedException();
         }
 
-        $mediaContext = $this->get('request')->get('context', $this->get('sonata.media.pool')->getDefaultContext());
+        $mediaContext = $this->get('request_stack')
+            ->getCurrentRequest()
+            ->get('context', $this->get('sonata.media.pool')->getDefaultContext());
 
         $parameters = $this->admin->getPersistentParameters();
         $providers  = $this->get('sonata.media.pool')->getProvidersByContext($mediaContext);
@@ -44,14 +47,14 @@ class MediaAdminController extends CRUDController
      * @param array                                           $parameters
      * @param null|\Symfony\Component\HttpFoundation\Response $response
      *
-     * @return \Symfony\Bundle\FrameworkBundle\Controller\Response
+     * @return Response
      */
     public function render($view, array $parameters = array(), Response $response = null)
     {
         $parameters['media_pool']            = $this->container->get('sonata.media.pool');
         $parameters['persistent_parameters'] = $this->admin->getPersistentParameters();
 
-        return parent::render($view, $parameters);
+        return $this->renderWithExtraParams($view, $parameters);
     }
 
     /**
@@ -82,7 +85,10 @@ class MediaAdminController extends CRUDController
         $formView = $datagrid->getForm()->createView();
 
         // set the theme for the current Admin Form
-        $this->get('twig')->getExtension('form')->renderer->setTheme($formView, $this->admin->getFilterTheme());
+        $this->get('twig')
+            ->getExtension(FormExtension::class)
+            ->renderer
+            ->setTheme($formView, $this->admin->getFilterTheme());
 
         return $this->render(
             $this->admin->getTemplate('list'),

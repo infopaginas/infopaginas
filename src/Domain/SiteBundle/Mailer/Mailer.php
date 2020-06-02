@@ -97,7 +97,7 @@ class Mailer
         $url = $this->getRouter()->generate(
             'fos_user_resetting_reset',
             ['token' => $user->getConfirmationToken()],
-            true
+            UrlGeneratorInterface::ABSOLUTE_PATH
         );
 
         $message = $this->getConfigService()->getValue(ConfigInterface::MAIL_RESET_PASSWORD_TEMPLATE);

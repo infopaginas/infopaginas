@@ -5,6 +5,7 @@ namespace JMaitan\SonataMediaCropBundle\Controller;
 use JMaitan\SonataMediaCropBundle\Resizer\CropResizerInterface;
 use Sonata\MediaBundle\Controller\MediaAdminController as BaseMediaAdminController;
 use Sonata\MediaBundle\Model\MediaInterface;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Validator\Constraints\GreaterThan;
 
 class CropController extends BaseMediaAdminController
@@ -41,15 +42,14 @@ class CropController extends BaseMediaAdminController
             'h' => 0,
         );
 
-        $form = $this->
-        createFormBuilder($cropping)
-            ->add('x', 'number')
-            ->add('y', 'number')
-            ->add('w', 'number', array('constraints' => array(new GreaterThan('0'))))
-            ->add('h', 'number', array('constraints' => array(new GreaterThan('0'))))
-            ->add('r', 'number')
-            ->add('scaleX', 'number')
-            ->add('scaleY', 'number')
+        $form = $this->createFormBuilder($cropping)
+            ->add('x', NumberType::class)
+            ->add('y', NumberType::class)
+            ->add('w', NumberType::class, ['constraints' => [new GreaterThan('0')]])
+            ->add('h', NumberType::class, ['constraints' => [new GreaterThan('0')]])
+            ->add('r', NumberType::class)
+            ->add('scaleX', NumberType::class)
+            ->add('scaleY', NumberType::class)
             ->getForm();
 
         $form->handleRequest($request);

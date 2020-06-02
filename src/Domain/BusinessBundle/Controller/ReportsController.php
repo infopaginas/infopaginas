@@ -25,7 +25,6 @@ use Domain\ReportBundle\Service\Export\BusinessInteractionReportExcelExporter;
 use Domain\ReportBundle\Util\DatesUtil;
 use Oxa\Sonata\AdminBundle\Util\Helpers\AdminHelper;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -63,9 +62,9 @@ class ReportsController extends Controller
         $overviewData = $businessOverviewReportManager->getBusinessOverviewReportData($params);
         $keywordsData = $this->prepareKeywordsResponse($params);
 
-        $filtersForm = $this->createForm(new BusinessReportFilterType());
+        $filtersForm = $this->createForm(BusinessReportFilterType::class);
 
-        $closeBusinessProfileForm = $this->createForm(new BusinessCloseRequestType());
+        $closeBusinessProfileForm = $this->createForm(BusinessCloseRequestType::class);
 
         return $this->render(
             ':redesign:business-profile-report.html.twig',
@@ -309,7 +308,7 @@ class ReportsController extends Controller
             throw $this->createNotFoundException();
         }
 
-        $filtersForm = $this->createForm(new BusinessChartFilterType());
+        $filtersForm = $this->createForm(BusinessChartFilterType::class);
 
         return $this->render(':redesign:chart-preview.html.twig', [
             'business' => $businessProfile,
@@ -655,7 +654,7 @@ class ReportsController extends Controller
      */
     protected function checkBusinessProfileAccess(BusinessProfile $businessProfile)
     {
-        $token = $this->get('security.context')->getToken();
+        $token = $this->get('security.token_storage')->getToken();
         if (!$token) {
             throw $this->createNotFoundException();
         }

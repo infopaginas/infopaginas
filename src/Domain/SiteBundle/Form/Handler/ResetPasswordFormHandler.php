@@ -5,18 +5,17 @@ namespace Domain\SiteBundle\Form\Handler;
 use FOS\UserBundle\Model\UserInterface;
 use FOS\UserBundle\Model\UserManagerInterface;
 use Oxa\ManagerArchitectureBundle\Form\Handler\BaseFormHandler;
-use Oxa\ManagerArchitectureBundle\Model\Interfaces\FormHandlerInterface;
-use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Translation\Translator;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * Class ResetPasswordFormHandler
  * @package Domain\SiteBundle\Form\Handler
  */
-class ResetPasswordFormHandler extends BaseFormHandler implements FormHandlerInterface
+class ResetPasswordFormHandler extends BaseFormHandler
 {
     protected $translationDomain = 'DomainSiteBundle';
 
@@ -24,29 +23,22 @@ class ResetPasswordFormHandler extends BaseFormHandler implements FormHandlerInt
     protected $form;
 
     /** @var Request  */
-    protected $request;
+    protected $requestStack;
 
     /** @var UserManagerInterface */
     protected $userManager;
 
     /** @var Translator */
     protected $translator;
-
-    /**
-     * ResetPasswordFormHandler constructor.
-     * @param FormInterface $form
-     * @param Request $request
-     * @param UserManagerInterface $userManager
-     * @param Translator $translator
-     */
+    
     public function __construct(
         FormInterface $form,
-        Request $request,
+        RequestStack $requestStack,
         UserManagerInterface $userManager,
         Translator $translator
     ) {
         $this->form           = $form;
-        $this->request        = $request;
+        $this->requestStack   = $requestStack;
         $this->userManager    = $userManager;
         $this->translator     = $translator;
     }
@@ -57,7 +49,7 @@ class ResetPasswordFormHandler extends BaseFormHandler implements FormHandlerInt
      */
     public function process()
     {
-        $token = $this->request->request->get('token', null);
+        $token = $this->requestStack->getCurrentRequest()->request->get('token', null);
 
         if ($token === null) {
             throw new \Exception(
@@ -75,8 +67,8 @@ class ResetPasswordFormHandler extends BaseFormHandler implements FormHandlerInt
             );
         }
 
-        if ($this->request->getMethod() == 'POST') {
-            $this->form->handleRequest($this->request);
+        if ($this->requestStack->getCurrentRequest()->getMethod() == 'POST') {
+            $this->form->handleRequest($this->requestStack->getCurrentRequest());
 
             if ($this->form->isValid()) {
                 $password = $this->form->get('plainPassword')->getData();

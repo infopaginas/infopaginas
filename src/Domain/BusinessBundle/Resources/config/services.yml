@@ -34,11 +34,6 @@ services:
         class: Domain\BusinessBundle\Manager\BusinessGalleryManager
         arguments: ['@doctrine.orm.entity_manager', '@sonata.media.manager.media']
 
-    domain_business.manager.address_manager:
-        class: Domain\BusinessBundle\Manager\AddressManager
-        calls:
-            - [ setContainer, [ '@service_container' ] ]
-
     domain_business.manager.section_manager:
         class: Domain\BusinessBundle\Manager\SectionManager
         arguments: ['@doctrine.orm.entity_manager']
@@ -89,19 +84,15 @@ services:
     #form types section
     domain_business.form.type.google_map:
         class: Domain\BusinessBundle\Form\Type\GoogleMapType
-        arguments:
-            - '%ivory_google_map.map.class%'
         tags:
-            - { name: form.type, alias: google_map }
+            - { name: form.type }
         calls:
             - [ setConfig, [ '@oxa_config' ] ]
 
     domain_business.form.type.google_map_front:
         class: Domain\BusinessBundle\Form\Type\GoogleMapFrontType
-        arguments:
-            - '%ivory_google_map.map.class%'
         tags:
-            - { name: form.type, alias: google_map_front }
+            - { name: form.type }
         calls:
             - [ setConfig, [ '@oxa_config' ] ]
 
@@ -109,13 +100,13 @@ services:
         class: Domain\BusinessBundle\Form\Type\MediaPreviewType
         arguments: ["@doctrine.orm.entity_manager"]
         tags:
-            - { name: form.type, alias: media_preview }
+            - { name: form.type }
 
     domain_business.form.type.business_profile:
         class: Domain\BusinessBundle\Form\Type\BusinessProfileFormType
         arguments: [null]
         tags:
-            - { name: form.type, alias: domain_business_bundle_business_profile_form_type }
+            - { name: form.type }
         calls:
             - [ setCurrentUser, [ '@session' ] ]
 
@@ -123,7 +114,7 @@ services:
         class: Domain\BusinessBundle\Form\Type\BusinessGalleryType
         arguments: [null]
         tags:
-            - { name: form.type, alias: domain_business_bundle_business_gallery_form_type }
+            - { name: form.type }
 
     domain_business.form.type.entity_hidden:
        class: Domain\BusinessBundle\Form\Type\EntityHiddenType
@@ -135,66 +126,61 @@ services:
         class: Domain\BusinessBundle\Form\Type\BusinessReviewType
         arguments: [null]
         tags:
-            - { name: form.type, alias: domain_business_bundle_business_review_type }
+            - { name: form.type }
 
     domain_business.form.type.business_close_request:
         class: Domain\BusinessBundle\Form\Type\BusinessCloseRequestType
         arguments: [null]
         tags:
-            - { name: form.type, alias: domain_business_bundle_business_close_request_type }
+            - { name: form.type }
 
     domain_business.form.type.business_upgrade_request:
         class: Domain\BusinessBundle\Form\Type\BusinessUpgradeRequestType
         arguments: [null]
         tags:
-            - { name: form.type, alias: domain_business_bundle_business_upgrade_request_type }
+            - { name: form.type }
 
     domain_business.form.type.claim:
         class: Domain\BusinessBundle\Form\Type\BusinessClaimRequestType
         arguments: [null]
         tags:
-            - { name: form.type, alias: domain_business_bundle_business_claim_request_type }
+            - { name: form.type }
 
     #forms section
     domain_business.form.business_profile:
-        factory_method: createNamed
-        factory_service: form.factory
+        factory: ['@form.factory', 'createNamed']
         class: Symfony\Component\Form\Form
         arguments:
             - 'domain_business_bundle_business_profile_form_type'
-            - 'domain_business_bundle_business_profile_form_type'
+            - 'Domain\BusinessBundle\Form\Type\BusinessProfileFormType'
 
     domain_business.form.claim:
-        factory_method: createNamed
-        factory_service: form.factory
+        factory: ['@form.factory', 'createNamed']
         class: Symfony\Component\Form\Form
         arguments:
             - 'domain_business_bundle_business_claim_request_type'
-            - 'domain_business_bundle_business_claim_request_type'
+            - 'Domain\BusinessBundle\Form\Type\BusinessClaimRequestType'
 
     domain_business.form.review:
-        factory_method: createNamed
-        factory_service: form.factory
+        factory: ['@form.factory', 'createNamed']
         class: Symfony\Component\Form\Form
         arguments:
             - 'domain_business_bundle_business_review_type'
-            - 'domain_business_bundle_business_review_type'
+            - 'Domain\BusinessBundle\Form\Type\BusinessReviewType'
 
     domain_business.form.business_close_request:
-        factory_method: createNamed
-        factory_service: form.factory
+        factory: ['@form.factory', 'createNamed']
         class: Symfony\Component\Form\Form
         arguments:
             - 'domain_business_bundle_business_close_request_type'
-            - 'domain_business_bundle_business_close_request_type'
+            - 'Domain\BusinessBundle\Form\Type\BusinessCloseRequestType'
 
     domain_business.form.business_upgrade_request:
-        factory_method: createNamed
-        factory_service: form.factory
+        factory: ['@form.factory', 'createNamed']
         class: Symfony\Component\Form\Form
         arguments:
             - 'domain_business_bundle_business_upgrade_request_type'
-            - 'domain_business_bundle_business_upgrade_request_type'
+            - 'Domain\BusinessBundle\Form\Type\BusinessUpgradeRequestType'
 
     #form handlers section
     domain_business.form.handler.business_profile:
@@ -202,7 +188,7 @@ services:
         scope: request
         arguments:
             - '@domain_business.form.business_profile'
-            - '@request'
+            - '@request_stack'
             - '@service_container'
 
     domain_business.form.handler.claim:
@@ -210,7 +196,7 @@ services:
         scope: request
         arguments:
             - '@domain_business.form.claim'
-            - '@request'
+            - '@request_stack'
             - '@service_container'
 
     domain_business.form.handler.review:
@@ -218,7 +204,7 @@ services:
         scope: request
         arguments:
             - '@domain_business.form.review'
-            - '@request'
+            - '@request_stack'
             - '@domain_business.manager.review'
             - '@domain_business.manager.business_profile'
             - '@domain_business.manager.tasks'
@@ -229,7 +215,7 @@ services:
         scope: request
         arguments:
             - '@domain_business.form.business_close_request'
-            - '@request'
+            - '@request_stack'
             - '@domain_business.manager.business_profile'
             - '@domain_business.manager.tasks'
             - '@translator'
@@ -239,7 +225,7 @@ services:
         scope: request
         arguments:
             - '@domain_business.form.business_upgrade_request'
-            - '@request'
+            - '@request_stack'
             - '@domain_site.mailer'
             - '@security.token_storage'
             - '@translator'

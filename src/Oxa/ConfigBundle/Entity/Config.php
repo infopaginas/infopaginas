@@ -84,6 +84,11 @@ class Config implements DefaultEntityInterface, ConfigInterface, OxaPersonalTran
      */
     protected $translations;
 
+    public function __sleep()
+    {
+        return ['value', 'format'];
+    }
+
     /**
      * Get id
      *

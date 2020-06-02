@@ -6,12 +6,14 @@ use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Manager\BusinessProfileManager;
 use Domain\ReportBundle\Model\BusinessOverviewModel;
 use Domain\ReportBundle\Util\DatesUtil;
+use Twig\Extension\AbstractExtension;
+use Twig\TwigFunction;
 
 /**
  * Class ReportExtension
  * @package Domain\BusinessBundle\Twig\Extension
  */
-class ReportExtension extends \Twig_Extension
+class ReportExtension extends AbstractExtension
 {
     /** @var BusinessProfileManager */
     private $businessProfileManager;
@@ -30,10 +32,10 @@ class ReportExtension extends \Twig_Extension
     public function getFunctions()
     {
         return [
-            'ad_usage_allowed_for_business'  => new \Twig_Function_Method($this, 'isAdUsageAllowedForBusiness'),
-            'convert_monthly_formatted_date' => new \Twig_Function_Method($this, 'convertMonthlyFormattedDate'),
-            'get_events_with_priority'       => new \Twig_Function_Method($this, 'getEventsWithPriority'),
-            'get_month_range_by_period'      => new \Twig_Function_Method($this, 'getMothRangeByPeriod'),
+            new TwigFunction('ad_usage_allowed_for_business', [$this, 'isAdUsageAllowedForBusiness']),
+            new TwigFunction('convert_monthly_formatted_date', [$this, 'convertMonthlyFormattedDate']),
+            new TwigFunction('get_events_with_priority', [$this, 'getEventsWithPriority']),
+            new TwigFunction('get_month_range_by_period', [$this, 'getMothRangeByPeriod']),
         ];
     }
 

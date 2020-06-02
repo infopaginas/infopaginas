@@ -32,7 +32,7 @@ services:
     memcached:
         class: Cache\AdapterBundle\ProviderHelper\Memcached
         arguments:
-            persistent_id: "%memcached.session_prefix%"
+            - "%memcached.session_prefix%"
         calls:
             - [ addServer, [ "%memcached.host%", "%memcached.port%" ]]
     app.cache.memcached:

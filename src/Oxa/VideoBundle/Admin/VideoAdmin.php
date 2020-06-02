@@ -165,7 +165,7 @@ class VideoAdmin extends OxaAdmin
 
     public function setTemplate($name, $template)
     {
-        $this->templates['show'] = 'OxaVideoBundle:Admin:show.html.twig';
+        $this->getTemplateRegistry()->setTemplate('show', 'OxaVideoBundle:Admin:show.html.twig');
     }
 
     /**

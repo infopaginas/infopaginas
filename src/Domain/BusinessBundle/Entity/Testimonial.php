@@ -68,7 +68,7 @@ class Testimonial implements DefaultEntityInterface, ChangeStateInterface, OxaPe
     /**
      * @var Media - Media Image
      * @ORM\ManyToOne(targetEntity="Oxa\Sonata\MediaBundle\Entity\Media",
-     *     inversedBy="coupons",
+     *     inversedBy="testimonials",
      *     cascade={"persist"}
      *     )
      * @ORM\JoinColumn(name="media_id", referencedColumnName="id")

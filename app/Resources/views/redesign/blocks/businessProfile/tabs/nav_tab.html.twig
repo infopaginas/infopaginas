@@ -20,7 +20,7 @@
                     </a>
                 </li>
                 <li {% if activeTab is defined and activeTab == 'report' %}class="active"{% endif %}>
-                    <a {% if activeTab is defined and activeTab == 'report' %}href="#"{% else %}href="{{ absolute_url(path('domain_business_reports_index', { businessProfileId: businessProfile.getId() })) }}"{% endif %}>
+                    <a {% if activeTab is defined and activeTab == 'report' %}href="#" {% else %}href="{{ absolute_url(path('domain_business_reports_index', { businessProfileId: businessProfile.getId() })) }}"{% endif %}>
                         <i class="fa fa-pie-chart"></i>
                         {% trans %}Reports{% endtrans %}
                     </a>

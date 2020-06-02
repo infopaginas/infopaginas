@@ -8,7 +8,7 @@ use Domain\BusinessBundle\Entity\Translation\CustomFields\BusinessCustomFieldRad
 use Oxa\Sonata\AdminBundle\Model\ChangeStateInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\ChangeStateTrait;
 use Sonata\TranslationBundle\Model\Gedmo\TranslatableInterface;
-use Sonata\TranslationBundle\Traits\Gedmo\PersonalTranslatable;
+use Sonata\TranslationBundle\Traits\Gedmo\PersonalTranslatableTrait;
 use Symfony\Component\Validator\Constraints as Assert;
 use Gedmo\Mapping\Annotation as Gedmo;
 
@@ -24,7 +24,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 class BusinessCustomFieldRadioButtonItem implements ChangeStateInterface, TranslatableInterface
 {
     use ChangeStateTrait;
-    use PersonalTranslatable;
+    use PersonalTranslatableTrait;
 
     /**
      * @var int

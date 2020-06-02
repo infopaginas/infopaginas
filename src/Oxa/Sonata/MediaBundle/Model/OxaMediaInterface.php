@@ -8,21 +8,21 @@ namespace Oxa\Sonata\MediaBundle\Model;
  */
 interface OxaMediaInterface
 {
-    const PROVIDER_IMAGE    = 'sonata.media.provider.image';
-    const PROVIDER_FILE     = 'sonata.media.provider.file';
+    public const PROVIDER_IMAGE    = 'sonata.media.provider.image';
+    public const PROVIDER_FILE     = 'sonata.media.provider.file';
 
-    const CONTEXT_DEFAULT                     = 'default';
-    const CONTEXT_BUSINESS_PROFILE_IMAGES     = 'business_profile_images';
-    const CONTEXT_BUSINESS_PROFILE_LOGO       = 'business_profile_logo';
-    const CONTEXT_BUSINESS_PROFILE_BACKGROUND = 'business_profile_background';
-    const CONTEXT_COUPON                      = 'coupon';
-    const CONTEXT_ARTICLE                     = 'article';
-    const CONTEXT_PAGE_BACKGROUND             = 'page_background';
-    const CONTEXT_ARTICLE_IMAGES              = 'article_images';
-    const CONTEXT_VIDEO_POSTER                = 'video_poster';
-    const CONTEXT_HOMEPAGE_CAROUSEL           = 'homepage_carousel';
-    const CONTEXT_PAYMENT_METHOD              = 'payment_method';
-    const CONTEXT_TESTIMONIAL                 = 'testimonial';
+    public const CONTEXT_DEFAULT                     = 'default';
+    public const CONTEXT_BUSINESS_PROFILE_IMAGES     = 'business_profile_images';
+    public const CONTEXT_BUSINESS_PROFILE_LOGO       = 'business_profile_logo';
+    public const CONTEXT_BUSINESS_PROFILE_BACKGROUND = 'business_profile_background';
+    public const CONTEXT_COUPON                      = 'coupon';
+    public const CONTEXT_ARTICLE                     = 'article';
+    public const CONTEXT_PAGE_BACKGROUND             = 'page_background';
+    public const CONTEXT_ARTICLE_IMAGES              = 'article_images';
+    public const CONTEXT_VIDEO_POSTER                = 'video_poster';
+    public const CONTEXT_HOMEPAGE_CAROUSEL           = 'homepage_carousel';
+    public const CONTEXT_PAYMENT_METHOD              = 'payment_method';
+    public const CONTEXT_TESTIMONIAL                 = 'testimonial';
 
     /**
      * @return mixed

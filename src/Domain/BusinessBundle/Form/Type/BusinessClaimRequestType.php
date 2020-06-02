@@ -35,12 +35,4 @@ class BusinessClaimRequestType extends AbstractType
     {
         $resolver->setDefaults(['data_class' => null,]);
     }
-
-    /**
-     * @return string
-     */
-    public function getName()
-    {
-        return 'domain_business_bundle_business_claim_request_type';
-    }
 }

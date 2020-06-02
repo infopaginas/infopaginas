@@ -3232,8 +3232,8 @@ class BusinessProfile implements
     public static function getServiceAreasTypes()
     {
         return [
-            self::SERVICE_AREAS_AREA_CHOICE_VALUE       => 'Distance',
-            self::SERVICE_AREAS_LOCALITY_CHOICE_VALUE   => 'Locality',
+            'Distance' => self::SERVICE_AREAS_AREA_CHOICE_VALUE,
+            'Locality' => self::SERVICE_AREAS_LOCALITY_CHOICE_VALUE,
         ];
     }
 
@@ -3242,7 +3242,7 @@ class BusinessProfile implements
      */
     public static function getActionUrlTypesAssert()
     {
-        return array_keys(self::getActionUrlTypes());
+        return array_values(self::getActionUrlTypes());
     }
 
     /**
@@ -3251,8 +3251,8 @@ class BusinessProfile implements
     public static function getActionUrlTypes()
     {
         return [
-            self::ACTION_URL_TYPE_ORDER => 'business_profile.action_type.order',
-            self::ACTION_URL_TYPE_BOOK  => 'business_profile.action_type.book',
+            'business_profile.action_type.order' => self::ACTION_URL_TYPE_ORDER,
+            'business_profile.action_type.book'  => self::ACTION_URL_TYPE_BOOK,
         ];
     }
 

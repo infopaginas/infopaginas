@@ -2,11 +2,14 @@
 
 namespace Domain\ArticleBundle\Twig\Extension;
 
+use Twig\Extension\AbstractExtension;
+use Twig\TwigFunction;
+
 /**
  * Class CutBodyExtension
  * @package Domain\ArticleBundle\Twig\Extension
  */
-class CutBodyExtension extends \Twig_Extension
+class CutBodyExtension extends AbstractExtension
 {
     const PREVIEW_BODY_LENGTH = 250;
     /**
@@ -15,7 +18,7 @@ class CutBodyExtension extends \Twig_Extension
     public function getFunctions()
     {
         return [
-            'cut_body_extension' => new \Twig_Function_Method($this, 'cutBody'),
+            new TwigFunction('cut_body_extension', [$this, 'cutBody']),
         ];
     }
 

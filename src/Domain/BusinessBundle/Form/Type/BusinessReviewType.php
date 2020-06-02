@@ -55,12 +55,4 @@ class BusinessReviewType extends AbstractType
             'data_class' => 'Domain\BusinessBundle\Entity\Review\BusinessReview',
         ]);
     }
-
-    /**
-     * @return string
-     */
-    public function getName()
-    {
-        return 'domain_business_bundle_business_review_type';
-    }
 }

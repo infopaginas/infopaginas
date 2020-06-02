@@ -4,14 +4,13 @@ namespace Domain\BusinessBundle\Entity\CustomFields;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
-use Domain\BusinessBundle\Entity\BusinessCustomFieldCheckboxCollection;
 use Oxa\Sonata\AdminBundle\Model\ChangeStateInterface;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\ChangeStateTrait;
 use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Sonata\TranslationBundle\Model\Gedmo\TranslatableInterface;
-use Sonata\TranslationBundle\Traits\Gedmo\PersonalTranslatable;
+use Sonata\TranslationBundle\Traits\Gedmo\PersonalTranslatableTrait;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -27,7 +26,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 class BusinessCustomFieldCheckbox implements DefaultEntityInterface, TranslatableInterface, ChangeStateInterface
 {
     use DefaultEntityTrait;
-    use PersonalTranslatable;
+    use PersonalTranslatableTrait;
     use ChangeStateTrait;
 
     /**
@@ -61,8 +60,7 @@ class BusinessCustomFieldCheckbox implements DefaultEntityInterface, Translatabl
      * @var Section
      *
      * @ORM\ManyToOne(
-     *      targetEntity="Domain\BusinessBundle\Entity\CustomFields\Section",
-     *      inversedBy="businessCustomFieldCheckbox"
+     *      targetEntity="Domain\BusinessBundle\Entity\CustomFields\Section"
      * )
      * @ORM\JoinColumn(name="section_id", referencedColumnName="id", onDelete="SET NULL")
      * @Assert\NotBlank()
@@ -141,7 +139,7 @@ class BusinessCustomFieldCheckbox implements DefaultEntityInterface, Translatabl
     }
 
     /**
-     * @return \Domain\BusinessBundle\Entity\CustomFields\BusinessCustomFieldCheckboxCollection|null
+     * @return ArrayCollection
      */
     public function getCheckboxCollection()
     {
@@ -149,7 +147,7 @@ class BusinessCustomFieldCheckbox implements DefaultEntityInterface, Translatabl
     }
 
     /**
-     * @param \Domain\BusinessBundle\Entity\CustomFields\BusinessCustomFieldCheckboxCollection|null $checkboxCollection
+     * @param BusinessCustomFieldCheckboxCollection|null $checkboxCollection
      *
      * @return BusinessCustomFieldCheckbox
      */

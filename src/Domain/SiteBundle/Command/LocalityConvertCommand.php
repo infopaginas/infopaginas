@@ -32,7 +32,7 @@ class LocalityConvertCommand extends ContainerAwareCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->em = $this->getContainer()->get('doctrine.orm.entity_manager');
-        $deleteList = $this->getDeleteLocalities();
+        $deleteList = self::getDeleteLocalities();
 
         foreach ($deleteList as $deleteLocality => $newLocality) {
             $parent   = $this->getLocalityItemByName($newLocality);
