@@ -1087,6 +1087,29 @@ class BusinessProfileAdmin extends OxaAdmin
                 ->end();
         }
 
+        // Message from the owner block
+        if ($businessProfile->getId() and $subscriptionPlanCode >= SubscriptionPlanInterface::CODE_PREMIUM_PLATINUM) {
+            $formMapper
+                ->tab('Media')
+                ->with('Owners Message')
+                ->add(
+                    'ownersMessage',
+                    ModelListType::class,
+                    [
+                        'required' => false,
+                        'model_manager' => $this->modelManager,
+                        'class' => VideoMedia::class,
+                    ],
+                    [
+                        'link_parameters' => [
+                            'businessName' => $businessProfile->getName(),
+                        ],
+                    ]
+                )
+                ->end()
+                ->end();
+        }
+
         // Others Tab
         // Coupons Block
         $formMapper
