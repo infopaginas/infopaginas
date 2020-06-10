@@ -417,7 +417,7 @@
                                 <div class="page-section slider amazon-affiliate section--slider hide-before">
                                     {% for amazonItem in businessProfile.getAmazonAffiliateItems() %}
                                         <div class="slider__item">
-                                            {{ amazonItem.embeddedHTML | raw }}
+                                            {{ amazonItem.embeddedHTML | purify('amazon_affiliate') }}
                                         </div>
                                     {% endfor %}
                                 </div>
