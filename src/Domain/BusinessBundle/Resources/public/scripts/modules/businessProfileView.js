@@ -19,7 +19,8 @@ define( ['jquery', 'bootstrap', 'business/tools/interactions', 'tools/select', '
                 createReviewModalId: '#writeReviewModal',
                 claimBusinessModalId: '#claimBusinessModal',
                 reportProblemModalId: '#reportProblemModal',
-                popupModalId: '#popupModal'
+                popupModalId: '#popupModal',
+                ownersMessageId: '#ownersMessageModal'
             },
             loadingSpinnerContainerId: 'create-review-spinner-container',
             claimBusinessMessage: '#claimBusinessMessage',
