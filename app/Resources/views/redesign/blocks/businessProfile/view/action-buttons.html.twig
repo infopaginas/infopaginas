@@ -34,8 +34,14 @@
         {% if item.actionUrlType in BUSINESS_PROFILE.ACTION_TYPE %}
             {% set path = 'redesign/img/icons/' ~ item.actionUrlType ~ '.svg' %}
 
-            <img src="{{ absolute_url(asset(path)) }}" alt="{{ item.actionUrlTypes[item.actionUrlType]|trans|purify }}">
+{#            <img src="{{ absolute_url(asset(path)) }}" alt="{{ item.actionUrlTypes[item.actionUrlType]|trans|purify }}">#}
         {% endif %}
-        <span>{{ item.actionUrlTypes[item.actionUrlType]|trans|purify }}</span>
+{#        <span>{{ item.actionUrlTypes[item.actionUrlType]|trans|purify }}</span>#}
+    </a>
+{% endif %}
+{% if hasSubscription(item, "CODE_PREMIUM_PLATINUM") and item.hasOwnersMessage() %}
+    <a href="#" class="button button--small" data-show-modal-id="ownersMessageModal" data-bw-gtm-event-click data-bw-gtm-label="{% trans %}Message from the Owner{% endtrans %}">
+        <i class="fa fa-envelope"></i>
+        <span>{% trans %}Message from the Owner{% endtrans %}</span>
     </a>
 {% endif %}
