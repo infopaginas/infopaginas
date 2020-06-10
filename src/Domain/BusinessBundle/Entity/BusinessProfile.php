@@ -4348,4 +4348,18 @@ class BusinessProfile implements
 
         return $this;
     }
+
+    public function getAmazonAffiliateItems()
+    {
+        $data = null;
+
+        foreach ($this->categories as $category) {
+            if (count($category->getAmazonAffiliateItems())) {
+                $data = $category->getAmazonAffiliateItems();
+                break;
+            }
+        }
+
+        return $data;
+    }
 }

@@ -10,8 +10,9 @@ use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
-use Sonata\AdminBundle\Route\RouteCollection;
 use Sonata\AdminBundle\Show\ShowMapper;
+use Sonata\Form\Type\CollectionType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 
@@ -63,25 +64,50 @@ class CategoryAdmin extends OxaAdmin
     protected function configureFormFields(FormMapper $formMapper)
     {
         $formMapper
-            ->add('name')
-            ->add('showSuggestion')
-            ->add('keywordText', TextType::class, [
-                'attr' => [
-                    'class' => 'selectize-control',
-                ],
-                'required' => false,
-            ])
-            ->add(
-                'slug',
-                null,
-                [
+            ->with('Categories')
+                ->add('name')
+                ->add('showSuggestion')
+                ->add('keywordText', TextType::class, [
                     'attr' => [
-                        'read_only' => true,
+                        'class' => 'selectize-control',
                     ],
-                    'required'  => false,
-                ]
-            )
-        ;
+                    'required' => false,
+                ])
+                ->add(
+                    'slug',
+                    null,
+                    [
+                        'attr' => [
+                            'read_only' => true,
+                        ],
+                        'required'  => false,
+                    ]
+                )
+            ->end()
+            ->with('Amazon Affiliate')
+                ->add(
+                    'amazonAffiliateItems',
+                    CollectionType::class,
+                    [
+                        'by_reference'  => false,
+                        'required'      => false,
+                        'type_options' => [
+                            'delete'         => true,
+                            'delete_options' => [
+                                'type'         => CheckboxType::class,
+                                'type_options' => [
+                                    'mapped'   => false,
+                                    'required' => false,
+                                ],
+                            ],
+                        ],
+                    ],
+                    [
+                        'edit'          => 'inline',
+                        'inline'        => 'table',
+                    ]
+                )
+            ->end();
     }
 
     /**
