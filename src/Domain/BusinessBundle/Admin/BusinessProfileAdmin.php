@@ -1102,7 +1102,7 @@ class BusinessProfileAdmin extends OxaAdmin
                     ],
                     [
                         'link_parameters' => [
-                            'businessName' => $businessProfile->getName(),
+                            'businessName' => $this->trans('Message from the Owner'),
                         ],
                     ]
                 )
