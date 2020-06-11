@@ -384,7 +384,7 @@
                             </div><!-- sidebar__section -->
                         {% endif %}
 
-                        {% if showClaimButton %}
+                        {% if showClaimButton and businessProfile.subscriptionPlanCode == SUBSCRIPTION.CODE.FREE %}
                             <div class="sidebar__section section--social">
                                 <ul>
                                     <li>
