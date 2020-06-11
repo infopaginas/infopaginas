@@ -1089,6 +1089,7 @@ class BusinessProfileAdmin extends OxaAdmin
 
         // Message from the owner block
         if ($businessProfile->getId() && $subscriptionPlanCode >= SubscriptionPlanInterface::CODE_PREMIUM_PLATINUM) {
+            $videoTitle = $businessProfile->getName() . '-' . $this->trans('Message from the Owner');
             $formMapper
                 ->tab('Media')
                     ->with('Owners Message')
@@ -1102,7 +1103,7 @@ class BusinessProfileAdmin extends OxaAdmin
                             ],
                             [
                                 'link_parameters' => [
-                                    'businessName' => $this->trans('Message from the Owner'),
+                                    'businessName' => $videoTitle,
                                 ],
                             ]
                         )
