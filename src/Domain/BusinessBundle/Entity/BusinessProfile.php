@@ -3283,6 +3283,18 @@ class BusinessProfile implements
     }
 
     /**
+     * @return array
+     */
+    public static function getActionUrlTypesReverse()
+    {
+        return [
+            self::ACTION_URL_TYPE_ORDER => 'business_profile.action_type.order',
+            self::ACTION_URL_TYPE_BOOK => 'business_profile.action_type.book'
+        ];
+    }
+
+
+    /**
      * @return Url|null
      */
     public function getActionUrlItem()
