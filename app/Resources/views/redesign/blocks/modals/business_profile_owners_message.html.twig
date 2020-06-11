@@ -3,7 +3,7 @@
     <div class="modal__content owners-message-video">
         {% if businessProfile.getOwnersMessage().status == 'active' %}
             <section class="page-section video">
-                {{ render_video_embed(businessProfile.getVideo()) }}
+                {{ render_video_embed(businessProfile.getOwnersMessage()) }}
             </section>
         {% endif %}
     </div>

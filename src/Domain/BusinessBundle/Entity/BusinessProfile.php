@@ -814,7 +814,7 @@ class BusinessProfile implements
     protected $video;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Oxa\VideoBundle\Entity\VideoMedia",
+     * @ORM\OneToOne(targetEntity="Oxa\VideoBundle\Entity\VideoMedia",
      *     inversedBy="businessProfiles"
      * )
      * @ORM\JoinColumn(name="owners_message_id", referencedColumnName="id", nullable=true)
