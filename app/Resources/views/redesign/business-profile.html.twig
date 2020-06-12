@@ -109,6 +109,9 @@
                                         </ul>
                                     </div><!-- highlights__item -->
                                 {% endif %}
+
+                                {% include ':redesign/blocks/workingHours:working_hours_daily_list.html.twig' with { 'businessProfile': businessProfile } %}
+
                                 {% if businessProfile.websiteItem and businessProfile.websiteItem.url %}
                                     <div class="highlights__item">
                                         <h3>{% trans %}WebsiteButton{% endtrans %}</h3>
@@ -141,8 +144,6 @@
                                         </ul>
                                     </div><!-- highlights__item -->
                                 {% endif %}
-
-                                {% include ':redesign/blocks/workingHours:working_hours_daily_list.html.twig' with { 'businessProfile': businessProfile } %}
 
                                 {% if businessProfile.getBrands() %}
                                     <div class="highlights__item">
