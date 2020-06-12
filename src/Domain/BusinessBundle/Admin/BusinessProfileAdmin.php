@@ -5,6 +5,7 @@ namespace Domain\BusinessBundle\Admin;
 use Doctrine\ORM\QueryBuilder;
 use Domain\BusinessBundle\DBAL\Types\TaskType;
 use Domain\BusinessBundle\Entity\BusinessProfile;
+use Domain\BusinessBundle\Entity\BusinessProfilePopup;
 use Domain\BusinessBundle\Entity\Category;
 use Domain\BusinessBundle\Entity\Locality;
 use Domain\BusinessBundle\Entity\Media\BusinessGallery;
@@ -61,16 +62,15 @@ use Symfony\Component\Validator\Constraints\Regex;
  */
 class BusinessProfileAdmin extends OxaAdmin
 {
-    const DATE_PICKER_FORMAT = 'yyyy-MM-dd';
-    const DATE_PICKER_REPORT_FORMAT = 'YYYY-MM-DD';
-    const SONATA_FILTER_DATE_FORMAT = 'd-m-Y H:i:s';
+    public const MAX_VALIDATION_RESULT     = 5;
+    public const DEFAULT_VALIDATION_GROUPS = ['Default', 'Admin'];
 
-    const FILTER_IMPRESSIONS = 'impressions';
-    const FILTER_DIRECTIONS  = 'directions';
-    const FILTER_CALL_MOBILE = 'callsMobile';
+    private const DATE_PICKER_REPORT_FORMAT = 'YYYY-MM-DD';
+    private const SONATA_FILTER_DATE_FORMAT = 'd-m-Y H:i:s';
 
-    const MAX_VALIDATION_RESULT = 5;
-    const DEFAULT_VALIDATION_GROUPS = ['Default', 'Admin'];
+    private const FILTER_IMPRESSIONS = 'impressions';
+    private const FILTER_DIRECTIONS  = 'directions';
+    private const FILTER_CALL_MOBILE = 'callsMobile';
 
     /**
      * @var bool
@@ -623,7 +623,7 @@ class BusinessProfileAdmin extends OxaAdmin
                         'by_reference'  => false,
                     ])
                     ->add('actionUrlType', ChoiceType::class, [
-                        'choices'  => BusinessProfile::getActionUrlTypes(),
+                        'choices'  => array_flip(BusinessProfile::getActionUrlTypes()),
                         'multiple' => false,
                         'expanded' => true,
                         'required' => true,
@@ -1049,7 +1049,7 @@ class BusinessProfileAdmin extends OxaAdmin
                         'required' => false,
                         'btn_list' => false,
                         'model_manager' => $this->modelManager,
-                        'class' => Media::class,
+                        'class' => BusinessProfilePopup::class,
                     ])
                 ->end()
             ->end()

@@ -2,7 +2,7 @@
 
 namespace Application\Migrations;
 
-use Doctrine\DBAL\Migrations\AbstractMigration;
+use Doctrine\Migrations\AbstractMigration;
 use Doctrine\DBAL\Schema\Schema;
 use Domain\EmergencyBundle\Entity\EmergencyCategory;
 use Oxa\ConfigBundle\Entity\Config;
@@ -34,7 +34,7 @@ class Version20171013105459 extends AbstractMigration implements ContainerAwareI
     /**
      * @param Schema $schema
      */
-    public function up(Schema $schema)
+    public function up(Schema $schema): void
     {
         $this->createConfigValue();
         $this->updateEmergencyCategorySearchName();
@@ -45,7 +45,7 @@ class Version20171013105459 extends AbstractMigration implements ContainerAwareI
     /**
      * @param Schema $schema
      */
-    public function down(Schema $schema)
+    public function down(Schema $schema): void
     {
 
     }

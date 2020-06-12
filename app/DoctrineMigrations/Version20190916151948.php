@@ -2,7 +2,7 @@
 
 namespace Application\Migrations;
 
-use Doctrine\DBAL\Migrations\AbstractMigration;
+use Doctrine\Migrations\AbstractMigration;
 use Doctrine\DBAL\Schema\Schema;
 use Doctrine\ORM\AbstractQuery;
 use Domain\BannerBundle\Entity\Banner;
@@ -26,7 +26,7 @@ class Version20190916151948 extends AbstractMigration  implements ContainerAware
     /**
      * @param Schema $schema
      */
-    public function up(Schema $schema)
+    public function up(Schema $schema): void
     {
         $qb = $this->em->createQueryBuilder()
             ->select('b.code')
@@ -61,7 +61,7 @@ class Version20190916151948 extends AbstractMigration  implements ContainerAware
     /**
      * @param Schema $schema
      */
-    public function down(Schema $schema)
+    public function down(Schema $schema): void
     {
     }
 }

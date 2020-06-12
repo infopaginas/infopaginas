@@ -2,12 +2,12 @@
 
 namespace Application\Migrations;
 
-use Doctrine\DBAL\Migrations\AbstractMigration;
+use Doctrine\Migrations\AbstractMigration;
 use Doctrine\DBAL\Schema\Schema;
 
 class Version20190605114145 extends AbstractMigration
 {
-    public function up(Schema $schema)
+    public function up(Schema $schema): void
     {
         $this->addSql('
             INSERT INTO config (key, title, value, format, description, created_at, updated_at, is_active)
@@ -33,7 +33,7 @@ class Version20190605114145 extends AbstractMigration
         );
     }
 
-    public function down(Schema $schema)
+    public function down(Schema $schema): void
     {
 
     }

@@ -211,13 +211,6 @@
     color: black;
 }
 
-@for $i from 320 through 500 {
-  @media only screen and (min-width: $i * 1px) {
-    .slick-slide {
-      height: ceil(($i * 0.75px));
-    }
-  }
-}
 .slick-list {
   max-width: 500px;
   margin: 0 auto;
@@ -243,6 +236,12 @@
   overflow: hidden;
   position: relative;
 
+  &.homepage-carousel-block {
+    margin-top: 35px;
+  }
+}
+
+.suggested-slider-section, .amazon-affiliate {
   @media only screen and (min-width: 805px) {
     &:hover {
       .slick-arrow {
@@ -295,10 +294,6 @@
     @media only screen and (min-width: 805px) {
       max-width: unset;
     }
-  }
-
-  &.homepage-carousel-block {
-    margin-top: 35px;
   }
 }
 
@@ -457,4 +452,12 @@
 
 .homepage-slide-title {
   text-align: center;
+}
+
+.slider.amazon-affiliate {
+  margin-top: 20px;
+
+  .slider__item {
+    text-align: center;
+  }
 }

@@ -2,7 +2,7 @@
 
 namespace Application\Migrations;
 
-use Doctrine\DBAL\Migrations\AbstractMigration;
+use Doctrine\Migrations\AbstractMigration;
 use Doctrine\DBAL\Schema\Schema;
 use Oxa\ConfigBundle\Entity\Config;
 use Oxa\ConfigBundle\Model\ConfigInterface;
@@ -33,7 +33,7 @@ class Version20170214094528 extends AbstractMigration implements ContainerAwareI
     /**
      * @param Schema $schema
      */
-    public function up(Schema $schema)
+    public function up(Schema $schema): void
     {
         if (!$this->checkNewConfigValue(ConfigInterface::YOUTUBE_ACCESS_TOKEN)) {
             $config = new Config();
@@ -67,7 +67,7 @@ class Version20170214094528 extends AbstractMigration implements ContainerAwareI
     /**
      * @param Schema $schema
      */
-    public function down(Schema $schema)
+    public function down(Schema $schema): void
     {
 
     }

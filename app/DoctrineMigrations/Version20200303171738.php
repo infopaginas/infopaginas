@@ -2,7 +2,7 @@
 
 namespace Application\Migrations;
 
-use Doctrine\DBAL\Migrations\AbstractMigration;
+use Doctrine\Migrations\AbstractMigration;
 use Doctrine\DBAL\Schema\Schema;
 use Oxa\ConfigBundle\Entity\Config;
 use Oxa\ConfigBundle\Model\ConfigInterface;
@@ -30,7 +30,7 @@ class Version20200303171738 extends AbstractMigration implements ContainerAwareI
     /**
      * @param Schema $schema
      */
-    public function up(Schema $schema)
+    public function up(Schema $schema): void
     {
         if (!$this->checkNewConfigValue(ConfigInterface::DELETE_PROFILE_ALERT_EMAIL_ADDRESS)) {
             $config = new Config();
@@ -62,7 +62,7 @@ class Version20200303171738 extends AbstractMigration implements ContainerAwareI
     /**
      * @param Schema $schema
      */
-    public function down(Schema $schema)
+    public function down(Schema $schema): void
     {
     }
 
