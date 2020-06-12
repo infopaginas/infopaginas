@@ -814,14 +814,6 @@ class BusinessProfile implements
     protected $video;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Oxa\VideoBundle\Entity\VideoMedia",
-     *     inversedBy="businessProfiles"
-     * )
-     * @ORM\JoinColumn(name="owners_message_id", referencedColumnName="id", nullable=true)
-     */
-    protected $ownersMessage;
-
-    /**
      * @ORM\Column(name="impressions", type="integer", nullable=false, options={"default" = 0})
      */
     protected $impressions = 0;
@@ -1101,24 +1093,6 @@ class BusinessProfile implements
     public function setVideo($video)
     {
         $this->video = $video;
-        return $this;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getOwnersMessage()
-    {
-        return $this->ownersMessage;
-    }
-
-    /**
-     * @param mixed $ownersMessage
-     * @return BusinessProfile
-     */
-    public function setOwnersMessage($ownersMessage)
-    {
-        $this->ownersMessage = $ownersMessage;
         return $this;
     }
 
@@ -3468,14 +3442,6 @@ class BusinessProfile implements
         }
 
         return false;
-    }
-
-    /**
-     * @return bool
-     */
-    public function getHasOwnersMessage()
-    {
-        return (bool) $this->getOwnersMessage();
     }
 
     /**
