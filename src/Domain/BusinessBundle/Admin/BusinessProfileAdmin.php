@@ -623,7 +623,7 @@ class BusinessProfileAdmin extends OxaAdmin
                         'by_reference'  => false,
                     ])
                     ->add('actionUrlType', ChoiceType::class, [
-                        'choices'  => BusinessProfile::getActionUrlTypes(),
+                        'choices'  => array_flip(BusinessProfile::getActionUrlTypes()),
                         'multiple' => false,
                         'expanded' => true,
                         'required' => true,
