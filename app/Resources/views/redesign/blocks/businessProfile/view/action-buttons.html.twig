@@ -34,9 +34,9 @@
         {% if item.actionUrlType in BUSINESS_PROFILE.ACTION_TYPE %}
             {% set path = 'redesign/img/icons/' ~ item.actionUrlType ~ '.svg' %}
 
-            <img src="{{ absolute_url(asset(path)) }}" alt="{{ item.actionUrlTypesReverse[item.actionUrlType]|trans|purify }}">
+            <img src="{{ absolute_url(asset(path)) }}" alt="{{ item.actionUrlTypes[item.actionUrlType]|trans|purify }}">
         {% endif %}
-        <span>{{ item.actionUrlTypesReverse[item.actionUrlType]|trans|purify }}</span>
+        <span>{{ item.actionUrlTypes[item.actionUrlType]|trans|purify }}</span>
     </a>
 {% endif %}
 {% if hasSubscription(item, "CODE_PREMIUM_PLATINUM") %}
