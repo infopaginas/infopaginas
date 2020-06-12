@@ -2,7 +2,7 @@
 
 namespace Application\Migrations;
 
-use Doctrine\DBAL\Migrations\AbstractMigration;
+use Doctrine\Migrations\AbstractMigration;
 use Doctrine\DBAL\Schema\Schema;
 use Domain\PageBundle\Entity\Page;
 use Domain\PageBundle\Entity\Translation\PageTranslation;
@@ -23,7 +23,7 @@ class Version20190513084031 extends AbstractMigration implements ContainerAwareI
         $this->em = $this->container->get('doctrine.orm.entity_manager');
     }
 
-    public function up(Schema $schema)
+    public function up(Schema $schema): void
     {
         $this->updateCatalogPageTitle();
 
@@ -69,7 +69,7 @@ class Version20190513084031 extends AbstractMigration implements ContainerAwareI
         $this->em->flush();
     }
 
-    public function down(Schema $schema)
+    public function down(Schema $schema): void
     {
 
     }

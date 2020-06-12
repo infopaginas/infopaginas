@@ -412,6 +412,18 @@
 
                         {% include ':redesign/blocks/modals:report_problem.html.twig' %}
 
+                        {% if businessProfile.subscriptionPlanCode == SUBSCRIPTION.CODE.FREE and businessProfile.getAmazonAffiliateItems() %}
+                            <div class="sidebar__section">
+                                <div class="page-section slider amazon-affiliate section--slider hide-before">
+                                    {% for amazonItem in businessProfile.getAmazonAffiliateItems() %}
+                                        <div class="slider__item">
+                                            {{ amazonItem.embeddedHTML | purify('amazon_affiliate') }}
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        {% endif %}
+
                         {% if businessProfile.subscriptionPlanCode > SUBSCRIPTION.CODE.FREE %}
                             <div class="social-feeds-column">
                                 {% if businessProfile.mediaUrls | length %}

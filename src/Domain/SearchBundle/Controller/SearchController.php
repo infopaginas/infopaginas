@@ -211,9 +211,9 @@ class SearchController extends Controller
     {
         $searchData = $this->getSearchDataByRequest($request);
         $locale = LocaleHelper::getLocale($request->getLocale());
-
         $memcached = $this->container->get('app.cache.memcached');
-        $response = $memcached->fetch(CacheUtil::PREFIX_AUTOCOMPLETE . $searchData['q'] . $locale);
+        $cacheId = CacheUtil::PREFIX_AUTOCOMPLETE . CacheUtil::sanitizeCacheId($searchData['q']) . $locale;
+        $response = $memcached->fetch($cacheId);
 
         if (!$response) {
             $businessProfileManager = $this->get('domain_business.manager.business_profile');
@@ -222,11 +222,7 @@ class SearchController extends Controller
                 $locale
             );
             $response = (new JsonResponse())->setData($results);
-            $memcached->save(
-                CacheUtil::PREFIX_AUTOCOMPLETE . $searchData['q'] . $locale,
-                $response,
-                CacheUtil::AUTOCOMPLETE_CACHE_LIFETIME
-            );
+            $memcached->save($cacheId, $response, CacheUtil::AUTOCOMPLETE_CACHE_LIFETIME);
         }
 
         return $response;

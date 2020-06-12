@@ -55,6 +55,12 @@ services:
         tags:
             - {name: sonata.admin, manager_type: orm, group: admin, label: Categories}
 
+    domain_business.admin.amazon_affiliate_item:
+        class: Domain\BusinessBundle\Admin\AmazonAffiliateItemAdmin
+        arguments: [~, Domain\BusinessBundle\Entity\AmazonAffiliateItem, OxaSonataAdminBundle:CRUD]
+        tags:
+            - {name: sonata.admin, manager_type: orm, group: admin, label: Amazon Affiliate Items}
+
     domain_business.admin.testimonial:
         class: Domain\BusinessBundle\Admin\TestimonialAdmin
         arguments: [~, Domain\BusinessBundle\Entity\Testimonial, OxaSonataAdminBundle:CRUD]
