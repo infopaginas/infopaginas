@@ -455,7 +455,10 @@ class BusinessProfileAdmin extends OxaAdmin
             ->add('subscriptionPlan', null, [
                 'template' => 'DomainBusinessBundle:Admin:BusinessProfile/list_subscription.html.twig'
             ])
-            ->add('registrationDate')
+            ->add('subscription', null, [
+                'template' => 'DomainBusinessBundle:Admin:BusinessProfile/list_subscription_end_date.html.twig',
+                'label' => 'Subscription End Date',
+            ])
             ->add('isActive')
             ->add('isDeleted', null, [
                 'label' => 'Scheduled for deletion',
