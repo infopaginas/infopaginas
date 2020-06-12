@@ -3242,7 +3242,7 @@ class BusinessProfile implements
      */
     public static function getActionUrlTypesAssert()
     {
-        return array_values(self::getActionUrlTypes());
+        return array_keys(self::getActionUrlTypes());
     }
 
     /**
@@ -3251,8 +3251,8 @@ class BusinessProfile implements
     public static function getActionUrlTypes()
     {
         return [
-            'business_profile.action_type.order' => self::ACTION_URL_TYPE_ORDER,
-            'business_profile.action_type.book'  => self::ACTION_URL_TYPE_BOOK,
+            self::ACTION_URL_TYPE_ORDER => 'business_profile.action_type.order',
+            self::ACTION_URL_TYPE_BOOK  => 'business_profile.action_type.book',
         ];
     }
 
