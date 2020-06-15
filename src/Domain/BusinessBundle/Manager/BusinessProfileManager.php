@@ -1838,17 +1838,17 @@ class BusinessProfileManager extends Manager
     {
         $searchQuery = $this->getElasticAutoSuggestSearchQuery($query, $locale, $limit);
         $response = $this->searchElastic(BusinessProfile::ELASTIC_INDEX, $searchQuery);
-        $search = $this->getBusinessDataFromElasticResponse($response);
+        $search = $this->getAutoSuggestedBusinessDataFromElasticResponse($response);
 
-        $search['data'] = array_map(function ($item) {
+        $search = array_map(function ($item) {
             return [
                 'type' => self::AUTO_COMPLETE_TYPE,
-                'name' => $item->getName(),
-                'data' => $item->getName(),
+                'name' => $item['name'],
+                'data' => $item['name'],
             ];
-        }, $search['data']);
+        }, $search);
 
-        return $search['data'];
+        return $search;
     }
 
     /**
@@ -1956,25 +1956,46 @@ class BusinessProfileManager extends Manager
         return $response;
     }
 
-    /**
-     * @param array $response
-     * @param bool $randomize
-     *
-     * @return array
-     */
-    protected function getBusinessDataFromElasticResponse($response, $randomize = false)
+    protected function getAutoSuggestedBusinessDataFromElasticResponse($response): array
+    {
+        $dataIds = $this->getBusinessIdsFromElasticResponse($response);
+        return $this->getRepository()->getAutoSuggestedBusinessDataByIds($dataIds);
+    }
+
+    protected function getBusinessDataFromElasticResponse($response, $randomize = false): array
     {
         $data  = [];
-        $sort  = [];
         $total = 0;
 
         if (!empty($response['hits']['total'])) {
             $total = $response['hits']['total'];
         }
 
+        $dataIds = $this->getBusinessIdsFromElasticResponse($response, $randomize);
+        $dataRaw = $this->getRepository()->findBusinessProfilesByIdsArray($dataIds);
+
+        foreach ($dataIds as $id) {
+            $item = $this->searchBusinessByIdsInArray($dataRaw, $id);
+
+            if ($item) {
+                $data[] = $item;
+            }
+        }
+
+
+        return [
+            'data' => $data,
+            'total' => $total,
+        ];
+    }
+
+    protected function getBusinessIdsFromElasticResponse($response, $randomize = false): array
+    {
+        $sort  = [];
+        $dataIds = [];
+
         if (!empty($response['hits']['hits'])) {
-            $result = $response['hits']['hits'];
-            $dataIds = [];
+            $result  = $response['hits']['hits'];
 
             foreach ($result as $item) {
                 $dataIds[] = $item['_id'];
@@ -1991,22 +2012,9 @@ class BusinessProfileManager extends Manager
             if ($randomize) {
                 $dataIds = $this->shuffleSearchResult($sort);
             }
-
-            $dataRaw = $this->getRepository()->findBusinessProfilesByIdsArray($dataIds);
-
-            foreach ($dataIds as $id) {
-                $item = $this->searchBusinessByIdsInArray($dataRaw, $id);
-
-                if ($item) {
-                    $data[] = $item;
-                }
-            }
         }
 
-        return [
-            'data' => $data,
-            'total' => $total,
-        ];
+        return $dataIds;
     }
 
     /**
