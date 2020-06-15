@@ -1090,6 +1090,30 @@ class BusinessProfileAdmin extends OxaAdmin
                 ->end();
         }
 
+        // Message from the owner block
+        if ($businessProfile->getId() && $subscriptionPlanCode >= SubscriptionPlanInterface::CODE_PREMIUM_PLATINUM) {
+            $videoTitle = $businessProfile->getName() . '-' . $this->trans('Message from the Owner');
+            $formMapper
+                ->tab('Media')
+                    ->with('Owners Message')
+                        ->add(
+                            'ownersMessage',
+                            ModelListType::class,
+                            [
+                                'required' => false,
+                                'model_manager' => $this->modelManager,
+                                'class' => VideoMedia::class,
+                            ],
+                            [
+                                'link_parameters' => [
+                                    'businessName' => $videoTitle,
+                                ],
+                            ]
+                        )
+                    ->end()
+                ->end();
+        }
+
         // Others Tab
         // Coupons Block
         $formMapper
@@ -1864,6 +1888,7 @@ class BusinessProfileAdmin extends OxaAdmin
         $exportFields['lng']           = 'longitude';
 
         $exportFields['hasVideo']   = 'hasVideo';
+        $exportFields['hasOwnersMessage']   = 'hasOwnersMessage';
         $exportFields['hasMedia']   = 'hasMedia';
         $exportFields['areas']      = 'exportAreas';
         $exportFields['categories'] = 'exportCategories';
