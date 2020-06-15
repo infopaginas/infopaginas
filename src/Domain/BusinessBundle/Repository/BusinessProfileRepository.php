@@ -88,6 +88,25 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
         return $query->getResult();
     }
 
+    public function getAutoSuggestedBusinessDataByIds($ids, $locale = LocaleHelper::DEFAULT_LOCALE)
+    {
+        $qb = $this->createQueryBuilder('bp')
+            ->select('bp.id')
+            ->addSelect('bp.name')
+            ->distinct(true)
+            ->where('bp.id IN (:ids)')
+            ->setParameter('ids', $ids)
+        ;
+
+        $query = $qb->getQuery();
+
+        if ($locale) {
+            SiteHelper::setLocaleQueryHint($query, $locale);
+        }
+
+        return $query->getResult();
+    }
+
     /**
      * @return QueryBuilder
      */
