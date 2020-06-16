@@ -2,6 +2,7 @@
 
 namespace Domain\SiteBundle\Controller;
 
+use Domain\BusinessBundle\Form\Handler\BusinessFormHandlerInterface;
 use Domain\BusinessBundle\Form\Type\BusinessCloseRequestType;
 use Domain\BusinessBundle\Form\Type\BusinessUpgradeRequestType;
 use Domain\BusinessBundle\Util\BusinessProfileUtil;
@@ -11,12 +12,10 @@ use Domain\ReportBundle\Util\DatesUtil;
 use Domain\SiteBundle\Form\Handler\PasswordUpdateFormHandler;
 use Domain\SiteBundle\Form\Handler\UserProfileFormHandler;
 use FOS\UserBundle\Model\UserInterface;
-use Oxa\GeolocationBundle\Model\Geolocation\GeolocationManager;
 use Oxa\Sonata\UserBundle\Manager\UsersManager;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Translation\TranslatorInterface;
 
 /**
@@ -25,11 +24,11 @@ use Symfony\Component\Translation\TranslatorInterface;
  */
 class UserController extends Controller
 {
-    const SUCCESS_PROFILE_UPDATE_MESSAGE = 'Successfully saved profile data';
+    private const SUCCESS_PROFILE_UPDATE_MESSAGE = 'Successfully saved profile data';
 
-    const SUCCESS_PASSWORD_UPDATE_MESSAGE = 'Successfully updated password';
+    private const SUCCESS_PASSWORD_UPDATE_MESSAGE = 'Successfully updated password';
 
-    const ERROR_VALIDATION_FAILURE = 'Validation failure';
+    private const ERROR_VALIDATION_FAILURE = 'Validation failure';
 
     /**
      * @return \Symfony\Component\HttpFoundation\Response
@@ -67,6 +66,9 @@ class UserController extends Controller
             'summaryData'                => $summaryData,
             'actions'                    => $actions,
             'tooltips'                   => BusinessOverviewModel::getActionTooltip(),
+            'registrationMessageKey'     => $this->get('session')->remove(
+                BusinessFormHandlerInterface::SUCCESSFUL_REGISTRATION_TEXT_KEY
+            ),
         ]);
     }
 
