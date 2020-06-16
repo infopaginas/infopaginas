@@ -1227,7 +1227,7 @@ class BusinessProfile implements
      */
     public function __toString()
     {
-        return $this->getName() ?: '';
+        return $this->getName() ? $this->getName() . ' --- ID ' . $this->getId() : '';
     }
 
     public function __get($prop)
