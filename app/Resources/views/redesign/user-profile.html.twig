@@ -6,6 +6,9 @@
 {% block body %}
     <div class="main__container main__container--centered">
         <div class="main">
+            {% if registrationMessageKey is not empty %}
+                <h2 class="registration-message text-center">{{ registrationMessageKey|trans }}</h2>
+            {% endif %}
             <div class="container clearfix">
                 <section class="page-section" id="profile-user">
                     <form class="form user-profile-form" name="{{ profileForm.vars.name }}" id="userProfileForm">

@@ -2,6 +2,7 @@
 
 namespace Domain\SiteBundle\Form\Handler;
 
+use Domain\BusinessBundle\Form\Handler\BusinessFormHandlerInterface;
 use Domain\SiteBundle\Mailer\Mailer;
 use FOS\UserBundle\Model\UserInterface;
 use FOS\UserBundle\Model\UserManagerInterface;
@@ -79,6 +80,12 @@ class RegistrationFormHandler extends BaseFormHandler
         $user->setEnabled(true);
 
         $this->userManager->updateUser($user);
+        $this->requestStack->getCurrentRequest()
+            ->getSession()
+            ->set(
+                BusinessFormHandlerInterface::SUCCESSFUL_REGISTRATION_TEXT_KEY,
+                BusinessFormHandlerInterface::SUCCESSFUL_REGISTRATION_TEXT_KEY
+            );
 
         $this->mailer->sendRegistrationCompleteEmailMessage($user);
     }
