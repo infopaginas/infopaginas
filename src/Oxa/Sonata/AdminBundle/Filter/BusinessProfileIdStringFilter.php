@@ -14,7 +14,6 @@ class BusinessProfileIdStringFilter extends StringFilter
      */
     public function filter(ProxyQueryInterface $queryBuilder, $alias, $field, $data)
     {
-        //dump($queryBuilder, $alias, $field, $data);die;
         if (!$data || !is_array($data) || !array_key_exists('value', $data)) {
             return;
         }
@@ -23,8 +22,7 @@ class BusinessProfileIdStringFilter extends StringFilter
             return;
         }
 
-        // Remove comma and convert to integer
-        $data['value'] = (int)str_replace(",", "", trim($data['value']));
+        $data['value'] = (int)str_replace(',', '', trim($data['value']));
 
         $parameterName = $this->getNewParameterName($queryBuilder);
 
