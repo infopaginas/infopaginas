@@ -19,6 +19,7 @@ use FOS\UserBundle\Model\UserInterface;
 use Domain\BusinessBundle\Model\StatusInterface;
 use Doctrine\ORM\QueryBuilder;
 use Domain\SearchBundle\Model\DataType\SearchDTO;
+use Iterator;
 use Oxa\GeolocationBundle\Model\Geolocation\LocationValueObject;
 use Oxa\GeolocationBundle\Utils\GeolocationUtils;
 use Domain\SearchBundle\Util\SearchDataUtil;
@@ -179,6 +180,21 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
         $results = new Paginator($qb, $fetchJoin = false);
 
         return $results;
+    }
+
+    public function getBusinessProfilesWithSubscriptionIterator(int $subscriptionCode, string $operator = '='): Iterator
+    {
+        $qb = $this->getEntityManager()->createQueryBuilder()
+            ->select('bp')
+            ->distinct()
+            ->from(BusinessProfile::class, 'bp')
+            ->innerJoin('bp.subscriptions', 'bp_s', Join::WITH, 'bp_s.status = ' . StatusInterface::STATUS_ACTIVE)
+            ->innerJoin('bp_s.subscriptionPlan', 'bps_p')
+            ->where('bps_p.code ' . $operator . ' :subscriptionCode')
+            ->setParameter('subscriptionCode', $subscriptionCode)
+        ;
+
+        return $qb->getQuery()->iterate();
     }
 
     private function getVideosQuery()

@@ -33,7 +33,7 @@ class Url implements VirtualObjectInterface
     /**
      * @var bool
      */
-    private $relSponsored = false;
+    private $relSponsored = true;
 
     /**
      * @var bool
