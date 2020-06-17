@@ -7094,3 +7094,19 @@ span.no-js-warning-message {
   align-items: center;
   margin: 15px 0;
 }
+
+.label-background {
+  width: 100%;
+  height: 20px;
+  background-color: white;
+}
+
+#claimBusinessForm {
+  textarea {
+    padding-top: 0;
+  }
+
+  label {
+    top: 5px;
+  }
+}
