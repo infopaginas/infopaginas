@@ -2578,10 +2578,8 @@ class BusinessProfileManager extends Manager
                                         'query_string' => [
                                             'default_operator' => 'AND',
                                             'fields' => [
-                                                'name_en',
-                                                'name_en.folded',
-                                                'name_es',
-                                                'name_es.folded',
+                                                'name',
+                                                'name.folded',
                                             ],
                                             'query' => $params->query,
                                         ],
@@ -2612,8 +2610,8 @@ class BusinessProfileManager extends Manager
                 'type' => 'most_fields',
                 'query' => AdminHelper::convertAccentedString($search),
                 'fields' => [
-                    'auto_suggest_' . strtolower($locale),
-                    'auto_suggest_' . strtolower($locale) . '.folded',
+                    'name',
+                    'name.folded',
                     'name.single_characters',
                 ],
                 'fuzziness' => 'auto',
@@ -3159,8 +3157,6 @@ class BusinessProfileManager extends Manager
             'categories_en'        => $categories[$enLocale],
             'categories_es'        => $categories[$esLocale],
             'keywords'             => $keywords,
-            'auto_suggest_en'      => [$businessProfile->getNameEn()],
-            'auto_suggest_es'      => [$businessProfile->getNameEs()],
             'location'             => [
                 'lat' => $businessProfile->getLatitude(),
                 'lon' => $businessProfile->getLongitude(),
@@ -3300,28 +3296,6 @@ class BusinessProfileManager extends Manager
     public static function getBusinessElasticSearchIndexParams(): array
     {
         return [
-            'auto_suggest_en' => [
-                'type' => 'text',
-                'analyzer' => 'autocomplete',
-                'search_analyzer' => 'autocomplete_search',
-                'fields' => [
-                    'folded' => [
-                        'type' => 'text',
-                        'analyzer' => 'folding',
-                    ],
-                ],
-            ],
-            'auto_suggest_es' => [
-                'type' => 'text',
-                'analyzer' => 'autocomplete',
-                'search_analyzer' => 'autocomplete_search',
-                'fields' => [
-                    'folded' => [
-                        'type' => 'text',
-                        'analyzer' => 'folding',
-                    ],
-                ],
-            ],
             'name' => [
                 'type' => 'text',
                 'analyzer' => 'autocomplete',

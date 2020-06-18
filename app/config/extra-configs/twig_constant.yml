@@ -20,8 +20,6 @@ twig:
             SEO_TITLE:       'seoTitle'
             SEO_DESCRIPTION: 'seoDescription'
             NAME:            'name'
-            NAME_ES:         'nameEs'
-            NAME_EN:         'nameEn'
             DESCRIPTION:     'description'
             DESCRIPTION_ES:  'descriptionEs'
             DESCRIPTION_EN:  'descriptionEn'

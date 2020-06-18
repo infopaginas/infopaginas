@@ -121,8 +121,6 @@ class BusinessProfile implements
 
     // common fields
     const BUSINESS_PROFILE_FIELD_NAME                    = 'name';
-    const BUSINESS_PROFILE_FIELD_NAME_EN                 = 'nameEn';
-    const BUSINESS_PROFILE_FIELD_NAME_ES                 = 'nameEs';
     const BUSINESS_PROFILE_FIELD_PANORAMA_ID             = 'panoramaId';
     const BUSINESS_PROFILE_FIELD_EMAIL                   = 'email';
     const BUSINESS_PROFILE_FIELD_DC_ORDER_ID             = 'dcOrderId';
@@ -227,20 +225,6 @@ class BusinessProfile implements
      * @Assert\NotBlank()
      */
     protected $name;
-
-    /**
-     * @var string - Business name en
-     *
-     * @ORM\Column(name="name_en", type="string", length=255, nullable=true)
-     */
-    protected $nameEn;
-
-    /**
-     * @var string - Business name es
-     *
-     * @ORM\Column(name="name_es", type="string", length=255, nullable=true)
-     */
-    protected $nameEs;
 
     /**
      * @var User - Business owner
@@ -1373,54 +1357,6 @@ class BusinessProfile implements
     public function getName()
     {
         return $this->name;
-    }
-
-    /**
-     * Set nameEn
-     *
-     * @param string $nameEn
-     *
-     * @return BusinessProfile
-     */
-    public function setNameEn($nameEn)
-    {
-        $this->nameEn = $nameEn;
-
-        return $this;
-    }
-
-    /**
-     * Get nameEn
-     *
-     * @return string
-     */
-    public function getNameEn()
-    {
-        return $this->nameEn;
-    }
-
-    /**
-     * Set nameEs
-     *
-     * @param string $nameEs
-     *
-     * @return BusinessProfile
-     */
-    public function setNameEs($nameEs)
-    {
-        $this->nameEs = $nameEs;
-
-        return $this;
-    }
-
-    /**
-     * Get nameEs
-     *
-     * @return string
-     */
-    public function getNameEs()
-    {
-        return $this->nameEs;
     }
 
     /**
