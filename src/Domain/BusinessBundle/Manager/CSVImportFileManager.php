@@ -84,7 +84,7 @@ class CSVImportFileManager extends FileUploadManager
                         );
                     }
 
-                    foreach (BusinessProfile::getCSVImportUrlRelations() as $urlField) {
+                    foreach (BusinessProfile::gerUrlTypeFields() as $urlField) {
                         if (array_key_exists($urlField, $entry)) {
                             $this->setUrlField(
                                 $businessProfile,
@@ -112,7 +112,7 @@ class CSVImportFileManager extends FileUploadManager
 
     protected function getDenormalizableItems($entry)
     {
-        foreach (BusinessProfile::getCSVImportUrlRelations() as $urlField) {
+        foreach (BusinessProfile::gerUrlTypeFields() as $urlField) {
             unset($entry[$urlField]);
         }
 

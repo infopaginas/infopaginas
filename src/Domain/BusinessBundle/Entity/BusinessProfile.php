@@ -3934,10 +3934,7 @@ class BusinessProfile implements
         ];
     }
 
-    /**
-     * @return array
-     */
-    public static function getCSVImportUrlRelations()
+    public static function gerUrlTypeFields(): array
     {
         return [
             self::BUSINESS_PROFILE_FIELD_WEBSITE_TYPE,

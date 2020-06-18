@@ -8,14 +8,14 @@ use Domain\BusinessBundle\VO\Url;
 
 class UrlType extends ArrayType
 {
-    const URL = 'urlType';
+    public const REL_NO_FOLLOW     = 'REL_NO_FOLLOW';
+    public const REL_NO_OPENER     = 'REL_NO_OPENER';
+    public const REL_NO_REFERRER   = 'REL_NO_REFERRER';
+    public const REL_SPONSORED     = 'REL_SPONSORED';
+    public const REL_UGC           = 'REL_UGC';
+    public const URL_NAME          = 'URL_NAME';
 
-    const REL_NO_FOLLOW     = 'REL_NO_FOLLOW';
-    const REL_NO_OPENER     = 'REL_NO_OPENER';
-    const REL_NO_REFERRER   = 'REL_NO_REFERRER';
-    const REL_SPONSORED     = 'REL_SPONSORED';
-    const REL_UGC           = 'REL_UGC';
-    const URL_NAME          = 'URL_NAME';
+    private const URL = 'urlType';
 
     public function getName()
     {
