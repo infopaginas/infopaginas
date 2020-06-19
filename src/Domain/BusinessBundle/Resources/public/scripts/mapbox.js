@@ -529,6 +529,26 @@ document.addEventListener( 'jQueryLoaded', function() {
         if ( !_.isEmpty( this.options.markers ) ) {
             addMarkers( this.options.markers );
         }
+
+        $(document).on('click', '#show-3d', function(){
+            onShow3dClick();
+        });
+    }
+
+    function onShow3dClick() {
+        var layer3d = '3d-buildings';
+        var visibility = map.getLayoutProperty(layer3d, 'visibility');
+        if (visibility === 'visible') {
+            map.setLayoutProperty(layer3d, 'visibility', 'none');
+            $('#show-3d').text('Show 3D');
+            map.dragRotate.disable();
+            map.touchZoomRotate.disableRotation();
+        } else {
+            map.setLayoutProperty(layer3d, 'visibility', 'visible');
+            $('#show-3d').text('Show 2D');
+            map.dragRotate.enable();
+            map.touchZoomRotate.enableRotation();
+        }
     }
 
     function switchLayer( layer ) {
