@@ -457,7 +457,7 @@ document.addEventListener( 'jQueryLoaded', function() {
         this.map = new mapboxgl.Map( this.options.mapOptions );
 
         map.on('load', function() {
-// Insert the layer beneath any symbol layer.
+            // Insert the layer beneath any symbol layer.
             var layers = map.getStyle().layers;
 
             var labelLayerId;
@@ -476,6 +476,9 @@ document.addEventListener( 'jQueryLoaded', function() {
                     'filter': ['==', 'extrude', 'true'],
                     'type': 'fill-extrusion',
                     'minzoom': 15,
+                    'layout': {
+                        'visibility': 'none',
+                    },
                     'paint': {
                         'fill-extrusion-color': '#3777c4',
 // use an 'interpolate' expression to add a smooth transition effect to the
@@ -504,9 +507,9 @@ document.addEventListener( 'jQueryLoaded', function() {
                 labelLayerId
             );
         });
-        map.addControl( new mapboxgl.NavigationControl( { showCompass: false } ), 'bottom-right' );
-        // map.dragRotate.disable();
-        // map.touchZoomRotate.disableRotation();
+        map.addControl( new mapboxgl.NavigationControl( { showCompass: false } ), 'bottom-right' )
+        map.dragRotate.disable();
+        map.touchZoomRotate.disableRotation();
 
         var options = this.options;
 
