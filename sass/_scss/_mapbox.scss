@@ -69,6 +69,12 @@
   border: 1px solid #EEEEEE;
 }
 
+@media (max-width: 804px) {
+  #show-3d {
+    bottom: 472px!important;
+  }
+}
+
 #menu {
   position: absolute;
   z-index: 1;

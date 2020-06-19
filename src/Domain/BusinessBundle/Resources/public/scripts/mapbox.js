@@ -261,10 +261,8 @@ document.addEventListener( 'jQueryLoaded', function() {
                 lat: center[0],
                 lng: center[1]
             },
-            zoom: 14,
+            zoom: mapDefaultZoom,
             attributionControl: false,
-            // pitch: 45,
-            // bearing: -17.6,
             antialias: true
         };
 
@@ -540,12 +538,13 @@ document.addEventListener( 'jQueryLoaded', function() {
         var visibility = map.getLayoutProperty(layer3d, 'visibility');
         if (visibility === 'visible') {
             map.setLayoutProperty(layer3d, 'visibility', 'none');
-            $('#show-3d').text('Show 3D');
+            $('#show-3d span').html(' 3D');
             map.dragRotate.disable();
             map.touchZoomRotate.disableRotation();
+            map.setPitch(0);
         } else {
             map.setLayoutProperty(layer3d, 'visibility', 'visible');
-            $('#show-3d').text('Show 2D');
+            $('#show-3d span').html(' 2D');
             map.dragRotate.enable();
             map.touchZoomRotate.enableRotation();
         }
