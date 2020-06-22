@@ -472,8 +472,8 @@ business_profile:
   action_type.book: Book&nbsp;Now
   category:
     required: This field is required
-    max: This field should contain 3 elements or less
-    free_hint: Categories (Maximum 3 categories)
+    max: This field should contain 1 element
+    free_hint: Categories (Maximum 1 category)
   interaction_chart:
     title: Business Profile Interactions
     action_type: Event type
