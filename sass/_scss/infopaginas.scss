@@ -2771,6 +2771,7 @@ $thumb-width-mb: 60px;
     background: $blue;
     color: $white;
     border-radius: $button-radius;
+    border: 0.5px solid;
     display: inline-block;
     padding: 5px 20px;
     text-align: center;
@@ -2784,6 +2785,21 @@ $thumb-width-mb: 60px;
       background: $grey--light;
       color: $orange;
     }
+  }
+}
+
+.youtube {
+  opacity: 1!important;
+}
+
+.youtube a {
+  color: $youtube!important;
+  background: $white!important;
+  border: $blue;
+
+  &:hover {
+    background: $white;
+    color: $youtube;
   }
 }
 
