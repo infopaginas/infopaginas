@@ -256,13 +256,14 @@ document.addEventListener( 'jQueryLoaded', function() {
 
         this.options.mapOptions = {
             container: 'map',
-            style: 'mapbox://styles/mapbox/streets-v9?optimize=true',
+            style: 'mapbox://styles/mapbox/streets-v9',
             center: {
                 lat: center[0],
                 lng: center[1]
             },
             zoom: mapDefaultZoom,
-            attributionControl: false
+            attributionControl: false,
+            antialias: true
         };
 
         if ( mapContainer.length ) {
@@ -452,7 +453,59 @@ document.addEventListener( 'jQueryLoaded', function() {
 
     function initMap ( options ) {
         this.map = new mapboxgl.Map( this.options.mapOptions );
-        map.addControl( new mapboxgl.NavigationControl( { showCompass: false } ), 'bottom-right' );
+
+        map.on('load', function() {
+            // Insert the layer beneath any symbol layer.
+            var layers = map.getStyle().layers;
+
+            var labelLayerId;
+            for (var i = 0; i < layers.length; i++) {
+                if (layers[i].type === 'symbol' && layers[i].layout['text-field']) {
+                    labelLayerId = layers[i].id;
+                    break;
+                }
+            }
+
+            map.addLayer(
+                {
+                    'id': '3d-buildings',
+                    'source': 'composite',
+                    'source-layer': 'building',
+                    'filter': ['==', 'extrude', 'true'],
+                    'type': 'fill-extrusion',
+                    'minzoom': 15,
+                    'layout': {
+                        'visibility': 'none',
+                    },
+                    'paint': {
+                        'fill-extrusion-color': '#3777c4',
+// use an 'interpolate' expression to add a smooth transition effect to the
+// buildings as the user zooms in
+                        'fill-extrusion-height': [
+                            'interpolate',
+                            ['linear'],
+                            ['zoom'],
+                            15,
+                            0,
+                            15.05,
+                            ['get', 'height']
+                        ],
+                        'fill-extrusion-base': [
+                            'interpolate',
+                            ['linear'],
+                            ['zoom'],
+                            15,
+                            0,
+                            15.05,
+                            ['get', 'min_height']
+                        ],
+                        'fill-extrusion-opacity': 0.6
+                    }
+                },
+                labelLayerId
+            );
+        });
+        map.addControl( new mapboxgl.NavigationControl( { showCompass: false } ), 'bottom-right' )
         map.dragRotate.disable();
         map.touchZoomRotate.disableRotation();
 
@@ -473,6 +526,27 @@ document.addEventListener( 'jQueryLoaded', function() {
 
         if ( !_.isEmpty( this.options.markers ) ) {
             addMarkers( this.options.markers );
+        }
+
+        $(document).on('click', '#show-3d', function(){
+            onShow3dClick();
+        });
+    }
+
+    function onShow3dClick() {
+        var layer3d = '3d-buildings';
+        var visibility = map.getLayoutProperty(layer3d, 'visibility');
+        if (visibility === 'visible') {
+            map.setLayoutProperty(layer3d, 'visibility', 'none');
+            $('#show-3d span').html(' 3D');
+            map.dragRotate.disable();
+            map.touchZoomRotate.disableRotation();
+            map.setPitch(0);
+        } else {
+            map.setLayoutProperty(layer3d, 'visibility', 'visible');
+            $('#show-3d span').html(' 2D');
+            map.dragRotate.enable();
+            map.touchZoomRotate.enableRotation();
         }
     }
 

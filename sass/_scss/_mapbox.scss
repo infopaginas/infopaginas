@@ -58,6 +58,23 @@
   background-position: 0 0;
 }
 
+#show-3d {
+  background-color: #FAFAFA;
+  padding: 10px 20px;
+  z-index: 1;
+  position: absolute;
+  color: black !important;
+  bottom: 400px;
+  cursor: pointer;
+  border: 1px solid #EEEEEE;
+}
+
+@media (max-width: 804px) {
+  #show-3d {
+    bottom: 472px!important;
+  }
+}
+
 #menu {
   position: absolute;
   z-index: 1;

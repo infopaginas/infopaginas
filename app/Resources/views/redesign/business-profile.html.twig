@@ -360,6 +360,10 @@
                         {% if not businessProfile.hideMap %}
                             <section class="page-section profile-map">
                                 {% include ':redesign/blocks/mapbox:navigationButton.html.twig' %}
+                                <a id="show-3d">
+                                    <i class="fa fa-building-o" aria-hidden="true"></i>
+                                    <span> 3D</span>
+                                </a>
                                 <div id="map" class="business-map">
                                     {% include ':redesign/blocks/mapbox:mapLogo.html.twig' %}
                                 </div>
