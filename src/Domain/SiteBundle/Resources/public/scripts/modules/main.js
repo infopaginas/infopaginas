@@ -110,11 +110,9 @@ define(['jquery', 'tools/reportTracker', 'tools/googleMapLink', 'selectize', 've
         if (nav.is('.nav--opened')) {
             nav.removeClass( 'nav--opened' );
             $.Velocity.RunSequence(closeNav, { mobileHA: true });
-            $( 'body' ).removeClass( 'body--no-scroll' );
         } else {
             nav.addClass( 'nav--opened' );
             $.Velocity.RunSequence(openNav, { mobileHA: true });
-            $( 'body' ).addClass( 'body--no-scroll' );
         }
     };
 
