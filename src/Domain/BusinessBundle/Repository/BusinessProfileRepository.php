@@ -92,8 +92,7 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
     public function getAutoSuggestedBusinessDataByIds($ids, $locale = LocaleHelper::DEFAULT_LOCALE)
     {
         $qb = $this->_em->createQueryBuilder()
-            ->select('bp.id')
-            ->addSelect('bp.name')
+            ->select('bp.name')
             ->distinct(true)
             ->from($this->_entityName, 'bp')
             ->where('bp.id IN (:ids)')
