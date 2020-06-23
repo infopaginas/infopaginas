@@ -1763,6 +1763,18 @@ class BusinessProfileAdmin extends OxaAdmin
                 ;
             }
         }
+
+        if ($object->getActionUrlItem()->getUrl() && $object->getOwnersMessage()) {
+            $errorElement
+                ->with('ownersMessage')
+                    ->addViolation($this->getTranslator()->trans(
+                        'form.owners_message.action_url_type',
+                        [],
+                        $this->getTranslationDomain()
+                    ))
+                ->end()
+            ;
+        }
     }
 
     /**
