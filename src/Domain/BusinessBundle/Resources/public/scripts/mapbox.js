@@ -514,10 +514,6 @@ document.addEventListener( 'jQueryLoaded', function() {
         //pass map to main.js for resizing event
         map = this.map;
 
-        if ( !$( '[data-target-coordinates]' ).data( 'targetCoordinates' ) ) {
-            addMenuSwitch( 'menu' );
-        }
-
         if ( $( '.navigation-button' ).length ) {
             addHrefToNavigationButton();
         }
