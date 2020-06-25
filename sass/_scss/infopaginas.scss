@@ -4905,6 +4905,14 @@ li.active {
   div.article-wysiwyg-body {
     overflow-x: auto;
   }
+
+  &.contact-us {
+    .article__header {
+      h1 {
+        text-align: center;
+      }
+    }
+  }
 }
 
 .article {
