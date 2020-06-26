@@ -645,8 +645,6 @@ TripAdvisor: TripAdvisor
 
 popular_searches.title: Búsquedas populares
 mapbox.current_user_position.label: Ubicación actual
-mapbox.menu.streets: Calles
-mapbox.menu.satellite: Satélite
 mapbox.profile.driving_traffic: Conducir-trafico
 mapbox.profile.driving_traffic_info: Para enrutamiento automotriz. Este perfil influye en las condiciones de tráfico actuales e históricas para evitar desaceleraciones.
 mapbox.profile.cycling: Ciclismo
