@@ -21,7 +21,13 @@ class BusinessProfilePhone implements ChangeStateInterface
 {
     use ChangeStateTrait;
 
-    const REGEX_PHONE_PATTERN = '/^\d{3}-\d{3}-\d{4}$/';
+    const REGEX_PHONE_PATTERN = '/^\d{3}-\d{3}-\d{4}$|' .
+                                '^\(\d{3}\)\s\d{3}\s\d{4}$|' .
+                                '^\(\d{3}\)-\d{3}-\d{4}$|' .
+                                '^\(\d{3}\)\d{3}-\d{4}$|' .
+                                '^\(\d{3}\)\s\d{3}-\d{4}$|' .
+                                '^\d{10}$|' .
+                                '^\d{3}\s\d{3}\s\d{4}$/';
     const MAX_PHONE_LENGTH = 15;
     const MAX_EXTENSION_LENGTH = 6;
     const MIN_EXTENSION_LENGTH = 1;
