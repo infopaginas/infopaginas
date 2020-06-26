@@ -151,35 +151,35 @@ services:
         factory: ['@form.factory', 'createNamed']
         class: Symfony\Component\Form\Form
         arguments:
-            - 'domain_business_bundle_business_profile_form_type'
+            - 'business_profile_form'
             - 'Domain\BusinessBundle\Form\Type\BusinessProfileFormType'
 
     domain_business.form.claim:
         factory: ['@form.factory', 'createNamed']
         class: Symfony\Component\Form\Form
         arguments:
-            - 'domain_business_bundle_business_claim_request_type'
+            - 'business_claim_request'
             - 'Domain\BusinessBundle\Form\Type\BusinessClaimRequestType'
 
     domain_business.form.review:
         factory: ['@form.factory', 'createNamed']
         class: Symfony\Component\Form\Form
         arguments:
-            - 'domain_business_bundle_business_review_type'
+            - 'business_review'
             - 'Domain\BusinessBundle\Form\Type\BusinessReviewType'
 
     domain_business.form.business_close_request:
         factory: ['@form.factory', 'createNamed']
         class: Symfony\Component\Form\Form
         arguments:
-            - 'domain_business_bundle_business_close_request_type'
+            - 'business_close_request'
             - 'Domain\BusinessBundle\Form\Type\BusinessCloseRequestType'
 
     domain_business.form.business_upgrade_request:
         factory: ['@form.factory', 'createNamed']
         class: Symfony\Component\Form\Form
         arguments:
-            - 'domain_business_bundle_business_upgrade_request_type'
+            - 'business_upgrade_request'
             - 'Domain\BusinessBundle\Form\Type\BusinessUpgradeRequestType'
 
     #form handlers section
