@@ -47,14 +47,14 @@ services:
         factory: ['@form.factory', 'createNamed']
         class: Symfony\Component\Form\Form
         arguments:
-            - 'oxa_video_bundle_file_upload_form_type'
+            - 'file_upload'
             - 'Oxa\VideoBundle\Form\Type\FileUploadType'
 
     domain_business.form.url_file_upload:
         factory: ['@form.factory', 'createNamed']
         class: Symfony\Component\Form\Form
         arguments:
-            - 'oxa_video_bundle_url_upload_form_type'
+            - 'url_upload'
             - 'Oxa\VideoBundle\Form\Type\UrlUploadType'
 
     #form handlers section

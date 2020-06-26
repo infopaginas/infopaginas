@@ -12,8 +12,8 @@ define( ['jquery', 'bootstrap', 'business/tools/interactions', 'tools/select', '
             forms: {
                 createReviewFormId: '#createReviewForm',
                 claimBusinessFormId: '#claimBusinessForm',
-                createReviewFormPrefix: 'domain_business_bundle_business_review_type',
-                claimBusinessFormPrefix: '#domain_business_bundle_business_claim_request_type'
+                createReviewFormPrefix: 'business_review',
+                claimBusinessFormPrefix: '#business_claim_request'
             },
             modals: {
                 createReviewModalId: '#writeReviewModal',

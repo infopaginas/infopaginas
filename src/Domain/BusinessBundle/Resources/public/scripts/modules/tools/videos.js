@@ -5,7 +5,7 @@ define(['jquery', 'bootstrap', 'tools/spin'], function( $, bootstrap, Spin ) {
     var videos = function() {
         this.html = {
             buttons: {
-                fileInputId: 'domain_business_bundle_business_profile_form_type_videoFile',
+                fileInputId: 'business_profile_form_videoFile',
                 startUploadRemoteFileButtonId: 'start-remote-video-upload'
             },
             videoContainerId: '#video',

@@ -11,7 +11,7 @@ define(['jquery', 'tools/spin', 'maskedInput'], function( $, Spin, mask ) {
                 feedbackButtonId: '#feedbackButton'
             },
             forms: {
-                feedbackFormPrefix: 'domain_page_bundle_feedback_form_type',
+                feedbackFormPrefix: 'feedback_form',
                 feedbackFormId: '#feedbackForm'
             },
             inputs: {
