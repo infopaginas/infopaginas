@@ -4329,4 +4329,18 @@ class BusinessProfile implements
 
         return $data;
     }
+
+    public function getAmazonAffiliateUrl()
+    {
+        $data = null;
+
+        foreach ($this->categories as $category) {
+            if ($category->getAmazonAffiliateUrl()) {
+                $data = $category->getAmazonAffiliateUrl();
+                break;
+            }
+        }
+
+        return $data;
+    }
 }
