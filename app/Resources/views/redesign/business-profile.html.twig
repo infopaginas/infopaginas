@@ -366,7 +366,20 @@
                                 <span id="map-markers" hidden data-mapbox-markers="{{ markers }}"></span>
                             </section>
                         {% endif %}
-
+                        {% if businessProfile.subscriptionPlanCode == SUBSCRIPTION.CODE.FREE and businessProfile.amazonAffiliateUrl and businessProfile.amazonAffiliateUrl.url %}
+                            <div class="share__item google-plus">
+                                <a
+                                        data-href="{{ businessProfile.amazonAffiliateUrl.url }}"
+                                        class="redirect-event"
+                                        data-id="{{ item.id }}"
+                                        data-type="googleVisit"
+                                        title="{% trans %}Click here to see this popular product{% endtrans %}"
+                                        data-bw-gtm-event-click
+                                        data-bw-gtm-label="google-plus::{{ businessProfile.amazonAffiliateUrl.url }}"
+                                        rel="{{ relAttributes(item.amazonAffiliateUrl) }}"
+                                >{% trans %}Click here to see this popular product{% endtrans %}</a>
+                            </div><!-- share__item -->
+                        {% endif %}
                     </article><!-- profile -->
 
                     <aside class="profile__sidebar">
