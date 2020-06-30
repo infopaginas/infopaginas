@@ -361,10 +361,8 @@
                                                 data-href="{{ businessProfile.amazonAffiliateUrl.url }}"
                                                 class="redirect-event"
                                                 data-id="{{ businessProfile.id }}"
-                                                data-type="googleVisit"
+                                                data-type="amazonAffiliateLink"
                                                 title="{% trans with {'%category%': businessProfile.amazonAffiliateUrlCategory.name} %}Click here to see this popular %category% product{% endtrans %}"
-                                                data-bw-gtm-event-click
-                                                data-bw-gtm-label="google-plus::{{ businessProfile.amazonAffiliateUrl.url }}"
                                                 rel="{{ relAttributes(businessProfile.amazonAffiliateUrl) }}"
                                         >{% trans with {'%category%': businessProfile.amazonAffiliateUrlCategory.name} %}Click here to see this popular %category% product{% endtrans %}</a>
                                     </div><!-- share__item -->
