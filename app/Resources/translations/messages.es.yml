@@ -760,3 +760,4 @@ user_profile:
 use_gps: Usa el GPS
 
 registration_success: ¡Gracias por Registrarte! ¡Crea el perfil de tu negocio ahora!
+user.profile.registration.success: Los cambios están guardados. Puede crear su perfil de negocio ahora.

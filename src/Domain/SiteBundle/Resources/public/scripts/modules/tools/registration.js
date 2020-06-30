@@ -17,7 +17,7 @@ define(['jquery', 'tools/spin', 'tools/login'], function( $, Spin, Login ) {
                 registrationButtonId: '#registrationButton'
             },
             forms: {
-                registrationFormPrefix: 'domain_site_registration',
+                registrationFormPrefix: 'registration',
                 registrationFormId: '#registrationForm'
             },
             fields: {
