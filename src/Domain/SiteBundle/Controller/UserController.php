@@ -89,7 +89,7 @@ class UserController extends Controller
 
         try {
             if ($formHandler->process()) {
-                return $this->getSuccessResponse(self::SUCCESS_PROFILE_UPDATE_MESSAGE);
+                return $this->getSuccessResponse($this->getTranslator()->trans('user.profile.registration.success'));
             }
         } catch (\Exception $e) {
             return $this->getFailureResponse($e->getMessage());
