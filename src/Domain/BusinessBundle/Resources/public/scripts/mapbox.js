@@ -271,6 +271,7 @@ document.addEventListener( 'jQueryLoaded', function() {
 
             if ( markersBlock.data( 'mapbox-markers' ) ) {
                 this.options.markers = markersBlock.data( 'mapbox-markers' );
+                this.options.isSingleMarker = this.options.markers.length === 1;
             }
 
             initMap( this.options );
@@ -540,11 +541,23 @@ document.addEventListener( 'jQueryLoaded', function() {
             map.dragRotate.disable();
             map.touchZoomRotate.disableRotation();
             map.setPitch(0);
+            map.setZoom(mapDefaultZoom);
         } else {
             map.setLayoutProperty(layer3d, 'visibility', 'visible');
             $('#show-3d').html('2D');
             map.dragRotate.enable();
             map.touchZoomRotate.enableRotation();
+            if (this.options.isSingleMarker) {
+                map.setZoom(18);
+                map.setPitch(90);
+                map.flyTo({
+                    center: [
+                        parseFloat(this.options.markers[0].longitude),
+                        parseFloat(this.options.markers[0].latitude)
+                    ],
+                    essential: true
+                });
+            }
         }
     }
 
@@ -604,7 +617,6 @@ document.addEventListener( 'jQueryLoaded', function() {
         el.id = markerData.id;
         el.style.height = height + 'px';
         el.style.width = width + 'px';
-
         var marker = new mapboxgl.Marker( el, { offset: [0, -height / 2] }, { interactive: true } )
             .setLngLat( [parseFloat(markerData.longitude), parseFloat(markerData.latitude)] )
             .setPopup( infoWindow )
