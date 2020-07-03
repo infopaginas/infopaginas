@@ -22,7 +22,7 @@
                         data-bw-gtm-event-click
                         data-bw-gtm-label="linkedIn::{{ item.linkedInURLItem.url }}"
                         rel="{{ relAttributes(item.linkedInURLItem) }}"
-                ><i class="fa fa-linkedin"></i></a>
+                ><img class="social-icon" src="{{ asset('assets/images/icon_linkdn.png') }}"/></a>
             </div><!-- share__item -->
         {% endif %}
         {% if item.facebookURLItem and item.facebookURLItem.url %}
@@ -36,7 +36,7 @@
                         data-bw-gtm-event-click
                         data-bw-gtm-label="facebook::{{ item.facebookURLItem.url }}"
                         rel="{{ relAttributes(item.facebookURLItem) }}"
-                ><i class="fa fa-facebook"></i></a>
+                ><img class="social-icon" src="{{ asset('assets/images/icon_facebook_58.png') }}"/></a>
             </div><!-- share__item -->
         {% endif %}
         {% if item.twitterURLItem and item.twitterURLItem.url %}
@@ -49,23 +49,23 @@
                         title="{% trans %}Visit business profile on...{% endtrans %}"
                         data-bw-gtm-event-click data-bw-gtm-label="twitter::{{ item.twitterURLItem.url }}"
                         rel="{{ relAttributes(item.twitterURLItem) }}"
-                ><i class="fa fa-twitter"></i></a>
+                ><img class="social-icon" src="{{ asset('assets/images/icon_twitter.png') }}"/></a>
             </div><!-- share__item -->
         {% endif %}
-        {% if item.googleURLItem and item.googleURLItem.url %}
-            <div class="share__item google-plus">
-                <a
-                        data-href="{{ item.googleURLItem.url }}"
-                        class="redirect-event"
-                        data-id="{{ item.id }}"
-                        data-type="googleVisit"
-                        title="{% trans %}Visit business profile on...{% endtrans %}"
-                        data-bw-gtm-event-click
-                        data-bw-gtm-label="google-plus::{{ item.googleURLItem.url }}"
-                        rel="{{ relAttributes(item.googleURLItem) }}"
-                ><i class="fa fa-google-plus"></i></a>
-            </div><!-- share__item -->
-        {% endif %}
+{#        {% if item.googleURLItem and item.googleURLItem.url %}#}
+{#            <div class="share__item google-plus">#}
+{#                <a#}
+{#                        data-href="{{ item.googleURLItem.url }}"#}
+{#                        class="redirect-event"#}
+{#                        data-id="{{ item.id }}"#}
+{#                        data-type="googleVisit"#}
+{#                        title="{% trans %}Visit business profile on...{% endtrans %}"#}
+{#                        data-bw-gtm-event-click#}
+{#                        data-bw-gtm-label="google-plus::{{ item.googleURLItem.url }}"#}
+{#                        rel="{{ relAttributes(item.googleURLItem) }}"#}
+{#                ><i class="fa fa-google-plus"></i></a>#}
+{#            </div><!-- share__item -->#}
+{#        {% endif %}#}
         {% if item.youtubeURLItem and item.youtubeURLItem.url %}
             <div class="share__item youtube">
                 <a
@@ -77,7 +77,7 @@
                         data-bw-gtm-event-click
                         data-bw-gtm-label="youtube::{{ item.youtubeURLItem.url }}"
                         rel="{{ relAttributes(item.youtubeURLItem) }}"
-                ><i class="fa fa-youtube-play"></i></a>
+                ><img class="social-icon" src="{{ asset('assets/images/icon_youtube.png') }}"/></a>
             </div><!-- share__item -->
         {% endif %}
         {% if item.instagramURLItem and item.instagramURLItem.url %}
@@ -90,7 +90,7 @@
                         data-bw-gtm-event-click
                         data-bw-gtm-label="instagram::{{ item.instagramURLItem.url }}"
                         rel="{{ relAttributes(item.instagramURLItem) }}"
-                ><i class="fa fa-instagram"></i></a>
+                ><img class="social-icon" src="{{ asset('assets/images/icon_instagram.png') }}"/></a>
             </div><!-- share__item -->
         {% endif %}
         {% if item.tripAdvisorURLItem and item.tripAdvisorURLItem.url %}
@@ -104,7 +104,7 @@
                         data-bw-gtm-event-click
                         data-bw-gtm-label="tripadvisor::{{ item.tripAdvisorURLItem.url }}"
                         rel="{{ relAttributes(item.tripAdvisorURLItem) }}"
-                ><i class="fa fa-tripadvisor"></i></a>
+                ><img class="social-icon" src="{{ asset('assets/images/icon_tripadvisor.png') }}"/></a>
             </div><!-- share__item -->
         {% endif %}
     </div>
