@@ -2779,16 +2779,22 @@ $thumb-width-mb: 60px;
 
   }
 
-  .youtube .social-icon {
-    width: 32px;
+  .youtube {
+    .social-icon {
+      width: 32px;
+    }
   }
 
-  .instagram .social-icon {
-    width: 24px;
+  .instagram {
+    .social-icon {
+      width: 24px;
+    }
   }
 
-  .tripadvisor .social-icon {
-    width: 44px;
+  .tripadvisor {
+    .social-icon {
+      width: 44px;
+    }
   }
 
   a {
@@ -2814,21 +2820,6 @@ $thumb-width-mb: 60px;
     }
   }
 }
-
-//.youtube {
-//  opacity: 1!important;
-//}
-//
-//.youtube a {
-//  color: $youtube!important;
-//  background: $white!important;
-//  border: $blue;
-//
-//  &:hover {
-//    background: $white;
-//    color: $youtube;
-//  }
-//}
 
 @media only screen and (min-width: 805px) {
   .results--map-view {
