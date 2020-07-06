@@ -2607,12 +2607,12 @@ class BusinessProfileManager extends Manager
     {
         $query = [
             'multi_match' => [
-                'type' => 'most_fields',
+                'type' => 'bool_prefix',
                 'query' => AdminHelper::convertAccentedString($search),
                 'fields' => [
-                    'name',
-                    'name.folded',
-                    'name.single_characters',
+                    'name.suggest',
+                    'name.suggest._2gram',
+                    'name.suggest._3gram',
                 ],
                 'fuzziness' => 'auto',
             ],
@@ -3301,15 +3301,18 @@ class BusinessProfileManager extends Manager
                 'analyzer' => 'autocomplete',
                 'search_analyzer' => 'autocomplete_search',
                 'fields' => [
-                    'folded' => [
-                        'type' => 'text',
+                    'folded'            => [
+                        'type'     => 'text',
                         'analyzer' => 'folding',
                     ],
                     'single_characters' => [
-                        'type' => 'text',
-                        'analyzer' => 'single_characters',
+                        'type'            => 'text',
+                        'analyzer'        => 'single_characters',
                         'search_analyzer' => 'autocomplete_search',
-                    ]
+                    ],
+                    'suggest'           => [
+                        'type' => 'search_as_you_type',
+                    ],
                 ],
             ],
             'city' => [
