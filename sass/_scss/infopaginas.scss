@@ -2753,7 +2753,7 @@ $thumb-width-mb: 60px;
   }
 
   .share__item {
-    margin: 1px;
+    margin: -2px;
     display: flex;
     align-items: center;
     &:last-child {
@@ -2771,6 +2771,10 @@ $thumb-width-mb: 60px;
     .social-icon {
       width: 26px;
       height: auto;
+    }
+
+    @media only screen and (max-width: 805px) {
+      margin: -1px;
     }
 
   }

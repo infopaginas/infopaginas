@@ -52,20 +52,20 @@
                 ><img class="social-icon" src="{{ asset('assets/images/icon_twitter.png') }}"/></a>
             </div><!-- share__item -->
         {% endif %}
-{#        {% if item.googleURLItem and item.googleURLItem.url %}#}
-{#            <div class="share__item google-plus">#}
-{#                <a#}
-{#                        data-href="{{ item.googleURLItem.url }}"#}
-{#                        class="redirect-event"#}
-{#                        data-id="{{ item.id }}"#}
-{#                        data-type="googleVisit"#}
-{#                        title="{% trans %}Visit business profile on...{% endtrans %}"#}
-{#                        data-bw-gtm-event-click#}
-{#                        data-bw-gtm-label="google-plus::{{ item.googleURLItem.url }}"#}
-{#                        rel="{{ relAttributes(item.googleURLItem) }}"#}
-{#                ><i class="fa fa-google-plus"></i></a>#}
-{#            </div><!-- share__item -->#}
-{#        {% endif %}#}
+        {% if item.googleURLItem and item.googleURLItem.url %}
+            <div class="share__item google-plus">
+                <a
+                        data-href="{{ item.googleURLItem.url }}"
+                        class="redirect-event"
+                        data-id="{{ item.id }}"
+                        data-type="googleVisit"
+                        title="{% trans %}Visit business profile on...{% endtrans %}"
+                        data-bw-gtm-event-click
+                        data-bw-gtm-label="google-plus::{{ item.googleURLItem.url }}"
+                        rel="{{ relAttributes(item.googleURLItem) }}"
+                ><img class="social-icon" src="{{ asset('assets/images/icon_googlemybusiness.svg') }}"/></a>
+            </div><!-- share__item -->
+        {% endif %}
         {% if item.youtubeURLItem and item.youtubeURLItem.url %}
             <div class="share__item youtube">
                 <a
