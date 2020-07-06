@@ -6,6 +6,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Domain\ArticleBundle\Entity\Article;
 use Domain\BusinessBundle\Entity\Translation\CategoryTranslation;
+use Domain\BusinessBundle\VO\Url;
 use Oxa\Sonata\AdminBundle\Model\ChangeStateInterface;
 use Oxa\Sonata\AdminBundle\Model\CopyableEntityInterface;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
@@ -211,6 +212,14 @@ class Category implements
      *     )
      */
     protected $amazonAffiliateItems;
+
+    /**
+     * @var Url|null
+     *
+     * @ORM\Column(name="amazonAffiliateUrl", type="urlType", length=1000, nullable=true)
+     * @Assert\Valid()
+     */
+    protected $amazonAffiliateUrl;
 
     public function setLocale($locale)
     {
@@ -693,4 +702,25 @@ class Category implements
     {
         $this->amazonAffiliateItems->removeElement($amazonAffiliateItem);
     }
+
+    /**
+     * @return Url|null
+     */
+    public function getAmazonAffiliateUrl()
+    {
+        return $this->amazonAffiliateUrl;
+    }
+
+    /**
+     * @param Url $amazonAffiliateUrl
+     *
+     * @return Category
+     */
+    public function setAmazonAffiliateUrl(Url $amazonAffiliateUrl)
+    {
+        $this->amazonAffiliateUrl = $amazonAffiliateUrl;
+
+        return $this;
+    }
+
 }

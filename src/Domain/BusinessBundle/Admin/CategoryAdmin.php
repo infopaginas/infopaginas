@@ -5,6 +5,8 @@ namespace Domain\BusinessBundle\Admin;
 use Domain\ArticleBundle\Entity\Article;
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\Category;
+use Domain\BusinessBundle\Form\Type\CustomUrlType;
+use Domain\BusinessBundle\VO\UrlWithOnlyNoFollowEnable;
 use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
 use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
@@ -107,6 +109,10 @@ class CategoryAdmin extends OxaAdmin
                         'inline'        => 'table',
                     ]
                 )
+                ->add('amazonAffiliateUrl', CustomUrlType::class, [
+                    'required' => false,
+                    'by_reference'  => false,
+                ])
             ->end();
     }
 
