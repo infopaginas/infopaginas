@@ -303,6 +303,7 @@ class BusinessProfileAdmin extends OxaAdmin
                 ]
             )
             ->add('hasImages')
+            ->add('enableNotUniquePhone')
             ->add('subscriptions.subscriptionPlan', null, [
                 'label' => $this->trans('filter.label_subscription_plan', [], $this->getTranslationDomain()),
             ])
