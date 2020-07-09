@@ -3,6 +3,7 @@
 namespace Domain\SiteBundle\Command;
 
 use Doctrine\ORM\EntityManager;
+use Domain\SiteBundle\Logger\CronLogger;
 use Oxa\VideoBundle\Entity\VideoMedia;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
@@ -35,7 +36,7 @@ class VideoConverterCommand extends ContainerAwareCommand
         }
 
         $logger = $this->getContainer()->get('domain_site.cron.logger');
-        $logger->addInfo($logger::VIDEO_CONVERT, $logger::STATUS_START, 'execute:start');
+        $logger->addInfo(CronLogger::VIDEO_CONVERT, CronLogger::STATUS_START, CronLogger::MESSAGE_START);
         $this->em = $this->getContainer()->get('doctrine.orm.entity_manager');
 
         $videoMapping = $this->em->getRepository(VideoMedia::class)->getConvertVideos(VideoMedia::VIDEO_STATUS_PENDING);
@@ -60,7 +61,7 @@ class VideoConverterCommand extends ContainerAwareCommand
             $i ++;
         }
 
-        $logger->addInfo($logger::VIDEO_CONVERT, $logger::STATUS_END, 'execute:stop');
+        $logger->addInfo(CronLogger::VIDEO_CONVERT, CronLogger::STATUS_END, CronLogger::MESSAGE_STOP);
 
         $this->em->flush();
         $this->em->clear();

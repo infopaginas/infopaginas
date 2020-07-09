@@ -7,6 +7,7 @@ use Domain\BusinessBundle\Entity\CatalogItem;
 use Domain\BusinessBundle\Entity\Category;
 use Domain\BusinessBundle\Entity\Locality;
 use Domain\SearchBundle\Model\Manager\SearchManager;
+use Domain\SiteBundle\Logger\CronLogger;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Console\Input\InputInterface;
@@ -37,14 +38,14 @@ class CatalogItemContentCommand extends ContainerAwareCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $logger = $this->getContainer()->get('domain_site.cron.logger');
-        $logger->addInfo($logger::CATALOG_ITEM_UPDATE, $logger::STATUS_START, 'execute:start');
+        $logger->addInfo(CronLogger::CATALOG_ITEM_UPDATE, CronLogger::STATUS_START, CronLogger::MESSAGE_START);
 
         $this->em = $this->getContainer()->get('doctrine.orm.entity_manager');
         $this->searchManager = $this->getContainer()->get('domain_search.manager.search');
 
         $this->updateCatalogItem();
 
-        $logger->addInfo($logger::CATALOG_ITEM_UPDATE, $logger::STATUS_END, 'execute:stop');
+        $logger->addInfo(CronLogger::CATALOG_ITEM_UPDATE, CronLogger::STATUS_END, CronLogger::MESSAGE_STOP);
     }
 
     protected function updateCatalogItem()

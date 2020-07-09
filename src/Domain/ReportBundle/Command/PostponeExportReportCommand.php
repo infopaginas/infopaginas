@@ -2,6 +2,7 @@
 
 namespace Domain\ReportBundle\Command;
 
+use Domain\SiteBundle\Logger\CronLogger;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputDefinition;
@@ -40,14 +41,14 @@ class PostponeExportReportCommand extends ContainerAwareCommand
 
         $container = $this->getContainer();
         $logger = $container->get('domain_site.cron.logger');
-        $logger->addInfo($logger::POSTPONE_EXPORT, $logger::STATUS_START, 'execute:start');
+        $logger->addInfo(CronLogger::POSTPONE_EXPORT, CronLogger::STATUS_START, CronLogger::MESSAGE_START);
 
         $output->writeln('Start...');
         $postponeExportManager = $container->get('domain_report.manager.postpone_export_report');
         $postponeExportManager->postponeExportReport();
         $output->writeln('done');
 
-        $logger->addInfo($logger::POSTPONE_EXPORT, $logger::STATUS_END, 'execute:stop');
+        $logger->addInfo(CronLogger::POSTPONE_EXPORT, CronLogger::STATUS_END, CronLogger::MESSAGE_STOP);
 
         $lockHandler->release();
     }

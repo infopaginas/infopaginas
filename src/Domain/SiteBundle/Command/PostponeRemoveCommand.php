@@ -10,6 +10,7 @@ use Domain\BusinessBundle\DBAL\Types\TaskType;
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\Task;
 use Domain\BusinessBundle\Manager\BusinessProfileManager;
+use Domain\SiteBundle\Logger\CronLogger;
 use Oxa\Sonata\MediaBundle\Entity\Media;
 use Oxa\VideoBundle\Entity\VideoMedia;
 use Oxa\VideoBundle\Manager\VideoManager;
@@ -61,12 +62,12 @@ class PostponeRemoveCommand extends ContainerAwareCommand
     {
         $container = $this->getContainer();
         $logger    = $container->get('domain_site.cron.logger');
-        $logger->addInfo($logger::POSTPONE_REMOVE, $logger::STATUS_START, 'execute:start');
+        $logger->addInfo(CronLogger::POSTPONE_REMOVE, CronLogger::STATUS_START, CronLogger::MESSAGE_START);
 
         $lockHandler = new LockHandler(self::POSTPONE_REMOVE_LOCK);
 
         if (!$lockHandler->lock()) {
-            $logger->addInfo($logger::POSTPONE_REMOVE, $logger::STATUS_END, 'execute:stop');
+            $logger->addInfo(CronLogger::POSTPONE_REMOVE, CronLogger::STATUS_END, CronLogger::MESSAGE_STOP);
 
             return $output->writeln('Command is locked by another process');
         }
@@ -78,7 +79,7 @@ class PostponeRemoveCommand extends ContainerAwareCommand
         $this->handlePostponeRemove();
 
         $lockHandler->release();
-        $logger->addInfo($logger::POSTPONE_REMOVE, $logger::STATUS_END, 'execute:stop');
+        $logger->addInfo(CronLogger::POSTPONE_REMOVE, CronLogger::STATUS_END, CronLogger::MESSAGE_STOP);
     }
 
     protected function handlePostponeRemove()

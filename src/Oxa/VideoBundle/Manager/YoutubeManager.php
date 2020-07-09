@@ -12,37 +12,36 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class YoutubeManager
 {
-    const PRIVACY_STATUS_PUBLIC   = 'public';
-    const PRIVACY_STATUS_PRIVATE  = 'private';
-    const PRIVACY_STATUS_UNLISTED = 'unlisted';
+    public const YOUTUBE_ID_COLUMN_ALIAS = 'youtube_id';
 
-    const ACCESS_TYPE_OFFLINE = 'offline';
-    const APPROVAL_PROMPT_FORCE = 'force';
+    public const ERROR_BAD_REQUEST     = 400;
+    public const ERROR_LOGIN_REQUIRED  = 401;
+    public const ERROR_FORBIDDEN       = 403;
+    public const ERROR_NOT_FOUND       = 404;
+    public const ERROR_BAD_TOKEN       = 0;
+
+    public const ERROR_UNKNOWN         = 'ERROR_UNKNOWN';
+    public const ERROR_ASSET_NOT_EXIST = 'ERROR_ASSET_NOT_EXIST';
+    public const ERROR_INVALID_ACCOUNT = 'ERROR_INVALID_ACCOUNT';
+
+    private const ACCESS_TYPE_OFFLINE = 'offline';
+    private const APPROVAL_PROMPT_FORCE = 'force';
 
     //see https://developers.google.com/youtube/v3/docs/channels/list
     // default 5, min 0, max 50
-    const CHANNEL_LIST_MAX_RESULT = 50;
-
-    const ERROR_BAD_REQUEST     = 400;
-    const ERROR_LOGIN_REQUIRED  = 401;
-    const ERROR_FORBIDDEN       = 403;
-    const ERROR_NOT_FOUND       = 404;
-    const ERROR_BAD_TOKEN       = 0;
-
-    const ERROR_UNKNOWN         = 'ERROR_UNKNOWN';
-    const ERROR_ASSET_NOT_EXIST = 'ERROR_ASSET_NOT_EXIST';
-    const ERROR_INVALID_ACCOUNT = 'ERROR_INVALID_ACCOUNT';
+    private const CHANNEL_LIST_MAX_RESULT = 50;
+    private const VIDEOS_LIST_MAX_RESULT  = 50;
 
     // see https://developers.google.com/youtube/v3/docs/videoCategories/list
     // "Film & Animation" - category id = 1
-    const DEFAULT_CATEGORY_ID = 1;
+    private const DEFAULT_CATEGORY_ID = 1;
 
     /**
      * see https://developers.google.com/youtube/v3/guides/uploading_a_video
      *
      * 1024 * 1024 (1 megabyte)
      */
-    const CHUNK_SIZE_BYTES = 1048576;
+    private const CHUNK_SIZE_BYTES = 1048576;
 
     /* @var ContainerInterface $container */
     private $container;
@@ -175,6 +174,39 @@ class YoutubeManager
         return [
             'status' => $status,
             'error'  => $error,
+        ];
+    }
+
+    /*
+     * Quota cost depends on $part: https://developers.google.com/youtube/v3/docs/playlists/list#part
+     */
+    public function getVideosInfo(array $ids, string $part = 'id')
+    {
+        $error = false;
+        $data  = [];
+
+        try {
+            $youtube = new \Google_Service_YouTube($this->client);
+
+            $ids = array_column($ids, self::YOUTUBE_ID_COLUMN_ALIAS);
+            foreach (array_chunk($ids, self::VIDEOS_LIST_MAX_RESULT) as $idsArray) {
+                $idsString = implode(',', $idsArray);
+                $response  = $youtube->videos->listVideos($part, [
+                    'id' => $idsString,
+                ]);
+
+                foreach ($response->getItems() as $item) {
+                    $data[$item->getId()] = $item->getStatus()->getUploadStatus();
+                }
+            }
+        } catch (\Exception $e) {
+            $this->logger->error($e->getMessage());
+            $error = $e->getMessage();
+        }
+
+        return [
+            'data'  => $data,
+            'error' => $error,
         ];
     }
 
