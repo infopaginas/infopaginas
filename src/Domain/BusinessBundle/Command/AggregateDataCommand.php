@@ -4,6 +4,7 @@ namespace Domain\BusinessBundle\Command;
 
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\ReportBundle\Model\BusinessOverviewModel;
+use Domain\SiteBundle\Logger\CronLogger;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputInterface;
@@ -32,14 +33,14 @@ class AggregateDataCommand extends ContainerAwareCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $logger = $this->getContainer()->get('domain_site.cron.logger');
-        $logger->addInfo($logger::AGGREGATE_DATA_COMMAND, $logger::STATUS_START, 'execute:start');
+        $logger->addInfo(CronLogger::AGGREGATE_DATA_COMMAND, CronLogger::STATUS_START, CronLogger::MESSAGE_START);
 
         $amountOfUpdatedBusiness = $this->updateBusinessProfilesData($output);
 
         $logger->addInfo(
-            $logger::AGGREGATE_DATA_COMMAND,
-            $logger::STATUS_END . ' updated:' . $amountOfUpdatedBusiness,
-            'execute:stop'
+            CronLogger::AGGREGATE_DATA_COMMAND,
+            CronLogger::STATUS_END . ' updated:' . $amountOfUpdatedBusiness,
+            CronLogger::MESSAGE_STOP
         );
     }
 

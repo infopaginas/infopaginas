@@ -3,6 +3,7 @@
 namespace Domain\ReportBundle\Command;
 
 use Domain\ReportBundle\Util\DatesUtil;
+use Domain\SiteBundle\Logger\CronLogger;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -34,7 +35,7 @@ class ReportCleanUpDataCommand extends ContainerAwareCommand
     {
         $container = $this->getContainer();
         $logger = $container->get('domain_site.cron.logger');
-        $logger->addInfo($logger::MONGO_ARCHIVE, $logger::STATUS_START, 'execute:start');
+        $logger->addInfo(CronLogger::MONGO_ARCHIVE, CronLogger::STATUS_START, CronLogger::MESSAGE_START);
 
         $rawDataArchivingDate = $this->getRawDataDeletionDate();
 
@@ -42,18 +43,18 @@ class ReportCleanUpDataCommand extends ContainerAwareCommand
 
         $output->writeln('Process overview report');
         $this->getBusinessReportManager()->deleteArchivedRawBusinessInteractions($rawDataArchivingDate);
-        $logger->addInfo($logger::MONGO_ARCHIVE, $logger::STATUS_IN_PROGRESS, 'execute:Process overview report');
+        $logger->addInfo(CronLogger::MONGO_ARCHIVE, CronLogger::STATUS_IN_PROGRESS, 'execute:Process overview report');
 
         $output->writeln('Process keyword report');
         $this->getKeywordReportManager()->deleteArchivedRawKeywordData($rawDataArchivingDate);
-        $logger->addInfo($logger::MONGO_ARCHIVE, $logger::STATUS_IN_PROGRESS, 'execute:Process keyword report');
+        $logger->addInfo(CronLogger::MONGO_ARCHIVE, CronLogger::STATUS_IN_PROGRESS, 'execute:Process keyword report');
 
         $output->writeln('Process category report');
         $this->getCategoryReportManager()->deleteArchivedRawCategoryData($rawDataArchivingDate);
-        $logger->addInfo($logger::MONGO_ARCHIVE, $logger::STATUS_IN_PROGRESS, 'execute:Process category report');
+        $logger->addInfo(CronLogger::MONGO_ARCHIVE, CronLogger::STATUS_IN_PROGRESS, 'execute:Process category report');
 
         $output->writeln('done');
-        $logger->addInfo($logger::MONGO_ARCHIVE, $logger::STATUS_END, 'execute:stop');
+        $logger->addInfo(CronLogger::MONGO_ARCHIVE, CronLogger::STATUS_END, CronLogger::MESSAGE_STOP);
     }
 
     /**

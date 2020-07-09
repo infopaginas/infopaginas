@@ -2,6 +2,7 @@
 
 namespace Domain\BusinessBundle\Command;
 
+use Domain\SiteBundle\Logger\CronLogger;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -29,7 +30,7 @@ class PeriodStatusCommand extends ContainerAwareCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $logger = $this->getContainer()->get('domain_site.cron.logger');
-        $logger->addInfo($logger::BUSINESS_UPDATE_STATUS, $logger::STATUS_START, 'execute:start');
+        $logger->addInfo(CronLogger::BUSINESS_UPDATE_STATUS, CronLogger::STATUS_START, CronLogger::MESSAGE_START);
 
         $datetimePeriodService = $this->getContainer()->get('domain_business.service.datetime_period_status_service');
 
@@ -45,6 +46,6 @@ class PeriodStatusCommand extends ContainerAwareCommand
         $result = $datetimePeriodService->updateActiveSubscriptions();
         $output->writeln(sprintf('Done! Updated records count: %s', $result));
 
-        $logger->addInfo($logger::BUSINESS_UPDATE_STATUS, $logger::STATUS_END, 'execute:stop');
+        $logger->addInfo(CronLogger::BUSINESS_UPDATE_STATUS, CronLogger::STATUS_END, CronLogger::MESSAGE_STOP);
     }
 }
