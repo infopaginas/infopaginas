@@ -7,6 +7,7 @@ use Domain\ReportBundle\Manager\CategoryOverviewReportManager;
 use Domain\ReportBundle\Manager\KeywordsReportManager;
 use Domain\ReportBundle\Model\DataType\ReportDatesRangeVO;
 use Domain\ReportBundle\Util\DatesUtil;
+use Domain\SiteBundle\Logger\CronLogger;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputDefinition;
@@ -52,7 +53,7 @@ class ReportAggregationCommand extends ContainerAwareCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $logger = $this->getContainer()->get('domain_site.cron.logger');
-        $logger->addInfo($logger::MONGO_AGGREGATE, $logger::STATUS_START, 'execute:start');
+        $logger->addInfo(CronLogger::MONGO_AGGREGATE, CronLogger::STATUS_START, CronLogger::MESSAGE_START);
 
         $period = $this->getAggregationPeriod($input);
 
@@ -60,22 +61,22 @@ class ReportAggregationCommand extends ContainerAwareCommand
 
         $output->writeln('Process overview report');
         $this->getBusinessOverviewReportManager()->aggregateBusinessInteractions($period);
-        $logger->addInfo($logger::MONGO_AGGREGATE, $logger::STATUS_IN_PROGRESS, 'execute:Process overview report');
+        $logger->addInfo(CronLogger::MONGO_AGGREGATE, CronLogger::STATUS_IN_PROGRESS, 'execute:Process overview report');
 
         $output->writeln('Process keyword report');
         $this->getKeywordsReportManager()->aggregateBusinessKeywords($period);
-        $logger->addInfo($logger::MONGO_AGGREGATE, $logger::STATUS_IN_PROGRESS, 'execute:Process keyword report');
+        $logger->addInfo(CronLogger::MONGO_AGGREGATE, CronLogger::STATUS_IN_PROGRESS, 'execute:Process keyword report');
 
         $output->writeln('Process category overview report');
         $this->getCategoryOverviewReportReportManager()->aggregateCategoriesInteractions($period);
         $logger->addInfo(
-            $logger::MONGO_AGGREGATE,
-            $logger::STATUS_IN_PROGRESS,
+            CronLogger::MONGO_AGGREGATE,
+            CronLogger::STATUS_IN_PROGRESS,
             'execute:Process category overview report'
         );
 
         $output->writeln('done');
-        $logger->addInfo($logger::MONGO_AGGREGATE, $logger::STATUS_END, 'execute:stop');
+        $logger->addInfo(CronLogger::MONGO_AGGREGATE, CronLogger::STATUS_END, CronLogger::MESSAGE_STOP);
     }
 
     /**

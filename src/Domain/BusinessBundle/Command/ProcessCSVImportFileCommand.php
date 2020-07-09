@@ -2,6 +2,7 @@
 
 namespace Domain\BusinessBundle\Command;
 
+use Domain\SiteBundle\Logger\CronLogger;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -37,7 +38,7 @@ class ProcessCSVImportFileCommand extends ContainerAwareCommand
 
         $container = $this->getContainer();
         $logger = $container->get('domain_site.cron.logger');
-        $logger->addInfo($logger::POSTPONE_EXPORT, $logger::STATUS_START, 'execute:start');
+        $logger->addInfo(CronLogger::POSTPONE_EXPORT, CronLogger::STATUS_START, CronLogger::MESSAGE_START);
 
         $output->writeln('Start...');
 
@@ -46,7 +47,7 @@ class ProcessCSVImportFileCommand extends ContainerAwareCommand
 
         $output->writeln('done');
 
-        $logger->addInfo($logger::POSTPONE_EXPORT, $logger::STATUS_END, 'execute:stop');
+        $logger->addInfo(CronLogger::POSTPONE_EXPORT, CronLogger::STATUS_END, CronLogger::MESSAGE_STOP);
 
         $lockHandler->release();
     }

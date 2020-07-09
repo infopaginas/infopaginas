@@ -2,6 +2,7 @@
 
 namespace Domain\BusinessBundle\Command;
 
+use Domain\SiteBundle\Logger\CronLogger;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -29,7 +30,7 @@ class ManagedBusinessesCounterCommand extends ContainerAwareCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $logger = $this->getContainer()->get('domain_site.cron.logger');
-        $logger->addInfo($logger::BUSINESS_COUNTER, $logger::STATUS_START, 'execute:start');
+        $logger->addInfo(CronLogger::BUSINESS_COUNTER, CronLogger::STATUS_START, CronLogger::MESSAGE_START);
 
         $businessProfileManager = $this->getContainer()->get('domain_business.manager.business_profile');
 
@@ -37,6 +38,6 @@ class ManagedBusinessesCounterCommand extends ContainerAwareCommand
         $result = $businessProfileManager->updatedManagedBusinessesCounter();
         $output->writeln(sprintf('Done! Updated records count: %s', $result));
 
-        $logger->addInfo($logger::BUSINESS_COUNTER, $logger::STATUS_END, 'execute:stop');
+        $logger->addInfo(CronLogger::BUSINESS_COUNTER, CronLogger::STATUS_END, CronLogger::MESSAGE_STOP);
     }
 }

@@ -24,20 +24,19 @@ class VideoMedia implements PostponeRemoveInterface, ChangeStateInterface
     use PostponeRemoveTrait;
     use ChangeStateTrait;
 
-    const YOUTUBE_ACTION_ADD     = 'YOUTUBE_ACTION_ADD';
-    const YOUTUBE_ACTION_UPDATE  = 'YOUTUBE_ACTION_UPDATE';
-    const YOUTUBE_ACTION_REMOVE  = 'YOUTUBE_ACTION_REMOVE';
-    const YOUTUBE_ACTION_PENDING = 'YOUTUBE_ACTION_PENDING';
-    const YOUTUBE_ACTION_ERROR   = 'YOUTUBE_ACTION_ERROR';
+    public const YOUTUBE_ACTION_ADD     = 'YOUTUBE_ACTION_ADD';
+    public const YOUTUBE_ACTION_UPDATE  = 'YOUTUBE_ACTION_UPDATE';
+    public const YOUTUBE_ACTION_REMOVE  = 'YOUTUBE_ACTION_REMOVE';
+    public const YOUTUBE_ACTION_ERROR   = 'YOUTUBE_ACTION_ERROR';
 
-    const VIDEO_TITLE_MAX_LENGTH      = 255;
-    const VIDEO_TITLE_MAX_DESCRIPTION = 255;
+    public const VIDEO_TITLE_MAX_LENGTH      = 255;
+    public const VIDEO_TITLE_MAX_DESCRIPTION = 255;
 
-    const VIDEO_STATUS_PENDING = 'pending';
-    const VIDEO_STATUS_ACTIVE  = 'active';
-    const VIDEO_STATUS_ERROR   = 'error';
+    public const VIDEO_STATUS_PENDING = 'pending';
+    public const VIDEO_STATUS_ACTIVE  = 'active';
+    public const VIDEO_STATUS_ERROR   = 'error';
 
-    const VIDEO_TYPE_MP4 = 'video/mp4';
+    public const INVALID_YOUTUBE_ID_STATUS = 'invalid_id';
 
     /**
      * @var int
@@ -167,6 +166,13 @@ class VideoMedia implements PostponeRemoveInterface, ChangeStateInterface
      * @ORM\JoinColumn(name="poster_id", referencedColumnName="id", nullable=true)
      */
     protected $poster;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(type="string", length=32, nullable=true)
+     */
+    protected $uploadStatus;
 
     public function __construct(array $videoMediaData = [])
     {
@@ -643,5 +649,16 @@ class VideoMedia implements PostponeRemoveInterface, ChangeStateInterface
         }
 
         return $title;
+    }
+
+    public function getUploadStatus()
+    {
+        return $this->uploadStatus;
+    }
+
+    public function setUploadStatus($uploadStatus)
+    {
+        $this->uploadStatus = $uploadStatus;
+        return $this;
     }
 }

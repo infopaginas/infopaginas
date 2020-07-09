@@ -3,6 +3,7 @@
 namespace Domain\SiteBundle\Command;
 
 use Doctrine\ORM\EntityManager;
+use Domain\SiteBundle\Logger\CronLogger;
 use Domain\SiteBundle\Mailer\Mailer;
 use Oxa\Sonata\UserBundle\Entity\User;
 use Oxa\VideoBundle\Entity\VideoMedia;
@@ -52,7 +53,7 @@ class UploadYoutubeVideoCommand extends ContainerAwareCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $logger = $this->getContainer()->get('domain_site.cron.logger');
-        $logger->addInfo($logger::YOUTUBE_UPLOAD, $logger::STATUS_START, 'execute:start');
+        $logger->addInfo(CronLogger::YOUTUBE_UPLOAD, CronLogger::STATUS_START, CronLogger::MESSAGE_START);
 
         $this->youtubeVideoManager = $this->getContainer()->get('oxa.manager.video.youtube');
         $this->mailer              = $this->getContainer()->get('domain_site.mailer');
@@ -91,7 +92,7 @@ class UploadYoutubeVideoCommand extends ContainerAwareCommand
             $this->mailer->sendYoutubeTokenErrorEmailMessage($currentError, $admins);
         }
 
-        $logger->addInfo($logger::YOUTUBE_UPLOAD, $logger::STATUS_END, 'execute:stop');
+        $logger->addInfo(CronLogger::YOUTUBE_UPLOAD, CronLogger::STATUS_END, CronLogger::MESSAGE_STOP);
     }
 
     /**
