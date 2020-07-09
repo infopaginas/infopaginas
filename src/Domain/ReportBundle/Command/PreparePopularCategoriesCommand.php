@@ -3,6 +3,7 @@
 namespace Domain\ReportBundle\Command;
 
 use Domain\ReportBundle\Manager\CategoryOverviewReportManager;
+use Domain\SiteBundle\Logger\CronLogger;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputDefinition;
@@ -31,7 +32,7 @@ class PreparePopularCategoriesCommand extends ContainerAwareCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $logger = $this->getContainer()->get('domain_site.cron.logger');
-        $logger->addInfo($logger::MONGO_POPULAR_CATEGORIES, $logger::STATUS_START, 'execute:start');
+        $logger->addInfo(CronLogger::MONGO_POPULAR_CATEGORIES, CronLogger::STATUS_START, CronLogger::MESSAGE_START);
 
         $output->writeln('Start aggregation...');
 
@@ -40,13 +41,13 @@ class PreparePopularCategoriesCommand extends ContainerAwareCommand
         $this->getCategoryOverviewReportManager()->updatePopularCategories();
 
         $logger->addInfo(
-            $logger::MONGO_POPULAR_CATEGORIES,
-            $logger::STATUS_IN_PROGRESS,
+            CronLogger::MONGO_POPULAR_CATEGORIES,
+            CronLogger::STATUS_IN_PROGRESS,
             'execute:Process popular category'
         );
 
         $output->writeln('done');
-        $logger->addInfo($logger::MONGO_POPULAR_CATEGORIES, $logger::STATUS_END, 'execute:stop');
+        $logger->addInfo(CronLogger::MONGO_POPULAR_CATEGORIES, CronLogger::STATUS_END, CronLogger::MESSAGE_STOP);
     }
 
     /**

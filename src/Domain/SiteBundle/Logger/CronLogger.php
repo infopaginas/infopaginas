@@ -7,38 +7,43 @@ use Oxa\MongoDbBundle\Manager\MongoDbManager;
 
 class CronLogger
 {
-    const MONGO_DB_COLLECTION_NAME   = 'cron_log';
+    public const MONGO_DB_COLLECTION_NAME   = 'cron_log';
 
-    const MONGO_DB_FIELD_ACTION      = 'action';
-    const MONGO_DB_FIELD_STATUS      = 'status';
-    const MONGO_DB_FIELD_MESSAGE     = 'message';
-    const MONGO_DB_FIELD_LEVEL       = 'level';
-    const MONGO_DB_FIELD_PROCESS_ID  = 'process_id';
-    const MONGO_DB_FIELD_CPU_USAGE   = 'cpu_usage';
-    const MONGO_DB_FIELD_DATE_TIME   = 'datetime';
+    public const MONGO_DB_FIELD_ACTION      = 'action';
+    public const MONGO_DB_FIELD_STATUS      = 'status';
+    public const MONGO_DB_FIELD_MESSAGE     = 'message';
+    public const MONGO_DB_FIELD_LEVEL       = 'level';
+    public const MONGO_DB_FIELD_PROCESS_ID  = 'process_id';
+    public const MONGO_DB_FIELD_CPU_USAGE   = 'cpu_usage';
+    public const MONGO_DB_FIELD_DATE_TIME   = 'datetime';
 
-    const ELASTIC_SYNC              = 'data:elastic:sync';
-    const YOUTUBE_UPLOAD            = 'data:youtube-video:upload';
-    const WORKING_HOURS_CONVERT     = 'data:working-hours:convert';
-    const WORKING_HOURS_UPDATE      = 'data:working-hours:update';
-    const DOUBLE_CLICK_SYNC         = 'ipgn:dfp:synch';
-    const BUSINESS_UPDATE_STATUS    = 'domain:business:update-status';
-    const SUBSCRIPTION_TRACK        = 'ipgn:subscriptions:track';
-    const CATALOG_ITEM_UPDATE       = 'domain:business:catalog-item-update';
-    const AGGREGATE_DATA_COMMAND    = 'domain:business:aggregate-data';
-    const ARTICLE_UPDATE            = 'domain:article:update';
-    const MONGO_AGGREGATE           = 'domain:report-mongo-db:aggregate';
-    const MONGO_POPULAR_CATEGORIES  = 'domain:popular-category:update';
-    const MONGO_ARCHIVE_RAW         = 'domain:report-mongo-db:archive-raw';
-    const MONGO_ARCHIVE_AGGREGATE   = 'domain:report-mongo-db:archive-aggregate';
-    const POSTPONE_EXPORT           = 'domain:postpone-export:report';
-    const BUSINESS_COUNTER          = 'domain:managed-businesses:counter';
-    const POSTPONE_REMOVE           = 'data:postpone:remove';
-    const VIDEO_CONVERT             = 'data:video:convert';
+    public const ELASTIC_SYNC               = 'data:elastic:sync';
+    public const YOUTUBE_UPLOAD             = 'data:youtube-video:upload';
+    public const WORKING_HOURS_CONVERT      = 'data:working-hours:convert';
+    public const WORKING_HOURS_UPDATE       = 'data:working-hours:update';
+    public const DOUBLE_CLICK_SYNC          = 'ipgn:dfp:synch';
+    public const BUSINESS_UPDATE_STATUS     = 'domain:business:update-status';
+    public const SUBSCRIPTION_TRACK         = 'ipgn:subscriptions:track';
+    public const CATALOG_ITEM_UPDATE        = 'domain:business:catalog-item-update';
+    public const AGGREGATE_DATA_COMMAND     = 'domain:business:aggregate-data';
+    public const ARTICLE_UPDATE             = 'domain:article:update';
+    public const MONGO_AGGREGATE            = 'domain:report-mongo-db:aggregate';
+    public const MONGO_POPULAR_CATEGORIES   = 'domain:popular-category:update';
+    public const MONGO_ARCHIVE_RAW          = 'domain:report-mongo-db:archive-raw';
+    public const MONGO_ARCHIVE_AGGREGATE    = 'domain:report-mongo-db:archive-aggregate';
+    public const POSTPONE_EXPORT            = 'domain:postpone-export:report';
+    public const BUSINESS_COUNTER           = 'domain:managed-businesses:counter';
+    public const POSTPONE_REMOVE            = 'data:postpone:remove';
+    public const VIDEO_CONVERT              = 'data:video:convert';
+    public const YOUTUBE_VIDEO_DATA_REFRESH = 'data:youtube-video:refresh';
 
-    const STATUS_START          = 'START';
-    const STATUS_IN_PROGRESS    = 'IN PROGRESS';
-    const STATUS_END            = 'DONE';
+    public const STATUS_START          = 'START';
+    public const STATUS_IN_PROGRESS    = 'IN PROGRESS';
+    public const STATUS_END            = 'DONE';
+
+    // todo: replace
+    public const MESSAGE_START = 'execute:start';
+    public const MESSAGE_STOP  = 'execute:stop';
 
     /** @var MongoDbManager $mongoDbManager */
     protected $mongoDbManager;

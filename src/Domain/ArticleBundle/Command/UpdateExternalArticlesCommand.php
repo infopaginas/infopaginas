@@ -3,6 +3,7 @@
 namespace Domain\ArticleBundle\Command;
 
 use Domain\ArticleBundle\Model\Manager\ArticleApiManager;
+use Domain\SiteBundle\Logger\CronLogger;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -35,7 +36,7 @@ class UpdateExternalArticlesCommand extends ContainerAwareCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $logger = $this->getContainer()->get('domain_site.cron.logger');
-        $logger->addInfo($logger::ARTICLE_UPDATE, $logger::STATUS_START, 'execute:start');
+        $logger->addInfo(CronLogger::ARTICLE_UPDATE, CronLogger::STATUS_START, CronLogger::MESSAGE_START);
 
         $articleApiManager = $this->getContainer()->get('domain_article.manager.api');
 
@@ -54,6 +55,6 @@ class UpdateExternalArticlesCommand extends ContainerAwareCommand
         $output->writeln('Processing...');
         $articleApiManager->updateExternalArticles($pageStart, $updateAll);
         $output->writeln('Done');
-        $logger->addInfo($logger::ARTICLE_UPDATE, $logger::STATUS_END, 'execute:stop');
+        $logger->addInfo(CronLogger::ARTICLE_UPDATE, CronLogger::STATUS_END, CronLogger::MESSAGE_STOP);
     }
 }

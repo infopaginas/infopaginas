@@ -3,6 +3,7 @@
 namespace Domain\ReportBundle\Command;
 
 use Domain\ReportBundle\Manager\SubscriptionReportManager;
+use Domain\SiteBundle\Logger\CronLogger;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -29,13 +30,13 @@ class SubscriptionsTrackerCommand extends ContainerAwareCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $logger = $this->getContainer()->get('domain_site.cron.logger');
-        $logger->addInfo($logger::SUBSCRIPTION_TRACK, $logger::STATUS_START, 'execute:start');
+        $logger->addInfo(CronLogger::SUBSCRIPTION_TRACK, CronLogger::STATUS_START, CronLogger::MESSAGE_START);
 
         $output->writeln('Start stats calculation...');
         $this->getSubscriptionReportManager()->saveSubscriptionStats();
         $output->writeln('..done!');
 
-        $logger->addInfo($logger::SUBSCRIPTION_TRACK, $logger::STATUS_END, 'execute:stop');
+        $logger->addInfo(CronLogger::SUBSCRIPTION_TRACK, CronLogger::STATUS_END, CronLogger::MESSAGE_STOP);
     }
 
     /**

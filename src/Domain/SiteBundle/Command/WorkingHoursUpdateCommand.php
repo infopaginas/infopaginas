@@ -4,6 +4,7 @@ namespace Domain\SiteBundle\Command;
 
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Model\DayOfWeekModel;
+use Domain\SiteBundle\Logger\CronLogger;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputDefinition;
@@ -30,14 +31,14 @@ class WorkingHoursUpdateCommand extends ContainerAwareCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $logger = $this->getContainer()->get('domain_site.cron.logger');
-        $logger->addInfo($logger::WORKING_HOURS_UPDATE, $logger::STATUS_START, 'execute:start');
+        $logger->addInfo(CronLogger::WORKING_HOURS_UPDATE, CronLogger::STATUS_START, CronLogger::MESSAGE_START);
 
         $this->em = $this->getContainer()->get('doctrine.orm.entity_manager');
 
         $this->updateWorkingHours();
 
         $this->em->flush();
-        $logger->addInfo($logger::WORKING_HOURS_UPDATE, $logger::STATUS_END, 'execute:stop');
+        $logger->addInfo(CronLogger::WORKING_HOURS_UPDATE, CronLogger::STATUS_END, CronLogger::MESSAGE_STOP);
     }
 
     protected function updateWorkingHours()

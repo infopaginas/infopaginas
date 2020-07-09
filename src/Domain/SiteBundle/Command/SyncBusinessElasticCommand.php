@@ -14,7 +14,7 @@ use Symfony\Component\Filesystem\LockHandler;
 
 class SyncBusinessElasticCommand extends ContainerAwareCommand
 {
-    const ELASTIC_SYNC_LOCK = 'ELASTIC_SYNC.lock';
+    private const ELASTIC_SYNC_LOCK = 'ELASTIC_SYNC.lock';
 
     /**
      * @var OutputInterface $output
@@ -25,8 +25,6 @@ class SyncBusinessElasticCommand extends ContainerAwareCommand
      * @var EntityManager $em
      */
     protected $em;
-
-    protected $withDebug;
 
     protected function configure()
     {
@@ -42,12 +40,12 @@ class SyncBusinessElasticCommand extends ContainerAwareCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $logger = $this->getContainer()->get('domain_site.cron.logger');
-        $logger->addInfo($logger::ELASTIC_SYNC, $logger::STATUS_START, 'execute:start');
+        $logger->addInfo(CronLogger::ELASTIC_SYNC, CronLogger::STATUS_START, CronLogger::MESSAGE_START);
 
         $lockHandler = new LockHandler(self::ELASTIC_SYNC_LOCK);
 
         if (!$lockHandler->lock()) {
-            $logger->addInfo($logger::ELASTIC_SYNC, $logger::STATUS_END, 'execute:stop');
+            $logger->addInfo(CronLogger::ELASTIC_SYNC, CronLogger::STATUS_END, CronLogger::MESSAGE_STOP);
 
             return $output->writeln('Command is locked by another process');
         }
@@ -79,6 +77,6 @@ class SyncBusinessElasticCommand extends ContainerAwareCommand
         }
 
         $lockHandler->release();
-        $logger->addInfo($logger::ELASTIC_SYNC, $logger::STATUS_END, 'execute:stop');
+        $logger->addInfo(CronLogger::ELASTIC_SYNC, CronLogger::STATUS_END, CronLogger::MESSAGE_STOP);
     }
 }
