@@ -206,6 +206,7 @@ class ElasticSearchManager
                             'digit',
                             'punctuation',
                             'symbol',
+                            'whitespace',
                         ],
                     ],
                     'phone_ngram_tokenizer' => [
