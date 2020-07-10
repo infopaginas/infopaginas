@@ -192,6 +192,21 @@
                                         </div><!-- highlights__item -->
                                     {% endif %}
                                 {% endfor %}
+
+                                {% if businessProfile.subscriptionPlanCode == SUBSCRIPTION.CODE.FREE and businessProfile.amazonAffiliateUrl and businessProfile.amazonAffiliateUrl.url %}
+                                    <div class="highlights__item">
+                                        <div class="affiliate-url">
+                                            <a
+                                                    data-href="{{ businessProfile.amazonAffiliateUrl.url }}"
+                                                    class="redirect-event"
+                                                    data-id="{{ businessProfile.id }}"
+                                                    data-type="amazonAffiliateLink"
+                                                    title="{% trans with {'%category%': businessProfile.amazonAffiliateUrlCategory.name} %}Click here to see this popular %category% product{% endtrans %}"
+                                                    rel="{{ relAttributes(businessProfile.amazonAffiliateUrl) }}"
+                                            >{% trans with {'%category%': businessProfile.amazonAffiliateUrlCategory.name} %}Click here to see this popular %category% product{% endtrans %}</a>
+                                        </div>
+                                    </div>
+                                {% endif %}
                             </div><!-- container -->
                         </section>
 
@@ -352,23 +367,6 @@
                         {% endif %}
 
                         {% include ':redesign/blocks/banners:static-page-bottom.html.twig' with { 'bannerType': BANNER_CODE.BUSINESS_PAGE_BOTTOM } %}
-
-                        {% if businessProfile.subscriptionPlanCode == SUBSCRIPTION.CODE.FREE and businessProfile.amazonAffiliateUrl and businessProfile.amazonAffiliateUrl.url %}
-                            <section class="page-section description-section">
-                                <div class="container">
-                                    <div class="affiliate-url">
-                                        <a
-                                                data-href="{{ businessProfile.amazonAffiliateUrl.url }}"
-                                                class="redirect-event"
-                                                data-id="{{ businessProfile.id }}"
-                                                data-type="amazonAffiliateLink"
-                                                title="{% trans with {'%category%': businessProfile.amazonAffiliateUrlCategory.name} %}Click here to see this popular %category% product{% endtrans %}"
-                                                rel="{{ relAttributes(businessProfile.amazonAffiliateUrl) }}"
-                                        >{% trans with {'%category%': businessProfile.amazonAffiliateUrlCategory.name} %}Click here to see this popular %category% product{% endtrans %}</a>
-                                    </div>
-                                </div>
-                            </section>
-                        {% endif %}
 
                         {% if businessProfile.subscriptionPlanCode >= SUBSCRIPTION.CODE.PREMIUM_PLATINUM %}
                             <div class="ratings"></div>

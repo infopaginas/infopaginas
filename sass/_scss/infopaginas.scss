@@ -2499,12 +2499,18 @@ $thumb-width-mb: 60px;
 }
 
 .affiliate-url {
-  margin: 40px auto;
-  font-size: 18px;
+  margin: 18px auto;
   font-weight: bold;
-  display: flex;
-  justify-content: center;
   cursor: pointer;
+
+  a {
+    color: #1e4b82;
+
+
+    &:hover {
+      color: #f0ba00;
+    }
+  }
 }
 
 .highlights-section {
