@@ -27,7 +27,6 @@ use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
 use Oxa\ConfigBundle\Model\ConfigInterface;
 use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
 use Oxa\Sonata\AdminBundle\Filter\BusinessProfileIdStringFilter;
-use Oxa\Sonata\AdminBundle\Filter\CaseInsensitiveBusinessNameStringFilter;
 use Oxa\Sonata\AdminBundle\Filter\CaseInsensitiveStringFilter;
 use Oxa\Sonata\AdminBundle\Filter\DateTimeRangeFilter;
 use Oxa\Sonata\AdminBundle\Form\Type\ModelAutocompleteType;
@@ -271,7 +270,7 @@ class BusinessProfileAdmin extends OxaAdmin
     {
         $datagridMapper
             ->add('id', BusinessProfileIdStringFilter::class)
-            ->add('name', CaseInsensitiveBusinessNameStringFilter::class, [
+            ->add('name', CaseInsensitiveStringFilter::class, [
                 'show_filter' => true,
             ])
             ->add('city')
