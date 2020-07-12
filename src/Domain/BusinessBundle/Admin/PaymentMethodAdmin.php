@@ -4,6 +4,7 @@ namespace Domain\BusinessBundle\Admin;
 
 use Domain\BusinessBundle\Entity\PaymentMethod;
 use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
+use Oxa\Sonata\AdminBundle\Filter\CaseInsensitiveStringFilter;
 use Oxa\Sonata\MediaBundle\Entity\Media;
 use Oxa\Sonata\MediaBundle\Model\OxaMediaInterface;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
@@ -21,7 +22,7 @@ class PaymentMethodAdmin extends OxaAdmin
     protected function configureDatagridFilters(DatagridMapper $datagridMapper)
     {
         $datagridMapper
-            ->add('name', null, [
+            ->add('name', CaseInsensitiveStringFilter::class, [
                 'show_filter' => true,
             ])
         ;

@@ -7,6 +7,7 @@ use Domain\BusinessBundle\Entity\Locality;
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\SearchBundle\Util\CacheUtil;
 use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
+use Oxa\Sonata\AdminBundle\Filter\CaseInsensitiveStringFilter;
 use Oxa\Sonata\AdminBundle\Filter\DateTimeRangeFilter;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
@@ -29,7 +30,7 @@ class LocalityAdmin extends OxaAdmin
     {
         $datagridMapper
             ->add('id')
-            ->add('name', null, [
+            ->add('name', CaseInsensitiveStringFilter::class, [
                 'show_filter' => true,
             ])
             ->add('area')
