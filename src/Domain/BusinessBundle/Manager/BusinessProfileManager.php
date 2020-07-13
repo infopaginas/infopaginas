@@ -3299,9 +3299,10 @@ class BusinessProfileManager extends Manager
                 'analyzer' => 'autocomplete',
                 'search_analyzer' => 'autocomplete_search',
                 'fields' => [
-                    'folded'            => [
-                        'type'     => 'text',
-                        'analyzer' => 'folding',
+                    'folded' => [
+                        'type'            => 'text',
+                        'analyzer'        => 'folding',
+                        'search_analyzer' => 'folding',
                     ],
                     'single_characters' => [
                         'type'            => 'text',
