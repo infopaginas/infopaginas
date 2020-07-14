@@ -3302,7 +3302,7 @@ class BusinessProfileManager extends Manager
                     'folded' => [
                         'type'            => 'text',
                         'analyzer'        => 'folding',
-                        'search_analyzer' => 'folding',
+                        'search_analyzer' => 'autocomplete_search',
                     ],
                     'single_characters' => [
                         'type'            => 'text',
