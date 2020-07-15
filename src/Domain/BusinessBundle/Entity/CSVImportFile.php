@@ -34,6 +34,7 @@ class CSVImportFile implements DefaultEntityInterface, FileUploadEntityInterface
     public const BUSINESS_PROFILE_PHONE_MAIN = 'phone_main';
     public const BUSINESS_PROFILE_PHONE_SECONDARY = 'phone_secondary';
     public const BUSINESS_PROFILE_PHONE_FAX = 'phone_fax';
+    public const BUSINESS_PROFILE_CATEGORIES = 'categories';
 
     /**
      * @var int
@@ -303,6 +304,7 @@ class CSVImportFile implements DefaultEntityInterface, FileUploadEntityInterface
             BusinessProfile::BUSINESS_PROFILE_FIELD_LATITUDE => 'business_profile.fields.latitude',
             BusinessProfile::BUSINESS_PROFILE_FIELD_LONGITUDE => 'business_profile.fields.longitude',
             BusinessProfile::BUSINESS_PROFILE_FIELD_DC_ORDER_ID => 'business_profile.fields.dcOrderId',
+            BusinessProfile::BUSINESS_PROFILE_RELATION_CATEGORIES => 'business_profile.fields.category',
 
             BusinessProfile::BUSINESS_PROFILE_FIELD_WEBSITE_TYPE => 'business_profile.fields.website',
             BusinessProfile::BUSINESS_PROFILE_FIELD_ACTION_URL_TYPE => 'business_profile.fields.actionURL',

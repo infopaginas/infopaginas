@@ -5,6 +5,7 @@ namespace Domain\BusinessBundle\Manager;
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\Category;
 use Domain\BusinessBundle\Entity\Locality;
+use Domain\BusinessBundle\Util\CategoryUtil;
 use Domain\BusinessBundle\Util\SlugUtil;
 use Domain\SearchBundle\Util\SearchDataUtil;
 use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
@@ -47,6 +48,20 @@ class CategoryManager extends Manager
         $customSlug = SlugUtil::convertSlug($categorySlug);
 
         $category = $this->getRepository()->getCategoryBySlug($categorySlug, $customSlug);
+
+        return $category;
+    }
+
+    /**
+     * @param string $categoryName
+     *
+     * @return Category|null
+     */
+    public function getCategoryByName($categoryName)
+    {
+        $categoryName = CategoryUtil::getSingleCategoryName($categoryName);
+
+        $category = $this->getRepository()->getCategoryByCaseInsensitiveName($categoryName);
 
         return $category;
     }

@@ -94,6 +94,13 @@ class CSVImportFileManager extends FileUploadManager
                         }
                     }
 
+                    if (array_key_exists(CSVImportFile::BUSINESS_PROFILE_CATEGORIES, $entry)) {
+                        $this->setCategory(
+                            $businessProfile,
+                            $entry[CSVImportFile::BUSINESS_PROFILE_CATEGORIES]
+                        );
+                    }
+
                     $this->em->persist($businessProfile);
                     $validEntriesCount++;
                 } else {
@@ -208,6 +215,15 @@ class CSVImportFileManager extends FileUploadManager
 
             $accessor = PropertyAccess::createPropertyAccessor();
             $accessor->setValue($businessProfile, $field, $value);
+        }
+    }
+
+    protected function setCategory(BusinessProfile $businessProfile, $categoryName)
+    {
+        $categoryManager = $this->container->get('domain_business.manager.category');
+        $category = $categoryManager->getCategoryByName($categoryName);
+        if ($category) {
+            $businessProfile->addCategory($category);
         }
     }
 
