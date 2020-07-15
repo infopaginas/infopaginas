@@ -2606,13 +2606,8 @@ class BusinessProfileManager extends Manager
     protected function getElasticAutoSuggestBusinessSearchQuery($search, $locale)
     {
         $query = [
-            'multi_match' => [
-                'type' => 'most_fields',
-                'query' => AdminHelper::convertAccentedString($search),
-                'fields' => [
-                    'name.folded',
-                ],
-                'fuzziness' => 'auto',
+            'prefix' => [
+                'name.autosuggest' => AdminHelper::convertAccentedString($search),
             ],
         ];
 
@@ -3302,13 +3297,16 @@ class BusinessProfileManager extends Manager
                     'folded' => [
                         'type'            => 'text',
                         'analyzer'        => 'folding',
-                        'search_analyzer' => 'autocomplete_search',
                     ],
                     'single_characters' => [
                         'type'            => 'text',
                         'analyzer'        => 'single_characters',
                         'search_analyzer' => 'autocomplete_search',
                     ],
+                    'autosuggest' => [
+                        'type'     => 'text',
+                        'analyzer' => 'keyword_analyzer',
+                    ]
                 ],
             ],
             'city' => [
