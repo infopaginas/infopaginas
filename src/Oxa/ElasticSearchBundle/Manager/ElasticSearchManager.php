@@ -177,6 +177,16 @@ class ElasticSearchManager
                         'type' => 'custom',
                         'tokenizer' => 'lowercase',
                     ],
+                    'keyword_analyzer' => [
+                        'filter'      => [
+                            'lowercase',
+                            'asciifolding',
+                            'trim',
+                        ],
+                        'char_filter' => [],
+                        'type'        => 'custom',
+                        'tokenizer'   => 'keyword',
+                    ],
                 ],
                 'tokenizer' => [
                     'autocomplete' => [
