@@ -218,10 +218,11 @@ class CSVImportFileManager extends FileUploadManager
         }
     }
 
-    protected function setCategory(BusinessProfile $businessProfile, $categoryName)
+    protected function setCategory(BusinessProfile $businessProfile, string $categories)
     {
         $categoryManager = $this->container->get('domain_business.manager.category');
-        $category = $categoryManager->getCategoryByName($categoryName);
+        $category        = $categoryManager->getFirstFoundCategory($categories);
+
         if ($category) {
             $businessProfile->addCategory($category);
         }

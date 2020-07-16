@@ -107,19 +107,16 @@ class CategoryRepository extends EntityRepository
     }
 
     /**
-     * @param string $categoryName
+     * @param array $categories
      *
      * @return Category
      */
-    public function getCategoryByCaseInsensitiveName($categoryName)
+    public function getCategoryByCaseInsensitiveName(array $categories)
     {
         $qb = $this->getCategoryQueryBuilder()
-            ->andWhere(sprintf(CaseInsensitiveStringFilter::buildSearchQueryWithReplacedAccents(), 'c', 'searchTextEs', '=', 'category_name'))
-            ->orWhere('lower(c.searchTextEn) = :category_name')
-            ->setParameter(
-                'category_name',
-                AdminHelper::convertAccentedString($categoryName)
-            );
+            ->where(sprintf(CaseInsensitiveStringFilter::buildSearchQueryWithReplacedAccents(), 'c', 'searchTextEs', 'IN (', 'category_name)'))
+            ->orWhere('lower(c.searchTextEn) IN (:category_name)')
+            ->setParameter('category_name', $categories)
         ;
 
         return $qb->getQuery()->getOneOrNullResult();

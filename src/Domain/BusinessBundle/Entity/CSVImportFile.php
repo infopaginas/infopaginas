@@ -31,6 +31,8 @@ class CSVImportFile implements DefaultEntityInterface, FileUploadEntityInterface
     public const DEFAULT_DELIMITER = ',';
     public const DEFAULT_ENCLOSURE = '"';
 
+    public const CATEGORIES_DELIMITERS = [';', '/'];
+
     public const BUSINESS_PROFILE_PHONE_MAIN = 'phone_main';
     public const BUSINESS_PROFILE_PHONE_SECONDARY = 'phone_secondary';
     public const BUSINESS_PROFILE_PHONE_FAX = 'phone_fax';

@@ -2,16 +2,20 @@
 
 namespace Domain\BusinessBundle\Util;
 
+use Domain\BusinessBundle\Entity\CSVImportFile;
 
 class CategoryUtil
 {
-    /**
-     * @param $categoryName
-     * @return string
-     */
-    public static function getSingleCategoryName($categoryName) {
-        $delimiter = strpos($categoryName, '/') === false ? ';' : '/';
+    public static function getCategoriesNamesFromString(string $categories): array
+    {
+        $delimiter = ';';
 
-        return trim(explode($delimiter, $categoryName)[0]);
+        foreach (CSVImportFile::CATEGORIES_DELIMITERS as $d) {
+            if (strpos($categories, $d) !== false) {
+                $delimiter = $d;
+            }
+        }
+
+        return array_map('trim', explode($delimiter, $categories));
     }
 }

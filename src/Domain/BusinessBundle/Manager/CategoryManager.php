@@ -52,18 +52,13 @@ class CategoryManager extends Manager
         return $category;
     }
 
-    /**
-     * @param string $categoryName
-     *
-     * @return Category|null
-     */
-    public function getCategoryByName($categoryName)
+    public function getFirstFoundCategory($categories): ?Category
     {
-        $categoryName = CategoryUtil::getSingleCategoryName($categoryName);
+        $categories = CategoryUtil::getCategoriesNamesFromString($categories);
 
-        $category = $this->getRepository()->getCategoryByCaseInsensitiveName($categoryName);
+        $categories = array_map([AdminHelper::class, 'convertAccentedString'], $categories);
 
-        return $category;
+        return $this->getRepository()->getCategoryByCaseInsensitiveName($categories);
     }
 
     /**
