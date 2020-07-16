@@ -17,7 +17,7 @@ use Symfony\Component\Filesystem\LockHandler;
  */
 class PostponeExportReportCommand extends ContainerAwareCommand
 {
-    const POSTPONE_EXPORT_LOCK = 'POSTPONE_EXPORT.lock';
+    private const POSTPONE_EXPORT_LOCK = 'POSTPONE_EXPORT.lock';
 
     protected function configure()
     {

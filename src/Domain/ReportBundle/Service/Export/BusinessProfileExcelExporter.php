@@ -50,6 +50,7 @@ class BusinessProfileExcelExporter extends ExcelPostponedExporterModel
 
             $this->generateMainTable($item);
             $this->counter++;
+            $this->em->clear();
 
             if ($this->counter >= self::MAX_ROW_PER_FILE) {
                 $this->saveDataToFile($path);

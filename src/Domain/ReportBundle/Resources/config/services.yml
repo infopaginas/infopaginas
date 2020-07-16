@@ -166,6 +166,7 @@ services:
             - [ setPhpExcel, [ '@phpexcel' ]]
             - [ setBusinessProfileManager, [ '@domain_business.manager.business_profile' ]]
             - [ setTranslator, [ '@translator.default' ]]
+            - [ setEntityManager, [ '@doctrine.orm.default_entity_manager']]
 
     domain_report.exporter.user_action_csv_exporter:
         class: Domain\ReportBundle\Service\Export\UserActionCsvExporter
@@ -178,6 +179,7 @@ services:
         calls:
             - [ setBusinessProfileManager, [ '@domain_business.manager.business_profile' ]]
             - [ setTranslator, [ '@translator.default' ]]
+            - [ setEntityManager, [ '@doctrine.orm.default_entity_manager']]
 
     domain_report.exporter.feedback_report_csv_exporter:
         class: Domain\ReportBundle\Service\Export\FeedbackReportCsvExporter
