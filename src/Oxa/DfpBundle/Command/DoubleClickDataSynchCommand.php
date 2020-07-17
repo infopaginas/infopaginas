@@ -2,6 +2,7 @@
 
 namespace Oxa\DfpBundle\Command;
 
+use Domain\SiteBundle\Logger\CronLogger;
 use Oxa\DfpBundle\Manager\DfpManager;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
