@@ -201,9 +201,9 @@
                                                     class="redirect-event"
                                                     data-id="{{ businessProfile.id }}"
                                                     data-type="amazonAffiliateLink"
-                                                    title="{% trans with {'%category%': businessProfile.amazonAffiliateUrlCategory.name} %}Click here to see this popular %category% product{% endtrans %}"
+                                                    title="{% trans with {'%category%': businessProfile.amazonAffiliateUrlCategory.name|lower} %}Click here to see this popular %category% product{% endtrans %}"
                                                     rel="{{ relAttributes(businessProfile.amazonAffiliateUrl) }}"
-                                            >{% trans with {'%category%': businessProfile.amazonAffiliateUrlCategory.name} %}Click here to see this popular %category% product{% endtrans %}</a>
+                                            >{% trans with {'%category%': businessProfile.amazonAffiliateUrlCategory.name|lower} %}Click here to see this popular %category% product{% endtrans %}</a>
                                         </div>
                                     </div>
                                 {% endif %}

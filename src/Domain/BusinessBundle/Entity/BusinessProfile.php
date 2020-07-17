@@ -4349,7 +4349,7 @@ class BusinessProfile implements
         $data = null;
 
         foreach ($this->categories as $category) {
-            if ($category->getAmazonAffiliateUrl()) {
+            if ($category->getAmazonAffiliateUrl() && $category->getAmazonAffiliateUrl()->getUrl()) {
                 $data = $category;
                 break;
             }
