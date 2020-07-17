@@ -9,6 +9,8 @@ use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\Category;
 use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
 use Domain\SiteBundle\Utils\Helpers\SiteHelper;
+use Oxa\Sonata\AdminBundle\Filter\CaseInsensitiveStringFilter;
+use Oxa\Sonata\AdminBundle\Util\Helpers\AdminHelper;
 
 class CategoryRepository extends EntityRepository
 {
@@ -102,6 +104,22 @@ class CategoryRepository extends EntityRepository
         ;
 
         return $qb->getQuery()->getArrayResult();
+    }
+
+    /**
+     * @param array $categories
+     *
+     * @return Category
+     */
+    public function getCategoryByCaseInsensitiveName(array $categories)
+    {
+        $qb = $this->getCategoryQueryBuilder()
+            ->where(sprintf(CaseInsensitiveStringFilter::buildSearchQueryWithReplacedAccents(), 'c', 'searchTextEs', 'IN (', 'category_name)'))
+            ->orWhere('lower(c.searchTextEn) IN (:category_name)')
+            ->setParameter('category_name', $categories)
+        ;
+
+        return $qb->getQuery()->getOneOrNullResult();
     }
 
     /**

@@ -5,6 +5,7 @@ namespace Domain\BusinessBundle\Manager;
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\Category;
 use Domain\BusinessBundle\Entity\Locality;
+use Domain\BusinessBundle\Util\CategoryUtil;
 use Domain\BusinessBundle\Util\SlugUtil;
 use Domain\SearchBundle\Util\SearchDataUtil;
 use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
@@ -49,6 +50,15 @@ class CategoryManager extends Manager
         $category = $this->getRepository()->getCategoryBySlug($categorySlug, $customSlug);
 
         return $category;
+    }
+
+    public function getFirstFoundCategory($categories): ?Category
+    {
+        $categories = CategoryUtil::getCategoriesNamesFromString($categories);
+
+        $categories = array_map([AdminHelper::class, 'convertAccentedString'], $categories);
+
+        return $this->getRepository()->getCategoryByCaseInsensitiveName($categories);
     }
 
     /**
