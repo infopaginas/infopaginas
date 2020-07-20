@@ -651,14 +651,22 @@ class SearchManager extends Manager
         return true;
     }
 
-    /**
-     * @param string $query
-     *
-     * @return string
-     */
-    public static function getSafeSearchString($query)
+    public static function getSafeSearchString($query, bool $fuzziness = true)
     {
         $words = self::getSaveSearchWords($query);
+
+        if ($fuzziness) {
+            foreach ($words as $i => $word) {
+                // "fuzzy" operator (exclude phone-number-like words)
+                // https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-query-string-query.html#query-string-fuzziness
+                if (
+                    mb_strlen($word) > ElasticSearchManager::AUTO_SUGGEST_BUSINESS_MIN_WORD_LENGTH_ANALYZED &&
+                    preg_match('/[^\d.,\-()+]/', $word)
+                ) {
+                    $words[$i] .= '~';
+                }
+            }
+        }
 
         return implode(' ', $words);
     }
@@ -681,12 +689,6 @@ class SearchManager extends Manager
 
             if ($wordLength > ElasticSearchManager::AUTO_SUGGEST_BUSINESS_MAX_WORD_LENGTH_ANALYZED) {
                 $word = mb_substr($word, 0, ElasticSearchManager::AUTO_SUGGEST_BUSINESS_MAX_WORD_LENGTH_ANALYZED);
-            }
-
-            // "fuzzy" operator
-            // https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-query-string-query.html#query-string-fuzziness
-            if ($wordLength > ElasticSearchManager::AUTO_SUGGEST_BUSINESS_MIN_WORD_LENGTH_ANALYZED) {
-                $word .= '~';
             }
 
             $data[] = $word;
