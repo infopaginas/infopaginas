@@ -31,6 +31,7 @@ class CronLogger
     public const MONGO_POPULAR_CATEGORIES   = 'domain:popular-category:update';
     public const MONGO_ARCHIVE_RAW          = 'domain:report-mongo-db:archive-raw';
     public const MONGO_ARCHIVE_AGGREGATE    = 'domain:report-mongo-db:archive-aggregate';
+    public const MONGO_CLEAN_UP             = 'domain:report-mongo-db:clean-up';
     public const POSTPONE_EXPORT            = 'domain:postpone-export:report';
     public const BUSINESS_COUNTER           = 'domain:managed-businesses:counter';
     public const POSTPONE_REMOVE            = 'data:postpone:remove';
