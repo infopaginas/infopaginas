@@ -16,7 +16,7 @@ use Domain\BusinessBundle\Validator\Constraints\CSVImportFileType as CSVImportFi
  * BusinessProfile
  *
  * @ORM\Table(name="csv_import_file")
- * @ORM\Entity()
+ * @ORM\Entity(repositoryClass="Domain\BusinessBundle\Repository\CSVImportFileRepository")
  * @ORM\HasLifecycleCallbacks
  * @CSVImportFileTypeValidator()
  */
