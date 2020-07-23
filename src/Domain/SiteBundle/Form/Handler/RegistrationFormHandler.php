@@ -2,28 +2,28 @@
 
 namespace Domain\SiteBundle\Form\Handler;
 
+use Domain\BusinessBundle\Form\Handler\BusinessFormHandlerInterface;
 use Domain\SiteBundle\Mailer\Mailer;
 use FOS\UserBundle\Model\UserInterface;
 use FOS\UserBundle\Model\UserManagerInterface;
 use Oxa\ManagerArchitectureBundle\Form\Handler\BaseFormHandler;
-use Oxa\ManagerArchitectureBundle\Model\Interfaces\FormHandlerInterface;
 use Oxa\Sonata\UserBundle\Entity\Group;
 use Oxa\Sonata\UserBundle\Manager\GroupsManager;
-use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
  * Class RegistrationFormHandler
  * @package Domain\SiteBundle\Form\Handler
  */
-class RegistrationFormHandler extends BaseFormHandler implements FormHandlerInterface
+class RegistrationFormHandler extends BaseFormHandler
 {
     /** @var FormInterface  */
     protected $form;
 
     /** @var Request  */
-    protected $request;
+    protected $requestStack;
 
     /** @var UserManagerInterface */
     protected $userManager;
@@ -34,22 +34,15 @@ class RegistrationFormHandler extends BaseFormHandler implements FormHandlerInte
     /** @var Mailer */
     protected $mailer;
 
-    /**
-     * RegistrationFormHandler constructor.
-     * @param FormInterface $form
-     * @param Request $request
-     * @param UserManagerInterface $userManager
-     * @param GroupsManager $groupsManager
-     */
     public function __construct(
         FormInterface $form,
-        Request $request,
+        RequestStack $requestStack,
         UserManagerInterface $userManager,
         GroupsManager $groupsManager,
         Mailer $mailer
     ) {
         $this->form          = $form;
-        $this->request       = $request;
+        $this->requestStack  = $requestStack;
         $this->userManager   = $userManager;
         $this->groupsManager = $groupsManager;
         $this->mailer        = $mailer;
@@ -63,8 +56,8 @@ class RegistrationFormHandler extends BaseFormHandler implements FormHandlerInte
         $user = $this->userManager->createUser();
         $this->form->setData($user);
 
-        if ($this->request->getMethod() == 'POST') {
-            $this->form->handleRequest($this->request);
+        if ($this->requestStack->getCurrentRequest()->getMethod() == 'POST') {
+            $this->form->handleRequest($this->requestStack->getCurrentRequest());
 
             if ($this->form->isValid()) {
                 $this->onSuccess($user);
@@ -87,6 +80,12 @@ class RegistrationFormHandler extends BaseFormHandler implements FormHandlerInte
         $user->setEnabled(true);
 
         $this->userManager->updateUser($user);
+        $this->requestStack->getCurrentRequest()
+            ->getSession()
+            ->set(
+                BusinessFormHandlerInterface::SUCCESSFUL_REGISTRATION_TEXT_KEY,
+                BusinessFormHandlerInterface::SUCCESSFUL_REGISTRATION_TEXT_KEY
+            );
 
         $this->mailer->sendRegistrationCompleteEmailMessage($user);
     }

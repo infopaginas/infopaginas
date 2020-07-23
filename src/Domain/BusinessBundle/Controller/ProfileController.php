@@ -57,13 +57,11 @@ class ProfileController extends Controller
      */
     protected function getMediaContextTypes()
     {
-        $types = [
+        return [
             OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_LOGO        => 'Logo',
             OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_BACKGROUND  => 'Background',
             OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_IMAGES      => 'Photo',
         ];
-
-        return $types;
     }
 
     /**
@@ -100,7 +98,7 @@ class ProfileController extends Controller
         $this->checkBusinessProfileAccess($businessProfile);
 
         $businessProfileForm      = $this->getBusinessProfileForm($businessProfile);
-        $closeBusinessProfileForm = $this->createForm(new BusinessCloseRequestType());
+        $closeBusinessProfileForm = $this->createForm(BusinessCloseRequestType::class);
 
         return $this->render(':redesign:business-profile-edit.html.twig', [
             'businessProfileForm'      => $businessProfileForm->createView(),
@@ -213,7 +211,7 @@ class ProfileController extends Controller
         $showClaimBlock =  $this->getBusinessProfilesManager()->getClaimButtonPermitted($businessProfile);
 
         if ($showClaimBlock) {
-            $claimBusinessForm = $this->createForm(new BusinessClaimRequestType())->createView();
+            $claimBusinessForm = $this->createForm(BusinessClaimRequestType::class)->createView();
         } else {
             $claimBusinessForm = null;
         }
@@ -239,7 +237,7 @@ class ProfileController extends Controller
         }
 
         $contactForm = $this->createForm(
-            new FeedbackFormType(),
+            FeedbackFormType::class,
             ['businessName' => $businessProfile->getName()],
             ['isReportProblem' => true]
         );
@@ -548,7 +546,7 @@ class ProfileController extends Controller
      */
     protected function checkBusinessProfileAccess(BusinessProfile $businessProfile)
     {
-        $token = $this->get('security.context')->getToken();
+        $token = $this->get('security.token_storage')->getToken();
         if (!$token) {
             throw $this->createNotFoundException(self::ERROR_ACCESS_NOT_ALLOWED);
         }

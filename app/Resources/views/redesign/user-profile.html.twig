@@ -6,6 +6,9 @@
 {% block body %}
     <div class="main__container main__container--centered">
         <div class="main">
+            {% if registrationMessageKey is not empty %}
+                <h2 class="registration-message text-center">{{ registrationMessageKey|trans }}</h2>
+            {% endif %}
             <div class="container clearfix">
                 <section class="page-section" id="profile-user">
                     <form class="form user-profile-form" name="{{ profileForm.vars.name }}" id="userProfileForm">
@@ -57,6 +60,11 @@
                                     <div class="form__actions">
                                         <button type="button" class="button button--action" id="saveProfile">{% trans %}Save changes{% endtrans %}</button>
                                     </div><!-- form-actions -->
+                                    <div class="form__row">
+                                        <div id="success-block">
+                                            <strong></strong>
+                                        </div>
+                                    </div><!-- form__row -->
                                 </div><!-- form__column -->
                             </div><!-- form-column__container -->
                         </div><!-- form section -->

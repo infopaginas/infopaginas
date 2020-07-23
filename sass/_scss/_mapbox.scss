@@ -58,15 +58,17 @@
   background-position: 0 0;
 }
 
+@media (max-width: 804px) {
+  #show-3d {
+    bottom: 472px!important;
+  }
+}
+
 #menu {
   position: absolute;
   z-index: 1;
   padding: 10px;
   font-family: 'Open Sans', sans-serif;
-}
-
-.default-menu {
-  top: 10px;
 }
 
 .navigation-button, .navigation-button:visited, .navigation-button:hover {

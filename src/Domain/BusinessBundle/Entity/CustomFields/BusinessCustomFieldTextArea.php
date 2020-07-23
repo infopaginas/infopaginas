@@ -10,7 +10,7 @@ use Oxa\Sonata\AdminBundle\Util\Traits\ChangeStateTrait;
 use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Sonata\TranslationBundle\Model\Gedmo\TranslatableInterface;
-use Sonata\TranslationBundle\Traits\Gedmo\PersonalTranslatable;
+use Sonata\TranslationBundle\Traits\Gedmo\PersonalTranslatableTrait;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -26,7 +26,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 class BusinessCustomFieldTextArea implements DefaultEntityInterface, TranslatableInterface, ChangeStateInterface
 {
     use DefaultEntityTrait;
-    use PersonalTranslatable;
+    use PersonalTranslatableTrait;
     use ChangeStateTrait;
 
     /**
@@ -60,8 +60,7 @@ class BusinessCustomFieldTextArea implements DefaultEntityInterface, Translatabl
      * @var Section
      *
      * @ORM\ManyToOne(
-     *      targetEntity="Domain\BusinessBundle\Entity\CustomFields\Section",
-     *      inversedBy="businessCustomFieldTextArea"
+     *      targetEntity="Domain\BusinessBundle\Entity\CustomFields\Section"
      * )
      * @ORM\JoinColumn(name="section_id", referencedColumnName="id", onDelete="SET NULL")
      * @Assert\NotBlank()

@@ -55,11 +55,23 @@ services:
         tags:
             - {name: sonata.admin, manager_type: orm, group: admin, label: Categories}
 
+    domain_business.admin.amazon_affiliate_item:
+        class: Domain\BusinessBundle\Admin\AmazonAffiliateItemAdmin
+        arguments: [~, Domain\BusinessBundle\Entity\AmazonAffiliateItem, OxaSonataAdminBundle:CRUD]
+        tags:
+            - {name: sonata.admin, manager_type: orm, group: admin, label: Amazon Affiliate Items}
+
     domain_business.admin.testimonial:
         class: Domain\BusinessBundle\Admin\TestimonialAdmin
         arguments: [~, Domain\BusinessBundle\Entity\Testimonial, OxaSonataAdminBundle:CRUD]
         tags:
             - {name: sonata.admin, manager_type: orm, group: admin, label: Testimonials}
+
+    domain_business.admin.zip:
+        class: Domain\BusinessBundle\Admin\ZipAdmin
+        arguments: [~, Domain\BusinessBundle\Entity\Zip, OxaSonataAdminBundle:CRUD]
+        tags:
+            - {name: sonata.admin, manager_type: orm, group: admin, label: Zips}
 
     domain_business.admin.business_profile:
         class: Domain\BusinessBundle\Admin\BusinessProfileAdmin
@@ -67,7 +79,7 @@ services:
         tags:
             - {name: sonata.admin, manager_type: orm, group: admin, label: Business Profiles, audit: true}
         calls:
-            - [setTranslationDomain, [ 'AdminDomainBusinessBundle' ] ]
+            - [ setTranslationDomain, [ 'AdminDomainBusinessBundle' ] ]
             - [ setTemplate, ['edit', 'DomainBusinessBundle:Admin:edit.html.twig']]
 
     domain_business.admin.task:
@@ -76,8 +88,8 @@ services:
         tags:
             - {name: sonata.admin, manager_type: orm, group: admin, label: Tasks}
         calls:
-            - [ setTemplate, [list, DomainBusinessBundle:TaskAdmin:list.html.twig]]
-            - [ setTemplate, [edit, DomainBusinessBundle:TaskAdmin:edit.html.twig]]
+            - [ setTemplate, ['list', 'DomainBusinessBundle:TaskAdmin:list.html.twig']]
+            - [ setTemplate, ['edit', 'DomainBusinessBundle:TaskAdmin:edit.html.twig']]
             - [ setTasksManager, ['@domain_business.manager.tasks']]
 
     domain_business.admin.business_review:
@@ -110,6 +122,12 @@ services:
         tags:
             - {name: sonata.admin, manager_type: orm, group: admin, label: Business Profile Phones}
 
+    domain_business.admin.business_profile_popup:
+        class: Domain\BusinessBundle\Admin\BusinessProfilePopupAdmin
+        arguments: [~, Domain\BusinessBundle\Entity\BusinessProfilePopup, OxaSonataAdminBundle:CRUD]
+        tags:
+            - {name: sonata.admin, manager_type: orm, group: admin, label: Business Profile Popup}
+
     domain_business.admin.business_profile_keyword:
         class: Domain\BusinessBundle\Admin\BusinessProfileKeywordAdmin
         arguments: [~, Domain\BusinessBundle\Entity\BusinessProfileKeyword, OxaSonataAdminBundle:CRUD]
@@ -127,14 +145,6 @@ services:
         arguments: [~, Domain\BusinessBundle\Entity\BusinessProfileMediaUrl, OxaSonataAdminBundle:CRUD]
         tags:
             - {name: sonata.admin, manager_type: orm, group: admin, label: Business Profile Media URLs}
-        calls:
-            - [setPositionService, ['@pix_sortable_behavior.position']]
-
-    domain_business.admin.neighborhood_zip:
-        class: Domain\BusinessBundle\Admin\NeighborhoodZipAdmin
-        arguments: [~, Domain\BusinessBundle\Entity\Zip, OxaSonataAdminBundle:CRUD]
-        tags:
-            - {name: sonata.admin, manager_type: orm, group: admin, label: Zips}
 
     domain_business.admin.business_profile_working_hour:
         class: Domain\BusinessBundle\Admin\BusinessProfileWorkingHourAdmin
@@ -153,8 +163,6 @@ services:
         arguments: [~, Domain\BusinessBundle\Entity\LandingPageShortCutSearch, OxaSonataAdminBundle:CRUD]
         tags:
             - {name: sonata.admin, manager_type: orm, group: admin, label: Landing Page Shortcut Searches}
-        calls:
-            - [setPositionService, ['@pix_sortable_behavior.position']]
 
     domain_business.admin.clickbait_title:
         class: Domain\BusinessBundle\Admin\ClickbaitTitleAdmin
@@ -179,8 +187,6 @@ services:
         arguments: [~, Domain\BusinessBundle\Entity\CustomFields\Section, OxaSonataAdminBundle:CRUD]
         tags:
             - {name: sonata.admin, manager_type: orm, group: admin, label: Section}
-        calls:
-            - [setPositionService, ['@pix_sortable_behavior.position']]
 
     domain_business.admin.business_custom_fields_checkbox:
         class: Domain\BusinessBundle\Admin\CustomFields\BusinessCustomFieldCheckboxAdmin
@@ -217,8 +223,6 @@ services:
         arguments: [~, Domain\BusinessBundle\Entity\CustomFields\BusinessCustomFieldRadioButtonItem, OxaSonataAdminBundle:CRUD]
         tags:
             - {name: sonata.admin, manager_type: orm, group: admin, label: Radio Button item}
-        calls:
-            - [setPositionService, ['@pix_sortable_behavior.position']]
 
     domain_business.admin.radio_button_collection:
         class: Domain\BusinessBundle\Admin\CustomFields\BusinessCustomFieldRadioButtonCollectionAdmin
@@ -237,8 +241,6 @@ services:
         arguments: [~, Domain\BusinessBundle\Entity\CustomFields\BusinessCustomFieldListItem, OxaSonataAdminBundle:CRUD]
         tags:
             - {name: sonata.admin, manager_type: orm, group: admin, label: List item}
-        calls:
-            - [setPositionService, ['@pix_sortable_behavior.position']]
 
     domain_business.admin.list_collection:
         class: Domain\BusinessBundle\Admin\CustomFields\BusinessCustomFieldListCollectionAdmin
@@ -251,5 +253,3 @@ services:
         arguments: [~, Domain\BusinessBundle\Entity\HomepageCarousel, DomainBusinessBundle:HomepageCarouselCRUD]
         tags:
             - {name: sonata.admin, manager_type: orm, group: admin, label: Homepage Carousel}
-        calls:
-            - [setPositionService, ['@pix_sortable_behavior.position']]

@@ -102,7 +102,7 @@ class CRUDController extends SortableAdminController
             return $this->redirectTo($object);
         }
 
-        return $this->render(
+        return $this->renderWithExtraParams(
             $this->admin->getTemplate('delete'),
             [
                 'object' => $object,

@@ -2,8 +2,8 @@
 
 namespace Oxa\DfpBundle\Manager;
 
+use Google\AdsApi\AdManager\AdManagerSessionBuilder;
 use Google\AdsApi\Common\OAuth2TokenBuilder;
-use Google\AdsApi\Dfp\DfpSessionBuilder;
 
 /**
  * Class DfpManager
@@ -30,7 +30,7 @@ class AuthManager
             ->build()
         ;
 
-        $session = (new DfpSessionBuilder())
+        $session = (new AdManagerSessionBuilder())
             ->fromFile($this->path)
             ->withOAuth2Credential($oAuth2Credential)
             ->build()

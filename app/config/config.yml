@@ -37,7 +37,7 @@ parameters:
     locale_admin:
         url_part: 'admin'
         locale: 'en'
-    videos_upload_path: %assetic.write_to%/uploads/videos
+    videos_upload_path: '%assetic.write_to%/uploads/videos'
     default_image:
         path: '/assets/images/'
         business_image: 'header-logo.png'
@@ -81,7 +81,7 @@ parameters:
 
 framework:
     #esi:             ~
-    translator:      { fallbacks: %locales% }
+    translator:      { fallbacks: '%locales%' }
     default_locale:  "%locale%"
     secret:          "%secret%"
     router:
@@ -95,6 +95,11 @@ framework:
         enable_annotations: true
     templating:
         engines: ['twig']
+        form:
+            resources:
+                - 'SonataFormatterBundle:Form:formatter.html.twig'
+                - 'OxaSonataMediaBundle:Form:media_widgets.html.twig'
+                - 'SonataCoreBundle:Form:datepicker.html.twig'
     trusted_hosts:   ~
     trusted_proxies: ~
     session:
@@ -112,13 +117,9 @@ framework:
 twig:
     debug:            "%kernel.debug%"
     strict_variables: "%kernel.debug%"
-    form:
-        resources:
-            - 'SonataFormatterBundle:Form:formatter.html.twig'
-            - 'OxaSonataMediaBundle:Form:media_widgets.html.twig'
-            - 'SonataCoreBundle:Form:datepicker.html.twig'
     form_themes:
         - 'DomainBusinessBundle:Form:fields.html.twig'
+        - 'SonataCoreBundle:Form:datepicker.html.twig'
     globals:
         app_version: '%app_version%'
         google_badge_partner_id: '%google_badge_partner_id%'
@@ -210,21 +211,13 @@ doctrine_migrations:
     table_name: migration_versions
     name: Application Migrations
 
-ivory_google_map:
-    geocoder:
-        enabled: true
-        class: "Ivory\GoogleMap\Services\Geocoding\Geocoder"
-        provider:
-            class: "Ivory\GoogleMap\Services\Geocoding\GeocoderProvider"
-        adapter: "Geocoder\HttpAdapter\CurlHttpAdapter"
-
 hwi_oauth:
     http_client:
         timeout: 10
     connect:
         account_connector: oxa.user.oauth_provider
         confirmation: false
-    firewall_name: main
+    firewall_names: [main]
     fosub:
         username_iterations: 30
         properties:
@@ -278,7 +271,7 @@ oneup_flysystem:
     adapters:
         my_adapter:
             local:
-                directory: %kernel.root_dir%/cache
+                directory: '%kernel.root_dir%/cache'
     filesystems:
         local:
             adapter: my_adapter
@@ -309,24 +302,31 @@ knp_gaufrette:
         video_storage:
             aws_s3:
                 service_id:     aws.s3
-                bucket_name:    %amazon_aws_bucket_name%
+                bucket_name:    '%amazon_aws_bucket_name%'
                 options:
                     create:     true
                     directory:  '%amazon_aws_video_directory%'
         report_storage:
             aws_s3:
                 service_id:     aws.s3
-                bucket_name:    %amazon_aws_bucket_name%
+                bucket_name:    '%amazon_aws_bucket_name%'
                 options:
                     create:     true
                     directory:  '%amazon_aws_report_directory%'
         mass_import_storage:
             aws_s3:
                 service_id:     aws.s3
-                bucket_name:    %amazon_aws_bucket_name%
+                bucket_name:    '%amazon_aws_bucket_name%'
                 options:
                     create:     true
                     directory:  '%amazon_aws_mass_import_directory%'
+        business_popup_storage:
+            aws_s3:
+                service_id:     aws.s3
+                bucket_name:    '%amazon_aws_bucket_name%'
+                options:
+                    create:     true
+                    directory:  '%amazon_aws_business_popup_directory%'
     filesystems:
         ipgn:
             adapter:    video_storage
@@ -337,6 +337,9 @@ knp_gaufrette:
         import:
             adapter:    mass_import_storage
             alias:      mass_import_storage_filesystem
+        popup:
+            adapter:    business_popup_storage
+            alias:      business_popup_storage_filesystem
 
 dubture_f_fmpeg:
     ffmpeg_binary: /usr/bin/ffmpeg

@@ -114,7 +114,7 @@ class CategoryAdminCRUDController extends CRUDController
             return $this->redirectTo($object);
         }
 
-        return $this->render(
+        return $this->renderWithExtraParams(
             $this->admin->getTemplate('delete'),
             [
                 'object' => $object,

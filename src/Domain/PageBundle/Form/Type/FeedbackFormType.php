@@ -115,12 +115,4 @@ class FeedbackFormType extends AbstractType
             ;
         }
     }
-
-    /**
-     * @return string
-     */
-    public function getName()
-    {
-        return 'domain_page_bundle_feedback_form_type';
-    }
 }

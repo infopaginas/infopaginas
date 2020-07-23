@@ -4,7 +4,9 @@ namespace Domain\BusinessBundle\Entity;
 
 use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
+use Oxa\Sonata\AdminBundle\Model\FileUploadEntityInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
+use Oxa\Sonata\AdminBundle\Util\Traits\FileUploadEntityTrait;
 use Symfony\Component\Validator\Constraints as Assert;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
@@ -18,16 +20,23 @@ use Domain\BusinessBundle\Validator\Constraints\CSVImportFileType as CSVImportFi
  * @ORM\HasLifecycleCallbacks
  * @CSVImportFileTypeValidator()
  */
-class CSVImportFile implements DefaultEntityInterface
+class CSVImportFile implements DefaultEntityInterface, FileUploadEntityInterface
 {
     use DefaultEntityTrait;
+    use FileUploadEntityTrait;
 
-    const DEFAULT_DELIMITER = ',';
-    const DEFAULT_ENCLOSURE = '"';
+    public const FILE_MIME_TYPE = 'text/csv';
+    public const FILE_EXTENSION = 'csv';
 
-    const BUSINESS_PROFILE_PHONE_MAIN = 'phone_main';
-    const BUSINESS_PROFILE_PHONE_SECONDARY = 'phone_secondary';
-    const BUSINESS_PROFILE_PHONE_FAX = 'phone_fax';
+    public const DEFAULT_DELIMITER = ',';
+    public const DEFAULT_ENCLOSURE = '"';
+
+    public const CATEGORIES_DELIMITERS = [';', '/'];
+
+    public const BUSINESS_PROFILE_PHONE_MAIN = 'phone_main';
+    public const BUSINESS_PROFILE_PHONE_SECONDARY = 'phone_secondary';
+    public const BUSINESS_PROFILE_PHONE_FAX = 'phone_fax';
+    public const BUSINESS_PROFILE_CATEGORIES = 'categories';
 
     /**
      * @var int
@@ -37,15 +46,6 @@ class CSVImportFile implements DefaultEntityInterface
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     protected $id;
-
-    /**
-     * @var string - File name
-     *
-     * @ORM\Column(name="file", type="string", length=1000)
-     * @Assert\Length(max=1000)
-     * @Assert\NotBlank()
-     */
-    protected $file;
 
     /**
      * @var string - Delimiter
@@ -119,26 +119,6 @@ class CSVImportFile implements DefaultEntityInterface
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * @return string
-     */
-    public function getFile()
-    {
-        return $this->file;
-    }
-
-    /**
-     * @param string $file
-     *
-     * @return CSVImportFile
-     */
-    public function setFile(string $file)
-    {
-        $this->file = $file;
-
-        return $this;
     }
 
     /**
@@ -326,6 +306,7 @@ class CSVImportFile implements DefaultEntityInterface
             BusinessProfile::BUSINESS_PROFILE_FIELD_LATITUDE => 'business_profile.fields.latitude',
             BusinessProfile::BUSINESS_PROFILE_FIELD_LONGITUDE => 'business_profile.fields.longitude',
             BusinessProfile::BUSINESS_PROFILE_FIELD_DC_ORDER_ID => 'business_profile.fields.dcOrderId',
+            BusinessProfile::BUSINESS_PROFILE_RELATION_CATEGORIES => 'business_profile.fields.category',
 
             BusinessProfile::BUSINESS_PROFILE_FIELD_WEBSITE_TYPE => 'business_profile.fields.website',
             BusinessProfile::BUSINESS_PROFILE_FIELD_ACTION_URL_TYPE => 'business_profile.fields.actionURL',
@@ -361,5 +342,15 @@ class CSVImportFile implements DefaultEntityInterface
         }
 
         return $fields;
+    }
+
+    public function getFileExtension(): string
+    {
+        return self::FILE_EXTENSION;
+    }
+
+    public function getFileMimeType(): string
+    {
+        return self::FILE_MIME_TYPE;
     }
 }

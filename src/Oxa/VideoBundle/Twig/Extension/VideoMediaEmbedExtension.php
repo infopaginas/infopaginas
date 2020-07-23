@@ -4,12 +4,15 @@ namespace Oxa\VideoBundle\Twig\Extension;
 
 use Oxa\VideoBundle\Entity\VideoMedia;
 use Oxa\VideoBundle\Manager\VideoManager;
+use Twig\Environment;
+use Twig\Extension\AbstractExtension;
+use Twig\TwigFunction;
 
 /**
  * Class VideoMediaEmbedExtension
  * @package Oxa\VideoBundle\Twig\Extension
  */
-class VideoMediaEmbedExtension extends \Twig_Extension
+class VideoMediaEmbedExtension extends AbstractExtension
 {
     const DEFAULT_VIDEO_WIDTH  = 640;
     const DEFAULT_VIDEO_HEIGHT = 480;
@@ -30,9 +33,9 @@ class VideoMediaEmbedExtension extends \Twig_Extension
     public function getFunctions()
     {
         return [
-            'render_video_embed' => new \Twig_Function_Method(
-                $this,
-                'renderVideoEmbed',
+            new TwigFunction(
+                'render_video_embed',
+                [$this, 'renderVideoEmbed'],
                 [
                     'needs_environment' => true,
                     'is_safe' => [
@@ -41,9 +44,9 @@ class VideoMediaEmbedExtension extends \Twig_Extension
                     ],
                 ]
             ),
-            'render_video_admin_embed' => new \Twig_Function_Method(
-                $this,
-                'renderAdminVideoPreview',
+            new TwigFunction(
+                'render_video_admin_embed',
+                [$this, 'renderAdminVideoPreview'],
                 [
                     'needs_environment' => true,
                     'is_safe' => [
@@ -56,13 +59,13 @@ class VideoMediaEmbedExtension extends \Twig_Extension
     }
 
     /**
-     * @param \Twig_Environment $env
+     * @param Environment $env
      * @param VideoMedia        $media
      * @param array             $dimensions
      *
      * @return string
      */
-    public function renderVideoEmbed(\Twig_Environment $env, VideoMedia $media, array $dimensions = [])
+    public function renderVideoEmbed(Environment $env, VideoMedia $media, array $dimensions = [])
     {
         if (empty($dimensions['height'])) {
             $dimensions['height'] = self::DEFAULT_VIDEO_HEIGHT;
@@ -86,12 +89,12 @@ class VideoMediaEmbedExtension extends \Twig_Extension
     }
 
     /**
-     * @param \Twig_Environment $env
+     * @param Environment $env
      * @param VideoMedia        $media
      *
      * @return string
      */
-    public function renderAdminVideoPreview(\Twig_Environment $env, VideoMedia $media)
+    public function renderAdminVideoPreview(Environment $env, VideoMedia $media)
     {
         $url = $this->videoManager->getPublicUrl($media);
 

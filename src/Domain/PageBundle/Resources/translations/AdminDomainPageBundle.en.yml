@@ -7,20 +7,20 @@ page:
       seoDescription: This value will be used for SEO desription meta tag (total 160 char)
       actionLink: Link to external resources
     article_category_list:
-      seoTitle: This value will be used for SEO Title meta tag (total 60 char), placeholders: {placeholders}. "| Infopaginas" will be added automatically
-      seoDescription: This value will be used for SEO desription meta tag (total 160 char), placeholders: {placeholders}.
+      seoTitle: 'This value will be used for SEO Title meta tag (total 60 char), placeholders: {placeholders}. "| Infopaginas" will be added automatically'
+      seoDescription: 'This value will be used for SEO desription meta tag (total 160 char), placeholders: {placeholders}.'
     catalog_locality:
-      seoTitle: This value will be used for SEO Title meta tag (total 60 char), placeholders: {placeholders}. "| Infopaginas" will be added automatically
-      seoDescription: This value will be used for SEO desription meta tag (total 160 char), placeholders: {placeholders}
+      seoTitle: 'This value will be used for SEO Title meta tag (total 60 char), placeholders: {placeholders}. "| Infopaginas" will be added automatically'
+      seoDescription: 'This value will be used for SEO desription meta tag (total 160 char), placeholders: {placeholders}'
     catalog_locality_category:
-      seoTitle: This value will be used for SEO Title meta tag (total 60 char), placeholders: {placeholders}. "| Infopáginas" will be added automatically
-      seoDescription: This value will be used for SEO desription meta tag (total 160 char), placeholders: {placeholders}.
+      seoTitle: 'This value will be used for SEO Title meta tag (total 60 char), placeholders: {placeholders}. "| Infopáginas" will be added automatically'
+      seoDescription: 'This value will be used for SEO desription meta tag (total 160 char), placeholders: {placeholders}.'
     emergency_area_category:
-      seoTitle: This value will be used for SEO Title meta tag (total 60 char), placeholders: {placeholders}. "| Infopáginas" will be added automatically
-      seoDescription: This value will be used for SEO desription meta tag (total 160 char), placeholders: {placeholders}.
+      seoTitle: 'This value will be used for SEO Title meta tag (total 60 char), placeholders: {placeholders}. "| Infopáginas" will be added automatically'
+      seoDescription: 'This value will be used for SEO desription meta tag (total 160 char), placeholders: {placeholders}.'
     search:
-      seoTitle: This value will be used for SEO Title meta tag (total 60 char), placeholders: {placeholders}. "| Infopáginas" will be added automatically
-      seoDescription: This value will be used for SEO desription meta tag (total 160 char), placeholders: {placeholders}.
+      seoTitle: 'This value will be used for SEO Title meta tag (total 60 char), placeholders: {placeholders}. "| Infopáginas" will be added automatically'
+      seoDescription: 'This value will be used for SEO desription meta tag (total 160 char), placeholders: {placeholders}.'
 page_link:
   type:
     link: Link

@@ -4,12 +4,14 @@ namespace Domain\BusinessBundle\Admin;
 
 use Domain\BusinessBundle\Entity\Coupon;
 use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
+use Oxa\Sonata\MediaBundle\Entity\Media;
 use Oxa\Sonata\MediaBundle\Model\OxaMediaInterface;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
+use Sonata\AdminBundle\Form\Type\ModelListType;
 use Sonata\AdminBundle\Show\ShowMapper;
-use Sonata\CoreBundle\Validator\ErrorElement;
+use Sonata\Form\Validator\ErrorElement;
 
 class CouponAdmin extends OxaAdmin
 {
@@ -48,15 +50,22 @@ class CouponAdmin extends OxaAdmin
         $formMapper
             ->add('title')
             ->add('businessProfile')
-            ->add('image', 'sonata_type_model_list', [
-                'btn_delete' => null
-            ], [
-                'btn_delete' => false,
-                'link_parameters' => [
-                    'context' => OxaMediaInterface::CONTEXT_COUPON,
-                    'provider' => OxaMediaInterface::PROVIDER_IMAGE,
-                ]])
-        ;
+            ->add(
+                'image',
+                ModelListType::class,
+                [
+                    'btn_delete' => null,
+                    'model_manager' => $this->modelManager,
+                    'class' => Media::class,
+                ],
+                [
+                    'btn_delete'      => false,
+                    'link_parameters' => [
+                        'context'  => OxaMediaInterface::CONTEXT_COUPON,
+                        'provider' => OxaMediaInterface::PROVIDER_IMAGE,
+                    ],
+                ]
+            );
 
         // remove this field if this page used as sonata_type_collection on other pages
         if ($this->getRoot()->getClass() != $this->getClass()) {

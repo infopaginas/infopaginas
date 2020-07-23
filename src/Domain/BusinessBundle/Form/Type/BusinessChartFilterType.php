@@ -21,15 +21,12 @@ class BusinessChartFilterType extends BusinessReportFilterType
             'label_attr' => [
                 'class' => 'title-label',
             ],
-            'choices' => BusinessOverviewModel::getAllChartEventTypesWithTranslation(),
+            'choices' => array_flip(BusinessOverviewModel::getAllChartEventTypesWithTranslation()),
             'data'    => BusinessOverviewModel::DEFAULT_CHART_TYPE,
         ]);
     }
 
-    /**
-     * @return string
-     */
-    public function getName()
+    public function getBlockPrefix()
     {
         return 'domain_business_bundle_business_chart_filter_type';
     }

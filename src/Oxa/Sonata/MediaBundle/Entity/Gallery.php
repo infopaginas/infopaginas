@@ -5,6 +5,7 @@ namespace Oxa\Sonata\MediaBundle\Entity;
 use Sonata\MediaBundle\Entity\BaseGallery as BaseGallery;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Sonata\MediaBundle\Model\GalleryHasMediaInterface;
 
 /**
  * @ORM\Table(name="media__gallery")
@@ -34,11 +35,11 @@ class Gallery extends BaseGallery
     /**
      * Add galleryHasMedia
      *
-     * @param \Oxa\Sonata\MediaBundle\Entity\GalleryHasMedia $galleryHasMedia
+     * @param GalleryHasMediaInterface $galleryHasMedia
      *
      * @return Gallery
      */
-    public function addGalleryHasMedia(\Oxa\Sonata\MediaBundle\Entity\GalleryHasMedia $galleryHasMedia)
+    public function addGalleryHasMedia(GalleryHasMediaInterface $galleryHasMedia)
     {
         $this->galleryHasMedias[] = $galleryHasMedia;
 
@@ -48,9 +49,9 @@ class Gallery extends BaseGallery
     /**
      * Remove galleryHasMedia
      *
-     * @param \Oxa\Sonata\MediaBundle\Entity\GalleryHasMedia $galleryHasMedia
+     * @param GalleryHasMediaInterface $galleryHasMedia
      */
-    public function removeGalleryHasMedia(\Oxa\Sonata\MediaBundle\Entity\GalleryHasMedia $galleryHasMedia)
+    public function removeGalleryHasMedia(GalleryHasMediaInterface $galleryHasMedia)
     {
         $this->galleryHasMedias->removeElement($galleryHasMedia);
     }

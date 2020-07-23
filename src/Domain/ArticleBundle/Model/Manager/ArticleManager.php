@@ -13,6 +13,7 @@ use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
 use Oxa\ManagerArchitectureBundle\Model\DataType\AbstractDTO;
 use Oxa\ManagerArchitectureBundle\Model\Manager\Manager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * Class ArticleManager
@@ -196,7 +197,7 @@ class ArticleManager extends Manager
             [
                 'slug' => $article->getSlug()
             ],
-            true
+            UrlGeneratorInterface::ABSOLUTE_PATH
         );
 
         return $url;
@@ -207,7 +208,7 @@ class ArticleManager extends Manager
      */
     private function getPublisherLogo()
     {
-        $request = $this->container->get('request');
+        $request = $this->container->get('request_stack')->getCurrentRequest();
 
         $image = $this->container->getParameter('default_image');
         $url = $request->getScheme() . '://' . $request->getHost() . $image['path'] . $image['article']['image'];

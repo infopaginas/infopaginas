@@ -30,7 +30,7 @@ class BusinessReportFilterType extends AbstractType
                 'label_attr' => [
                     'class' => 'title-label',
                 ],
-                'choices' => DatesUtil::getReportDataRanges(),
+                'choices' => array_flip(DatesUtil::getReportDataRanges()),
                 'data'    => DatesUtil::RANGE_LAST_MONTH,
             ])
             ->add('start', DateType::class, [
@@ -64,7 +64,7 @@ class BusinessReportFilterType extends AbstractType
                 'label_attr' => [
                     'class' => 'title-label',
                 ],
-                'choices' => BusinessOverviewModel::getChartEventTypesWithTranslation(),
+                'choices' => array_flip(BusinessOverviewModel::getChartEventTypesWithTranslation()),
                 'data'    => BusinessOverviewModel::DEFAULT_CHART_TYPE,
             ])
             ->add('groupPeriod', ChoiceType::class, [
@@ -72,7 +72,7 @@ class BusinessReportFilterType extends AbstractType
                 'label_attr' => [
                     'class' => 'title-label',
                 ],
-                'choices' => AdminHelper::getPeriodOptionValues(),
+                'choices' => array_flip(AdminHelper::getPeriodOptionValues()),
                 'data'    => AdminHelper::PERIOD_OPTION_CODE_PER_MONTH,
             ])
         ;
@@ -88,10 +88,7 @@ class BusinessReportFilterType extends AbstractType
         ]);
     }
 
-    /**
-     * @return string
-     */
-    public function getName()
+    public function getBlockPrefix()
     {
         return 'domain_business_bundle_business_report_filter_type';
     }

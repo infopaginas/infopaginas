@@ -4,17 +4,19 @@ namespace Domain\PageBundle\Admin;
 
 use Domain\PageBundle\Entity\Page;
 use Domain\PageBundle\Model\PageInterface;
+use FOS\CKEditorBundle\Form\Type\CKEditorType;
 use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
+use Oxa\Sonata\MediaBundle\Entity\Media;
 use Oxa\Sonata\MediaBundle\Model\OxaMediaInterface;
-use Sonata\AdminBundle\Admin\Admin;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
+use Sonata\AdminBundle\Form\Type\ModelListType;
+use Sonata\Form\Type\CollectionType;
 use Sonata\AdminBundle\Route\RouteCollection;
 use Sonata\AdminBundle\Show\ShowMapper;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Sonata\Form\Type\DateTimePickerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 
 class PageAdmin extends OxaAdmin
 {
@@ -96,9 +98,11 @@ class PageAdmin extends OxaAdmin
                 ->with('General')
                     ->add(
                         'background',
-                        'sonata_type_model_list',
+                        ModelListType::class,
                         [
-                            'required' => false,
+                            'required'      => false,
+                            'model_manager' => $this->modelManager,
+                            'class'         => Media::class,
                         ],
                         [
                             'link_parameters' => [
@@ -117,7 +121,7 @@ class PageAdmin extends OxaAdmin
                     'required' => false,
                     'disabled' => true,
                 ])
-                ->add('updatedAt', 'sonata_type_datetime_picker', [
+                ->add('updatedAt', DateTimePickerType::class, [
                     'required' => false,
                     'disabled' => true,
                 ])
@@ -133,7 +137,9 @@ class PageAdmin extends OxaAdmin
                 ->with('Status')
                     ->add('url', TextType::class, [
                         'mapped' => false,
-                        'read_only' => true,
+                        'attr' => [
+                            'read_only'     => true,
+                        ],
                         'required' => false,
                         'data' => sprintf(
                             '%s/%s',
@@ -142,15 +148,17 @@ class PageAdmin extends OxaAdmin
                         )
                     ])
                     ->add('slug', null, [
-                        'read_only' => true,
                         'required'  => false,
+                        'attr' => [
+                            'read_only'     => true,
+                        ],
                     ])
                 ->end()
             ;
 
             $formMapper
                 ->with('Body')
-                    ->add('body', 'ckeditor')
+                    ->add('body', CKEditorType::class)
                 ->end()
             ;
         }
@@ -169,7 +177,7 @@ class PageAdmin extends OxaAdmin
         if ($pageCode == PageInterface::CODE_EMERGENCY) {
             $formMapper
                 ->with('Content')
-                    ->add('contentUpdatedAt', 'sonata_type_datetime_picker', [
+                    ->add('contentUpdatedAt', DateTimePickerType::class, [
                         'required' => false,
                         'disabled' => true,
                     ])
@@ -179,7 +187,7 @@ class PageAdmin extends OxaAdmin
                     ])
                     ->add(
                         'links',
-                        'sonata_type_collection',
+                        CollectionType::class,
                         [
                             'by_reference'  => false,
                             'required'      => false,

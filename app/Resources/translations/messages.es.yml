@@ -6,7 +6,7 @@ Videos: Videos
 View more videos: Ver más videos
 infopaginos.copyright: Copyrights © %date%
 infopaginos.image.alt: Infopáginas
-infopaginos.address: 90 Calle San Martin, Rodval Bldg. Suite 201 - Guaynabo, PR 00068-1401
+infopaginos.address: 90 Calle San Martin, Rodval Bldg. Suite 201 - Guaynabo, PR 00968-1401
 PR: PR
 About Us: Acerca de Nosotros
 Contact Us: Contáctenos
@@ -38,6 +38,7 @@ Search whatever you need and find it instantly: Busca lo que necesites y lo encu
 homepage.search_block.title: Encuentra lo que buscas al instante!
 What do you want to find?: ¿Qué está buscando?
 Report a Problem: Reporta un Problema
+Message from the Owner: Mensaje del dueño
 Book Now: Reservar ahora
 I wanted you to see this site: Quería que vieras este sitio
 Search by: Buscar por
@@ -47,9 +48,9 @@ San Juan: San Juan
 Filter by: Filtrar por
 Category: Categoría
 Neighborhoods: Vecindarios
-%searchQuery% in %searchLocationName%: %searchQuery% en %searchLocationName%
-%page%-%amount% of %resultCount% Results: %page%-%amount% de %resultCount% Resultados
-for %searchQuery% in %searchLocationName%: la  %searchQuery% en %searchLocationName%
+%searchQuery% in %searchLocationName%: '%searchQuery% en %searchLocationName%'
+%page%-%amount% of %resultCount% Results: '%page%-%amount% de %resultCount% Resultados'
+for %searchQuery% in %searchLocationName%: 'la  %searchQuery% en %searchLocationName%'
 Sort by: Organizar por
 Relevance: Relevancia
 Distance: Distancia
@@ -57,6 +58,7 @@ Get Direction: Obtener Dirección
 Call: Teléfono
 ActionButtonCall: Llamar
 WebsiteButton: Website
+PopupButton: ¡Presiona Aquí!
 Url: Url
 Reviews: Comentarios
 list: Ok
@@ -78,6 +80,7 @@ Filter: Filtro
 Submit: Enviar
 Confirm: Confirmar
 Business Email: Correo electrónico
+Click here to see this popular %category% product: Clickea aquí para ver un producto popular de %category%
 
 Homepage: Página principal
 User profile: Perfil
@@ -92,13 +95,13 @@ Phone Number: Teléfono
 (787) 594-7273: (787) 594-7273
 Logout: Cerrar sesión
 Twitter: Twitter
-twitter.example.email.placeholder: https://twitter.com/user
+twitter.example.email.placeholder: 'https://twitter.com/user'
 Facebook: Facebook
-facebook.example.email.placeholder: https://www.facebook.com/user
+facebook.example.email.placeholder: 'https://www.facebook.com/user'
 Google Plus: Google Plus
-plus.google.example.email.placeholder: https://plus.google.com/user
+plus.google.example.email.placeholder: 'https://plus.google.com/user'
 Youtube: Youtube
-youtube.example.email.placeholder: https://www.youtube.com/user
+youtube.example.email.placeholder: 'https://www.youtube.com/user'
 No reviews found.: No se encontraron comentarios.
 My Business Profiles: Mis perfiles
 No business profiles found.: No se encontraron perfiles.
@@ -116,7 +119,7 @@ Business Address: Dirección de Negocio
 Sons Notebook: Sons Notebook
 Subscription: Suscripción
 Free: Gratis
-website.example.placeholder: http://sonsnotebook.com
+website.example.placeholder: 'http://sonsnotebook.com'
 Phone number: Teléfono
 Phone: Teléfono
 Ext: Ext
@@ -131,7 +134,7 @@ business.add.product.placeholder: Actualmente El sistema ofrece HIJOS kit de arr
 Brands: Marcas
 Organize, store, plan, prioritize: Organizar, almacenar, planificar, priorizar
 Tags: Tags
-business.add.workingHours.placeholder: lunes - viernes 9 a.m. - 7 p.m. sábado de 9:00 am-2:00pm
+business.add.workingHours.placeholder: 'lunes - viernes 9 a.m. - 7 p.m. sábado de 9:00 am-2:00pm'
 Fullness: Plenitud
 Map: Mapa
 Service Areas: Áreas de servicio
@@ -230,7 +233,7 @@ Photos: Fotos
 Video: Vídeo
 Sorry, no results were found.: Lo sentimos, no se encontraron resultados.
 Home: Casa
-%category% in %city%: %category% en %city%
+%category% in %city%: '%category% en %city%'
 Bookstores in San Juan: Librerías en San Juan
 SONs Notebooks: SONs Cuadernos
 
@@ -276,7 +279,7 @@ Excel: Excel
 Print: Imprimir
 
 Content: Contenido
-business.profile.edit.note: Tenga en cuenta: los cambios se aplicarán después de la aprobación
+business.profile.edit.note: 'Tenga en cuenta: los cambios se aplicarán después de la aprobación'
 Please enter a search term: Por favor, introduzca un término de búsqueda
 business_profile:
   interaction_chart:
@@ -451,19 +454,19 @@ Reset: Reiniciar
 Reason: Razón
 Remove: Eliminar
 Video status pending: El vídeo se está convirtiendo. Se enviará para su aprobación a nuestros administradores y se publicará automáticamente.
-Video status error: Error: fallo de la conversión, vuelve a cargar el vídeo con los formatos siguientes: MP4, WMV, FLV, AVI, MPG, MOV
+Video status error: 'Error: fallo de la conversión, vuelve a cargar el vídeo con los formatos siguientes: MP4, WMV, FLV, AVI, MPG, MOV'
 
 business_profile.names_blank: El campo de nombre debe ser llenado para al menos un idioma
-business_profile.image_count_limit: Error: se han añadido demasiadas imágenes. Máximo conteo de archivos =
+business_profile.image_count_limit: 'Error: se han añadido demasiadas imágenes. Máximo conteo de archivos ='
 business_profile.size_limit: El video es más grande que 128 MB
 business_profile.video.size_limit: El video es más grande que 128 MB
 business_profile.image.size_limit: La imagen es más grande que 10 MB
 business_profile.background.size_limit: La imagen es más grande que 1 MB
-business_profile.url.empty: Error: el campo URL no debe estar vacío.
+business_profile.url.empty: 'Error: el campo URL no debe estar vacío.'
 business_profile.video_count_limit: Solo se puede subir un vídeo a la vez
 business_profile.max_length: Por favor, use max {{ limit }} símbolos
-business_profile.logo.image_count_limit: Error: sólo se permite un solo logotipo
-business_profile.background.image_count_limit: Error: sólo se permite un fondo único
+business_profile.logo.image_count_limit: 'Error: sólo se permite un solo logotipo'
+business_profile.background.image_count_limit: 'Error: sólo se permite un fondo único'
 business_profile.lang.es: en espanol
 business_profile.lang.en: en ingles
 
@@ -507,7 +510,6 @@ interaction_report.event.impression: Impresiones
 interaction_report.button.direction: Direcciones
 interaction_report.button.show_map: Mostrar en el Mapa
 interaction_report.button.marker_map: Marcador en el Mapa
-interaction_report.button.web: Web
 interaction_report.button.web: Acción Web
 interaction_report.button.call_mob: Llamar (mob)
 interaction_report.button.call_desk: Llamada (escritorio)
@@ -606,8 +608,8 @@ form.collectionWorkingHours.overlap: Las horas de trabajo no deben superponerse
 form.collectionWorkingHours.duration: Inicio de tiempo debe ser más que tiempo final
 form.collectionWorkingHours.blank: El tiempo no debe estar en blanco
 business_profile.category.required: Este campo es obligatorio
-business_profile.category.max: Este campo debe contener 3 elementos o menos
-business_profile.category.free_hint: Categorías (Máximo 3 categorías)
+business_profile.category.max: Este campo debe contener 1 elemento
+business_profile.category.free_hint: Categoría (Máximo 1 categoría)
 business_custom_field_item.exist: Ya utilizado en los perfiles de negocios %businessProfiles%
 
 # reset password form
@@ -615,7 +617,7 @@ user:
   reset_password:
     token:
       invalid: Actualmente no tienes un enlace válido para actualizar tu contraseña.
-      empty: Error: Vaciar símbolo.
+      empty: 'Error: Vaciar símbolo.'
   auth:
     validation_failure: Error de validación
     registration_success: Successfully registered. Please login with your credentials
@@ -644,8 +646,6 @@ TripAdvisor: TripAdvisor
 
 popular_searches.title: Búsquedas populares
 mapbox.current_user_position.label: Ubicación actual
-mapbox.menu.streets: Calles
-mapbox.menu.satellite: Satélite
 mapbox.profile.driving_traffic: Conducir-trafico
 mapbox.profile.driving_traffic_info: Para enrutamiento automotriz. Este perfil influye en las condiciones de tráfico actuales e históricas para evitar desaceleraciones.
 mapbox.profile.cycling: Ciclismo
@@ -724,7 +724,6 @@ emergency.business_draft.area.title: Área
 emergency.business_draft.address: Dirección completa
 emergency.business_draft.working_hours: Horario
 emergency.business_draft.payment.placeholder: Comienza a escribir
-emergency.business_draft.payment.placeholder: Comienza a escribir
 emergency.business_draft.payment.title: Métodos de pago
 emergency.business_draft.category.title.others: Otros
 emergency.business_draft.message.created: ¡Gracias! Nuestro equipo revisará la información y la subiremos a nuestra lista lo antes posible
@@ -760,3 +759,6 @@ user_profile:
     to_make_more_popular: ¿Quieres hacer tu negocio más popular?
     give_phone: Por favor denos su número de teléfono para que podamos contactarlo con una oferta única
 use_gps: Usa el GPS
+
+registration_success: ¡Gracias por Registrarte! ¡Crea el perfil de tu negocio ahora!
+user.profile.registration.success: Los cambios están guardados. Puede crear su perfil de negocio ahora.

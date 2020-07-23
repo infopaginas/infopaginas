@@ -4,41 +4,48 @@ namespace Domain\BusinessBundle\Twig\Extension;
 
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\SubscriptionPlan;
-use Domain\BusinessBundle\Model\SubscriptionPlanInterface;
+use Twig\Extension\AbstractExtension;
+use Twig\TwigFunction;
 
 /**
  * Class ConfigExtension
  * @package Oxa\ConfigBundle\Twig\Extension
  */
-class HasSubscriptionExtension extends \Twig_Extension
+class HasSubscriptionExtension extends AbstractExtension
 {
     /**
      * @return array
      */
     public function getFunctions()
     {
-        return array(
-            'hasSubscription' => new \Twig_Function_Method(
-                $this,
-                'isSubscribed',
+        return [
+            new TwigFunction(
+                'hasSubscription',
                 [
-                    'needs_environment'=> true,
-                    'is_safe' => [
-                        'all'
-                    ]
+                    $this,
+                    'isSubscribed',
+                ],
+                [
+                    'needs_environment' => true,
+                    'is_safe'           => [
+                        'all',
+                    ],
                 ]
             ),
-            'getItemSubscriptionClass' => new \Twig_Function_Method(
-                $this,
+            new TwigFunction(
                 'getItemSubscriptionClass',
                 [
-                    'needs_environment'=> true,
-                    'is_safe' => [
-                        'all'
-                    ]
+                    $this,
+                    'getItemSubscriptionClass',
+                ],
+                [
+                    'needs_environment' => true,
+                    'is_safe'           => [
+                        'all',
+                    ],
                 ]
             ),
-        );
+        ];
     }
 
     public function isSubscribed($env, BusinessProfile $profile, $subscriptionPlan)

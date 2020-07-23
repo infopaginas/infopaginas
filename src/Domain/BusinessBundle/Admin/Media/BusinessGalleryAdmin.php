@@ -4,14 +4,13 @@ namespace Domain\BusinessBundle\Admin\Media;
 
 use Domain\BusinessBundle\Entity\Media\BusinessGallery;
 use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
-use Sonata\AdminBundle\Admin\Admin;
+use Oxa\Sonata\MediaBundle\Entity\Media;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
-use Sonata\AdminBundle\Route\RouteCollection;
+use Sonata\AdminBundle\Form\Type\ModelListType;
 use Sonata\AdminBundle\Show\ShowMapper;
-use Sonata\CoreBundle\Validator\ErrorElement;
-use Oxa\Sonata\MediaBundle\Model\OxaMediaInterface;
+use Sonata\Form\Validator\ErrorElement;
 
 class BusinessGalleryAdmin extends OxaAdmin
 {
@@ -60,12 +59,23 @@ class BusinessGalleryAdmin extends OxaAdmin
         }
 
         $formMapper
-            ->add('media', 'sonata_type_model_list', ['required' => true], ['link_parameters' => [
-                'required' => true,
-                'context' => 'business_profile_images',
-                'provider' => 'sonata.media.provider.image',
-                'allow_switch_context' => false
-            ]])
+            ->add(
+                'media',
+                ModelListType::class,
+                [
+                    'required'      => true,
+                    'model_manager' => $this->modelManager,
+                    'class'         => Media::class,
+                ],
+                [
+                    'link_parameters' => [
+                        'required'             => true,
+                        'context'              => 'business_profile_images',
+                        'provider'             => 'sonata.media.provider.image',
+                        'allow_switch_context' => false,
+                    ],
+                ]
+            )
             ->add('description', null, ['attr' => [
                 'rows'          => 2,
                 'cols'          => 100,

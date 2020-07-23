@@ -39,3 +39,9 @@
         <span>{{ item.actionUrlTypes[item.actionUrlType]|trans|purify }}</span>
     </a>
 {% endif %}
+{% if hasSubscription(item, "CODE_PREMIUM_PLATINUM") and item.hasOwnersMessage() %}
+    <a href="#" class="button button--small button--featured link-pointer vertical-left-separator buttons-width" data-show-modal-id="ownersMessageModal" data-bw-gtm-event-click data-bw-gtm-label="{% trans %}Message from the Owner{% endtrans %}">
+        <i class="fa fa-video-camera"></i>
+        <span>{% trans %}Message from the Owner{% endtrans %}</span>
+    </a>
+{% endif %}

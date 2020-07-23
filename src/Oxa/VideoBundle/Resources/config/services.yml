@@ -1,8 +1,4 @@
 services:
-    #services section
-    oxa.service.http_client:
-        class: GuzzleHttp\Client
-
     #managers section
     oxa.manager.video:
         class: Oxa\VideoBundle\Manager\VideoManager
@@ -38,30 +34,28 @@ services:
         class: Oxa\VideoBundle\Form\Type\FileUploadType
         arguments: [null]
         tags:
-        - { name: form.type, alias: oxa_video_bundle_file_upload_form_type }
+        - { name: form.type }
 
     oxa_video.form.type.url_file_upload:
         class: Oxa\VideoBundle\Form\Type\UrlUploadType
         arguments: [null]
         tags:
-        - { name: form.type, alias: oxa_video_bundle_url_upload_form_type }
+        - { name: form.type }
 
     #forms section
     domain_business.form.local_file_upload:
-        factory_method: createNamed
-        factory_service: form.factory
+        factory: ['@form.factory', 'createNamed']
         class: Symfony\Component\Form\Form
         arguments:
-            - 'oxa_video_bundle_file_upload_form_type'
-            - 'oxa_video_bundle_file_upload_form_type'
+            - 'file_upload'
+            - 'Oxa\VideoBundle\Form\Type\FileUploadType'
 
     domain_business.form.url_file_upload:
-        factory_method: createNamed
-        factory_service: form.factory
+        factory: ['@form.factory', 'createNamed']
         class: Symfony\Component\Form\Form
         arguments:
-            - 'oxa_video_bundle_url_upload_form_type'
-            - 'oxa_video_bundle_url_upload_form_type'
+            - 'url_upload'
+            - 'Oxa\VideoBundle\Form\Type\UrlUploadType'
 
     #form handlers section
     domain_business.form.handler.local_file_upload:
@@ -69,7 +63,7 @@ services:
         scope: request
         arguments:
             - '@domain_business.form.local_file_upload'
-            - '@request'
+            - '@request_stack'
             - '@oxa.manager.video'
 
     domain_business.form.handler.url_file_upload:
@@ -77,5 +71,5 @@ services:
         scope: request
         arguments:
             - '@domain_business.form.url_file_upload'
-            - '@request'
+            - '@request_stack'
             - '@oxa.manager.video'

@@ -9,7 +9,7 @@ define(['jquery', 'bootstrap', 'business/tools/form', 'tools/spin', 'tools/selec
             getLocalityByCoord: Routing.generate( 'domain_search_closest_locality_by_coord' ),
         };
 
-        this.freeProfileFormName = 'domain_business_bundle_business_profile_form_type';
+        this.freeProfileFormName = 'business_profile_form';
 
         this.html = {
             buttons: {
@@ -341,7 +341,7 @@ define(['jquery', 'bootstrap', 'business/tools/form', 'tools/spin', 'tools/selec
             return [ value.id ];
         });
 
-        var categories = $( '#domain_business_bundle_business_profile_form_type_categoryIds' ).selectize({
+        var categories = $( '#business_profile_form_categoryIds' ).selectize({
             plugins: ['remove_button'],
             delimiter: ',',
             persist: true,

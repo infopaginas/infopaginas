@@ -2,19 +2,23 @@
 
 namespace Domain\EmergencyBundle\Admin;
 
+use Domain\BusinessBundle\Entity\Area;
 use Domain\BusinessBundle\Entity\BusinessProfile;
+use Domain\BusinessBundle\Entity\Category;
+use Domain\BusinessBundle\Form\Type\GoogleMapType;
 use Domain\BusinessBundle\Validator\Constraints\BusinessProfileWorkingHourTypeValidator;
+use Domain\EmergencyBundle\Entity\EmergencyArea;
 use Domain\EmergencyBundle\Entity\EmergencyBusiness;
+use Domain\EmergencyBundle\Entity\EmergencyCategory;
 use Oxa\ConfigBundle\Model\ConfigInterface;
 use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
+use Sonata\Form\Type\CollectionType;
+use Sonata\AdminBundle\Form\Type\ModelListType;
 use Sonata\AdminBundle\Route\RouteCollection;
 use Sonata\AdminBundle\Show\ShowMapper;
-use Sonata\CoreBundle\Form\Type\BooleanType;
-use Sonata\CoreBundle\Form\Type\EqualType;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -160,7 +164,7 @@ class EmergencyBusinessAdmin extends OxaAdmin
             ->with('Working hours')
                 ->add(
                     'collectionWorkingHours',
-                    'sonata_type_collection',
+                    CollectionType::class,
                     [
                         'by_reference'  => false,
                         'required'      => false,
@@ -199,15 +203,19 @@ class EmergencyBusinessAdmin extends OxaAdmin
                 ])
             ->end()
             ->with('Catalog')
-                ->add('area', 'sonata_type_model_list', [
+                ->add('area', ModelListType::class, [
                     'required'      => true,
                     'btn_delete'    => false,
                     'btn_add'       => false,
+                    'model_manager' => $this->modelManager,
+                    'class'         => EmergencyArea::class,
                 ])
-                ->add('category', 'sonata_type_model_list', [
+                ->add('category', ModelListType::class, [
                     'required'      => true,
                     'btn_delete'    => false,
                     'btn_add'       => false,
+                    'model_manager' => $this->modelManager,
+                    'class'         => EmergencyCategory::class,
                 ])
             ->end()
         ;
@@ -227,7 +235,7 @@ class EmergencyBusinessAdmin extends OxaAdmin
             ->with('Map')
                 ->add('latitude')
                 ->add('longitude')
-                ->add('map', 'google_map', [
+                ->add('map', GoogleMapType::class, [
                     'latitude'  => $latitude,
                     'longitude' => $longitude,
                     'mapped'    => false,

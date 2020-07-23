@@ -33,7 +33,7 @@ class PasswordUpdateType extends AbstractType
                 ],
             ])
             ->add('newPassword', RepeatedType::class, [
-                'type' => 'password',
+                'type' => PasswordType::class,
                 'first_options'  => [
                     'attr' => [
                         'class'       => 'form-control',
@@ -52,13 +52,5 @@ class PasswordUpdateType extends AbstractType
                     new Length(['min' => 6, 'minMessage' => 'user.password.min_length']),
                 ],
             ]);
-    }
-
-    /**
-     * @return string
-     */
-    public function getName() : string
-    {
-        return 'domain_site_user_password_update';
     }
 }

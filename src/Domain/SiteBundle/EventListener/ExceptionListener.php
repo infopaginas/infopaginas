@@ -9,6 +9,8 @@ use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 
 class ExceptionListener
 {
+    private const INVALID_METHOD_OVERRIDE_MESSAGE = 'Invalid method override';
+
     protected $mailer;
     protected $logger;
 
@@ -22,24 +24,28 @@ class ExceptionListener
     {
         $exception = $exceptionEvent->getException();
 
-        if (method_exists($exception, 'getStatusCode') && $exception->getStatusCode() >= 400
+        if (
+            method_exists($exception, 'getStatusCode') && $exception->getStatusCode() >= 400
             && $exception->getStatusCode() != 404
             && $exception->getStatusCode() != 410
         ) {
             $date = new \DateTime();
 
-            $this->mailer->sendErrorNotification(
-                [
-                    'date' => $date->format(DatesUtil::DATETIME_FORMAT),
-                    'url' => $exceptionEvent->getRequest()->getUri(),
-                    'errorCode' => $exception->getStatusCode(),
-                ]
-            );
+            if (strpos($exception->getMessage(), self::INVALID_METHOD_OVERRIDE_MESSAGE) === false) {
+                $this->mailer->sendErrorNotification(
+                    [
+                        'date' => $date->format(DatesUtil::DATETIME_FORMAT),
+                        'url' => $exceptionEvent->getRequest()->getUri(),
+                        'errorCode' => $exception->getStatusCode(),
+                    ]
+                );
+            }
 
             $this->logger->error(
                 'HttpErrorCode: ' . $exception->getStatusCode() . ' ' . $exceptionEvent->getRequest()->getUri(),
                 [
                     'content' => $exceptionEvent->getRequest()->getContent(),
+                    'message' => $exception->getMessage(),
                 ]
             );
         }

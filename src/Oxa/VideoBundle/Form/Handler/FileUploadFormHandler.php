@@ -3,37 +3,31 @@
 namespace Oxa\VideoBundle\Form\Handler;
 
 use Oxa\ManagerArchitectureBundle\Form\Handler\BaseFormHandler;
-use Oxa\ManagerArchitectureBundle\Model\Interfaces\FormHandlerInterface;
 use Oxa\VideoBundle\Manager\VideoManager;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
  * Class FileUploadFormHandler
  * @package Oxa\VideoBundle\Form\Handler
  */
-class FileUploadFormHandler extends BaseFormHandler implements FormHandlerInterface
+class FileUploadFormHandler extends BaseFormHandler
 {
     /** @var FormInterface */
     private $form;
 
-    /** @var Request */
-    private $request;
+    /** @var RequestStack */
+    private $requestStack;
 
     /** @var VideoManager */
     private $videoManager;
-
-    /**
-     * FileUploadFormHandler constructor.
-     * @param FormInterface $form
-     * @param Request $request
-     * @param VideoManager $videoManager
-     */
-    public function __construct(FormInterface $form, Request $request, VideoManager $videoManager)
+    
+    public function __construct(FormInterface $form, RequestStack $requestStack, VideoManager $videoManager)
     {
         $this->form         = $form;
-        $this->request      = $request;
+        $this->requestStack = $requestStack;
         $this->videoManager = $videoManager;
     }
 
@@ -42,8 +36,8 @@ class FileUploadFormHandler extends BaseFormHandler implements FormHandlerInterf
      */
     public function process() : bool
     {
-        if ($this->request->getMethod() == Request::METHOD_POST) {
-            $this->form->handleRequest($this->request);
+        if ($this->requestStack->getCurrentRequest()->getMethod() == Request::METHOD_POST) {
+            $this->form->handleRequest($this->requestStack->getCurrentRequest());
 
             if ($this->form->isValid()) {
                 $file = $this->form['file']->getData();
@@ -55,18 +49,12 @@ class FileUploadFormHandler extends BaseFormHandler implements FormHandlerInterf
         return false;
     }
 
-    /**
-     * @param UploadedFile $file
-     */
-    private function onSuccess(UploadedFile $file)
+    private function onSuccess(UploadedFile $file): void
     {
-        $res = $this->getVideoManager()->uploadLocalFile($file);
+        $this->getVideoManager()->uploadLocalFile($file);
     }
 
-    /**
-     * @return VideoManager
-     */
-    private function getVideoManager() : VideoManager
+    private function getVideoManager(): VideoManager
     {
         return $this->videoManager;
     }

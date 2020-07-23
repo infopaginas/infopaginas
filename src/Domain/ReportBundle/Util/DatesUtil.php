@@ -3,7 +3,7 @@
 namespace Domain\ReportBundle\Util;
 
 use Domain\ReportBundle\Model\DataType\ReportDatesRangeVO;
-use Google\AdsApi\Dfp\v201702\DateRangeType;
+use Google\AdsApi\AdManager\v201911\DateRangeType;
 use Oxa\Sonata\AdminBundle\Util\Helpers\AdminHelper;
 
 /**
@@ -12,34 +12,30 @@ use Oxa\Sonata\AdminBundle\Util\Helpers\AdminHelper;
  */
 class DatesUtil
 {
-    const STEP_DAY   = '+1 day';
-    const STEP_WEEK  = '+7 days';
-    const STEP_MONTH = '+1 month';
+    public const STEP_DAY   = '+1 day';
+    public const STEP_WEEK  = '+7 days';
+    public const STEP_MONTH = '+1 month';
 
-    const DEFAULT_PERIOD = '-30 days';
+    public const RANGE_TODAY = 'today';
+    public const RANGE_THIS_WEEK = 'this_week';
+    public const RANGE_LAST_WEEK = 'last_week';
+    public const RANGE_THIS_MONTH = 'this_month';
+    public const RANGE_LAST_MONTH = 'last_month';
+    public const RANGE_LAST_3_MONTH  = 'last_3_month';
+    public const RANGE_LAST_6_MONTH  = 'last_6_month';
+    public const RANGE_LAST_12_MONTH = 'last_12_month';
+    public const RANGE_LAST_30_DAYS = 'last_30_days';
+    public const RANGE_CUSTOM = 'custom';
 
-    const RANGE_TODAY = 'today';
-    const RANGE_THIS_WEEK = 'this_week';
-    const RANGE_LAST_WEEK = 'last_week';
-    const RANGE_THIS_MONTH = 'this_month';
-    const RANGE_LAST_MONTH = 'last_month';
-    const RANGE_LAST_3_MONTH  = 'last_3_month';
-    const RANGE_LAST_6_MONTH  = 'last_6_month';
-    const RANGE_LAST_12_MONTH = 'last_12_month';
-    const RANGE_LAST_30_DAYS = 'last_30_days';
-    const RANGE_CUSTOM = 'custom';
+    public const RANGE_YESTERDAY = 'yesterday';
+    public const RANGE_LAST_HOUR = 'last_hour';
 
-    const RANGE_YESTERDAY = 'yesterday';
-    const RANGE_LAST_HOUR = 'last_hour';
+    public const RANGE_THIS_YEAR = 'this_year';
+    public const RANGE_LAST_YEAR = 'last_year';
 
-    const RANGE_THIS_YEAR = 'this_year';
-    const RANGE_LAST_YEAR = 'last_year';
-
-    const RANGE_DEFAULT = 'this_week';
-
-    const START_END_DATE_ARRAY_FORMAT = 'd-m-Y';
-    const DATE_DB_FORMAT              = 'Y-m-d';
-    const DATETIME_FORMAT             = 'Y-m-d H:i:s';
+    public const START_END_DATE_ARRAY_FORMAT = 'd-m-Y';
+    public const DATE_DB_FORMAT              = 'Y-m-d';
+    public const DATETIME_FORMAT             = 'Y-m-d H:i:s';
 
     /**
      * @return array
@@ -116,7 +112,7 @@ class DatesUtil
                 $end = new \DateTime('last day of December ' . date('Y'));
                 break;
             case self::RANGE_LAST_YEAR:
-                $start = new \DateTime('first day of January ' . (date('Y') -1));
+                $start = new \DateTime('first day of January ' . (date('Y') - 1));
                 $end = new \DateTime('last day of December ' . (date('Y') - 1));
                 break;
             case self::RANGE_YESTERDAY:
@@ -170,7 +166,7 @@ class DatesUtil
      *
      * @return ReportDatesRangeVO
      */
-    public static function getDateRangeVOFromDateString(string $start, string $end) : ReportDatesRangeVO
+    public static function getDateRangeVOFromDateString(string $start, string $end): ReportDatesRangeVO
     {
         $startDate = \DateTime::createFromFormat(DatesUtil::START_END_DATE_ARRAY_FORMAT, $start);
         $endDate = \DateTime::createFromFormat(DatesUtil::START_END_DATE_ARRAY_FORMAT, $end);
@@ -220,7 +216,7 @@ class DatesUtil
         $rangeVO,
         string $step = '+1 day',
         string $outputFormat = 'd.m.Y'
-    ) : array {
+    ): array {
         $dates = [];
 
         if ($step == self::STEP_DAY) {

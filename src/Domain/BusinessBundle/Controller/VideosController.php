@@ -218,7 +218,7 @@ class VideosController extends Controller
      */
     private function getEditVideoForm(BusinessProfile $businessProfile, VideoMedia $media) : FormInterface
     {
-        $form = $this->createForm(new BusinessProfileFormType(), $businessProfile);
+        $form = $this->createForm(BusinessProfileFormType::class, $businessProfile);
 
         $videoForm = $form->get('video')->setData($media);
 

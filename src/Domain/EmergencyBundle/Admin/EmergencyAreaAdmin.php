@@ -46,7 +46,9 @@ class EmergencyAreaAdmin extends OxaAdmin
         $formMapper
             ->add('name')
             ->add('slug', null, [
-                'read_only' => true,
+                'attr' => [
+                    'read_only' => true,
+                ],
                 'required'  => false
             ])
         ;

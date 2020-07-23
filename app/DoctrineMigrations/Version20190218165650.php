@@ -2,7 +2,7 @@
 
 namespace Application\Migrations;
 
-use Doctrine\DBAL\Migrations\AbstractMigration;
+use Doctrine\Migrations\AbstractMigration;
 use Doctrine\DBAL\Schema\Schema;
 use Oxa\ConfigBundle\Model\ConfigInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
@@ -17,7 +17,7 @@ class Version20190218165650 extends AbstractMigration implements ContainerAwareI
         $this->container = $container;
     }
 
-    public function up(Schema $schema)
+    public function up(Schema $schema): void
     {
         $googleApiKey = 'GOOGLE_API_KEY';
         $mapboxDescription = 'Used for access to MapBox';
@@ -38,7 +38,7 @@ class Version20190218165650 extends AbstractMigration implements ContainerAwareI
             WHERE key = \'' . ConfigInterface::DEFAULT_MAP_COORDINATE_LONGITUDE . '\'');
     }
 
-    public function down(Schema $schema)
+    public function down(Schema $schema): void
     {
 
     }

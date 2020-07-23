@@ -45,6 +45,7 @@ class BusinessProfileCsvExporter extends CsvPostponedExporterModel
 
             $this->generateMainTable($item);
             $this->counter++;
+            $this->em->clear();
 
             if ($this->counter >= self::MAX_ROW_PER_FILE) {
                 $this->isNewPage = true;

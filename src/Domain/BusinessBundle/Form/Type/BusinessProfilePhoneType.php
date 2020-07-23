@@ -8,9 +8,6 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Misd\PhoneNumberBundle\Validator\Constraints\PhoneNumber as PhoneNumber;
-use Symfony\Component\Validator\Constraints\Length;
-use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Regex;
 
 /**
@@ -63,13 +60,5 @@ class BusinessProfilePhoneType extends AbstractType
             'data_class' => 'Domain\BusinessBundle\Entity\BusinessProfilePhone',
             'allow_extra_fields' => true,
         ]);
-    }
-
-    /**
-     * @return string
-     */
-    public function getName()
-    {
-        return 'domain_business_bundle_business_profile_phone_type';
     }
 }

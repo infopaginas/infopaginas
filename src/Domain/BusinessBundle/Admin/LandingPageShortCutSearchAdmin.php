@@ -9,6 +9,7 @@ use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Show\ShowMapper;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 
 class LandingPageShortCutSearchAdmin extends OxaAdmin
 {
@@ -98,7 +99,7 @@ class LandingPageShortCutSearchAdmin extends OxaAdmin
                     'label' => 'Title Spanish',
                 ])
             ->end()
-            ->add('position', 'hidden', [
+            ->add('position', HiddenType::class, [
                 'attr' => [
                     'hidden' => true,
                 ]

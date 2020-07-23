@@ -31,12 +31,4 @@ class ResetPasswordRequestType extends AbstractType
             ],
         ]);
     }
-
-    /**
-     * @return string
-     */
-    public function getName() : string
-    {
-        return 'domain_site_reset_password_request';
-    }
 }

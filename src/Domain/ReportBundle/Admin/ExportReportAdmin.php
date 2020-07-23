@@ -8,9 +8,6 @@ use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Route\RouteCollection;
 use Sonata\AdminBundle\Show\ShowMapper;
-use Sonata\CoreBundle\Form\Type\BooleanType;
-use Sonata\CoreBundle\Form\Type\EqualType;
-use Sonata\AdminBundle\Datagrid\ProxyQueryInterface;
 
 /**
  * Class ExportReportAdmin

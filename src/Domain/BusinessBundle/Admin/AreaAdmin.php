@@ -2,14 +2,14 @@
 
 namespace Domain\BusinessBundle\Admin;
 
-use Domain\BusinessBundle\Entity\Area;
-use Domain\BusinessBundle\Entity\BusinessProfile;
 use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
-use Sonata\AdminBundle\Admin\Admin;
+use Oxa\Sonata\AdminBundle\Filter\CaseInsensitiveStringFilter;
+use Oxa\Sonata\AdminBundle\Filter\DateTimeRangeFilter;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Show\ShowMapper;
+use Sonata\Form\Type\DateTimePickerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 class AreaAdmin extends OxaAdmin
@@ -27,10 +27,10 @@ class AreaAdmin extends OxaAdmin
     {
         $datagridMapper
             ->add('id')
-            ->add('name', null, [
+            ->add('name', CaseInsensitiveStringFilter::class, [
                 'show_filter' => true,
             ])
-            ->add('updatedAt', 'doctrine_orm_datetime_range', $this->defaultDatagridDateTypeOptions)
+            ->add('updatedAt', DateTimeRangeFilter::class, $this->defaultDatagridDateTypeOptions)
             ->add('updatedUser')
         ;
     }
@@ -57,7 +57,7 @@ class AreaAdmin extends OxaAdmin
     {
         $formMapper
             ->add('name')
-            ->add('updatedAt', 'sonata_type_datetime_picker', [
+            ->add('updatedAt', DateTimePickerType::class, [
                 'required' => false,
                 'disabled' => true
             ])

@@ -2,14 +2,14 @@ services:
     #hwioauth user provider
     oxa.user.oauth_provider:
         class: Oxa\Sonata\UserBundle\Security\Core\User\FOSUBUserProvider
-        arguments: [@fos_user.user_manager, {facebook: facebookId, google: googleId}]
+        arguments: ['@fos_user.user_manager', {facebook: facebookId, google: googleId}]
         calls:
             - [setEntityManager, ['@doctrine.orm.entity_manager']]
 
     #handlers section
     oxa.user.authentication_handler:
         class:        Oxa\Sonata\UserBundle\Handler\AuthenticationHandler
-        arguments:    ['@translator', '@router', '@security.context']
+        arguments:    ['@translator', '@router', '@security.authorization_checker']
 
     oxa.user.logout_handler:
         class:        Oxa\Sonata\UserBundle\Handler\LogoutHandler

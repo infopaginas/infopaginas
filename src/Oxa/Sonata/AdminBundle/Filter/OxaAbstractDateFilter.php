@@ -2,9 +2,10 @@
 
 namespace Oxa\Sonata\AdminBundle\Filter;
 
+use Sonata\AdminBundle\Form\Type\Operator\DateOperatorType;
+use Sonata\AdminBundle\Form\Type\Operator\DateRangeOperatorType;
 use Sonata\DoctrineORMAdminBundle\Filter\AbstractDateFilter;
 use Sonata\AdminBundle\Form\Type\Filter\DateType;
-use Sonata\AdminBundle\Form\Type\Filter\DateRangeType;
 use Sonata\AdminBundle\Datagrid\ProxyQueryInterface;
 
 abstract class OxaAbstractDateFilter extends AbstractDateFilter
@@ -52,12 +53,12 @@ abstract class OxaAbstractDateFilter extends AbstractDateFilter
 
             // default type for range filter
             $data['type'] = !isset($data['type']) || !is_numeric($data['type'])
-                ? DateRangeType::TYPE_BETWEEN
+                ? DateRangeOperatorType::TYPE_BETWEEN
                 : $data['type'];
             $startDateParameterName = $this->getNewParameterName($queryBuilder);
             $endDateParameterName = $this->getNewParameterName($queryBuilder);
 
-            if ($data['type'] == DateRangeType::TYPE_NOT_BETWEEN) {
+            if ($data['type'] == DateRangeOperatorType::TYPE_NOT_BETWEEN) {
                 $this->applyWhere(
                     $queryBuilder,
                     sprintf(
@@ -99,7 +100,7 @@ abstract class OxaAbstractDateFilter extends AbstractDateFilter
             }
 
             // default type for simple filter
-            $data['type'] = !isset($data['type']) || !is_numeric($data['type']) ? DateType::TYPE_EQUAL : $data['type'];
+            $data['type'] = !isset($data['type']) || !is_numeric($data['type']) ? DateOperatorType::TYPE_EQUAL : $data['type'];
             // just find an operator and apply query
             $operator = $this->getOperator($data['type']);
 
@@ -118,7 +119,7 @@ abstract class OxaAbstractDateFilter extends AbstractDateFilter
             $parameterName = $this->getNewParameterName($queryBuilder);
 
             // date filter should filter records for the whole day
-            if ($this->time === false && $data['type'] == DateType::TYPE_EQUAL) {
+            if ($this->time === false && $data['type'] == DateOperatorType::TYPE_EQUAL) {
                 $this->applyWhere($queryBuilder, sprintf('%s.%s %s :%s', $alias, $field, '>=', $parameterName));
                 $queryBuilder->setParameter($parameterName, $data['value']);
                 $endDateParameterName = $this->getNewParameterName($queryBuilder);

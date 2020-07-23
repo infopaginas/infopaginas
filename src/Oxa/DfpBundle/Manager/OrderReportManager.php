@@ -2,30 +2,30 @@
 
 namespace Oxa\DfpBundle\Manager;
 
-use Google\AdsApi\Dfp\DfpServices;
-use Google\AdsApi\Dfp\Util\v201702\ReportDownloader;
-use Google\AdsApi\Dfp\v201702\Column;
-use Google\AdsApi\Dfp\v201702\Dimension;
-use Google\AdsApi\Dfp\v201702\ExportFormat;
-use Google\AdsApi\Dfp\v201702\ReportJob;
-use Google\AdsApi\Dfp\v201702\ReportQuery;
-use Google\AdsApi\Dfp\v201702\ReportService;
+use Google\AdsApi\AdManager\AdManagerServices;
+use Google\AdsApi\AdManager\Util\v201911\ReportDownloader;
+use Google\AdsApi\AdManager\v201911\Column;
+use Google\AdsApi\AdManager\v201911\Dimension;
+use Google\AdsApi\AdManager\v201911\ExportFormat;
+use Google\AdsApi\AdManager\v201911\ReportJob;
+use Google\AdsApi\AdManager\v201911\ReportQuery;
+use Google\AdsApi\AdManager\v201911\ReportService;
 
 class OrderReportManager
 {
-    const CSV_LINE_DELIMITER = "\n";
-    const CSV_ITEM_DELIMITER = ',';
+    public const DIMENSION_DATE                  = 0;
+    public const DIMENSION_DEVICE_CATEGORY_NAME  = 1;
+    public const DIMENSION_DEVICE_CATEGORY_ID    = 2;
+    public const DIMENSION_ORDER_ID              = 3;
 
-    const DIMENSION_DATE                  = 0;
-    const DIMENSION_DEVICE_CATEGORY_NAME  = 1;
-    const DIMENSION_DEVICE_CATEGORY_ID    = 2;
-    const DIMENSION_ORDER_ID              = 3;
+    public const COLUMN_CLICKS                   = 4;
+    public const COLUMN_IMPRESSIONS              = 5;
+    public const COLUMN_CTR                      = 6;
 
-    const COLUMN_CLICKS                   = 4;
-    const COLUMN_IMPRESSIONS              = 5;
-    const COLUMN_CTR                      = 6;
+    private const TEMP_FILE_PREFIX = 'dcr';
 
-    const TEMP_FILE_PREFIX = 'dcr';
+    private const CSV_LINE_DELIMITER = "\n";
+    private const CSV_ITEM_DELIMITER = ',';
 
     /* auth dfp session */
     protected $dfpSession;
@@ -79,7 +79,7 @@ class OrderReportManager
 
     protected function downloadReport($period)
     {
-        $dfpServices = new DfpServices();
+        $dfpServices = new AdManagerServices();
 
         $reportService = $dfpServices->get($this->dfpSession, ReportService::class);
 

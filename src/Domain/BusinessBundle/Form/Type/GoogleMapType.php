@@ -68,12 +68,4 @@ class GoogleMapType extends AbstractType
     {
         return TextType::class;
     }
-
-    /**
-     * @return string
-     */
-    public function getName()
-    {
-        return 'google_map';
-    }
 }

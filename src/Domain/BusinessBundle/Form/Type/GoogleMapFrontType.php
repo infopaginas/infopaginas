@@ -77,12 +77,4 @@ class GoogleMapFrontType extends AbstractType
     {
         return TextType::class;
     }
-
-    /**
-     * @return string
-     */
-    public function getName()
-    {
-        return 'google_map_front';
-    }
 }

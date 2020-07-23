@@ -6,12 +6,14 @@ use Domain\PageBundle\Entity\Page;
 use Domain\ReportBundle\Entity\FeedbackReport;
 use Domain\ReportBundle\Manager\FeedbackReportManager;
 use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
+use Oxa\Sonata\AdminBundle\Filter\CaseInsensitiveStringFilter;
+use Oxa\Sonata\AdminBundle\Filter\DateRangeFilter;
 use Oxa\Sonata\AdminBundle\Util\Helpers\AdminHelper;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
-use Sonata\AdminBundle\Form\FormMapper;
-use Sonata\AdminBundle\Route\RouteCollection;
-use Sonata\AdminBundle\Show\ShowMapper;
+use Sonata\Form\Type\DateRangePickerType;
+use Sonata\DoctrineORMAdminBundle\Filter\ChoiceFilter;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 /**
  * Class FeedbackReportAdmin
@@ -61,59 +63,58 @@ class FeedbackReportAdmin extends ReportAdmin
     protected function configureDatagridFilters(DatagridMapper $datagridMapper)
     {
         $datagridMapper
-            ->add('fullName', 'doctrine_orm_string', [
+            ->add('fullName', CaseInsensitiveStringFilter::class, [
                 'show_filter' => !empty($this->datagridValues['fullName']['value']) ?: null,
                 'field_options' => [
                     'mapped'    => false,
                 ],
             ])
-            ->add('businessName', 'doctrine_orm_string', [
+            ->add('businessName', CaseInsensitiveStringFilter::class, [
                 'show_filter' => !empty($this->datagridValues['businessName']['value']) ?: null,
                 'field_options' => [
                     'mapped'    => false,
                 ],
             ])
-            ->add('phone', 'doctrine_orm_string', [
+            ->add('phone', CaseInsensitiveStringFilter::class, [
                 'show_filter' => !empty($this->datagridValues['phone']['value']) ?: null,
                 'field_options' => [
                     'mapped'    => false,
                 ],
             ])
-            ->add('email', 'doctrine_orm_string', [
+            ->add('email', CaseInsensitiveStringFilter::class, [
                 'show_filter' => !empty($this->datagridValues['email']['value']) ?: null,
                 'field_options' => [
                     'mapped'    => false,
                 ],
             ])
-            ->add('message', 'doctrine_orm_string', [
+            ->add('message', CaseInsensitiveStringFilter::class, [
                 'show_filter' => !empty($this->datagridValues['message']['value']) ?: null,
                 'field_options' => [
                     'mapped'    => false,
                 ],
             ])
-            ->add('subject', 'doctrine_orm_choice', [
+            ->add('subject', ChoiceFilter::class, [
                 'show_filter' => !empty($this->datagridValues['subject']['value']) ?: null,
                 'field_options' => [
                     'mapped'    => false,
-                    'choices' => Page::getAllSubjects(),
+                    'choices' => array_flip(Page::getAllSubjects()),
                 ],
-                'field_type' => 'choice'
+                'field_type' => ChoiceType::class
             ])
-            ->add('locale', 'doctrine_orm_choice', [
+            ->add('locale', ChoiceFilter::class, [
                 'show_filter' => !empty($this->datagridValues['locale']['value']) ?: null,
                 'field_options' => [
                     'mapped'    => false,
-                    'choices' => LocaleHelper::getLocaleList(),
+                    'choices' => array_flip(LocaleHelper::getLocaleList()),
                 ],
-                'field_type' => 'choice'
+                'field_type' => ChoiceType::class
             ])
-            ->add('date', 'doctrine_orm_date_range', [
+            ->add('date', DateRangeFilter::class, [
                 'show_filter' => $this->checkDateFilter() ?: null,
-                'field_type'  => 'sonata_type_date_range_picker',
+                'field_type' => DateRangePickerType::class,
                 'field_options' => [
                     'field_options' => [
                         'format'        => AdminHelper::FILTER_DATE_RANGE_FORMAT,
-                        'empty_value'   => false,
                     ],
                     'mapped'    => false,
                     'required'  => true,
@@ -130,8 +131,8 @@ class FeedbackReportAdmin extends ReportAdmin
         $filterParam = $this->getFilterParameters();
 
         $this->feedbacks = $this->getFeedbackReportManager()->getFeedbackReportData($filterParam);
-        $this->locales = LocaleHelper::getLocaleList();
-        $this->subjects = Page::getAllSubjects();
+        $this->locales   = LocaleHelper::getLocaleList();
+        $this->subjects  = Page::getAllSubjects();
     }
 
     /**
@@ -147,12 +148,13 @@ class FeedbackReportAdmin extends ReportAdmin
      */
     protected function checkDateFilter()
     {
-        if (!empty($this->datagridValues['date']['value']['start']) or
+        if (
+            !empty($this->datagridValues['date']['value']['start']) ||
             !empty($this->datagridValues['date']['value']['end'])
         ) {
             return true;
-        } else {
-            return false;
         }
+
+        return false;
     }
 }

@@ -32,8 +32,8 @@
                                                     {% if row[key] is defined and row[key] %}
                                                         <a href="{{ absolute_url(path('admin_sonata_user_user_show', {'id': row[key]})) }}" target="_blank">{{ row[key] }}</a>
                                                     {% endif %}
-                                                {% elseif key == FEEDBACK_SUBJECT.MAPPING.TYPE %}
-                                                    {{ admin.subjects[row[key]]|trans({},'AdminReportBundle') }}
+                                                {% elseif key == FEEDBACK_SUBJECT.MAPPING.SUBJECT %}
+                                                    {{ admin.subjects[row[key]]|trans }}
                                                 {% elseif key == FEEDBACK_SUBJECT.MAPPING.LOCALE %}
                                                     {{ admin.locales[row[key]]|trans({},'AdminReportBundle') }}
                                                 {% else %}

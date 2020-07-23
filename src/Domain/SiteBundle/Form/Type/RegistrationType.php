@@ -4,6 +4,7 @@ namespace Domain\SiteBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -44,7 +45,7 @@ class RegistrationType extends AbstractType
                 ],
             ])
             ->add('plainPassword', RepeatedType::class, [
-                'type' => 'password',
+                'type' => PasswordType::class,
                 'first_options'  => [
                     'attr' => [
                         'class'       => 'form-control',
@@ -82,13 +83,5 @@ class RegistrationType extends AbstractType
             'data_class'        => 'Oxa\Sonata\UserBundle\Entity\User',
             'validation_groups' => ['Default', 'Registration'],
         ]);
-    }
-
-    /**
-     * @return string
-     */
-    public function getName()
-    {
-        return 'domain_site_registration';
     }
 }

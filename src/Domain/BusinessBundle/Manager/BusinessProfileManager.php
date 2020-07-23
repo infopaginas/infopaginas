@@ -52,7 +52,7 @@ use Domain\SearchBundle\Util\SearchDataUtil;
 use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
 use FOS\UserBundle\Model\UserInterface;
 use Gedmo\Translatable\TranslatableListener;
-use Ivory\CKEditorBundle\Form\Type\CKEditorType;
+use FOS\CKEditorBundle\Form\Type\CKEditorType;
 use Oxa\ElasticSearchBundle\Manager\ElasticSearchManager;
 use Oxa\GeolocationBundle\Utils\GeolocationUtils;
 use Oxa\ManagerArchitectureBundle\Model\Manager\Manager;
@@ -73,6 +73,7 @@ use Symfony\Component\PropertyAccess\PropertyAccess;
 use Oxa\GeolocationBundle\Model\Geolocation\LocationValueObject;
 use Domain\SearchBundle\Model\DataType\SearchDTO;
 use Domain\SearchBundle\Model\DataType\DCDataDTO;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 
 /**
@@ -1490,7 +1491,7 @@ class BusinessProfileManager extends Manager
 
                 $url = $this->getMediaPublicUrl($photo->getMedia(), 'preview');
             } else {
-                $request = $this->container->get('request');
+                $request = $this->container->get('request_stack')->getCurrentRequest();
                 $image   = $this->container->getParameter('default_image');
 
                 $url = $request->getScheme() . '://' . $request->getHost() . $image['path'] . $image['business_image'];
@@ -1528,7 +1529,7 @@ class BusinessProfileManager extends Manager
                 'citySlug' => $businessProfile->getCitySlug(),
                 'slug'     => $businessProfile->getSlug(),
             ],
-            true
+            UrlGeneratorInterface::ABSOLUTE_PATH
         );
 
         return $url;
@@ -1837,17 +1838,17 @@ class BusinessProfileManager extends Manager
     {
         $searchQuery = $this->getElasticAutoSuggestSearchQuery($query, $locale, $limit);
         $response = $this->searchElastic(BusinessProfile::ELASTIC_INDEX, $searchQuery);
-        $search = $this->getBusinessDataFromElasticResponse($response);
+        $search = $this->getAutoSuggestedBusinessDataFromElasticResponse($response);
 
-        $search['data'] = array_map(function ($item) {
+        $search = array_map(function ($item) {
             return [
                 'type' => self::AUTO_COMPLETE_TYPE,
-                'name' => $item->getName(),
-                'data' => $item->getName(),
+                'name' => $item['name'],
+                'data' => $item['name'],
             ];
-        }, $search['data']);
+        }, $search);
 
-        return $search['data'];
+        return $search;
     }
 
     /**
@@ -1955,25 +1956,46 @@ class BusinessProfileManager extends Manager
         return $response;
     }
 
-    /**
-     * @param array $response
-     * @param bool $randomize
-     *
-     * @return array
-     */
-    protected function getBusinessDataFromElasticResponse($response, $randomize = false)
+    protected function getAutoSuggestedBusinessDataFromElasticResponse($response): array
+    {
+        $dataIds = $this->getBusinessIdsFromElasticResponse($response);
+        return $this->getRepository()->getAutoSuggestedBusinessDataByIds($dataIds);
+    }
+
+    protected function getBusinessDataFromElasticResponse($response, $randomize = false): array
     {
         $data  = [];
-        $sort  = [];
         $total = 0;
 
         if (!empty($response['hits']['total'])) {
             $total = $response['hits']['total'];
         }
 
+        $dataIds = $this->getBusinessIdsFromElasticResponse($response, $randomize);
+        $dataRaw = $this->getRepository()->findBusinessProfilesByIdsArray($dataIds);
+
+        foreach ($dataIds as $id) {
+            $item = $this->searchBusinessByIdsInArray($dataRaw, $id);
+
+            if ($item) {
+                $data[] = $item;
+            }
+        }
+
+
+        return [
+            'data' => $data,
+            'total' => $total,
+        ];
+    }
+
+    protected function getBusinessIdsFromElasticResponse($response, $randomize = false): array
+    {
+        $sort  = [];
+        $dataIds = [];
+
         if (!empty($response['hits']['hits'])) {
-            $result = $response['hits']['hits'];
-            $dataIds = [];
+            $result  = $response['hits']['hits'];
 
             foreach ($result as $item) {
                 $dataIds[] = $item['_id'];
@@ -1990,22 +2012,9 @@ class BusinessProfileManager extends Manager
             if ($randomize) {
                 $dataIds = $this->shuffleSearchResult($sort);
             }
-
-            $dataRaw = $this->getRepository()->findBusinessProfilesByIdsArray($dataIds);
-
-            foreach ($dataIds as $id) {
-                $item = $this->searchBusinessByIdsInArray($dataRaw, $id);
-
-                if ($item) {
-                    $data[] = $item;
-                }
-            }
         }
 
-        return [
-            'data' => $data,
-            'total' => $total,
-        ];
+        return $dataIds;
     }
 
     /**
@@ -2569,10 +2578,8 @@ class BusinessProfileManager extends Manager
                                         'query_string' => [
                                             'default_operator' => 'AND',
                                             'fields' => [
-                                                'name_en',
-                                                'name_en.folded',
-                                                'name_es',
-                                                'name_es.folded',
+                                                'name',
+                                                'name.folded',
                                             ],
                                             'query' => $params->query,
                                         ],
@@ -3124,6 +3131,12 @@ class BusinessProfileManager extends Manager
         }
 
         $keywords = $this->getBusinessProfileKeywords($businessProfile);
+        $phones = $businessProfile->getPhonesArrayByType(
+            [
+                BusinessProfilePhone::PHONE_TYPE_MAIN,
+                BusinessProfilePhone::PHONE_TYPE_SECONDARY,
+            ]
+        );
 
         $data = [
             'id'                   => $businessProfile->getId(),
@@ -3137,8 +3150,6 @@ class BusinessProfileManager extends Manager
             'categories_en'        => $categories[$enLocale],
             'categories_es'        => $categories[$esLocale],
             'keywords'             => $keywords,
-            'auto_suggest_en'      => [$businessProfile->getNameEn()],
-            'auto_suggest_es'      => [$businessProfile->getNameEs()],
             'location'             => [
                 'lat' => $businessProfile->getLatitude(),
                 'lon' => $businessProfile->getLongitude(),
@@ -3148,6 +3159,7 @@ class BusinessProfileManager extends Manager
             'subscr_rank'          => $businessProfile->getSubscriptionPlanCode(),
             'neighborhood_ids'     => $neighborhoodIds,
             'categories_ids'       => $categoryIds,
+            'phone'                => json_encode($phones),
         ];
 
         return $data;
@@ -3190,17 +3202,18 @@ class BusinessProfileManager extends Manager
     public function getBusinessSearchFields($locale)
     {
         return [
-            'name^6',
-            'name.folded^5',
-            'name.single_characters^3',
-            'keywords^5',
-            'keywords.folded^5',
-            'categories_en^5',
-            'categories_en.folded^5',
-            'categories_es^5',
-            'categories_es.folded^5',
+            'name^10',
+            'name.folded^9',
+            'name.single_characters^5',
+            'keywords^3',
+            'keywords.folded^3',
+            'categories_en^3',
+            'categories_en.folded^3',
+            'categories_es^3',
+            'categories_es.folded^3',
             'products_' . strtolower($locale) . '^0',
             'products_' . strtolower($locale) . '.folded^0',
+            'phone^4',
         ];
     }
 
@@ -3276,46 +3289,24 @@ class BusinessProfileManager extends Manager
     public static function getBusinessElasticSearchIndexParams(): array
     {
         return [
-            'auto_suggest_en' => [
-                'type' => 'text',
-                'analyzer' => 'autocomplete',
-                'search_analyzer' => 'autocomplete_search',
-                'fields' => [
-                    'folded' => [
-                        'type' => 'text',
-                        'analyzer' => 'folding',
-                    ],
-                ],
-            ],
-            'auto_suggest_es' => [
-                'type' => 'text',
-                'analyzer' => 'autocomplete',
-                'search_analyzer' => 'autocomplete_search',
-                'fields' => [
-                    'folded' => [
-                        'type' => 'text',
-                        'analyzer' => 'folding',
-                    ],
-                ],
-            ],
             'name' => [
                 'type' => 'text',
                 'analyzer' => 'autocomplete',
                 'search_analyzer' => 'autocomplete_search',
                 'fields' => [
                     'folded' => [
-                        'type' => 'text',
-                        'analyzer' => 'folding',
+                        'type'            => 'text',
+                        'analyzer'        => 'folding',
                     ],
                     'single_characters' => [
-                        'type' => 'text',
-                        'analyzer' => 'single_characters',
+                        'type'            => 'text',
+                        'analyzer'        => 'single_characters',
                         'search_analyzer' => 'autocomplete_search',
                     ],
-                    'autosuggest'       => [
+                    'autosuggest' => [
                         'type'     => 'text',
                         'analyzer' => 'keyword_analyzer',
-                    ],
+                    ]
                 ],
             ],
             'city' => [
@@ -3405,6 +3396,10 @@ class BusinessProfileManager extends Manager
                         'analyzer' => 'folding',
                     ],
                 ],
+            ],
+            'phone' => [
+                'type' => 'text',
+                'analyzer' => 'phone_number',
             ],
             'location' => [
                 'type' => 'geo_point',

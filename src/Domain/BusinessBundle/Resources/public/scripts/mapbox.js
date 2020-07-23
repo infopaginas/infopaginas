@@ -256,13 +256,14 @@ document.addEventListener( 'jQueryLoaded', function() {
 
         this.options.mapOptions = {
             container: 'map',
-            style: 'mapbox://styles/mapbox/streets-v9?optimize=true',
+            style: 'mapbox://styles/mapbox/streets-v9',
             center: {
                 lat: center[0],
                 lng: center[1]
             },
             zoom: mapDefaultZoom,
-            attributionControl: false
+            attributionControl: false,
+            antialias: true
         };
 
         if ( mapContainer.length ) {
@@ -270,6 +271,7 @@ document.addEventListener( 'jQueryLoaded', function() {
 
             if ( markersBlock.data( 'mapbox-markers' ) ) {
                 this.options.markers = markersBlock.data( 'mapbox-markers' );
+                this.options.isSingleMarker = this.options.markers.length === 1;
             }
 
             initMap( this.options );
@@ -452,7 +454,59 @@ document.addEventListener( 'jQueryLoaded', function() {
 
     function initMap ( options ) {
         this.map = new mapboxgl.Map( this.options.mapOptions );
-        map.addControl( new mapboxgl.NavigationControl( { showCompass: false } ), 'bottom-right' );
+
+        map.on('load', function() {
+            // Insert the layer beneath any symbol layer.
+            var layers = map.getStyle().layers;
+
+            var labelLayerId;
+            for (var i = 0; i < layers.length; i++) {
+                if (layers[i].type === 'symbol' && layers[i].layout['text-field']) {
+                    labelLayerId = layers[i].id;
+                    break;
+                }
+            }
+
+            map.addLayer(
+                {
+                    'id': '3d-buildings',
+                    'source': 'composite',
+                    'source-layer': 'building',
+                    'filter': ['==', 'extrude', 'true'],
+                    'type': 'fill-extrusion',
+                    'minzoom': 15,
+                    'layout': {
+                        'visibility': 'none',
+                    },
+                    'paint': {
+                        'fill-extrusion-color': '#3777c4',
+// use an 'interpolate' expression to add a smooth transition effect to the
+// buildings as the user zooms in
+                        'fill-extrusion-height': [
+                            'interpolate',
+                            ['linear'],
+                            ['zoom'],
+                            15,
+                            0,
+                            15.05,
+                            ['get', 'height']
+                        ],
+                        'fill-extrusion-base': [
+                            'interpolate',
+                            ['linear'],
+                            ['zoom'],
+                            15,
+                            0,
+                            15.05,
+                            ['get', 'min_height']
+                        ],
+                        'fill-extrusion-opacity': 0.6
+                    }
+                },
+                labelLayerId
+            );
+        });
+        map.addControl( new mapboxgl.NavigationControl( { showCompass: false } ), 'bottom-right' )
         map.dragRotate.disable();
         map.touchZoomRotate.disableRotation();
 
@@ -460,10 +514,6 @@ document.addEventListener( 'jQueryLoaded', function() {
 
         //pass map to main.js for resizing event
         map = this.map;
-
-        if ( !$( '[data-target-coordinates]' ).data( 'targetCoordinates' ) ) {
-            addMenuSwitch( 'menu' );
-        }
 
         if ( $( '.navigation-button' ).length ) {
             addHrefToNavigationButton();
@@ -473,6 +523,41 @@ document.addEventListener( 'jQueryLoaded', function() {
 
         if ( !_.isEmpty( this.options.markers ) ) {
             addMarkers( this.options.markers );
+        }
+
+        $('.mapboxgl-ctrl-group').prepend('<button class="mapboxgl-ctrl-icon" id="show-3d">3D</button>');
+
+        $(document).on('click', '#show-3d', function(){
+            onShow3dClick();
+        });
+    }
+
+    function onShow3dClick() {
+        var layer3d = '3d-buildings';
+        var visibility = map.getLayoutProperty(layer3d, 'visibility');
+        if (visibility === 'visible') {
+            map.setLayoutProperty(layer3d, 'visibility', 'none');
+            $('#show-3d').html('3D');
+            map.dragRotate.disable();
+            map.touchZoomRotate.disableRotation();
+            map.setPitch(0);
+            map.setZoom(mapDefaultZoom);
+        } else {
+            map.setLayoutProperty(layer3d, 'visibility', 'visible');
+            $('#show-3d').html('2D');
+            map.dragRotate.enable();
+            map.touchZoomRotate.enableRotation();
+            if (this.options.isSingleMarker) {
+                map.setZoom(18);
+                map.setPitch(90);
+                map.flyTo({
+                    center: [
+                        parseFloat(this.options.markers[0].longitude),
+                        parseFloat(this.options.markers[0].latitude)
+                    ],
+                    essential: true
+                });
+            }
         }
     }
 
@@ -532,7 +617,6 @@ document.addEventListener( 'jQueryLoaded', function() {
         el.id = markerData.id;
         el.style.height = height + 'px';
         el.style.width = width + 'px';
-
         var marker = new mapboxgl.Marker( el, { offset: [0, -height / 2] }, { interactive: true } )
             .setLngLat( [parseFloat(markerData.longitude), parseFloat(markerData.latitude)] )
             .setPopup( infoWindow )

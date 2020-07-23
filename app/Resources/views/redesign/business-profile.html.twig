@@ -64,6 +64,8 @@
                     </div>
 
                     {% include ':redesign/blocks/businessProfile/view:social-buttons.html.twig' with {item: businessProfile} %}
+
+                    {% include ':redesign/blocks/modals:business_profile_owners_message.html.twig' %}
                 </header>
             </div><!-- container -->
 
@@ -109,6 +111,9 @@
                                         </ul>
                                     </div><!-- highlights__item -->
                                 {% endif %}
+
+                                {% include ':redesign/blocks/workingHours:working_hours_daily_list.html.twig' with { 'businessProfile': businessProfile } %}
+
                                 {% if businessProfile.websiteItem and businessProfile.websiteItem.url %}
                                     <div class="highlights__item">
                                         <h3>{% trans %}WebsiteButton{% endtrans %}</h3>
@@ -142,8 +147,6 @@
                                     </div><!-- highlights__item -->
                                 {% endif %}
 
-                                {% include ':redesign/blocks/workingHours:working_hours_daily_list.html.twig' with { 'businessProfile': businessProfile } %}
-
                                 {% if businessProfile.getBrands() %}
                                     <div class="highlights__item">
                                         <h3>{% trans %}Brands{% endtrans %}</h3>
@@ -176,9 +179,9 @@
                                                         {% if field.title %}
                                                             <span class="section-title">{{ field.title }}: </span>
                                                         {% endif %}
-                                                        {% if field.value is sameas(true) %}
+                                                        {% if field.value is same as(true) %}
                                                             <i class="fa fa-check-square"></i>
-                                                        {% elseif field.value is sameas(false) %}
+                                                        {% elseif field.value is same as(false) %}
                                                             <i class="fa fa-times"></i>
                                                         {% else %}
                                                             {{ field.value }}
@@ -189,6 +192,21 @@
                                         </div><!-- highlights__item -->
                                     {% endif %}
                                 {% endfor %}
+
+                                {% if businessProfile.subscriptionPlanCode == SUBSCRIPTION.CODE.FREE and businessProfile.amazonAffiliateUrl and businessProfile.amazonAffiliateUrl.url %}
+                                    <div class="highlights__item">
+                                        <div class="affiliate-url">
+                                            <a
+                                                    data-href="{{ businessProfile.amazonAffiliateUrl.url }}"
+                                                    class="redirect-event"
+                                                    data-id="{{ businessProfile.id }}"
+                                                    data-type="amazonAffiliateLink"
+                                                    title="{% trans with {'%category%': businessProfile.amazonAffiliateUrlCategory.name|lower} %}Click here to see this popular %category% product{% endtrans %}"
+                                                    rel="{{ relAttributes(businessProfile.amazonAffiliateUrl) }}"
+                                            >{% trans with {'%category%': businessProfile.amazonAffiliateUrlCategory.name|lower} %}Click here to see this popular %category% product{% endtrans %}</a>
+                                        </div>
+                                    </div>
+                                {% endif %}
                             </div><!-- container -->
                         </section>
 
@@ -363,7 +381,6 @@
                                 <span id="map-markers" hidden data-mapbox-markers="{{ markers }}"></span>
                             </section>
                         {% endif %}
-
                     </article><!-- profile -->
 
                     <aside class="profile__sidebar">
@@ -384,7 +401,7 @@
                             </div><!-- sidebar__section -->
                         {% endif %}
 
-                        {% if showClaimButton %}
+                        {% if showClaimButton and businessProfile.subscriptionPlanCode == SUBSCRIPTION.CODE.FREE %}
                             <div class="sidebar__section section--social">
                                 <ul>
                                     <li>
@@ -411,6 +428,18 @@
                         </div>
 
                         {% include ':redesign/blocks/modals:report_problem.html.twig' %}
+
+                        {% if businessProfile.subscriptionPlanCode == SUBSCRIPTION.CODE.FREE and businessProfile.getAmazonAffiliateItems() %}
+                            <div class="sidebar__section">
+                                <div class="page-section slider amazon-affiliate section--slider hide-before">
+                                    {% for amazonItem in businessProfile.getAmazonAffiliateItems() %}
+                                        <div class="slider__item">
+                                            {{ amazonItem.embeddedHTML | purify('amazon_affiliate') }}
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        {% endif %}
 
                         {% if businessProfile.subscriptionPlanCode > SUBSCRIPTION.CODE.FREE %}
                             <div class="social-feeds-column">
@@ -443,6 +472,9 @@
     <div class="hide-mobile">
         {% include ':redesign/blocks:footer.html.twig' %}
     </div>
+    {% if businessProfile.popup and businessProfile.popup.message and businessProfile.popup.file %}
+        {% include 'redesign/blocks/modals/business_profile_popup.html.twig' %}
+    {% endif %}
 {% endblock %}
 
 {% block scripts %}

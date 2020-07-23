@@ -2,19 +2,19 @@
 
 namespace Oxa\DfpBundle\Command;
 
+use Domain\SiteBundle\Logger\CronLogger;
 use Oxa\DfpBundle\Manager\DfpManager;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputOption;
-use Google\AdsApi\Dfp\v201702\DateRangeType;
+use Google\AdsApi\AdManager\v201911\DateRangeType;
 
 class DoubleClickDataSynchCommand extends ContainerAwareCommand
 {
-    const REPORT_SYNCHRONIZATION_PERIOD_TODAY      = 'today';
-    const REPORT_SYNCHRONIZATION_PERIOD_YESTERDAY  = 'yesterday';
+    private const REPORT_SYNCHRONIZATION_PERIOD_TODAY      = 'today';
+    private const REPORT_SYNCHRONIZATION_PERIOD_YESTERDAY  = 'yesterday';
 
     protected function configure()
     {

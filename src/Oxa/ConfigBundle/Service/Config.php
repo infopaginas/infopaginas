@@ -42,9 +42,9 @@ class Config
     /**
      * @param string $key
      *
-     * @return Config|null
+     * @return SystemConfig|null
      */
-    public function getSetting($key)
+    public function getSetting($key): ?SystemConfig
     {
         if (!$this->config) {
             $cachedConfigs = $this->cache->fetch(CacheUtil::ID_CONFIGS);

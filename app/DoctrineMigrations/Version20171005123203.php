@@ -2,7 +2,7 @@
 
 namespace Application\Migrations;
 
-use Doctrine\DBAL\Migrations\AbstractMigration;
+use Doctrine\Migrations\AbstractMigration;
 use Doctrine\DBAL\Schema\Schema;
 use Domain\EmergencyBundle\Entity\EmergencyBusiness;
 use Domain\SiteBundle\Utils\Helpers\SiteHelper;
@@ -33,7 +33,7 @@ class Version20171005123203 extends AbstractMigration implements ContainerAwareI
     /**
      * @param Schema $schema
      */
-    public function up(Schema $schema)
+    public function up(Schema $schema): void
     {
         $businesses = $this->em->getRepository(EmergencyBusiness::class)->findAll();
 
@@ -47,7 +47,7 @@ class Version20171005123203 extends AbstractMigration implements ContainerAwareI
     /**
      * @param Schema $schema
      */
-    public function down(Schema $schema)
+    public function down(Schema $schema): void
     {
 
     }
