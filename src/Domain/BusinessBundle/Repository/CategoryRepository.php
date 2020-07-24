@@ -119,7 +119,7 @@ class CategoryRepository extends EntityRepository
             ->setParameter('category_name', $categories)
         ;
 
-        return $qb->getQuery()->getOneOrNullResult();
+        return $qb->getQuery()->getFirstResult();
     }
 
     /**

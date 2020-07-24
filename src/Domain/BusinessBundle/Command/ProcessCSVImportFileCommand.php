@@ -14,7 +14,7 @@ use Symfony\Component\Filesystem\LockHandler;
  */
 class ProcessCSVImportFileCommand extends ContainerAwareCommand
 {
-    const PROCESS_CSV_FILE_LOCK = 'PROCESS_CSV_FILE_LOCK.lock';
+    private const PROCESS_CSV_FILE_LOCK = 'PROCESS_CSV_FILE_LOCK.lock';
 
     protected function configure()
     {

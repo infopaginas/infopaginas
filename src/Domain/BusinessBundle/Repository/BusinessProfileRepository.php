@@ -401,6 +401,7 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
     {
         $qb = $this->createQueryBuilder('bp')
             ->andWhere('bp.isUpdated = TRUE')
+            ->andWhere('bp.isDraft = FALSE')
         ;
 
         $query = $this->getEntityManager()->createQuery($qb->getDQL());
@@ -600,7 +601,7 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
             ->getResult();
     }
 
-    public function getBusinessCountForCategory(Category $category) : int
+    public function getBusinessCountForCategory(Category $category): int
     {
         $qb = $this->createQueryBuilder('bp');
         $qb
@@ -610,5 +611,18 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
             ->setParameter('categoryId', $category->getId());
 
         return $qb->getQuery()->getSingleScalarResult();
+    }
+
+    public function removeProfilesByImportFileId($fileId)
+    {
+        $bp = $this->createQueryBuilder('bp');
+
+        $bp
+            ->where('bp.csvImportFile = :id')
+            ->setParameter('id', $fileId)
+            ->delete()
+        ;
+
+        $bp->getQuery()->execute();
     }
 }

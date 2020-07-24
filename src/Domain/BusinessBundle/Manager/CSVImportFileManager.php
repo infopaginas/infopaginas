@@ -38,15 +38,20 @@ class CSVImportFileManager extends FileUploadManager
 
     public function processCSVImportFiles()
     {
-        $unprocessedFiles = $this->getRepository()->findBy(['isProcessed' => false]);
+        $unprocessedFilesIterator = $this->getRepository()->getUnprocessedCSVImportFileIterator();
         $normalizer = new GetSetMethodNormalizer();
 
         /** @var CSVImportFile $csvImportFile */
-        foreach ($unprocessedFiles as $csvImportFile) {
+        foreach ($unprocessedFilesIterator as $row) {
+            $csvImportFile = $row[0];
+            $this->removeRelatedProfiles($csvImportFile);
+
             $fieldsMapping = array_filter(json_decode($csvImportFile->getFieldsMappingJSON(), true));
             $validEntriesCount = 0;
             $invalidEntriesCount = 0;
             $notSavedIndexes = [];
+            $batchSize = 50;
+            $i = 0;
 
             $data = $this->getDataFromFile($csvImportFile, $fieldsMapping);
             foreach ($data as $index => $entry) {
@@ -103,6 +108,13 @@ class CSVImportFileManager extends FileUploadManager
 
                     $this->em->persist($businessProfile);
                     $validEntriesCount++;
+
+                    if (($i % $batchSize) === 0) {
+                        $this->em->flush();
+                        $this->em->clear(BusinessProfile::class);
+                    }
+
+                    $i++;
                 } else {
                     $invalidEntriesCount++;
                     $notSavedIndexes[] = $index;
@@ -236,5 +248,13 @@ class CSVImportFileManager extends FileUploadManager
             $this->container->getParameter('amazon_aws_base_host'),
             $this->container->getParameter('amazon_aws_mass_import_directory')
         );
+    }
+
+    private function removeRelatedProfiles(CSVImportFile $importFile): void
+    {
+        $this->em
+            ->getRepository(BusinessProfile::class)
+            ->removeProfilesByImportFileId($importFile->getId())
+        ;
     }
 }
