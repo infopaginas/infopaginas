@@ -401,6 +401,7 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
     {
         $qb = $this->createQueryBuilder('bp')
             ->andWhere('bp.isUpdated = TRUE')
+            ->andWhere('bp.isDraft = FALSE')
         ;
 
         $query = $this->getEntityManager()->createQuery($qb->getDQL());
