@@ -6,8 +6,8 @@ use Domain\BusinessBundle\Entity\CSVImportFile;
 
 class CategoryUtil
 {
-    private const ENCODING_UTF8       = 'UTF-8';
-    private const ENCODING_ISO_8859_1 = 'ISO-8859-1';
+    public const ENCODING_UTF8       = 'UTF-8';
+    public const ENCODING_ISO_8859_1 = 'ISO-8859-1';
 
     public static function getCategoriesNamesFromString(string $categories): array
     {

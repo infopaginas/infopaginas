@@ -5,6 +5,7 @@ namespace Domain\BusinessBundle\Manager;
 use Doctrine\ORM\EntityManager;
 use Domain\BusinessBundle\Entity\BusinessProfilePhone;
 use Domain\BusinessBundle\Entity\CSVImportFile;
+use Domain\BusinessBundle\Util\CategoryUtil;
 use Domain\BusinessBundle\VO\Url;
 use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
 use Oxa\ManagerArchitectureBundle\Model\Manager\FileUploadManager;
@@ -154,7 +155,12 @@ class CSVImportFileManager extends FileUploadManager
         $enclosure = $csvImportFile->getEnclosure();
         $lines = file($csvImportFile->getFile(), FILE_SKIP_EMPTY_LINES);
         $headers = str_getcsv(array_shift($lines), $delimiter, $enclosure);
+
         foreach ($lines as $line) {
+            if (mb_detect_encoding($line, CategoryUtil::ENCODING_ISO_8859_1)) {
+                $line = mb_convert_encoding($line, CategoryUtil::ENCODING_UTF8, CategoryUtil::ENCODING_ISO_8859_1);
+            }
+
             $row = [];
             $entry = str_getcsv($line, $delimiter, $enclosure);
 
