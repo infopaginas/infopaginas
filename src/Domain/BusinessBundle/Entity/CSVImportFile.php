@@ -104,7 +104,7 @@ class CSVImportFile implements DefaultEntityInterface, FileUploadEntityInterface
     /**
      * @var string - Invalid Entries Indexes
      *
-     * @ORM\Column(name="invalid_entries_numbers", type="string", nullable=true, length=1000)
+     * @ORM\Column(name="invalid_entries_numbers", type="text", nullable=true)
      */
     protected $invalidEntriesNumbers;
 
