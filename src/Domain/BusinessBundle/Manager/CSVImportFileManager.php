@@ -113,6 +113,7 @@ class CSVImportFileManager extends FileUploadManager
                     if (($i % $batchSize) === 0) {
                         $this->em->flush();
                         $this->em->clear(BusinessProfile::class);
+                        $this->em->clear(BusinessProfilePhone::class);
                     }
 
                     $i++;
