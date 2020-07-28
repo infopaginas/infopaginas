@@ -11,10 +11,6 @@ class CategoryUtil
 
     public static function getCategoriesNamesFromString(string $categories): array
     {
-        if (mb_detect_encoding($categories, self::ENCODING_ISO_8859_1)) {
-            $categories = mb_convert_encoding($categories, self::ENCODING_UTF8, self::ENCODING_ISO_8859_1);
-        }
-
         $delimiter = ';';
 
         foreach (CSVImportFile::CATEGORIES_DELIMITERS as $d) {

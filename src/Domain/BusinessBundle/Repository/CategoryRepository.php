@@ -117,9 +117,10 @@ class CategoryRepository extends EntityRepository
             ->where(sprintf(CaseInsensitiveStringFilter::buildSearchQueryWithReplacedAccents(), 'c', 'searchTextEs', 'IN (', 'category_name)'))
             ->orWhere('lower(c.searchTextEn) IN (:category_name)')
             ->setParameter('category_name', $categories)
+            ->setMaxResults(1)
         ;
 
-        return $qb->getQuery()->getFirstResult();
+        return $qb->getQuery()->getOneOrNullResult();
     }
 
     /**

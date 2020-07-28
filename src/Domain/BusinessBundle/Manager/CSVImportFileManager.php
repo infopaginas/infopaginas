@@ -17,6 +17,8 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class CSVImportFileManager extends FileUploadManager
 {
+    private const FIRST_DATA_ROW_NUMBER = 2;
+    
     /** @var  ContainerInterface $container */
     protected $container;
 
@@ -50,7 +52,7 @@ class CSVImportFileManager extends FileUploadManager
             $fieldsMapping = array_filter(json_decode($csvImportFile->getFieldsMappingJSON(), true));
             $validEntriesCount = 0;
             $invalidEntriesCount = 0;
-            $notSavedIndexes = [];
+            $notSavedEntries = [];
             $batchSize = 50;
             $i = 0;
 
@@ -119,13 +121,13 @@ class CSVImportFileManager extends FileUploadManager
                     $i++;
                 } else {
                     $invalidEntriesCount++;
-                    $notSavedIndexes[] = $index;
+                    $notSavedEntries[] = $index + self::FIRST_DATA_ROW_NUMBER;
                 }
             }
             $csvImportFile->setIsProcessed(true);
             $csvImportFile->setValidEntriesCount($validEntriesCount);
             $csvImportFile->setInvalidEntriesCount($invalidEntriesCount);
-            $csvImportFile->setInvalidEntriesNumbers(implode(', ', $notSavedIndexes));
+            $csvImportFile->setInvalidEntriesNumbers(implode(', ', $notSavedEntries));
 
             $this->em->flush();
         }
