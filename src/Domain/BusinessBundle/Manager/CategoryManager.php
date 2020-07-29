@@ -2,23 +2,20 @@
 
 namespace Domain\BusinessBundle\Manager;
 
-use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\Category;
 use Domain\BusinessBundle\Entity\Locality;
 use Domain\BusinessBundle\Util\CategoryUtil;
 use Domain\BusinessBundle\Util\SlugUtil;
 use Domain\SearchBundle\Util\SearchDataUtil;
 use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
-use Oxa\ElasticSearchBundle\Manager\ElasticSearchManager;
 use Oxa\ManagerArchitectureBundle\Model\Manager\Manager;
 use Oxa\Sonata\AdminBundle\Util\Helpers\AdminHelper;
 
 class CategoryManager extends Manager
 {
-    const AUTO_COMPLETE_TYPE  = 'category';
-    const AUTO_SUGGEST_MAX_CATEGORY_COUNT = 5;
-    const AUTO_SUGGEST_MAX_CATEGORY_MAIN_COUNT = 10;
-    const AUTO_SUGGEST_SEPARATOR = ' ';
+    public const AUTO_COMPLETE_TYPE  = 'category';
+    public const AUTO_SUGGEST_MAX_CATEGORY_COUNT = 5;
+    public const AUTO_SUGGEST_MAX_CATEGORY_MAIN_COUNT = 10;
 
     /**
      * @param array     $profileList
@@ -55,6 +52,7 @@ class CategoryManager extends Manager
     public function getFirstFoundCategory($categories): ?Category
     {
         $categories = CategoryUtil::getCategoriesNamesFromString($categories);
+        $categories = CategoryUtil::getCategoriesInDifferentForms($categories);
 
         $categories = array_map([AdminHelper::class, 'convertAccentedString'], $categories);
 
