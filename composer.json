@@ -85,7 +85,8 @@
         "maxbanton/cwh": "^1.0",
         "twig/twig": "~2.12.5",
         "sonata-project/intl-bundle": "~2.7.0",
-        "friendsofsymfony/ckeditor-bundle": "~1.2.0"
+        "friendsofsymfony/ckeditor-bundle": "~1.2.0",
+        "doctrine/inflector": "1.4.3"
     },
     "require-dev": {
         "sensio/generator-bundle": "~3.0"
