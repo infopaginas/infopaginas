@@ -2,10 +2,12 @@
 
 namespace Domain\BusinessBundle\Admin\CustomFields;
 
+use Domain\BusinessBundle\Entity\CustomFields\BusinessCustomFieldRadioButton;
 use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
+use Sonata\AdminBundle\Form\Type\ModelListType;
 use Sonata\AdminBundle\Show\ShowMapper;
 
 class BusinessCustomFieldRadioButtonCollectionAdmin extends OxaAdmin
@@ -36,10 +38,12 @@ class BusinessCustomFieldRadioButtonCollectionAdmin extends OxaAdmin
     protected function configureFormFields(FormMapper $formMapper)
     {
         $formMapper
-            ->add('radioButtons', 'sonata_type_model_list', [
-                'required'   => true,
-                'btn_add'    => false,
-                'btn_delete' => false,
+            ->add('radioButtons', ModelListType::class, [
+                'required'      => true,
+                'btn_add'       => false,
+                'btn_delete'    => false,
+                'model_manager' => $this->modelManager,
+                'class'         => BusinessCustomFieldRadioButton::class,
             ])
             ->add('value', null, [
                 'required' => true,

@@ -889,8 +889,8 @@ class CategoryOverviewReportManager extends BaseReportManager
     public static function getCategoryPageType()
     {
         return [
-            BusinessOverviewModel::TYPE_CODE_CATEGORY_BUSINESS => 'category_report.page_type.business',
-            BusinessOverviewModel::TYPE_CODE_CATEGORY_CATALOG  => 'category_report.page_type.catalog',
+            'category_report.page_type.business' => BusinessOverviewModel::TYPE_CODE_CATEGORY_BUSINESS,
+            'category_report.page_type.catalog'  => BusinessOverviewModel::TYPE_CODE_CATEGORY_CATALOG,
         ];
     }
 

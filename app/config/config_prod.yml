@@ -7,10 +7,10 @@ parameters:
     google_youtube_secret_key: 'MqwCsstQtzNrT_WTgWW5Styc'
 
 framework:
+    cache:
+        app: cache.adapter.memcached
     validation:
         cache: validator.mapping.cache.memcached
-    serializer:
-        cache: serializer.mapping.cache.doctrine.memcached
 
 doctrine:
     orm:

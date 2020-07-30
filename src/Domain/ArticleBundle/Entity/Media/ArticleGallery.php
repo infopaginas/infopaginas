@@ -4,6 +4,7 @@ namespace Domain\ArticleBundle\Entity\Media;
 
 use Oxa\Sonata\AdminBundle\Model\ChangeStateInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\ChangeStateTrait;
+use Sonata\TranslationBundle\Traits\Gedmo\PersonalTranslatableTrait;
 use Symfony\Component\Validator\Constraints as Assert;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
@@ -12,7 +13,6 @@ use Domain\ArticleBundle\Entity\Article;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
 use Sonata\TranslationBundle\Model\Gedmo\TranslatableInterface;
-use Sonata\TranslationBundle\Traits\Gedmo\PersonalTranslatable;
 
 /**
  * ArticleGallery
@@ -25,7 +25,7 @@ use Sonata\TranslationBundle\Traits\Gedmo\PersonalTranslatable;
 class ArticleGallery implements DefaultEntityInterface, TranslatableInterface, ChangeStateInterface
 {
     use DefaultEntityTrait;
-    use PersonalTranslatable;
+    use PersonalTranslatableTrait;
     use ChangeStateTrait;
 
     const TRANSLATION_FIELD_DESCRIPTION = 'description';

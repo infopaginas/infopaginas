@@ -2,7 +2,9 @@ define(['jquery', 'slick'], function( $, Slick ) {
     'use strict';
 
     $( document ).ready(function () {
-        var suggestedSlider = $( '.slider.suggested-slider' );
+        var suggestedSlider = $( '.slider.suggested-slider' ),
+            amazonAffiliateSlider = $( '.slider.amazon-affiliate' ),
+            testimonialSlider = $( '.slider.testimonials' );
 
         var sliderParams = {
             autoplay: true,
@@ -20,14 +22,16 @@ define(['jquery', 'slick'], function( $, Slick ) {
             nextArrow: '<span class="arrow next"><i class="fa fa-chevron-circle-right" aria-hidden="true"></i></span>'
         };
 
-        $( '.slider:not(.suggested-slider):not(.testimonials)' ).slick( sliderParams );
-
         var testimonialsSliderParams = sliderParams;
         testimonialsSliderParams.prevArrow = '<span class="arrow prev"><i class="fa fa-chevron-left" aria-hidden="true"></i></span>';
         testimonialsSliderParams.nextArrow = '<span class="arrow next"><i class="fa fa-chevron-right" aria-hidden="true"></i></span>';
         testimonialsSliderParams.autoplay = true;
         testimonialsSliderParams.adaptiveHeight = true;
-        $( '.slider.testimonials' ).slick( testimonialsSliderParams );
+        testimonialSlider.slick( testimonialsSliderParams );
+
+        var amazonAffiliateSliderParams = sliderParams;
+        amazonAffiliateSliderParams.slidesToShow = 2;
+        amazonAffiliateSlider.slick( amazonAffiliateSliderParams );
 
         var suggestedBusinessesCount = suggestedSlider.find('.slider__item').length;
         var slidesToShow_sm = suggestedBusinessesCount < 2 ? suggestedBusinessesCount : 2;

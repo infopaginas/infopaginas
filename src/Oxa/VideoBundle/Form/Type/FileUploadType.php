@@ -18,12 +18,4 @@ class FileUploadType extends AbstractType
             ->add('file', FileType::class)
         ;
     }
-
-    /**
-     * @return string
-     */
-    public function getName()
-    {
-        return 'oxa_video_bundle_file_upload_form_type';
-    }
 }

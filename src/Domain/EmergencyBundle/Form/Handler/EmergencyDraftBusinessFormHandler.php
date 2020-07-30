@@ -2,12 +2,12 @@
 
 namespace Domain\EmergencyBundle\Form\Handler;
 
-use Domain\BusinessBundle\Form\Handler\BusinessFormHandlerInterface;
 use Oxa\ManagerArchitectureBundle\Form\Handler\BaseFormHandler;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Domain\EmergencyBundle\Manager\EmergencyManager;
 use Domain\EmergencyBundle\Entity\EmergencyDraftBusiness;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Translation\TranslatorInterface;
 
 /**
@@ -16,8 +16,8 @@ use Symfony\Component\Translation\TranslatorInterface;
  */
 class EmergencyDraftBusinessFormHandler extends BaseFormHandler
 {
-    /** @var Request $request */
-    private $request;
+    /** @var Request $requestStack */
+    private $requestStack;
 
     /** @var EmergencyManager $emergencyManager */
     private $emergencyManager;
@@ -27,12 +27,12 @@ class EmergencyDraftBusinessFormHandler extends BaseFormHandler
 
     public function __construct(
         FormInterface $form,
-        Request $request,
+        RequestStack $requestStack,
         EmergencyManager $emergencyManager,
         TranslatorInterface $translator
     ) {
         $this->form             = $form;
-        $this->request          = $request;
+        $this->requestStack     = $requestStack;
         $this->emergencyManager = $emergencyManager;
         $this->translator       = $translator;
     }
@@ -42,8 +42,8 @@ class EmergencyDraftBusinessFormHandler extends BaseFormHandler
      */
     public function process()
     {
-        if ($this->request->getMethod() == Request::METHOD_POST) {
-            $this->form->handleRequest($this->request);
+        if ($this->requestStack->getCurrentRequest()->getMethod() == Request::METHOD_POST) {
+            $this->form->handleRequest($this->requestStack->getCurrentRequest());
 
             /** @var EmergencyDraftBusiness $draft */
             $draft = $this->form->getData();
@@ -57,10 +57,7 @@ class EmergencyDraftBusinessFormHandler extends BaseFormHandler
         return false;
     }
 
-    /**
-     * @param EmergencyDraftBusiness $draft
-     */
-    private function onSuccess(EmergencyDraftBusiness $draft)
+    private function onSuccess(EmergencyDraftBusiness $draft): void
     {
         $this->emergencyManager->createBusinessDraft($draft);
     }

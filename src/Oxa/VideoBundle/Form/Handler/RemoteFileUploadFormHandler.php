@@ -3,47 +3,37 @@
 namespace Oxa\VideoBundle\Form\Handler;
 
 use Oxa\ManagerArchitectureBundle\Form\Handler\BaseFormHandler;
-use Oxa\ManagerArchitectureBundle\Model\Interfaces\FormHandlerInterface;
 use Oxa\VideoBundle\Manager\VideoManager;
-use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
  * Class RemoteFileUploadFormHandler
  * @package Oxa\VideoBundle\Form\Handler
  */
-class RemoteFileUploadFormHandler extends BaseFormHandler implements FormHandlerInterface
+class RemoteFileUploadFormHandler extends BaseFormHandler
 {
     /** @var FormInterface */
     private $form;
 
-    /** @var Request */
-    private $request;
+    /** @var RequestStack */
+    private $requestStack;
 
     /** @var VideoManager */
     private $videoManager;
 
-    /**
-     * RemoteFileUploadFormHandler constructor.
-     * @param FormInterface $form
-     * @param Request $request
-     * @param VideoManager $videoManager
-     */
-    public function __construct(FormInterface $form, Request $request, VideoManager $videoManager)
+    public function __construct(FormInterface $form, RequestStack $requestStack, VideoManager $videoManager)
     {
-        $this->form          = $form;
-        $this->request       = $request;
+        $this->form         = $form;
+        $this->requestStack = $requestStack;
         $this->videoManager = $videoManager;
     }
 
-    /**
-     * @return bool
-     */
-    public function process() : bool
+    public function process(): bool
     {
-        if ($this->request->getMethod() == Request::METHOD_POST) {
-            $this->form->handleRequest($this->request);
+        if ($this->requestStack->getCurrentRequest()->getMethod() == Request::METHOD_POST) {
+            $this->form->handleRequest($this->requestStack->getCurrentRequest());
 
             if ($this->form->isValid()) {
                 $url = $this->form['url']->getData();
@@ -55,18 +45,12 @@ class RemoteFileUploadFormHandler extends BaseFormHandler implements FormHandler
         return false;
     }
 
-    /**
-     * @param string $url
-     */
-    private function onSuccess(string $url)
+    private function onSuccess(string $url): void
     {
         $this->getVideoManager()->uploadRemoteFile($url);
     }
 
-    /**
-     * @return VideoManager
-     */
-    private function getVideoManager() : VideoManager
+    private function getVideoManager(): VideoManager
     {
         return $this->videoManager;
     }

@@ -3,7 +3,7 @@
 namespace Domain\BusinessBundle\Controller;
 
 use Oxa\Sonata\AdminBundle\Controller\CRUDController;
-use Sonata\AdminBundle\Exception\ModelManagerException;
+use Symfony\Bridge\Twig\Extension\FormExtension;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -54,13 +54,16 @@ class TaskAdminController extends CRUDController
         $formView = $datagrid->getForm()->createView();
 
         // set the theme for the current Admin Form
-        $this->get('twig')->getExtension('form')->renderer->setTheme($formView, $this->admin->getFilterTheme());
+        $this->get('twig')
+            ->getExtension(FormExtension::class)
+            ->renderer
+            ->setTheme($formView, $this->admin->getFilterTheme());
 
         $totalApprovedTasksCount = $this->tasksManager->getTotalApprovedTasksCount();
         $totalRejectedTasksCount = $this->tasksManager->getTotalRejectedTasksCount();
         $totalCompleteTasksCount = $this->tasksManager->getTotalIncompleteTasksCount();
 
-        return $this->render(
+        return $this->renderWithExtraParams(
             $this->admin->getTemplate('list'),
             [
                 'action'                  => 'list',
@@ -108,7 +111,7 @@ class TaskAdminController extends CRUDController
 
         $this->admin->setSubject($object);
 
-        return $this->render(
+        return $this->renderWithExtraParams(
             $this->admin->getTemplate('show'),
             [
                 'action'   => 'show',

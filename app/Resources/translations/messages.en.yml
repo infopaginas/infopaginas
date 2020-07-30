@@ -6,7 +6,7 @@ Videos: Videos
 View more videos: View more videos
 infopaginos.copyright: Copyrights © %date%
 infopaginos.image.alt: Infopaginas
-infopaginos.address: 90 Calle San Martin, Rodval Bldg. Suite 201 - Guaynabo, PR 00068-1401
+infopaginos.address: 90 Calle San Martin, Rodval Bldg. Suite 201 - Guaynabo, PR 00968-1401
 PR: PR
 About Us: About Us
 Contact Us: Contact Us
@@ -38,6 +38,7 @@ Search whatever you need and find it instantly: Search whatever you need and fin
 homepage.search_block.title: Find what you are looking for instantly!
 What do you want to find?: What do you want to find?
 Report a Problem: Report a Problem
+Message from the Owner: Owner message
 Book Now: Book Now
 I wanted you to see this site: I wanted you to see this site
 Search by: Search by
@@ -47,9 +48,9 @@ San Juan: San Juan
 Filter by: Filter by
 Category: Category
 Neighborhoods: Neighborhoods
-%searchQuery% in %searchLocationName%: %searchQuery% in %searchLocationName%
-%page%-%amount% of %resultCount% Results: %page%-%amount% of %resultCount% Results
-for %searchQuery% in %searchLocationName%: for %searchQuery% in %searchLocationName%
+%searchQuery% in %searchLocationName%: '%searchQuery% in %searchLocationName%'
+%page%-%amount% of %resultCount% Results: '%page%-%amount% of %resultCount% Results'
+for %searchQuery% in %searchLocationName%: 'for %searchQuery% in %searchLocationName%'
 Sort by: Sort by
 Relevance: Relevance
 Distance: Distance
@@ -57,6 +58,7 @@ Get Direction: Get Direction
 Call: Call
 ActionButtonCall: Call
 WebsiteButton: Website
+PopupButton: Click Here!
 Url: Url
 Reviews: Reviews
 list: list
@@ -110,6 +112,7 @@ New Password: New Password
 Confirm New Password: Confirm New Password
 Welcome: Welcome
 Social Networks: Social Networks
+Click here to see this popular %category% product: Click here to see this popular %category% product
 
 General: General
 Business Address: Business Address
@@ -231,7 +234,7 @@ Photos: Photos
 Video: Video
 Sorry, no results were found.: Sorry, no results were found.
 Home: Home
-%category% in %city%: %category% in %city%
+%category% in %city%: '%category% in %city%'
 SONs Notebooks: SONs Notebooks
 
 Reports: Reports
@@ -277,19 +280,9 @@ Excel: Excel
 Print: Print
 
 Content: Content
-business.profile.edit.note: Please note: changes will be applied after approval
+business.profile.edit.note: 'Please note: changes will be applied after approval'
 Please enter a search term: Please enter a search term
-business_profile:
-  interaction_chart:
-    title: Business Profile Interactions
-    action_type: Event type
-    period:
-      last_month: Last month
-      last_3_month: Last 3 months
-      last_6_month: Last 6 months
-      last_12_month: Last year
-      custom: Custom
-    group_period: Period
+
 filter:
   label:
     period:
@@ -418,13 +411,6 @@ To: To
 Until: Until
 Status: Status
 
-business_profile.seoTitle: name | company
-business_profile.seoDescription.main: name in location
-business_profile.seoDescription.open: is open hours.
-business_profile.seoDescription.link: For more information, visit link
-business_profile.seoDescription.phone_has_link: or call phone
-business_profile.seoDescription.phone: Call phone
-
 in: in
 for: for
 
@@ -452,21 +438,63 @@ Reset: Reset
 Reason: Reason
 Remove: Remove
 Video status pending: Your video is being converted. It will be submitted for approval to our administrators and then published automatically.
-Video status error: Error: something went wrong, please try to upload the video again with the following formats: MP4, WMV, FLV, AVI, MPG, MOV
+Video status error: 'Error: something went wrong, please try to upload the video again with the following formats: MP4, WMV, FLV, AVI, MPG, MOV'
 
-business_profile.names_blank: Name field should be filled for at least one language
-business_profile.image_count_limit: Error: too much images added. Max files count =
-business_profile.size_limit: The video is larger than 128 MB
-business_profile.video.size_limit: The video is larger than 128 MB
-business_profile.image.size_limit: The image is larger than 10 MB
-business_profile.background.size_limit: The image is larger than 1 MB
-business_profile.url.empty: Error: URL field should not be empty.
-business_profile.video_count_limit: Only one video can be uploaded at a time
-business_profile.max_length: Please use max {{ limit }} symbols
-business_profile.logo.image_count_limit: Error: only single logo is allowed
-business_profile.background.image_count_limit: Error: only single background is allowed
-business_profile.lang.es: in Spanish
-business_profile.lang.en: in English
+business_profile:
+  names_blank: Name field should be filled for at least one language
+  image_count_limit: 'Error: too much images added. Max files count ='
+  size_limit: The video is larger than 128 MB
+  video.size_limit: The video is larger than 128 MB
+  image.size_limit: The image is larger than 10 MB
+  background.size_limit: The image is larger than 1 MB
+  url.empty: 'Error: URL field should not be empty.'
+  video_count_limit: Only one video can be uploaded at a time
+  max_length: Please use max {{ limit }} symbols
+  logo.image_count_limit: 'Error: only single logo is allowed'
+  background.image_count_limit: 'Error: only single background is allowed'
+  lang.es: in Spanish
+  lang.en: in English
+  seoTitle: name | company
+  seoDescription:
+    main: name in location
+    open: is open hours.
+    link: For more information, visit link
+    phone_has_link: or call phone
+    phone: Call phone
+    search: Find best {-categories-} in {-locality-}
+  message:
+    created: Thanks for creating the profile. Our team will review the information in the next 7 days. You will receive an email once the profile is approved and upload to the directory.
+    updated: Business profile was successfully updated (changes will be applied after admin confirmation)
+    closed: Business profile was successfully updated (changes will be applied after admin confirmation)
+    welcome: Welcome
+    upgrade: Our team will contact you soon.
+  seoTitle.search: categories in locality
+  seoTitle.catalog: Catalog in locality
+  action_type.order: Order&nbsp;Now
+  action_type.book: Book&nbsp;Now
+  category:
+    required: This field is required
+    max: This field should contain 1 element
+    free_hint: Categories (Maximum 1 category)
+  interaction_chart:
+    title: Business Profile Interactions
+    action_type: Event type
+    period:
+      last_month: Last month
+      last_3_month: Last 3 months
+      last_6_month: Last 6 months
+      last_12_month: Last year
+      custom: Custom
+    group_period: Period
+  url:
+    invalid: This value is not a valid URL.
+  phone.tooltip:
+      main: Main
+      fax: Fax
+      secondary: Additional
+  image.description.required: This field is required
+  video.description.required: This field is required
+  panorama.title: This is a 360 panorama, drag the image to look around
 
 Updated By: Updated By
 Back to Business Profile: Back to Business Profile
@@ -485,17 +513,7 @@ Show on Map: Show on Map
 Successfully saved profile data: Successfully saved profile data
 Successfully updated password: Successfully updated password
 Validation failure: Validation failure
-business_profile.message.created: Thanks for creating the profile. Our team will review the information in the next 7 days. You will receive an email once the profile is approved and upload to the directory.
-business_profile.message.updated: Business profile was successfully updated (changes will be applied after admin confirmation)
-business_profile.message.closed: Business profile was successfully updated (changes will be applied after admin confirmation)
-business_profile.message.welcome: Welcome
-business_profile.message.upgrade: Our team will contact you soon.
 user.reset_password_request.email.not_found: User {-email-} doesn't exists
-business_profile.seoDescription.search: Find best {-categories-} in {-locality-}
-business_profile.seoTitle.search: categories in locality
-business_profile.seoTitle.catalog: Catalog in locality
-business_profile.action_type.order: Order&nbsp;Now
-business_profile.action_type.book: Book&nbsp;Now
 
 #admin
 action_copy: Copy
@@ -606,9 +624,6 @@ Now: Now
 form.collectionWorkingHours.overlap: Working Hours should not overlap
 form.collectionWorkingHours.duration: Time start should be more then time end
 form.collectionWorkingHours.blank: Time should not be blank
-business_profile.category.required: This field is required
-business_profile.category.max: This field should contain 3 elements or less
-business_profile.category.free_hint: Categories (Maximum 3 categories)
 business_custom_field_item.exist: Already used in business profiles %businessProfiles%
 
 # reset password form
@@ -616,15 +631,12 @@ user:
   reset_password:
     token:
       invalid: You currently do not have valid link for update your password
-      empty: Error: Empty token.
+      empty: 'Error: Empty token.'
   auth:
     validation_failure: Validation failure
     registration_success: Successfully registered. Please login with your credentials
     reset_link_sent: Reset password link sent to your email. Please verify your email.
     password_updated: Successfully updated password. You can login with new credentials now.
-business_profile:
-  url:
-    invalid: This value is not a valid URL.
 
 #search
 search.miles_to.user: mi. away
@@ -656,9 +668,6 @@ mapbox.profile.walking_info: For pedestrian and hiking routing. This profile sho
 mapbox.profile.driving: Driving
 mapbox.profile.driving_info: For automotive routing. This profile shows the fastest routes by preferring high-speed roads like highways.
 mapbox.profile.info: Click on map to change current position point
-business_profile.image.description.required: This field is required
-business_profile.video.description.required: This field is required
-business_profile.panorama.title: This is a 360 panorama, drag the image to look around
 
 search_results.count.total: We've found {-count-} results for
 
@@ -687,11 +696,6 @@ contact:
     validation_failure: Validation failure
     send_success: Thank you, your message has been sent successfully.
     instant_email: Instant e-mail
-
-business_profile.phone.tooltip:
-  main: Main
-  fax: Fax
-  secondary: Additional
 
 emergency.back_button: Back
 emergency.page_link.link_title: Helpful links
@@ -724,7 +728,6 @@ emergency.business_draft.phone.title: Phone
 emergency.business_draft.area.title: Area
 emergency.business_draft.address: Address
 emergency.business_draft.working_hours: Working Hours
-emergency.business_draft.payment.placeholder: Start Typing
 emergency.business_draft.payment.placeholder: Start Typing
 emergency.business_draft.payment.title: Payment Methods
 emergency.business_draft.category.title.others: Others
@@ -761,3 +764,6 @@ user_profile:
     to_make_more_popular: Want to make your business more popular?
     give_phone: Please give us your phone number so that we could present to you a unique offer
 use_gps: Use GPS
+
+registration_success: Thank you for Registering! Create a Business Profile Now!
+user.profile.registration.success: The changes are saved. You can create your business profile now

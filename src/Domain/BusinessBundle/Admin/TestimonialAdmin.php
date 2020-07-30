@@ -4,12 +4,14 @@ namespace Domain\BusinessBundle\Admin;
 
 use Domain\BusinessBundle\Entity\Coupon;
 use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
+use Oxa\Sonata\MediaBundle\Entity\Media;
 use Oxa\Sonata\MediaBundle\Model\OxaMediaInterface;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
+use Sonata\AdminBundle\Form\Type\ModelListType;
 use Sonata\AdminBundle\Show\ShowMapper;
-use Sonata\CoreBundle\Validator\ErrorElement;
+use Sonata\Form\Validator\ErrorElement;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 
 class TestimonialAdmin extends OxaAdmin
@@ -52,9 +54,11 @@ class TestimonialAdmin extends OxaAdmin
             ])
             ->add(
                 'image',
-                'sonata_type_model_list',
+                ModelListType::class,
                 [
-                    'btn_delete' => null,
+                    'btn_delete'    => null,
+                    'model_manager' => $this->modelManager,
+                    'class'         => Media::class,
                 ],
                 [
                     'btn_delete' => false,

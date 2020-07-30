@@ -2,13 +2,13 @@ business_profile:
   integer_miles: Please use only numbers
   max_length: Please use max {{ limit }} symbols
   phone:
-    invalid: Max number of digits is 10. Only digits and dash are allowed
+    invalid: The phone number doesn't have a correct format
     digit_dash: Only digits and dash are allowed
   images:
-    invalid_url: Error: Invalid image URL.
+    invalid_url: 'Error: Invalid image URL.'
     invalid_size: The image is larger than {{ limit }}
   video:
-    invalid_url: Error: Invalid video URL.
+    invalid_url: 'Error: Invalid video URL.'
   category:
     min_count: At least {{ limit }} category should be selected
   service_areas_type: You must choose a valid Service Area
@@ -43,3 +43,7 @@ business_profile_phone:
   not_unique_main: Error there cannot be more than one main phone
   not_unique_phone: 'Error: This phone is already in use'
   no_main: Error at least one phone should be marked as "main"
+
+category:
+  amazon_affliate:
+    max: The maximum amount of the amazon affiliate items for category is {{ limit }}

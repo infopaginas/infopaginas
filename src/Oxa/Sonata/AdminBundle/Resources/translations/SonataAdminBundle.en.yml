@@ -7,7 +7,7 @@ message_physical_delete_confirmation: Are you sure you want to delete physically
 message_batch_physical_delete_confirmation: Are you sure you want to delete physically this item?
 message_batch_physical_delete_confirmation: Are you sure you want to confirm this action and execute it for the 2 selected elements?
 physical_deleting_element: Item to be deleted physically
-delete_item: Delete item: "%object%"
+delete_item: 'Delete item: %object%'
 flash_postpone_delete_success: Item has been scheduled for deletion
 flash_postpone_batch_delete_success: Items have been scheduled for deletion
 action_copy: Copy
@@ -16,8 +16,8 @@ action_restore: Restore
 action_emergency_copy: Create emergency business
 flash_restore_success: The restore has completed successfully
 copy_: copy_
-flash_delete_error_rel: Can not delete object which is used in: "%fields%"
-batch_delete_error_rel: Can not delete object with id: "record_id", which is used in: "%fields%"
+flash_delete_error_rel: 'Can not delete object which is used in: %fields%'
+batch_delete_error_rel: 'Can not delete object with id: "record_id", which is used in: %fields%'
 label_yes: Yes
 label_no: No
 label_show_leads: Show leads
@@ -41,8 +41,8 @@ media_drop_zone_message: Drag & Drop Files Here
 media_max_files_message: Max files quantity is
 media_max_size_message: Max file size is
 media_invalid_extension_files_message: Invalid file extension
-imageHelpMessage: Use keywords for the picture names. Use <span class="highlighted-text">hyphens</span> between two keywords. Example: <span class="highlighted-text">Plantas-Ornamentales.png</span>
-homepageCarouselImageRatioHelpMessage: For a better quality image should have aspect ratio about 888:492
+imageHelpMessage: 'Use keywords for the picture names. Use <span class="highlighted-text">hyphens</span> between two keywords. Example: <span class="highlighted-text">Plantas-Ornamentales.png</span>'
+homepageCarouselImageRatioHelpMessage: 'For a better quality image should have aspect ratio about 888:492'
 file_is_processing: File is Processing. It will take about one minute
 link_filters: Columns Filter
 article:

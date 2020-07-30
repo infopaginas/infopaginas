@@ -3,6 +3,7 @@
 namespace Domain\ReportBundle\Controller;
 
 use Oxa\Sonata\AdminBundle\Controller\CRUDExportController;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 /**
@@ -48,7 +49,7 @@ class CRUDPostponeExportController extends CRUDExportController
 
         $this->admin->setSubject($object);
 
-        return $this->render($this->admin->getTemplate('show'), array(
+        return $this->renderWithExtraParams($this->admin->getTemplate('show'), array(
             'action' => 'show',
             'object' => $object,
             'elements' => $this->admin->getShow(),

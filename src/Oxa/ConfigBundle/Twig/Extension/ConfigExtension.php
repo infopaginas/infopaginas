@@ -3,12 +3,14 @@
 namespace Oxa\ConfigBundle\Twig\Extension;
 
 use Oxa\ConfigBundle\Service\Config;
+use Twig\Extension\AbstractExtension;
+use Twig\TwigFunction;
 
 /**
  * Class ConfigExtension
  * @package Oxa\ConfigBundle\Twig\Extension
  */
-class ConfigExtension extends \Twig_Extension
+class ConfigExtension extends AbstractExtension
 {
     private $config;
 
@@ -22,12 +24,21 @@ class ConfigExtension extends \Twig_Extension
 
     public function getFunctions()
     {
-        return array('config' => new \Twig_Function_Method($this, 'getSetting', [
-            'needs_environment'=> true,
-            'is_safe' => [
-                'all'
-            ]
-        ]));
+        return [
+            new TwigFunction(
+                'config',
+                [
+                    $this,
+                    'getSetting',
+                ],
+                [
+                    'needs_environment' => true,
+                    'is_safe'           => [
+                        'all',
+                    ],
+                ]
+            ),
+        ];
     }
 
     public function getSetting($env, $key)

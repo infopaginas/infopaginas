@@ -5,7 +5,7 @@ define(['jquery', 'bootstrap', 'tools/spin', 'tools/select'], function( $, boots
     var images = function() {
         this.html = {
             buttons: {
-                fileInputId:                   'domain_business_bundle_business_profile_form_type_files',
+                fileInputId:                   'business_profile_form_files',
                 startUploadRemoteFileButtonId: 'start-remote-image-upload'
             },
             imageContainerClassname:     'image-wrap',

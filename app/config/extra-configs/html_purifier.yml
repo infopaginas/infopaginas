@@ -6,3 +6,9 @@ exercise_html_purifier:
             - 'noreferrer'
             - 'sponsored'
             - 'ugc'
+    amazon_affiliate:
+        HTML:
+            AllowedElements: iframe
+            SafeIframe: true
+            Doctype: 'XHTML 1.0 Transitional'
+        URI.SafeIframeRegexp: '%%^(http://|https://|//)(ws-na.amazon-adsystem.com/widgets/q?).*%%'

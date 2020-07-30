@@ -2,8 +2,9 @@
 
 namespace Oxa\Sonata\UserBundle\Controller;
 
-use Sonata\UserBundle\Controller\ResettingFOSUser1Controller;
+use Sonata\UserBundle\Controller\AdminResettingController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
@@ -11,7 +12,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
  *
  * @package Oxa\Sonata\UserBundle\Controller
  */
-class ResettingController extends ResettingFOSUser1Controller
+class ResettingController extends AdminResettingController
 {
     /**
      * Request reset user password: show form
@@ -27,7 +28,7 @@ class ResettingController extends ResettingFOSUser1Controller
     /**
      * Tell the user to check his email provider
      */
-    public function checkEmailAction()
+    public function checkEmailAction(Request $request)
     {
         $session = $this->container->get('session');
         $email = $session->get(static::SESSION_EMAIL);
@@ -48,9 +49,9 @@ class ResettingController extends ResettingFOSUser1Controller
     /**
      * Request reset user password: submit form and send email
      */
-    public function sendEmailAction()
+    public function sendEmailAction(Request $request)
     {
-        $username = $this->container->get('request')->request->get('username');
+        $username = $request->get('username');
 
         /** @var $user UserInterface */
         $user = $this->container->get('fos_user.user_manager')->findUserByUsernameOrEmail($username);

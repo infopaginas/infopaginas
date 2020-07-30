@@ -6,25 +6,24 @@ use Domain\SiteBundle\Mailer\Mailer;
 use FOS\UserBundle\Model\UserManagerInterface;
 use FOS\UserBundle\Util\TokenGeneratorInterface;
 use Oxa\ManagerArchitectureBundle\Form\Handler\BaseFormHandler;
-use Oxa\ManagerArchitectureBundle\Model\Interfaces\FormHandlerInterface;
-use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Translation\Translator;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
  * Class ResetPasswordFormHandler
  * @package Domain\SiteBundle\Form\Handler
  */
-class ResetPasswordRequestFormHandler extends BaseFormHandler implements FormHandlerInterface
+class ResetPasswordRequestFormHandler extends BaseFormHandler
 {
-    const ERROR_USER_NOT_FOUND = 'user.reset_password_request.email.not_found';
+    private const ERROR_USER_NOT_FOUND = 'user.reset_password_request.email.not_found';
 
     /** @var FormInterface  */
     protected $form;
 
     /** @var Request  */
-    protected $request;
+    protected $requestStack;
 
     /** @var UserManagerInterface */
     protected $userManager;
@@ -37,25 +36,17 @@ class ResetPasswordRequestFormHandler extends BaseFormHandler implements FormHan
 
     /** @var Translator */
     protected $translator;
-
-    /**
-     * ResetPasswordRequestFormHandler constructor.
-     * @param FormInterface $form
-     * @param Request $request
-     * @param UserManagerInterface $userManager
-     * @param TokenGeneratorInterface $tokenGenerator
-     * @param Mailer $mailer
-     */
+    
     public function __construct(
         FormInterface $form,
-        Request $request,
+        RequestStack $requestStack,
         UserManagerInterface $userManager,
         TokenGeneratorInterface $tokenGenerator,
         Mailer $mailer,
         Translator $translator
     ) {
         $this->form           = $form;
-        $this->request        = $request;
+        $this->requestStack   = $requestStack;
         $this->userManager    = $userManager;
         $this->tokenGenerator = $tokenGenerator;
         $this->mailer         = $mailer;
@@ -68,8 +59,8 @@ class ResetPasswordRequestFormHandler extends BaseFormHandler implements FormHan
      */
     public function process()
     {
-        if ($this->request->getMethod() == 'POST') {
-            $this->form->handleRequest($this->request);
+        if ($this->requestStack->getCurrentRequest()->getMethod() == 'POST') {
+            $this->form->handleRequest($this->requestStack->getCurrentRequest());
 
             if ($this->form->isValid()) {
                 $this->onSuccess();

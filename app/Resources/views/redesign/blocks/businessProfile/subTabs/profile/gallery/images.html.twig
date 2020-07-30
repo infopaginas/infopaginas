@@ -24,7 +24,7 @@
             <div class="media__field photo-description-field">
                 <div class="form__field">
                     {{ form_label(image.description) }}
-                    {{ form_widget(image.description, {'id': 'domain_business_bundle_business_profile_form_type_images_' ~ id ~ '_description', 'full_name': 'domain_business_bundle_business_profile_form_type[images][' ~ id ~ '][description]' }) }}
+                    {{ form_widget(image.description, {'id': 'business_profile_form_images_' ~ id ~ '_description', 'full_name': 'business_profile_form[images][' ~ id ~ '][description]' }) }}
                 </div>
             </div>
             <!-- media__field -->
@@ -34,7 +34,7 @@
                     {% trans %}Remove{% endtrans %}
                 </button>
             </div>
-            {{ form_widget(image.media, {'id': 'domain_business_bundle_business_profile_form_type_images_' ~ id ~ '_media', 'full_name': 'domain_business_bundle_business_profile_form_type[images][' ~ id ~ '][media]' }) }}
+            {{ form_widget(image.media, {'id': 'business_profile_form_images_' ~ id ~ '_media', 'full_name': 'business_profile_form[images][' ~ id ~ '][media]' }) }}
         </div>
         <!-- item--right -->
     </div>

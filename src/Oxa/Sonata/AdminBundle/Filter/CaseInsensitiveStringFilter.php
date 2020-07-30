@@ -3,8 +3,8 @@
 namespace Oxa\Sonata\AdminBundle\Filter;
 
 use Oxa\Sonata\AdminBundle\Util\Helpers\AdminHelper;
-use Sonata\AdminBundle\Form\Type\Filter\ChoiceType;
 use Sonata\AdminBundle\Datagrid\ProxyQueryInterface;
+use Sonata\AdminBundle\Form\Type\Operator\ContainsOperatorType;
 use Sonata\DoctrineORMAdminBundle\Filter\StringFilter;
 
 class CaseInsensitiveStringFilter extends StringFilter
@@ -24,7 +24,7 @@ class CaseInsensitiveStringFilter extends StringFilter
             return;
         }
 
-        $data['type'] = !isset($data['type']) ?  ChoiceType::TYPE_CONTAINS : $data['type'];
+        $data['type'] = !isset($data['type']) ?  ContainsOperatorType::TYPE_CONTAINS : $data['type'];
         $operator = $this->getOperator((int) $data['type']);
 
         if (!$operator) {
@@ -37,7 +37,7 @@ class CaseInsensitiveStringFilter extends StringFilter
             sprintf(self::buildSearchQueryWithReplacedAccents(), $alias, $field, $operator, $parameterName)
         );
 
-        if ($data['type'] == ChoiceType::TYPE_EQUAL) {
+        if ($data['type'] == ContainsOperatorType::TYPE_EQUAL) {
             $queryBuilder->setParameter($parameterName, AdminHelper::convertAccentedString($data['value']));
         } else {
             $queryBuilder->setParameter(
@@ -50,9 +50,9 @@ class CaseInsensitiveStringFilter extends StringFilter
     private function getOperator($type)
     {
         $choices = array(
-            ChoiceType::TYPE_CONTAINS         => 'LIKE',
-            ChoiceType::TYPE_NOT_CONTAINS     => 'NOT LIKE',
-            ChoiceType::TYPE_EQUAL            => '=',
+            ContainsOperatorType::TYPE_CONTAINS         => 'LIKE',
+            ContainsOperatorType::TYPE_NOT_CONTAINS     => 'NOT LIKE',
+            ContainsOperatorType::TYPE_EQUAL            => '=',
         );
 
         return isset($choices[$type]) ? $choices[$type] : false;

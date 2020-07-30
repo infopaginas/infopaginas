@@ -110,11 +110,9 @@ define(['jquery', 'tools/reportTracker', 'tools/googleMapLink', 'selectize', 've
         if (nav.is('.nav--opened')) {
             nav.removeClass( 'nav--opened' );
             $.Velocity.RunSequence(closeNav, { mobileHA: true });
-            $( 'body' ).removeClass( 'body--no-scroll' );
         } else {
             nav.addClass( 'nav--opened' );
             $.Velocity.RunSequence(openNav, { mobileHA: true });
-            $( 'body' ).addClass( 'body--no-scroll' );
         }
     };
 
@@ -370,13 +368,13 @@ define(['jquery', 'tools/reportTracker', 'tools/googleMapLink', 'selectize', 've
             }
         });
 
-        $('#domain_business_bundle_business_profile_form_type_areas, #domain_business_bundle_business_profile_form_type_paymentMethods, #domain_business_bundle_business_profile_form_type_tags, #domain_business_bundle_business_profile_form_type_localities, #domain_business_bundle_business_profile_form_type_neighborhoods, #domain_emergency_bundle_emergency_draft_business_type_services, #domain_emergency_bundle_emergency_draft_business_type_paymentMethods' ).selectize({
+        $('#business_profile_form_areas, #business_profile_form_paymentMethods, #business_profile_form_tags, #business_profile_form_localities, #business_profile_form_neighborhoods, #domain_emergency_bundle_emergency_draft_business_type_services, #domain_emergency_bundle_emergency_draft_business_type_paymentMethods' ).selectize({
             plugins: ['remove_button'],
             delimiter: ',',
             persist: true
         });
 
-        var singleSelects = $('#domain_business_bundle_business_profile_form_type_country, #domain_business_bundle_business_profile_form_type_catalogLocality, #domain_emergency_bundle_emergency_draft_business_type_category, #domain_emergency_bundle_emergency_draft_business_type_area' );
+        var singleSelects = $('#business_profile_form_country, #business_profile_form_catalogLocality, #domain_emergency_bundle_emergency_draft_business_type_category, #domain_emergency_bundle_emergency_draft_business_type_area' );
 
         singleSelects.select2();
 

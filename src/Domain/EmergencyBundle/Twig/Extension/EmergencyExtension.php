@@ -3,12 +3,14 @@
 namespace Domain\EmergencyBundle\Twig\Extension;
 
 use Symfony\Component\HttpFoundation\Session\Session;
+use Twig\Extension\AbstractExtension;
+use Twig\TwigFunction;
 
 /**
  * Class EmergencyExtension
  * @package Domain\EmergencyBundle\Twig\Extension
  */
-class EmergencyExtension extends \Twig_Extension
+class EmergencyExtension extends AbstractExtension
 {
     const EMERGENCY_POP_UP_FREQUENCY = 86400;   // delay between emergency pop up displaying in seconds
 
@@ -29,7 +31,7 @@ class EmergencyExtension extends \Twig_Extension
     public function getFunctions()
     {
         return [
-            'get_emergency_pop_up_allowed' => new \Twig_Function_Method($this, 'getEmergencyPopupAllowed'),
+            new TwigFunction('get_emergency_pop_up_allowed', [$this, 'getEmergencyPopupAllowed']),
         ];
     }
 

@@ -149,7 +149,7 @@ class VideoManager
 
         $path = sprintf('%s/%s/', date('Y'), date('m'));
         do {
-            $filename = sprintf('%s.%s', uniqid('', 1), $data['ext']);
+            $filename = sprintf('%s.%s', uniqid('', true), $data['ext']);
         } while ($adapter->exists($path . $filename));
  
         $adapter->setMetadata($path . $filename, [

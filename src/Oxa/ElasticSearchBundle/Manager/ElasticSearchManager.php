@@ -21,6 +21,9 @@ class ElasticSearchManager
 
     public const AUTO_SUGGEST_BUSINESS_MIN_WORD_LENGTH_ANALYZED = 2;
     public const AUTO_SUGGEST_BUSINESS_MAX_WORD_LENGTH_ANALYZED = 40;
+    public const BUSINESS_PHONE_MIN_WORD_LENGTH_ANALYZED = 7;
+    public const BUSINESS_PHONE_MAX_WORD_LENGTH_ANALYZED = 10;
+    public const MAX_NGRAM_DIFF = self::BUSINESS_PHONE_MAX_WORD_LENGTH_ANALYZED - self::BUSINESS_PHONE_MIN_WORD_LENGTH_ANALYZED;
     public const MILES_IN_METER = 0.000621371;
 
     public const ELASTIC_INDEXES = [
@@ -146,6 +149,7 @@ class ElasticSearchManager
             'refresh_interval' => $this->indexRefreshInterval,
             'max_result_window' => $this->maxResultWindow,
             'max_rescore_window' => $this->maxRescoreWindow,
+            'max_ngram_diff' => self::MAX_NGRAM_DIFF,
             'analysis' => [
                 'analyzer' => [
                     'folding' => [
@@ -165,6 +169,13 @@ class ElasticSearchManager
                             'asciifolding',
                             'shingle_filter',
                         ],
+                    ],
+                    'phone_number' => [
+                        'type' => 'custom',
+                        'char_filter' => [
+                            'phone_char_filter',
+                        ],
+                        'tokenizer' => 'phone_ngram_tokenizer',
                     ],
                     'autocomplete' => [
                         'type' => 'custom',
@@ -188,6 +199,13 @@ class ElasticSearchManager
                         'tokenizer'   => 'keyword',
                     ],
                 ],
+                'char_filter' => [
+                    'phone_char_filter' => [
+                        'type' => 'pattern_replace',
+                        'pattern' => '[\(\)\-.\s+]',
+                        'replacement' => '',
+                    ],
+                ],
                 'tokenizer' => [
                     'autocomplete' => [
                         'type' => 'edge_ngram',
@@ -198,6 +216,14 @@ class ElasticSearchManager
                             'digit',
                             'punctuation',
                             'symbol',
+                        ],
+                    ],
+                    'phone_ngram_tokenizer' => [
+                        'type' => 'ngram',
+                        'min_gram' => self::BUSINESS_PHONE_MIN_WORD_LENGTH_ANALYZED,
+                        'max_gram' => self::BUSINESS_PHONE_MAX_WORD_LENGTH_ANALYZED,
+                        'token_chars' => [
+                            'digit',
                         ],
                     ],
                 ],

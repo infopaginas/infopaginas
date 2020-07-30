@@ -76,33 +76,33 @@ class BusinessProfile implements
     use PostponeRemoveTrait;
     use ChangeStateTrait;
 
-    const SERVICE_AREAS_AREA_CHOICE_VALUE = 'area';
+    const SERVICE_AREAS_AREA_CHOICE_VALUE     = 'area';
     const SERVICE_AREAS_LOCALITY_CHOICE_VALUE = 'locality';
 
     const ACTION_URL_TYPE_ORDER = 'order';
     const ACTION_URL_TYPE_BOOK  = 'book';
 
-    const BUSINESS_PROFILE_FIELD_NAME_LENGTH          = 255;
-    const BUSINESS_PROFILE_FIELD_DESCRIPTION_LENGTH   = 10000;
-    const BUSINESS_PROFILE_FIELD_PRODUCT_LENGTH       = 10000;
-    const BUSINESS_PROFILE_FIELD_BRANDS_LENGTH        = 1024;
-    const BUSINESS_PROFILE_FIELD_SLOGAN_LENGTH        = 255;
+    const BUSINESS_PROFILE_FIELD_NAME_LENGTH        = 255;
+    const BUSINESS_PROFILE_FIELD_DESCRIPTION_LENGTH = 10000;
+    const BUSINESS_PROFILE_FIELD_PRODUCT_LENGTH     = 10000;
+    const BUSINESS_PROFILE_FIELD_BRANDS_LENGTH      = 1024;
+    const BUSINESS_PROFILE_FIELD_SLOGAN_LENGTH      = 255;
 
     const BUSINESS_STATUS_ACTIVE   = 'active';
     const BUSINESS_STATUS_INACTIVE = 'inactive';
 
-    const BUSINESS_PROFILE_ZIP_MAX_LENGTH = 10;
-    const BUSINESS_PROFILE_URL_MAX_LENGTH = 1000;
-    const BUSINESS_PROFILE_FREE_MAX_CATEGORIES_COUNT = 3;
+    const BUSINESS_PROFILE_ZIP_MAX_LENGTH            = 10;
+    const BUSINESS_PROFILE_URL_MAX_LENGTH            = 1000;
+    const BUSINESS_PROFILE_FREE_MAX_CATEGORIES_COUNT = 1;
 
     const DEFAULT_LOCALE = 'en';
 
     const TRANSLATION_LANG_EN = 'En';
     const TRANSLATION_LANG_ES = 'Es';
 
-    const ELASTIC_INDEX = 'business_profile';
+    const ELASTIC_INDEX    = 'business_profile';
     const ELASTIC_INDEX_AD = 'business_profile_ad';
-    const FLAG_IS_UPDATED = 'isUpdated';
+    const FLAG_IS_UPDATED  = 'isUpdated';
 
     const ELASTIC_LOCALITIES_FILED = 'locality_ids';
     const ELASTIC_CATEGORIES_FILED = 'categories_ids';
@@ -120,43 +120,41 @@ class BusinessProfile implements
     const BUSINESS_PROFILE_FIELD_DISCOUNT       = 'discount';
 
     // common fields
-    const BUSINESS_PROFILE_FIELD_NAME        = 'name';
-    const BUSINESS_PROFILE_FIELD_NAME_EN     = 'nameEn';
-    const BUSINESS_PROFILE_FIELD_NAME_ES     = 'nameEs';
-    const BUSINESS_PROFILE_FIELD_PANORAMA_ID = 'panoramaId';
-    const BUSINESS_PROFILE_FIELD_EMAIL       = 'email';
-    const BUSINESS_PROFILE_FIELD_DC_ORDER_ID = 'dcOrderId';
+    const BUSINESS_PROFILE_FIELD_NAME                    = 'name';
+    const BUSINESS_PROFILE_FIELD_PANORAMA_ID             = 'panoramaId';
+    const BUSINESS_PROFILE_FIELD_EMAIL                   = 'email';
+    const BUSINESS_PROFILE_FIELD_DC_ORDER_ID             = 'dcOrderId';
     const BUSINESS_PROFILE_FIELD_ENABLE_NOT_UNIQUE_PHONE = 'enableNotUniquePhone';
 
-    const BUSINESS_PROFILE_FIELD_SERVICE_AREAS_TYPE     = 'serviceAreasType';
-    const BUSINESS_PROFILE_FIELD_MILES_OF_MY_BUSINESS   = 'milesOfMyBusiness';
+    const BUSINESS_PROFILE_FIELD_SERVICE_AREAS_TYPE   = 'serviceAreasType';
+    const BUSINESS_PROFILE_FIELD_MILES_OF_MY_BUSINESS = 'milesOfMyBusiness';
 
-    const BUSINESS_PROFILE_FIELD_STREET_ADDRESS     = 'streetAddress';
-    const BUSINESS_PROFILE_FIELD_STREET_NUMBER      = 'streetNumber';
-    const BUSINESS_PROFILE_FIELD_EXTENDED_ADDRESS   = 'extendedAddress';
-    const BUSINESS_PROFILE_FIELD_CROSS_STREET       = 'crossStreet';
-    const BUSINESS_PROFILE_FIELD_STATE              = 'state';
-    const BUSINESS_PROFILE_FIELD_CITY               = 'city';
-    const BUSINESS_PROFILE_FIELD_ZIP_CODE           = 'zipCode';
-    const BUSINESS_PROFILE_FIELD_CUSTOM_ADDRESS     = 'customAddress';
-    const BUSINESS_PROFILE_FIELD_HIDE_ADDRESS       = 'hideAddress';
-    const BUSINESS_PROFILE_FIELD_HIDE_MAP           = 'hideMap';
+    const BUSINESS_PROFILE_FIELD_STREET_ADDRESS   = 'streetAddress';
+    const BUSINESS_PROFILE_FIELD_STREET_NUMBER    = 'streetNumber';
+    const BUSINESS_PROFILE_FIELD_EXTENDED_ADDRESS = 'extendedAddress';
+    const BUSINESS_PROFILE_FIELD_CROSS_STREET     = 'crossStreet';
+    const BUSINESS_PROFILE_FIELD_STATE            = 'state';
+    const BUSINESS_PROFILE_FIELD_CITY             = 'city';
+    const BUSINESS_PROFILE_FIELD_ZIP_CODE         = 'zipCode';
+    const BUSINESS_PROFILE_FIELD_CUSTOM_ADDRESS   = 'customAddress';
+    const BUSINESS_PROFILE_FIELD_HIDE_ADDRESS     = 'hideAddress';
+    const BUSINESS_PROFILE_FIELD_HIDE_MAP         = 'hideMap';
 
-    const BUSINESS_PROFILE_FIELD_WEBSITE_TYPE = 'websiteItem';
-    const BUSINESS_PROFILE_FIELD_ACTION_URL_TYPE  = 'actionUrlItem';
-    const BUSINESS_PROFILE_FIELD_ACTION_URL_TYPE_TYPE  = 'actionUrlType';
-    const BUSINESS_PROFILE_FIELD_TWITTER_URL_TYPE = 'twitterURLItem';
-    const BUSINESS_PROFILE_FIELD_FACEBOOK_URL_TYPE   = 'facebookURLItem';
-    const BUSINESS_PROFILE_FIELD_GOOGLE_URL_TYPE     = 'googleURLItem';
-    const BUSINESS_PROFILE_FIELD_YOUTUBE_URL_TYPE    = 'youtubeURLItem';
-    const BUSINESS_PROFILE_FIELD_INSTAGRAM_URL_TYPE  = 'instagramURLItem';
-    const BUSINESS_PROFILE_FIELD_TRIP_ADVISOR_URL_TYPE = 'tripAdvisorURLItem';
+    const BUSINESS_PROFILE_FIELD_WEBSITE_TYPE           = 'websiteItem';
+    const BUSINESS_PROFILE_FIELD_ACTION_URL_TYPE        = 'actionUrlItem';
+    const BUSINESS_PROFILE_FIELD_ACTION_URL_TYPE_TYPE   = 'actionUrlType';
+    const BUSINESS_PROFILE_FIELD_TWITTER_URL_TYPE       = 'twitterURLItem';
+    const BUSINESS_PROFILE_FIELD_FACEBOOK_URL_TYPE      = 'facebookURLItem';
+    const BUSINESS_PROFILE_FIELD_GOOGLE_URL_TYPE        = 'googleURLItem';
+    const BUSINESS_PROFILE_FIELD_YOUTUBE_URL_TYPE       = 'youtubeURLItem';
+    const BUSINESS_PROFILE_FIELD_INSTAGRAM_URL_TYPE     = 'instagramURLItem';
+    const BUSINESS_PROFILE_FIELD_TRIP_ADVISOR_URL_TYPE  = 'tripAdvisorURLItem';
     const BUSINESS_PROFILE_FIELD_TRIP_LINKEDIN_URL_TYPE = 'linkedInURLItem';
 
     const BUSINESS_PROFILE_FIELD_SEO_TITLE       = 'seoTitle';
     const BUSINESS_PROFILE_FIELD_SEO_DESCRIPTION = 'seoDescription';
 
-    const BUSINESS_PROFILE_FIELD_LATITUDE = 'latitude';
+    const BUSINESS_PROFILE_FIELD_LATITUDE  = 'latitude';
     const BUSINESS_PROFILE_FIELD_LONGITUDE = 'longitude';
 
     // many-to-one relations
@@ -164,8 +162,8 @@ class BusinessProfile implements
     const BUSINESS_PROFILE_FIELD_COUNTRY          = 'country';
 
     // one-to-many relations
-    const BUSINESS_PROFILE_RELATION_WORKING_HOURS   = 'collectionWorkingHours';
-    const BUSINESS_PROFILE_RELATION_PHONES          = 'phones';
+    const BUSINESS_PROFILE_RELATION_WORKING_HOURS = 'collectionWorkingHours';
+    const BUSINESS_PROFILE_RELATION_PHONES        = 'phones';
 
     const WORKING_HOURS_ASSOCIATED_FIELD = 'collectionWorkingHours';
 
@@ -177,7 +175,7 @@ class BusinessProfile implements
     const BUSINESS_PROFILE_RELATION_NEIGHBORHOODS   = 'neighborhoods';
 
     // one-to-many media relations
-    const BUSINESS_PROFILE_RELATION_IMAGES   = 'images';
+    const BUSINESS_PROFILE_RELATION_IMAGES = 'images';
 
     // many-to-one media relations
     const BUSINESS_PROFILE_RELATION_VIDEO      = 'video';
@@ -189,8 +187,8 @@ class BusinessProfile implements
 
     const BUSINESS_PROFILE_RELATION_TRANSLATIONS = 'translations';
 
-    const BUSINESS_PROFILE_FIELD_SUBSCRIPTIONS    = 'subscriptions';
-    const BUSINESS_PROFILE_FIELD_UPDATED_AT       = 'updatedAt';
+    const BUSINESS_PROFILE_FIELD_SUBSCRIPTIONS = 'subscriptions';
+    const BUSINESS_PROFILE_FIELD_UPDATED_AT    = 'updatedAt';
 
     const KEYWORD_DELIMITER = ',';
 
@@ -200,13 +198,13 @@ class BusinessProfile implements
     const USER_STATUS_DEACTIVATED = 'Deactivated';
 
     // fields should not contain any of !@$%^*()+={}[]<>? characters
-    const ADDRESS_FIELDS_REGEX_PATTERN = '/^[^!@$%^*()+={}\[\]<>?]*$/';
-    const PHONE_NUMBER_LIKE_REGEX_PATTERN = '/[\d]{2,}[\).\- ,|]+[\d]{2,}[\-. ,|]+[\d]{2,}/';
+    const ADDRESS_FIELDS_REGEX_PATTERN    = '/^[^!@$%^*()+={}\[\]<>?]*$/';
+    const PHONE_NUMBER_LIKE_REGEX_PATTERN = '/[\d]{2,}[\).\- ,|]{1}[\d]{2,}[\-. ,|]{1}[\d]{2,}/';
 
-    const BUSINESS_RATING_YELP = 'rating_yelp';
-    const BUSINESS_RATING_GOOGLE = 'rating_google';
+    const BUSINESS_RATING_YELP         = 'rating_yelp';
+    const BUSINESS_RATING_GOOGLE       = 'rating_google';
     const BUSINESS_RATING_TRIP_ADVISOR = 'rating_trip_advisor';
-    const BUSINESS_RATING_FACEBOOK = 'rating_facebook';
+    const BUSINESS_RATING_FACEBOOK     = 'rating_facebook';
 
     /**
      * @var int
@@ -227,20 +225,6 @@ class BusinessProfile implements
      * @Assert\NotBlank()
      */
     protected $name;
-
-    /**
-     * @var string - Business name en
-     *
-     * @ORM\Column(name="name_en", type="string", length=255, nullable=true)
-     */
-    protected $nameEn;
-
-    /**
-     * @var string - Business name es
-     *
-     * @ORM\Column(name="name_es", type="string", length=255, nullable=true)
-     */
-    protected $nameEs;
 
     /**
      * @var User - Business owner
@@ -814,6 +798,14 @@ class BusinessProfile implements
     protected $video;
 
     /**
+     * @ORM\ManyToOne(targetEntity="Oxa\VideoBundle\Entity\VideoMedia",
+     *     inversedBy="businessProfiles"
+     * )
+     * @ORM\JoinColumn(name="owners_message_id", referencedColumnName="id", nullable=true)
+     */
+    protected $ownersMessage;
+
+    /**
      * @ORM\Column(name="impressions", type="integer", nullable=false, options={"default" = 0})
      */
     protected $impressions = 0;
@@ -832,6 +824,11 @@ class BusinessProfile implements
      * @ORM\Column(name="calls_desktop", type="integer", nullable=false, options={"default" = 0})
      */
     protected $callsDesktop = 0;
+
+    /**
+     * @ORM\Column(type="integer", nullable=false, options={"default" = 0})
+     */
+    protected $views = 0;
 
     /**
      * @Gedmo\Locale
@@ -1044,6 +1041,18 @@ class BusinessProfile implements
     protected $isShowFacebookRating;
 
     /**
+     * @var BusinessProfilePopup
+     *
+     * @ORM\OneToOne(
+     *     targetEntity="Domain\BusinessBundle\Entity\BusinessProfilePopup",
+     *      cascade={"remove"},
+     *      orphanRemoval=true
+     * )
+     * @ORM\JoinColumn(nullable=true)
+     */
+    protected $popup;
+
+    /**
      * @return bool
      */
     public function isEnableNotUniquePhone()
@@ -1076,6 +1085,24 @@ class BusinessProfile implements
     public function setVideo($video)
     {
         $this->video = $video;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getOwnersMessage()
+    {
+        return $this->ownersMessage;
+    }
+
+    /**
+     * @param mixed $ownersMessage
+     * @return BusinessProfile
+     */
+    public function setOwnersMessage($ownersMessage)
+    {
+        $this->ownersMessage = $ownersMessage;
         return $this;
     }
 
@@ -1184,7 +1211,7 @@ class BusinessProfile implements
      */
     public function __toString()
     {
-        return $this->getName() ?: '';
+        return $this->getName() ? $this->getName() . ' --- ID ' . $this->getId() : '';
     }
 
     public function __get($prop)
@@ -1330,54 +1357,6 @@ class BusinessProfile implements
     public function getName()
     {
         return $this->name;
-    }
-
-    /**
-     * Set nameEn
-     *
-     * @param string $nameEn
-     *
-     * @return BusinessProfile
-     */
-    public function setNameEn($nameEn)
-    {
-        $this->nameEn = $nameEn;
-
-        return $this;
-    }
-
-    /**
-     * Get nameEn
-     *
-     * @return string
-     */
-    public function getNameEn()
-    {
-        return $this->nameEn;
-    }
-
-    /**
-     * Set nameEs
-     *
-     * @param string $nameEs
-     *
-     * @return BusinessProfile
-     */
-    public function setNameEs($nameEs)
-    {
-        $this->nameEs = $nameEs;
-
-        return $this;
-    }
-
-    /**
-     * Get nameEs
-     *
-     * @return string
-     */
-    public function getNameEs()
-    {
-        return $this->nameEs;
     }
 
     /**
@@ -2679,13 +2658,25 @@ class BusinessProfile implements
 
     public function getPhonesJSON()
     {
+        return json_encode($this->getPhonesArrayByType());
+    }
+
+    public function getPhonesArrayByType(array $types = [])
+    {
         $phones = $this->phones->toArray();
 
-        $phones = array_map(function ($phone) {
-            return $phone->getPhone();
-        }, $phones);
+        if ($types) {
+            $phones = array_filter($phones, static function ($phone) use ($types) {
+                return in_array($phone->getType(), $types);
+            });
+        }
 
-        return json_encode($phones);
+        return array_map(
+            static function ($phone) {
+                return $phone->getPhone();
+            },
+            $phones
+        );
     }
 
     /**
@@ -3203,8 +3194,8 @@ class BusinessProfile implements
     public static function getServiceAreasTypes()
     {
         return [
-            self::SERVICE_AREAS_AREA_CHOICE_VALUE       => 'Distance',
-            self::SERVICE_AREAS_LOCALITY_CHOICE_VALUE   => 'Locality',
+            'Distance' => self::SERVICE_AREAS_AREA_CHOICE_VALUE,
+            'Locality' => self::SERVICE_AREAS_LOCALITY_CHOICE_VALUE,
         ];
     }
 
@@ -3413,6 +3404,14 @@ class BusinessProfile implements
         }
 
         return false;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getHasOwnersMessage()
+    {
+        return (bool) $this->getOwnersMessage();
     }
 
     /**
@@ -3871,10 +3870,7 @@ class BusinessProfile implements
         ];
     }
 
-    /**
-     * @return array
-     */
-    public static function getCSVImportUrlRelations()
+    public static function gerUrlTypeFields(): array
     {
         return [
             self::BUSINESS_PROFILE_FIELD_WEBSITE_TYPE,
@@ -4280,5 +4276,85 @@ class BusinessProfile implements
         $this->isShowFacebookRating = $isShowFacebookRating;
 
         return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getViews()
+    {
+        return $this->views;
+    }
+
+    /**
+     * @param int $views
+     * @return BusinessProfile
+     */
+    public function setViews($views)
+    {
+        $this->views = $views;
+
+        return $this;
+    }
+
+    /**
+     * @return BusinessProfilePopup
+     */
+    public function getPopup()
+    {
+        return $this->popup;
+    }
+
+    /**
+     * @param BusinessProfilePopup $popup
+     * @return BusinessProfile
+     */
+    public function setPopup($popup)
+    {
+        $this->popup = $popup;
+
+        return $this;
+    }
+
+    public function getAmazonAffiliateItems()
+    {
+        $data = null;
+
+        foreach ($this->categories as $category) {
+            if (count($category->getAmazonAffiliateItems())) {
+                $data = $category->getAmazonAffiliateItems();
+                break;
+            }
+        }
+
+        return $data;
+    }
+
+    public function getAmazonAffiliateUrl()
+    {
+        $data = null;
+
+        foreach ($this->categories as $category) {
+            if ($category->getAmazonAffiliateUrl() && $category->getAmazonAffiliateUrl()->getUrl()) {
+                $data = $category->getAmazonAffiliateUrl();
+                break;
+            }
+        }
+
+        return $data;
+    }
+
+    public function getAmazonAffiliateUrlCategory()
+    {
+        $data = null;
+
+        foreach ($this->categories as $category) {
+            if ($category->getAmazonAffiliateUrl() && $category->getAmazonAffiliateUrl()->getUrl()) {
+                $data = $category;
+                break;
+            }
+        }
+
+        return $data;
     }
 }

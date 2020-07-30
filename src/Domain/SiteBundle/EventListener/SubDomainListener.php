@@ -3,23 +3,19 @@
 namespace Domain\SiteBundle\EventListener;
 
 use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
-use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 use Symfony\Bundle\FrameworkBundle\Routing\Router;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Twig\Environment;
 
 class SubDomainListener implements EventSubscriberInterface
 {
     protected $container;
     private $router;
 
-    public function __construct(ContainerInterface $container, Router $router, \Twig_Environment $twig)
+    public function __construct(ContainerInterface $container, Router $router, Environment $twig)
     {
         $this->container = $container;
         $this->router = $router;

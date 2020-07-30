@@ -7,9 +7,6 @@ use Domain\BusinessBundle\Util\ZipFormatterUtil;
 use Oxa\Sonata\AdminBundle\Model\ChangeStateInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\ChangeStateTrait;
 use Symfony\Component\Validator\Constraints as Assert;
-use Doctrine\Common\Collections\ArrayCollection;
-use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * Zip
@@ -40,7 +37,7 @@ class Zip implements ChangeStateInterface
     protected $zipCode;
 
     /**
-     * @var \Domain\BusinessBundle\Entity\Neighborhood
+     * @var Neighborhood
      *
      * @ORM\ManyToOne(
      *      targetEntity="Domain\BusinessBundle\Entity\Neighborhood",
@@ -55,6 +52,11 @@ class Zip implements ChangeStateInterface
      */
     public function __construct()
     {
+    }
+
+    public function __toString()
+    {
+        return $this->getZipCode() ?: '';
     }
 
     /**
@@ -91,35 +93,15 @@ class Zip implements ChangeStateInterface
         return $this->zipCode;
     }
 
-    /**
-     * Set Neighborhood
-     *
-     * @param \Domain\BusinessBundle\Entity\Neighborhood $Neighborhood
-     *
-     * @return Neighborhood
-     */
-    public function setNeighborhood(\Domain\BusinessBundle\Entity\Neighborhood $neighborhood = null)
+    public function setNeighborhood(Neighborhood $neighborhood = null)
     {
         $this->neighborhood = $neighborhood;
 
         return $this;
     }
 
-    /**
-     * Get Neighborhood
-     *
-     * @return \Domain\BusinessBundle\Entity\Neighborhood
-     */
     public function getNeighborhood()
     {
         return $this->neighborhood;
-    }
-
-    /**
-     * @return string
-     */
-    public function __toString()
-    {
-        return $this->getZipCode() ?: '';
     }
 }

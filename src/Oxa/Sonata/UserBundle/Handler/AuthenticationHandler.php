@@ -1,21 +1,13 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Xedin
- * Date: 21.06.16
- * Time: 11:38
- */
 
 namespace Oxa\Sonata\UserBundle\Handler;
 
-use Domain\BusinessBundle\Form\Handler\BusinessFormHandlerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Routing\Router;
-use Symfony\Component\Security\Core\SecurityContext;
+use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Http\Authentication\AuthenticationFailureHandlerInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationSuccessHandlerInterface;
@@ -31,18 +23,22 @@ class AuthenticationHandler implements AuthenticationSuccessHandlerInterface, Au
 
     /** @var  TranslatorInterface $translator */
     protected $translator;
+    
+    private $router;
+    private $authorizationChecker;
 
     /**
      * AuthenticationHandler constructor.
-     * @param TranslatorInterface $translator
-     * @param Router              $router
-     * @param SecurityContext     $security
+     *
+     * @param TranslatorInterface  $translator
+     * @param Router               $router
+     * @param AuthorizationChecker $authorizationChecker
      */
-    public function __construct(TranslatorInterface $translator, Router $router, SecurityContext $security)
+    public function __construct(TranslatorInterface $translator, Router $router, AuthorizationChecker $authorizationChecker)
     {
-        $this->translator = $translator;
-        $this->router     = $router;
-        $this->security   = $security;
+        $this->translator           = $translator;
+        $this->router               = $router;
+        $this->authorizationChecker = $authorizationChecker;
     }
 
     /**
@@ -60,7 +56,7 @@ class AuthenticationHandler implements AuthenticationSuccessHandlerInterface, Au
             'ROLE_SALES_MANAGER',
         ];
 
-        if ($this->security->isGranted($adminRoles)) {
+        if ($this->authorizationChecker->isGranted($adminRoles)) {
             $redirect = $this->router->generate('sonata_admin_dashboard');
         }
 

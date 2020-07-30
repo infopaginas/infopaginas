@@ -7,7 +7,6 @@ use Oxa\Sonata\AdminBundle\Model\ChangeStateInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\ChangeStateTrait;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
-use Misd\PhoneNumberBundle\Validator\Constraints\PhoneNumber as AssertPhoneNumber;
 use Domain\BusinessBundle\Form\Handler\BusinessFormHandlerInterface;
 
 /**
@@ -22,7 +21,13 @@ class BusinessProfilePhone implements ChangeStateInterface
 {
     use ChangeStateTrait;
 
-    const REGEX_PHONE_PATTERN = '/^\d{3}-\d{3}-\d{4}$/';
+    const REGEX_PHONE_PATTERN = '/^\d{3}-\d{3}-\d{4}$|' .
+                                '^\(\d{3}\)\s\d{3}\s\d{4}$|' .
+                                '^\(\d{3}\)-\d{3}-\d{4}$|' .
+                                '^\(\d{3}\)\d{3}-\d{4}$|' .
+                                '^\(\d{3}\)\s\d{3}-\d{4}$|' .
+                                '^\d{10}$|' .
+                                '^\d{3}\s\d{3}\s\d{4}$/';
     const MAX_PHONE_LENGTH = 15;
     const MAX_EXTENSION_LENGTH = 6;
     const MIN_EXTENSION_LENGTH = 1;
@@ -171,7 +176,7 @@ class BusinessProfilePhone implements ChangeStateInterface
      */
     public static function getTypesAssert()
     {
-        return array_keys(self::getTypes());
+        return array_values(self::getTypes());
     }
 
     /**
@@ -200,9 +205,9 @@ class BusinessProfilePhone implements ChangeStateInterface
     public static function getTypes()
     {
         return [
-            self::PHONE_TYPE_MAIN       => 'business_profile_phone.type.main',
-            self::PHONE_TYPE_SECONDARY  => 'business_profile_phone.type.secondary',
-            self::PHONE_TYPE_FAX        => 'business_profile_phone.type.fax',
+            'business_profile_phone.type.main'      => self::PHONE_TYPE_MAIN,
+            'business_profile_phone.type.secondary' => self::PHONE_TYPE_SECONDARY,
+            'business_profile_phone.type.fax'       => self::PHONE_TYPE_FAX,
         ];
     }
 

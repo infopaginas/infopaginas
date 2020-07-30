@@ -11,7 +11,6 @@ use Domain\BusinessBundle\Manager\ClickbaitTitleManager;
 use Domain\BusinessBundle\Manager\LocalityManager;
 use Domain\BusinessBundle\Util\BusinessProfileUtil;
 use Domain\BusinessBundle\Util\SlugUtil;
-use Domain\ReportBundle\Manager\CategoryOverviewReportManager;
 use Domain\ReportBundle\Manager\KeywordsReportManager;
 use Domain\ReportBundle\Model\BusinessOverviewModel;
 use Domain\SearchBundle\Model\Manager\SearchManager;
@@ -19,14 +18,12 @@ use Domain\SearchBundle\Util\CacheUtil;
 use Domain\SearchBundle\Util\SearchDataUtil;
 use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Domain\ReportBundle\Manager\BusinessOverviewReportManager;
-use Domain\SearchBundle\Model\DataType\SearchResultsDTO;
 use Domain\BannerBundle\Model\TypeInterface;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * Class SearchController
@@ -214,9 +211,9 @@ class SearchController extends Controller
     {
         $searchData = $this->getSearchDataByRequest($request);
         $locale = LocaleHelper::getLocale($request->getLocale());
-
         $memcached = $this->container->get('app.cache.memcached');
-        $response = $memcached->fetch(CacheUtil::PREFIX_AUTOCOMPLETE . $searchData['q'] . $locale);
+        $cacheId = CacheUtil::PREFIX_AUTOCOMPLETE . CacheUtil::sanitizeCacheId($searchData['q']) . $locale;
+        $response = $memcached->fetch($cacheId);
 
         if (!$response) {
             $businessProfileManager = $this->get('domain_business.manager.business_profile');
@@ -225,11 +222,7 @@ class SearchController extends Controller
                 $locale
             );
             $response = (new JsonResponse())->setData($results);
-            $memcached->save(
-                CacheUtil::PREFIX_AUTOCOMPLETE . $searchData['q'] . $locale,
-                $response,
-                CacheUtil::AUTOCOMPLETE_CACHE_LIFETIME
-            );
+            $memcached->save($cacheId, $response, CacheUtil::AUTOCOMPLETE_CACHE_LIFETIME);
         }
 
         return $response;
@@ -323,7 +316,7 @@ class SearchController extends Controller
             ]
         );
 
-        $pageRouter = $this->container->get('request')->attributes->get('_route');
+        $pageRouter = $this->container->get('request_stack')->getCurrentRequest()->attributes->get('_route');
 
         $seoData = $this->getBusinessProfileManager()->getBusinessProfileSearchSeoData($locationName, $seoCategories);
 
@@ -402,7 +395,7 @@ class SearchController extends Controller
             ]
         );
 
-        $pageRouter = $this->container->get('request')->attributes->get('_route');
+        $pageRouter = $this->container->get('request_stack')->getCurrentRequest()->attributes->get('_route');
 
         $seoData = $this->getBusinessProfileManager()->getBusinessProfileCatalogSeoData($locality, $seoCategory);
 
@@ -507,8 +500,8 @@ class SearchController extends Controller
 
         $router = $this->get('router');
 
-        $staticSearchUrl  = $router->generate('domain_search_index', $request->query->all(), true);
-        $staticCompareUrl = $router->generate('domain_search_compare', $request->query->all(), true);
+        $staticSearchUrl  = $router->generate('domain_search_index', $request->query->all(), UrlGeneratorInterface::ABSOLUTE_PATH);
+        $staticCompareUrl = $router->generate('domain_search_compare', $request->query->all(), UrlGeneratorInterface::ABSOLUTE_PATH);
 
         return new JsonResponse(
             [

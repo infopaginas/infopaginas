@@ -64,12 +64,4 @@ class VideoMediaType extends AbstractType
             'data_class' => 'Oxa\VideoBundle\Entity\VideoMedia',
         ]);
     }
-
-    /**
-     * @return string
-     */
-    public function getName()
-    {
-        return 'oxa_video_bundle_video_media_form_type';
-    }
 }

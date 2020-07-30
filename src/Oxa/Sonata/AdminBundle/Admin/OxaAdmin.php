@@ -1,22 +1,16 @@
 <?php
+
 namespace Oxa\Sonata\AdminBundle\Admin;
 
 use Domain\BusinessBundle\Model\DatetimePeriodStatusInterface;
-use Domain\BusinessBundle\Util\Traits\StatusTrait;
 use Domain\BusinessBundle\VO\VirtualObjectInterface;
 use Domain\ReportBundle\Model\UserActionModel;
 use Oxa\Sonata\AdminBundle\Model\ChangeStateInterface;
-use Oxa\Sonata\AdminBundle\Model\CopyableEntityInterface;
-use Oxa\Sonata\AdminBundle\Model\PostponeRemoveInterface;
-use Oxa\Sonata\MediaBundle\Entity\Media;
-use Pix\SortableBehaviorBundle\Services\PositionHandler;
 use Sonata\AdminBundle\Datagrid\ListMapper;
-use Sonata\AdminBundle\Form\FormMapper;
-use Sonata\AdminBundle\Admin\Admin as BaseAdmin;
-use Sonata\AdminBundle\Datagrid\DatagridMapper;
+use Sonata\AdminBundle\Admin\AbstractAdmin as BaseAdmin;
 use Sonata\AdminBundle\Route\RouteCollection;
-use Sonata\AdminBundle\Show\ShowMapper;
-use Sonata\CoreBundle\Validator\ErrorElement;
+use Sonata\Form\Type\DateTimeRangePickerType;
+use Sonata\Form\Validator\ErrorElement;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class OxaAdmin extends BaseAdmin
@@ -78,7 +72,7 @@ class OxaAdmin extends BaseAdmin
      * @var array
      */
     protected $defaultDatagridDatetimeTypeOptions = [
-        'field_type' => 'sonata_type_datetime_range_picker',
+        'field_type' => DateTimeRangePickerType::class,
         'field_options' => [
             'field_options' => [
                 'format' => self::FILTER_DATETIME_FORMAT
@@ -92,7 +86,7 @@ class OxaAdmin extends BaseAdmin
      * @var array
      */
     protected $defaultDatagridDateTypeOptions = [
-        'field_type' => 'sonata_type_datetime_range_picker',
+        'field_type' => DateTimeRangePickerType::class,
         'field_options' => [
             'field_options' => [
                 'format' => self::FILTER_DATE_FORMAT
@@ -109,16 +103,6 @@ class OxaAdmin extends BaseAdmin
         '_page'       => 1,
         '_per_page'   => 25,
     );
-
-    /**
-     * @var int
-     */
-    public $lastPosition = 1;
-
-    /**
-     * @var PositionHandler $positionService
-     */
-    public $positionService;
 
     /**
      * Allows to use such functionality in filter as: include or not include, between or not between, etc
@@ -138,12 +122,6 @@ class OxaAdmin extends BaseAdmin
      * @var bool
      */
     public $allowBatchRestore = false;
-
-    public function setPositionService(PositionHandler $positionHandler)
-    {
-        $this->positionService = $positionHandler;
-        $this->lastPosition = $this->positionService->getLastPosition($this->getRoot()->getClass());
-    }
 
     /**
      * Basic admin configuration
@@ -299,7 +277,7 @@ class OxaAdmin extends BaseAdmin
      */
     public function preUpdate($entity)
     {
-        $uow = $this->getConfigurationPool()->getContainer()->get('Doctrine')->getManager()->getUnitOfWork();
+        $uow = $this->getConfigurationPool()->getContainer()->get('doctrine')->getManager()->getUnitOfWork();
         $uow->computeChangeSets();
         $changeSet = $uow->getEntityChangeSet($entity);
 

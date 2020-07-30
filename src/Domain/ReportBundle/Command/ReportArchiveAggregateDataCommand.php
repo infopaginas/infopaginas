@@ -47,30 +47,30 @@ class ReportArchiveAggregateDataCommand extends ContainerAwareCommand
         $output->writeln('Process overview report');
         $businessOverviewReportManager = $container->get('domain_report.manager.business_overview_report_manager');
         $businessOverviewReportManager->archiveAggregatedBusinessInteractions($aggregatedDataArchivingDate);
-        $logger->addInfo(CronLogger::MONGO_ARCHIVE, CronLogger::STATUS_IN_PROGRESS, 'execute:Process overview report');
+        $logger->addInfo(CronLogger::MONGO_ARCHIVE_AGGREGATE, CronLogger::STATUS_IN_PROGRESS, 'execute:Process overview report');
 
         $output->writeln('Process keyword report');
         $keywordsReportManager = $container->get('domain_report.manager.keywords_report_manager');
         $keywordsReportManager->archiveAggregatedBusinessKeywords($aggregatedDataArchivingDate);
-        $logger->addInfo(CronLogger::MONGO_ARCHIVE, CronLogger::STATUS_IN_PROGRESS, 'execute:Process keyword report');
+        $logger->addInfo(CronLogger::MONGO_ARCHIVE_AGGREGATE, CronLogger::STATUS_IN_PROGRESS, 'execute:Process keyword report');
 
         $output->writeln('Process category report');
         $categoryOverviewReportManager = $container->get('domain_report.manager.category_overview_report_manager');
         $categoryOverviewReportManager->archiveAggregatedBusinessCategories($aggregatedDataArchivingDate);
-        $logger->addInfo(CronLogger::MONGO_ARCHIVE, CronLogger::STATUS_IN_PROGRESS, 'execute:Process category report');
+        $logger->addInfo(CronLogger::MONGO_ARCHIVE_AGGREGATE, CronLogger::STATUS_IN_PROGRESS, 'execute:Process category report');
 
         $output->writeln('Process user action report');
         $userActionReportManager = $container->get('domain_report.manager.user_action_report_manager');
         $userActionReportManager->archiveUserActions($aggregatedDataArchivingDate);
-        $logger->addInfo(CronLogger::MONGO_ARCHIVE, CronLogger::STATUS_IN_PROGRESS, 'execute:Process user action report');
+        $logger->addInfo(CronLogger::MONGO_ARCHIVE_AGGREGATE, CronLogger::STATUS_IN_PROGRESS, 'execute:Process user action report');
 
         $output->writeln('Process feedback report');
         $feedbackReportManager = $container->get('domain_report.manager.feedback_report_manager');
         $feedbackReportManager->archiveFeedbackActions($aggregatedDataArchivingDate);
-        $logger->addInfo(CronLogger::MONGO_ARCHIVE, CronLogger::STATUS_IN_PROGRESS, 'execute:Process feedback report');
+        $logger->addInfo(CronLogger::MONGO_ARCHIVE_AGGREGATE, CronLogger::STATUS_IN_PROGRESS, 'execute:Process feedback report');
 
         $output->writeln('done');
-        $logger->addInfo(CronLogger::MONGO_ARCHIVE, CronLogger::STATUS_END, CronLogger::MESSAGE_STOP);
+        $logger->addInfo(CronLogger::MONGO_ARCHIVE_AGGREGATE, CronLogger::STATUS_END, CronLogger::MESSAGE_STOP);
     }
 
     /**

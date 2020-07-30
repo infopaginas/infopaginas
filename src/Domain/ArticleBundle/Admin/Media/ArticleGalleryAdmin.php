@@ -2,16 +2,14 @@
 
 namespace Domain\ArticleBundle\Admin\Media;
 
-use Domain\ArticleBundle\Entity\Article;
 use Domain\ArticleBundle\Entity\Media\ArticleGallery;
 use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
-use Sonata\AdminBundle\Admin\Admin;
+use Oxa\Sonata\MediaBundle\Entity\Media;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
-use Sonata\AdminBundle\Route\RouteCollection;
+use Sonata\AdminBundle\Form\Type\ModelListType;
 use Sonata\AdminBundle\Show\ShowMapper;
-use Sonata\CoreBundle\Validator\ErrorElement;
 use Oxa\Sonata\MediaBundle\Model\OxaMediaInterface;
 
 class ArticleGalleryAdmin extends OxaAdmin
@@ -64,22 +62,29 @@ class ArticleGalleryAdmin extends OxaAdmin
 
         if ($isExternal) {
             $property = [
-                'read_only'     => true,
-                'btn_add'       => false,
-                'btn_list'      => false,
-                'btn_delete'    => false,
+                'btn_add'    => false,
+                'btn_list'   => false,
+                'btn_delete' => false,
+                'attr'       => [
+                    'read_only' => true,
+                ],
             ];
         } else {
             $property = [
-                'read_only'     => false,
+                'attr' => [
+                    'read_only' => false,
+                ],
             ];
         }
 
         $formMapper
             ->add(
                 'media',
-                'sonata_type_model_list',
-                $property,
+                ModelListType::class,
+                array_merge($property, [
+                    'class' => Media::class,
+                    'model_manager' => $this->modelManager,
+                ]),
                 [
                     'link_parameters' => [
                         'required' => true,

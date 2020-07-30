@@ -5,24 +5,22 @@ namespace Domain\SiteBundle\Form\Handler;
 use FOS\UserBundle\Model\UserInterface;
 use FOS\UserBundle\Model\UserManagerInterface;
 use Oxa\ManagerArchitectureBundle\Form\Handler\BaseFormHandler;
-use Oxa\ManagerArchitectureBundle\Model\Interfaces\FormHandlerInterface;
-use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
  * Class PasswordUpdateFormHandler
  * @package Domain\SiteBundle\Form\Handler
  */
-class PasswordUpdateFormHandler extends BaseFormHandler implements FormHandlerInterface
+class PasswordUpdateFormHandler extends BaseFormHandler
 {
     /** @var FormInterface  */
     protected $form;
 
     /** @var Request  */
-    protected $request;
+    protected $requestStack;
 
     /** @var UserManagerInterface */
     protected $userManager;
@@ -30,21 +28,14 @@ class PasswordUpdateFormHandler extends BaseFormHandler implements FormHandlerIn
     /** @var  UserInterface */
     protected $currentUser;
 
-    /**
-     * PasswordUpdateFormHandler constructor.
-     * @param FormInterface $form
-     * @param Request $request
-     * @param UserManagerInterface $userManager
-     * @param TokenStorageInterface $tokenStorage
-     */
     public function __construct(
         FormInterface $form,
-        Request $request,
+        RequestStack $requestStack,
         UserManagerInterface $userManager,
         TokenStorageInterface $tokenStorage
     ) {
         $this->form           = $form;
-        $this->request        = $request;
+        $this->requestStack   = $requestStack;
         $this->userManager    = $userManager;
         $this->currentUser    = $tokenStorage->getToken()->getUser();
     }
@@ -54,8 +45,8 @@ class PasswordUpdateFormHandler extends BaseFormHandler implements FormHandlerIn
      */
     public function process()
     {
-        if ($this->request->getMethod() == 'POST') {
-            $this->form->handleRequest($this->request);
+        if ($this->requestStack->getCurrentRequest()->getMethod() == 'POST') {
+            $this->form->handleRequest($this->requestStack->getCurrentRequest());
 
             if ($this->form->isValid()) {
                 $this->onSuccess();

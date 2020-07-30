@@ -2,10 +2,12 @@
 
 namespace Domain\BusinessBundle\Admin\CustomFields;
 
+use Domain\BusinessBundle\Entity\CustomFields\BusinessCustomFieldCheckbox;
 use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
+use Sonata\AdminBundle\Form\Type\ModelListType;
 use Sonata\AdminBundle\Show\ShowMapper;
 
 class BusinessCustomFieldCheckboxCollectionAdmin extends OxaAdmin
@@ -36,11 +38,17 @@ class BusinessCustomFieldCheckboxCollectionAdmin extends OxaAdmin
     protected function configureFormFields(FormMapper $formMapper)
     {
         $formMapper
-            ->add('checkboxes', 'sonata_type_model_list', [
-                'required'   => true,
-                'btn_add'    => false,
-                'btn_delete' => false,
-            ])
+            ->add(
+                'checkboxes',
+                ModelListType::class,
+                [
+                    'required'      => true,
+                    'btn_add'       => false,
+                    'btn_delete'    => false,
+                    'model_manager' => $this->modelManager,
+                    'class'         => BusinessCustomFieldCheckbox::class,
+                ]
+            )
             ->add('isAvailable')
         ;
     }

@@ -19,6 +19,7 @@ use FOS\UserBundle\Model\UserInterface;
 use Domain\BusinessBundle\Model\StatusInterface;
 use Doctrine\ORM\QueryBuilder;
 use Domain\SearchBundle\Model\DataType\SearchDTO;
+use Iterator;
 use Oxa\GeolocationBundle\Model\Geolocation\LocationValueObject;
 use Oxa\GeolocationBundle\Utils\GeolocationUtils;
 use Domain\SearchBundle\Util\SearchDataUtil;
@@ -75,6 +76,25 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
     public function findBusinessProfilesByIdsArray($ids, $locale = LocaleHelper::DEFAULT_LOCALE)
     {
         $qb = $this->createQueryBuilder('bp')
+            ->where('bp.id IN (:ids)')
+            ->setParameter('ids', $ids)
+        ;
+
+        $query = $qb->getQuery();
+
+        if ($locale) {
+            SiteHelper::setLocaleQueryHint($query, $locale);
+        }
+
+        return $query->getResult();
+    }
+
+    public function getAutoSuggestedBusinessDataByIds($ids, $locale = LocaleHelper::DEFAULT_LOCALE)
+    {
+        $qb = $this->_em->createQueryBuilder()
+            ->select('bp.name')
+            ->distinct(true)
+            ->from($this->_entityName, 'bp')
             ->where('bp.id IN (:ids)')
             ->setParameter('ids', $ids)
         ;
@@ -160,6 +180,21 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
         $results = new Paginator($qb, $fetchJoin = false);
 
         return $results;
+    }
+
+    public function getBusinessProfilesWithSubscriptionIterator(int $subscriptionCode, string $operator = '='): Iterator
+    {
+        $qb = $this->getEntityManager()->createQueryBuilder()
+            ->select('bp')
+            ->distinct()
+            ->from(BusinessProfile::class, 'bp')
+            ->innerJoin('bp.subscriptions', 'bp_s', Join::WITH, 'bp_s.status = ' . StatusInterface::STATUS_ACTIVE)
+            ->innerJoin('bp_s.subscriptionPlan', 'bps_p')
+            ->where('bps_p.code ' . $operator . ' :subscriptionCode')
+            ->setParameter('subscriptionCode', $subscriptionCode)
+        ;
+
+        return $qb->getQuery()->iterate();
     }
 
     private function getVideosQuery()
@@ -366,6 +401,7 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
     {
         $qb = $this->createQueryBuilder('bp')
             ->andWhere('bp.isUpdated = TRUE')
+            ->andWhere('bp.isDraft = FALSE')
         ;
 
         $query = $this->getEntityManager()->createQuery($qb->getDQL());
@@ -565,7 +601,7 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
             ->getResult();
     }
 
-    public function getBusinessCountForCategory(Category $category) : int
+    public function getBusinessCountForCategory(Category $category): int
     {
         $qb = $this->createQueryBuilder('bp');
         $qb
@@ -575,5 +611,18 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
             ->setParameter('categoryId', $category->getId());
 
         return $qb->getQuery()->getSingleScalarResult();
+    }
+
+    public function removeProfilesByImportFileId($fileId)
+    {
+        $bp = $this->createQueryBuilder('bp');
+
+        $bp
+            ->where('bp.csvImportFile = :id')
+            ->setParameter('id', $fileId)
+            ->delete()
+        ;
+
+        $bp->getQuery()->execute();
     }
 }

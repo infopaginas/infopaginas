@@ -6,6 +6,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Domain\ArticleBundle\Entity\Article;
 use Domain\BusinessBundle\Entity\Translation\CategoryTranslation;
+use Domain\BusinessBundle\VO\Url;
 use Oxa\Sonata\AdminBundle\Model\ChangeStateInterface;
 use Oxa\Sonata\AdminBundle\Model\CopyableEntityInterface;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
@@ -34,21 +35,23 @@ class Category implements
     use PersonalTranslatable;
     use ChangeStateTrait;
 
-    const CATEGORY_FIELD_NAME = 'name';
-    const CATEGORY_LOCALE_PROPERTY = 'searchText';
+    public const CATEGORY_FIELD_NAME      = 'name';
+    public const CATEGORY_LOCALE_PROPERTY = 'searchText';
 
-    const CATEGORY_UNDEFINED_CODE = '54016';
-    const CATEGORY_UNDEFINED_SLUG = 'unclassified';
+    public const CATEGORY_UNDEFINED_CODE = '54016';
+    public const CATEGORY_UNDEFINED_SLUG = 'unclassified';
 
-    const CATEGORY_ARTICLE_CODE = '99999';
-    const CATEGORY_ARTICLE_SLUG = 'infopaginas-media';
+    public const CATEGORY_ARTICLE_CODE = '99999';
+    public const CATEGORY_ARTICLE_SLUG = 'infopaginas-media';
 
-    const ELASTIC_INDEX = 'category';
-    const FLAG_IS_UPDATED = 'isUpdated';
+    public const ELASTIC_INDEX   = 'category';
+    public const FLAG_IS_UPDATED = 'isUpdated';
 
-    const ALLOW_DELETE_ASSOCIATED_FIELD_CATALOG_ITEMS = 'catalogItems';
+    public const ALLOW_DELETE_ASSOCIATED_FIELD_CATALOG_ITEMS = 'catalogItems';
 
-    const RELATED_ENTITIES_DISPLAY_COUNT = 15;
+    public const RELATED_ENTITIES_DISPLAY_COUNT = 15;
+
+    public const MAX_AMAZON_AFFILIATE_ITEMS_COUNT = 4;
 
     /**
      * @var int
@@ -194,6 +197,30 @@ class Category implements
      */
     protected $keywordText;
 
+    /**
+     * @var ArrayCollection
+     *
+     * @ORM\OneToMany(
+     *     targetEntity="AmazonAffiliateItem",
+     *      mappedBy="category",
+     *      cascade={"persist", "remove"},
+     *      orphanRemoval=true
+     *     )
+     * @Assert\Count(
+     *     max=Category::MAX_AMAZON_AFFILIATE_ITEMS_COUNT,
+     *     maxMessage="category.amazon_affliate.max"
+     *     )
+     */
+    protected $amazonAffiliateItems;
+
+    /**
+     * @var Url|null
+     *
+     * @ORM\Column(name="amazonAffiliateUrl", type="urlType", length=1000, nullable=true)
+     * @Assert\Valid()
+     */
+    protected $amazonAffiliateUrl;
+
     public function setLocale($locale)
     {
         $this->locale = $locale;
@@ -214,12 +241,13 @@ class Category implements
      */
     public function __construct()
     {
-        $this->businessProfiles = new ArrayCollection();
-        $this->translations     = new ArrayCollection();
-        $this->articles         = new ArrayCollection();
-        $this->reports          = new ArrayCollection();
-        $this->catalogItems     = new ArrayCollection();
-        $this->extraSearches    = new ArrayCollection();
+        $this->businessProfiles     = new ArrayCollection();
+        $this->translations         = new ArrayCollection();
+        $this->articles             = new ArrayCollection();
+        $this->reports              = new ArrayCollection();
+        $this->catalogItems         = new ArrayCollection();
+        $this->extraSearches        = new ArrayCollection();
+        $this->amazonAffiliateItems = new ArrayCollection();
 
         $this->isUpdated = true;
         $this->showSuggestion = false;
@@ -655,4 +683,44 @@ class Category implements
 
         return $this;
     }
+
+    public function getAmazonAffiliateItems()
+    {
+        return $this->amazonAffiliateItems;
+    }
+
+    public function addAmazonAffiliateItem(AmazonAffiliateItem $amazonAffiliateItem)
+    {
+        $this->amazonAffiliateItems[] = $amazonAffiliateItem;
+
+        $amazonAffiliateItem->setCategory($this);
+
+        return $this;
+    }
+
+    public function removeAmazonAffiliateItem(AmazonAffiliateItem $amazonAffiliateItem)
+    {
+        $this->amazonAffiliateItems->removeElement($amazonAffiliateItem);
+    }
+
+    /**
+     * @return Url|null
+     */
+    public function getAmazonAffiliateUrl()
+    {
+        return $this->amazonAffiliateUrl;
+    }
+
+    /**
+     * @param Url $amazonAffiliateUrl
+     *
+     * @return Category
+     */
+    public function setAmazonAffiliateUrl(Url $amazonAffiliateUrl)
+    {
+        $this->amazonAffiliateUrl = $amazonAffiliateUrl;
+
+        return $this;
+    }
+
 }

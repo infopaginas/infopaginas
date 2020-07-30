@@ -5,6 +5,7 @@ use Domain\BusinessBundle\Entity\BusinessProfilePhone;
 use Domain\SiteBundle\Validator\Constraints\ConstraintUrlExpanded;
 use Domain\SiteBundle\Validator\Constraints\ContainsEmailExpandedValidator;
 use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
+use Oxa\Sonata\AdminBundle\Filter\DateTimeRangeFilter;
 use Oxa\Sonata\UserBundle\Entity\Group;
 use Oxa\Sonata\UserBundle\Entity\User;
 use Oxa\Sonata\UserBundle\OxaSonataUserBundle;
@@ -12,9 +13,11 @@ use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use FOS\UserBundle\Model\UserManagerInterface;
+use Sonata\Form\Type\CollectionType;
 use Sonata\AdminBundle\Route\RouteCollection;
 use Sonata\AdminBundle\Show\ShowMapper;
-use Sonata\CoreBundle\Validator\ErrorElement;
+use Sonata\Form\Validator\ErrorElement;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Validator\Constraints\Regex;
 
@@ -90,7 +93,7 @@ class UserAdmin extends OxaAdmin
             ->add('email')
             ->add('role')
             ->add('enabled')
-            ->add('createdAt', 'doctrine_orm_datetime_range', $this->defaultDatagridDatetimeTypeOptions)
+            ->add('createdAt', DateTimeRangeFilter::class, $this->defaultDatagridDatetimeTypeOptions)
             ->add(
                 'businessesCount',
                 null,
@@ -197,7 +200,7 @@ class UserAdmin extends OxaAdmin
             $formMapper
                 ->tab('Profile')
                     ->with('Security')
-                        ->add('role', 'entity', [
+                        ->add('role', EntityType::class, [
                             'class'   => Group::class,
                             'choices' => $roles
                         ])
@@ -215,7 +218,9 @@ class UserAdmin extends OxaAdmin
                         'email',
                         [
                             'required' => true,
-                            'pattern'  => ContainsEmailExpandedValidator::EMAIL_REGEX_PATTERN,
+                            'attr' => [
+                                'pattern' => ContainsEmailExpandedValidator::EMAIL_REGEX_PATTERN,
+                            ]
                         ]
                     )
                     ->add(
@@ -258,7 +263,7 @@ class UserAdmin extends OxaAdmin
                 ->with('User Reviews')
                     ->add(
                         'businessReviews',
-                        'sonata_type_collection',
+                        CollectionType::class,
                         [
                             'label'        => 'Businesses Reviews',
                             'by_reference' => true,

@@ -5,11 +5,11 @@ namespace Domain\ReportBundle\Admin;
 use Domain\ReportBundle\Model\BusinessOverviewModel;
 use Domain\ReportBundle\Manager\ViewsAndVisitorsReportManager;
 use Domain\ReportBundle\Util\Helpers\ChartHelper;
+use Oxa\Sonata\AdminBundle\Filter\DateTimeRangeFilter;
 use Oxa\Sonata\AdminBundle\Util\Helpers\AdminHelper;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
-use Sonata\AdminBundle\Route\RouteCollection;
-use Sonata\CoreBundle\Form\Type\EqualType;
+use Sonata\DoctrineORMAdminBundle\Filter\ChoiceFilter;
 
 /**
  * Class ViewsAndVisitorsReportAdmin
@@ -23,8 +23,8 @@ class ViewsAndVisitorsReportAdmin extends ReportAdmin
     protected function configureDatagridFilters(DatagridMapper $datagridMapper)
     {
         $datagridMapper
-            ->add('date', 'doctrine_orm_datetime_range', AdminHelper::getReportDateTypeOptions())
-            ->add('periodOption', 'doctrine_orm_choice', AdminHelper::getDatagridPeriodOptionOptions())
+            ->add('date', DateTimeRangeFilter::class, AdminHelper::getReportDateTypeOptions())
+            ->add('periodOption', ChoiceFilter::class, AdminHelper::getDatagridPeriodOptionOptions())
         ;
     }
 

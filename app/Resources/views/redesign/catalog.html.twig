@@ -60,6 +60,8 @@
                             {% endblock %}
                         </div>
 
+                        {{ render(controller('DomainSiteBundle:Home:popularMenuItems', {'type': SHORT_CUT_ITEMS.LANDING, 'title': 'popular_searches.title'})) }}
+
                         {% include ':redesign/blocks/banners:search-page-down.html.twig' with { 'bannerType': BANNER_CODE.SEARCH_PAGE_BOTTOM } %}
                     {% else %}
                         {% embed ':redesign/errors:error-body.html.twig' with {'errorTitle': 'error.404.title', 'errorMessage': 'error.404.message', 'errorSearchText': 'error.404.search.text', 'errorSearchCatalog': 'error.404.search.catalog'} %}
@@ -80,9 +82,6 @@
                 <i class="fa fa-list"></i>
                 <span>{% trans %}List view{% endtrans %}</span>
             </button>
-            <div id="menu" class="default-menu">
-                {% include ':redesign/blocks/mapbox:mapMenu.html.twig' %}
-            </div>
             <div id="map" class="map">
                 {% include ':redesign/blocks/mapbox:mapLogo.html.twig' %}
             </div>

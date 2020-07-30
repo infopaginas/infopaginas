@@ -1,0 +1,10 @@
+<div id="ownersMessageModal" class="modal modal--owners" tabindex="-1" role="dialog" aria-hidden="true" data-bw-gtm-component="modal-owners-message">
+    <div class="modal__outside"></div>
+    <div class="modal__content owners-message-video">
+        {% if businessProfile.hasOwnersMessage() and businessProfile.getOwnersMessage().status == 'active' %}
+            <section class="page-section video">
+                {{ render_video_embed(businessProfile.getOwnersMessage()) }}
+            </section>
+        {% endif %}
+    </div>
+</div>

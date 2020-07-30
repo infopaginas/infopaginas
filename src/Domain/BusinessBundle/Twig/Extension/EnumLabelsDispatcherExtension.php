@@ -4,17 +4,21 @@ namespace Domain\BusinessBundle\Twig\Extension;
 
 use Domain\BusinessBundle\DBAL\Types\TaskStatusType;
 use Domain\BusinessBundle\DBAL\Types\TaskType;
+use Twig\Extension\AbstractExtension;
+use Twig\TwigFunction;
 
-class EnumLabelsDispatcherExtension extends \Twig_Extension
+class EnumLabelsDispatcherExtension extends AbstractExtension
 {
     public function getFunctions()
     {
-        return ['dispatch_enum_value' => new \Twig_Function_Method($this, 'dispatchEnumValue')];
+        return [
+            new TwigFunction('dispatch_enum_value', [$this, 'dispatchEnumValue'])
+        ];
     }
 
     public function dispatchEnumValue($enumValue)
     {
-        $appEnumValues = array_merge(TaskType::getChoices(), TaskStatusType::getChoices());
+        $appEnumValues = array_merge(TaskType::getReadableValues(), TaskStatusType::getReadableValues());
         return $appEnumValues[$enumValue] ?? '';
     }
 

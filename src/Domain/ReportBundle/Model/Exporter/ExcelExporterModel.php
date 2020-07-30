@@ -2,6 +2,7 @@
 
 namespace Domain\ReportBundle\Model\Exporter;
 
+use Doctrine\ORM\EntityManager;
 use Domain\ReportBundle\Model\ExporterInterface;
 use Liuggio\ExcelBundle\Factory;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
@@ -14,9 +15,9 @@ use Symfony\Component\HttpFoundation\Response;
  */
 abstract class ExcelExporterModel implements ExporterInterface
 {
-    const FORMAT = 'xls';
-    const ROW_AUTO_HEIGHT = -1;
-    const TITLE_MAX_LENGTH = 31;
+    protected const FORMAT = 'xls';
+    protected const ROW_AUTO_HEIGHT = -1;
+    protected const TITLE_MAX_LENGTH = 31;
 
     /**
      * @var Factory $phpExcel
@@ -39,6 +40,11 @@ abstract class ExcelExporterModel implements ExporterInterface
     protected $activeSheet;
 
     /**
+     * @var EntityManager $em
+     */
+    protected $em;
+
+    /**
      * @param Factory $service
      */
     public function setPhpExcel(Factory $service)
@@ -52,6 +58,11 @@ abstract class ExcelExporterModel implements ExporterInterface
     public function setTranslator(Translator $service)
     {
         $this->translator = $service;
+    }
+
+    public function setEntityManager(EntityManager $em)
+    {
+        $this->em = $em;
     }
 
     /**

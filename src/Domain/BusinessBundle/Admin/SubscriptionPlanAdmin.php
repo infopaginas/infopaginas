@@ -3,7 +3,7 @@
 namespace Domain\BusinessBundle\Admin;
 
 use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
-use Sonata\AdminBundle\Admin\Admin;
+use Oxa\Sonata\AdminBundle\Filter\CaseInsensitiveStringFilter;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
@@ -18,7 +18,7 @@ class SubscriptionPlanAdmin extends OxaAdmin
     {
         $datagridMapper
             ->add('id')
-            ->add('name', null, [
+            ->add('name', CaseInsensitiveStringFilter::class, [
                 'show_filter' => true,
             ])
         ;

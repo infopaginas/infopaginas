@@ -14,9 +14,7 @@ use Domain\BusinessBundle\Util\ChangeSetCalculator;
 use Domain\BusinessBundle\Util\DoctrineUtil;
 use Domain\BusinessBundle\Entity\Category;
 use Oxa\Sonata\MediaBundle\Entity\Media;
-use Oxa\Sonata\MediaBundle\Model\OxaMediaInterface;
 use Oxa\VideoBundle\Entity\VideoMedia;
-use Symfony\Component\Debug\Exception\ContextErrorException;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 
 /**
@@ -287,7 +285,7 @@ class ChangeSetCollectorUtil
     {
         try {
             $profileDiff = DoctrineUtil::diffDoctrineObject($em, $entity);
-        } catch (ContextErrorException $e) {
+        } catch (\ErrorException $e) {
             return false;
         }
 
@@ -302,7 +300,7 @@ class ChangeSetCollectorUtil
 
             try {
                 $videoDiff = DoctrineUtil::diffDoctrineObject($em, $entity->getVideo());
-            } catch (ContextErrorException $e) {
+            } catch (\ErrorException $e) {
                 return false;
             }
 
@@ -372,7 +370,7 @@ class ChangeSetCollectorUtil
 
         try {
             $profileDiff = DoctrineUtil::diffDoctrineObject($em, $entity);
-        } catch (ContextErrorException $e) {
+        } catch (\ErrorException $e) {
             return false;
         }
 

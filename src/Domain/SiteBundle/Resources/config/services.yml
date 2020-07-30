@@ -11,62 +11,57 @@ services:
         class: Domain\SiteBundle\Form\Type\RegistrationType
         arguments: [null]
         tags:
-        - { name: form.type, alias: domain_site_registration }
+        - { name: form.type }
 
     domain_site.reset_password_request.form.type:
         class: Domain\SiteBundle\Form\Type\ResetPasswordRequestType
         arguments: [null]
         tags:
-        - { name: form.type, alias: domain_site_reset_password_request }
+        - { name: form.type }
 
     domain_site.reset_password.form.type:
         class: Domain\SiteBundle\Form\Type\ResetPasswordType
         arguments: [null]
         tags:
-        - { name: form.type, alias: domain_site_reset_password }
+        - { name: form.type }
 
     domain_site.user_profile.form.type:
         class: Domain\SiteBundle\Form\Type\UserProfileType
         arguments: [null]
         tags:
-        - { name: form.type, alias: domain_site_user_profile }
+        - { name: form.type }
 
     domain_site.user_password_update.form.type:
         class: Domain\SiteBundle\Form\Type\PasswordUpdateType
         arguments: [null]
         tags:
-        - { name: form.type, alias: domain_site_user_password_update }
+        - { name: form.type }
 
     #forms section
     domain_site.registration.form:
-        factory_method: createNamed
-        factory_service: form.factory
+        factory: ['@form.factory', 'createNamed']
         class: Symfony\Component\Form\Form
-        arguments: [domain_site_registration, domain_site_registration]
+        arguments: ['registration', 'Domain\SiteBundle\Form\Type\RegistrationType']
 
     domain_site.reset_password_request.form:
-        factory_method: createNamed
-        factory_service: form.factory
+        factory: ['@form.factory', 'createNamed']
         class: Symfony\Component\Form\Form
-        arguments: [domain_site_reset_password_request, domain_site_reset_password_request]
+        arguments: ['reset_password_request', 'Domain\SiteBundle\Form\Type\ResetPasswordRequestType']
 
     domain_site.reset_password.form:
-        factory_method: createNamed
-        factory_service: form.factory
+        factory: ['@form.factory', 'createNamed']
         class: Symfony\Component\Form\Form
-        arguments: [domain_site_reset_password, domain_site_reset_password]
+        arguments: ['reset_password', 'Domain\SiteBundle\Form\Type\ResetPasswordType']
 
     domain_site.user_profile.form:
-        factory_method: createNamed
-        factory_service: form.factory
+        factory: ['@form.factory', 'createNamed']
         class: Symfony\Component\Form\Form
-        arguments: [domain_site_user_profile, domain_site_user_profile]
+        arguments: ['user_profile', 'Domain\SiteBundle\Form\Type\UserProfileType']
 
     domain_site.user_password_update.form:
-        factory_method: createNamed
-        factory_service: form.factory
+        factory: ['@form.factory', 'createNamed']
         class: Symfony\Component\Form\Form
-        arguments: [domain_site_user_password_update, domain_site_user_password_update]
+        arguments: ['password_update', 'Domain\SiteBundle\Form\Type\PasswordUpdateType']
 
     #form handlers section
     domain_site.registration.form.handler:
@@ -74,7 +69,7 @@ services:
         scope: request
         arguments:
             - '@domain_site.registration.form'
-            - '@request'
+            - '@request_stack'
             - '@fos_user.user_manager'
             - '@oxa.manager.groups'
             - '@domain_site.mailer'
@@ -84,7 +79,7 @@ services:
         scope: request
         arguments:
             - '@domain_site.reset_password_request.form'
-            - '@request'
+            - '@request_stack'
             - '@fos_user.user_manager'
             - '@fos_user.util.token_generator'
             - '@domain_site.mailer'
@@ -95,7 +90,7 @@ services:
         scope: request
         arguments:
             - '@domain_site.reset_password.form'
-            - '@request'
+            - '@request_stack'
             - '@fos_user.user_manager'
             - '@translator.default'
 
@@ -104,7 +99,7 @@ services:
         scope: request
         arguments:
             - '@domain_site.user_profile.form'
-            - '@request'
+            - '@request_stack'
             - '@fos_user.user_manager'
             - '@security.token_storage'
 
@@ -113,22 +108,22 @@ services:
         scope: request
         arguments:
             - '@domain_site.user_password_update.form'
-            - '@request'
+            - '@request_stack'
             - '@fos_user.user_manager'
             - '@security.token_storage'
 
     domain_site.contains_email:
         class: Domain\SiteBundle\Validator\Constraints\ContainsEmailExpandedValidator
         arguments:
-            - @translator
-            - @validator
+            - '@translator'
+            - '@validator'
         tags:
             - { name: validator.constraint_validator }
 
     domain_site.constraint_email_unique:
         class: Domain\SiteBundle\Validator\Constraints\ConstraintEmailUniqueValidator
         arguments:
-            - @translator
+            - '@translator'
             - '@doctrine.orm.default_entity_manager'
             - '@oxa.manager.users'
         tags:
@@ -137,13 +132,13 @@ services:
     domain_site.constraint_url:
         class: Domain\SiteBundle\Validator\Constraints\ConstraintUrlExpandedValidator
         arguments:
-            - @translator
+            - '@translator'
         tags:
             - { name: validator.constraint_validator }
 
     listener.subdomain_request:
         class: Domain\SiteBundle\EventListener\SubDomainListener
-        arguments: [ @service_container, @router, @twig ]
+        arguments: [ '@service_container', '@router', '@twig' ]
         tags:
             - { name: kernel.event_subscriber }
 
@@ -164,14 +159,6 @@ services:
         class:  Domain\SiteBundle\Logger\CronLogger
         arguments:
             - "@mongodb.manager"
-
-    domain_site.twig_extension.language:
-        class: Domain\SiteBundle\Twig\Extension\LanguageExtension
-        public: false
-        tags:
-            - { name: twig.extension }
-        calls:
-            - [ setDefaultLanguage, [ '%locale%' ] ]
 
     monolog.logger.elasticsearch:
         tags:

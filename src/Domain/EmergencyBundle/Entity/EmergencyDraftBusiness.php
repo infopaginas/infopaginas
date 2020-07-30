@@ -25,12 +25,12 @@ class EmergencyDraftBusiness extends EmergencyAbstractBusiness implements Report
 {
     use ChangeStateTrait;
 
-    const STATUS_PENDING  = 'pending';
-    const STATUS_APPROVED = 'approved';
-    const STATUS_REJECTED = 'rejected';
+    public const STATUS_PENDING  = 'pending';
+    public const STATUS_APPROVED = 'approved';
+    public const STATUS_REJECTED = 'rejected';
 
-    const FIELD_CATEGORY = 'category';
-    const FIELD_CUSTOM_CATEGORY = 'customCategory';
+    public const FIELD_CATEGORY = 'category';
+    public const FIELD_CUSTOM_CATEGORY = 'customCategory';
 
     /**
      * @var string
@@ -204,9 +204,9 @@ class EmergencyDraftBusiness extends EmergencyAbstractBusiness implements Report
     public static function getStatuses()
     {
         return [
-            self::STATUS_PENDING  => 'emergency.business_draft.status_pending',
-            self::STATUS_APPROVED => 'emergency.business_draft.status_approved',
-            self::STATUS_REJECTED => 'emergency.business_draft.status_rejected',
+            'emergency.business_draft.status_pending'  => self::STATUS_PENDING,
+            'emergency.business_draft.status_approved' => self::STATUS_APPROVED,
+            'emergency.business_draft.status_rejected' => self::STATUS_REJECTED,
         ];
     }
 
@@ -215,6 +215,6 @@ class EmergencyDraftBusiness extends EmergencyAbstractBusiness implements Report
      */
     public static function getStatusAssert()
     {
-        return array_keys(self::getStatuses());
+        return array_values(self::getStatuses());
     }
 }

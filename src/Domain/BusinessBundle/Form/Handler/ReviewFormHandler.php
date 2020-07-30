@@ -7,21 +7,21 @@ use Domain\BusinessBundle\Manager\BusinessProfileManager;
 use Domain\BusinessBundle\Manager\BusinessReviewManager;
 use Domain\BusinessBundle\Manager\TasksManager;
 use Oxa\ManagerArchitectureBundle\Form\Handler\BaseFormHandler;
-use Oxa\ManagerArchitectureBundle\Model\Interfaces\FormHandlerInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
  * Class ReviewFormHandler
  * @package Domain\BusinessBundle\Form\Handler
  */
-class ReviewFormHandler extends BaseFormHandler implements FormHandlerInterface
+class ReviewFormHandler extends BaseFormHandler
 {
-    const BUSINESS_NOT_FOUND_ERROR_MESSAGE = 'Business id is not found';
+    private const BUSINESS_NOT_FOUND_ERROR_MESSAGE = 'Business id is not found';
 
-    /** @var Request $request */
-    private $request;
+    /** @var RequestStack $requestStack */
+    private $requestStack;
 
     /** @var BusinessReviewManager $manager */
     private $manager;
@@ -37,33 +37,31 @@ class ReviewFormHandler extends BaseFormHandler implements FormHandlerInterface
 
     public function __construct(
         FormInterface $form,
-        Request $request,
+        RequestStack $requestStack,
         BusinessReviewManager $manager,
         BusinessProfileManager $businessProfileManager,
         TasksManager $tasksManager,
         TokenStorageInterface $tokenStorage
     ) {
         $this->form                   = $form;
-        $this->request                = $request;
+        $this->requestStack           = $requestStack;
         $this->manager                = $manager;
         $this->businessProfileManager = $businessProfileManager;
         $this->tasksManager           = $tasksManager;
         $this->tokenStorage           = $tokenStorage;
     }
 
-    /**
-     * @return bool
-     */
     public function process()
     {
-        if ($this->request->getMethod() == Request::METHOD_POST) {
-            $this->form->handleRequest($this->request);
+        if ($this->getRequest()->getMethod() == Request::METHOD_POST) {
+            $this->form->handleRequest($this->getRequest());
 
             /** @var BusinessReview $review */
             $review = $this->form->getData();
 
             if ($this->form->isValid()) {
                 $this->onSuccess($review);
+
                 return true;
             }
         }
@@ -71,11 +69,7 @@ class ReviewFormHandler extends BaseFormHandler implements FormHandlerInterface
         return false;
     }
 
-    /**
-     * @param BusinessReview $review
-     * @throws \Exception
-     */
-    private function onSuccess(BusinessReview $review)
+    private function onSuccess(BusinessReview $review): void
     {
         $businessProfileId = $this->getRequest()->request->get('businessProfileId', false);
 
@@ -100,34 +94,22 @@ class ReviewFormHandler extends BaseFormHandler implements FormHandlerInterface
         $this->getTasksManager()->createBusinessReviewConfirmationRequest($review);
     }
 
-    /**
-     * @return Request
-     */
-    private function getRequest() : Request
+    private function getRequest(): Request
     {
-        return $this->request;
+        return $this->requestStack->getCurrentRequest();
     }
 
-    /**
-     * @return BusinessProfileManager
-     */
-    private function getBusinessProfileManager() : BusinessProfileManager
+    private function getBusinessProfileManager(): BusinessProfileManager
     {
         return $this->businessProfileManager;
     }
 
-    /**
-     * @return BusinessReviewManager
-     */
-    private function getBusinessReviewManager() : BusinessReviewManager
+    private function getBusinessReviewManager(): BusinessReviewManager
     {
         return $this->manager;
     }
 
-    /**
-     * @return TasksManager
-     */
-    private function getTasksManager() : TasksManager
+    private function getTasksManager(): TasksManager
     {
         return $this->tasksManager;
     }

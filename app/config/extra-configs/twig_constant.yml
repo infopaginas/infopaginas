@@ -20,8 +20,6 @@ twig:
             SEO_TITLE:       'seoTitle'
             SEO_DESCRIPTION: 'seoDescription'
             NAME:            'name'
-            NAME_ES:         'nameEs'
-            NAME_EN:         'nameEn'
             DESCRIPTION:     'description'
             DESCRIPTION_ES:  'descriptionEs'
             DESCRIPTION_EN:  'descriptionEn'
@@ -140,12 +138,14 @@ twig:
                 TYPE:  'subject_type'
                 LOCALE: 'locale'
                 USER:   'user_id'
+                SUBJECT: 'subject'
         CONFIG:
             EMERGENCY_SITUATION_ON: 'EMERGENCY_SITUATION_ON'
             GOOGLE_OPTIMIZATION_CONTAINER_ID: 'GOOGLE_CONTAINER_ID'
             FOOTER_EMAIL: 'FOOTER_EMAIL'
             FOOTER_PHONE_NUMBER: 'FOOTER_PHONE_NUMBER'
             OFFICE_COORDINATES: 'OFFICE_COORDINATES'
+            BUSINESS_PROFILE_POPUP_TIME_TO_APPEAR: 'BUSINESS_PROFILE_POPUP_TIME_TO_APPEAR'
 
         EMERGENCY_FILTER:
             ALL:    'all'

@@ -2,8 +2,10 @@
 
 namespace Oxa\Sonata\AdminBundle\Util\Helpers;
 
+use Domain\BusinessBundle\Entity\BusinessProfilePopup;
 use Domain\BusinessBundle\Util\Traits\StatusTrait;
-use Symfony\Component\Validator\Constraints\DateTime;
+use Sonata\Form\Type\DateTimeRangePickerType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 /**
  * Class AdminHelper
@@ -11,35 +13,36 @@ use Symfony\Component\Validator\Constraints\DateTime;
  */
 class AdminHelper
 {
-    const FILTER_DATE_FORMAT = 'd-m-Y';
+    public const FILTER_DATE_FORMAT = 'd-m-Y';
 
-    const FILTER_DATE_RANGE_FORMAT = 'dd-MM-y';
+    public const FILTER_DATE_RANGE_FORMAT = 'dd-MM-y';
 
-    const PER_PAGE_ALL = 'all';
+    public const PER_PAGE_ALL = 'all';
 
-    const DATE_FORMAT            = 'm/d/Y';
-    const DATE_WEEK_FORMAT       = 'W/Y';
-    const DATE_MONTH_FORMAT      = 'm/Y';
-    const DATETIME_FORMAT        = 'm/d/Y H:i:s';
-    const DATE_FULL_MONTH_FORMAT = 'F, Y';
+    public const DATE_FORMAT            = 'm/d/Y';
+    public const DATE_WEEK_FORMAT       = 'W/Y';
+    public const DATE_MONTH_FORMAT      = 'm/Y';
+    public const DATETIME_FORMAT        = 'm/d/Y H:i:s';
+    public const DATE_FULL_MONTH_FORMAT = 'F, Y';
 
-    const DATE_RANGE_CODE_CUSTOM     = 'custom';
-    const DATE_RANGE_CODE_TODAY      = 'today';
-    const DATE_RANGE_CODE_LAST_WEEK  = 'last_week';
-    const DATE_RANGE_CODE_LAST_MONTH = 'last_month';
-    const DATE_RANGE_CODE_LAST_YEAR  = 'last_year';
+    public const DATE_RANGE_CODE_CUSTOM     = 'custom';
+    public const DATE_RANGE_CODE_TODAY      = 'today';
+    public const DATE_RANGE_CODE_LAST_WEEK  = 'last_week';
+    public const DATE_RANGE_CODE_LAST_MONTH = 'last_month';
+    public const DATE_RANGE_CODE_LAST_YEAR  = 'last_year';
 
-    const PERIOD_OPTION_CODE_DAILY      = 'daily';
-    const PERIOD_OPTION_CODE_WEEKLY     = 'weekly';
-    const PERIOD_OPTION_CODE_PER_MONTH  = 'per_month';
+    public const PERIOD_OPTION_CODE_DAILY      = 'daily';
+    public const PERIOD_OPTION_CODE_WEEKLY     = 'weekly';
+    public const PERIOD_OPTION_CODE_PER_MONTH  = 'per_month';
 
-    const FILTER_DATE_RANGE_CLASS   = 'oxa_filter_date_range';
-    const FILTER_DATE_PERIOD_CLASS  = 'oxa_filter_date_period';
+    public const FILTER_DATE_RANGE_CLASS   = 'oxa_filter_date_range';
+    public const FILTER_DATE_PERIOD_CLASS  = 'oxa_filter_date_period';
 
-    const MAX_IMAGE_FILESIZE = '10M';
-    const MAX_VIDEO_FILESIZE = '128M';
+    public const MAX_IMAGE_FILESIZE = '10M';
+    public const MAX_VIDEO_FILESIZE = '128M';
+    public const MAX_BUSINESS_PROFILE_POPUP_FILESIZE = '5M';
 
-    const MAX_PAGE_RANGE_SIZE = 25;
+    public const MAX_PAGE_RANGE_SIZE = 25;
 
     /**
      * @return array
@@ -47,7 +50,7 @@ class AdminHelper
     public static function getDatagridStatusOptions()
     {
         return [
-            'field_type' => 'choice',
+            'field_type' => ChoiceType::class,
             'field_options' => [
                 'required'  => false,
                 'choices'   => StatusTrait::getStatuses()
@@ -65,21 +68,6 @@ class AdminHelper
             self::PERIOD_OPTION_CODE_DAILY      => 'filter.label.period.daily',
             self::PERIOD_OPTION_CODE_WEEKLY     => 'filter.label.period.weekly',
             self::PERIOD_OPTION_CODE_PER_MONTH  => 'filter.label.period.per_month',
-        ];
-    }
-
-    /**
-     * Get date period values for choice form type
-     * @return array
-     */
-    public static function getDatePeriodValues()
-    {
-        return [
-            self::DATE_RANGE_CODE_TODAY      => 'filter.label.today',
-            self::DATE_RANGE_CODE_LAST_WEEK  => 'filter.label.last_week',
-            self::DATE_RANGE_CODE_LAST_MONTH => 'filter.label.last_month',
-            self::DATE_RANGE_CODE_LAST_YEAR  => 'filter.label.last_year',
-            self::DATE_RANGE_CODE_CUSTOM     => 'filter.label.custom',
         ];
     }
 
@@ -121,62 +109,18 @@ class AdminHelper
     /**
      * @return array
      */
-    public static function getDatagridDatePeriodOptions()
-    {
-        // todo: all datePeriod filter logic should be refactored or removed
-        // as it has been cut during sonata update as a result of logic conflict
-        return [
-            'field_type' => 'choice',
-            'field_options' => [
-                'mapped' => false,
-                'required'  => true,
-                'empty_value'  => false,
-                'empty_data'  => self::DATE_RANGE_CODE_LAST_WEEK,
-                'choices'   => self::getDatePeriodValues(),
-                'translation_domain' => 'SonataAdminBundle',
-                'attr' => [
-                    'class' => self::FILTER_DATE_PERIOD_CLASS
-                ]
-            ],
-        ];
-    }
-
-    /**
-     * @return array
-     */
     public static function getDatagridPeriodOptionOptions()
     {
         return [
             'show_filter' => true,
-            'field_type' => 'choice',
+            'field_type' => ChoiceType::class,
             'field_options' => [
                 'mapped' => false,
                 'required'  => true,
-                'empty_value'  => false,
                 'empty_data'  => self::PERIOD_OPTION_CODE_DAILY,
-                'choices'   => self::getPeriodOptionValues(),
+                'choices'   => array_flip(self::getPeriodOptionValues()),
                 'translation_domain' => 'SonataAdminBundle'
             ],
-        ];
-    }
-
-    /**
-     * Used to set default datetime options
-     *
-     * @return array
-     */
-    public static function getDatagridDateTypeOptions()
-    {
-        return [
-            'field_type' => 'sonata_type_datetime_range_picker',
-            'field_options' => [
-                'field_options' => [
-                    'format' => self::FILTER_DATE_RANGE_FORMAT
-                ],
-                'attr' => [
-                    'class' => self::FILTER_DATE_RANGE_CLASS
-                ]
-            ]
         ];
     }
 
@@ -189,11 +133,10 @@ class AdminHelper
     {
         return [
             'show_filter' => true,
-            'field_type'  => 'sonata_type_datetime_range_picker',
+            'field_type'  => DateTimeRangePickerType::class,
             'field_options' => [
                 'field_options' => [
                     'format'        => self::FILTER_DATE_RANGE_FORMAT,
-                    'empty_value'   => false,
                 ],
                 'attr' => [
                     'class' => self::FILTER_DATE_RANGE_CLASS,
@@ -261,6 +204,16 @@ class AdminHelper
                 'video/mpeg',
                 'video/x-ms-wmv',
                 'video/x-flv',
+            ]
+        ];
+    }
+
+    public static function getFormPopupFileConstrain(): array
+    {
+        return [
+            'maxSize' => self::MAX_BUSINESS_PROFILE_POPUP_FILESIZE,
+            'mimeTypes' => [
+                BusinessProfilePopup::FILE_MIME_TYPE,
             ]
         ];
     }

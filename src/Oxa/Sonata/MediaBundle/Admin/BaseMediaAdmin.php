@@ -6,8 +6,10 @@ use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
+use Sonata\DoctrineORMAdminBundle\Filter\ChoiceFilter;
 use Sonata\MediaBundle\Form\DataTransformer\ProviderDataTransformer;
 use Sonata\MediaBundle\Provider\Pool;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 /**
  * Class BaseMediaAdmin
@@ -156,7 +158,7 @@ class BaseMediaAdmin extends OxaAdmin
 
         $datagridMapper->add(
             'providerName',
-            'doctrine_orm_choice',
+            ChoiceFilter::class,
             array(
                 'field_options' => array(
                     'choices'  => $providers,
@@ -164,7 +166,7 @@ class BaseMediaAdmin extends OxaAdmin
                     'multiple' => false,
                     'expanded' => false,
                 ),
-                'field_type' => 'choice',
+                'field_type' => ChoiceType::class,
             )
         );
     }

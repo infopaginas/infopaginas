@@ -42,20 +42,20 @@ class ReportArchiveRawDataCommand extends ContainerAwareCommand
         $output->writeln('Process overview report');
         $businessOverviewReportManager = $container->get('domain_report.manager.business_overview_report_manager');
         $businessOverviewReportManager->archiveRawBusinessInteractions($rawDataArchivingDate);
-        $logger->addInfo(CronLogger::MONGO_ARCHIVE, CronLogger::STATUS_IN_PROGRESS, 'execute:Process overview report');
+        $logger->addInfo(CronLogger::MONGO_ARCHIVE_RAW, CronLogger::STATUS_IN_PROGRESS, 'execute:Process overview report');
 
         $output->writeln('Process keyword report');
         $keywordsReportManager = $container->get('domain_report.manager.keywords_report_manager');
         $keywordsReportManager->archiveRawBusinessKeywords($rawDataArchivingDate);
-        $logger->addInfo(CronLogger::MONGO_ARCHIVE, CronLogger::STATUS_IN_PROGRESS, 'execute:Process keyword report');
+        $logger->addInfo(CronLogger::MONGO_ARCHIVE_RAW, CronLogger::STATUS_IN_PROGRESS, 'execute:Process keyword report');
 
         $output->writeln('Process category report');
         $categoryOverviewReportManager = $container->get('domain_report.manager.category_overview_report_manager');
         $categoryOverviewReportManager->archiveRawBusinessCategories($rawDataArchivingDate);
-        $logger->addInfo(CronLogger::MONGO_ARCHIVE, CronLogger::STATUS_IN_PROGRESS, 'execute:Process category report');
+        $logger->addInfo(CronLogger::MONGO_ARCHIVE_RAW, CronLogger::STATUS_IN_PROGRESS, 'execute:Process category report');
 
         $output->writeln('done');
-        $logger->addInfo(CronLogger::MONGO_ARCHIVE, CronLogger::STATUS_END, CronLogger::MESSAGE_STOP);
+        $logger->addInfo(CronLogger::MONGO_ARCHIVE_RAW, CronLogger::STATUS_END, CronLogger::MESSAGE_STOP);
     }
 
     /**

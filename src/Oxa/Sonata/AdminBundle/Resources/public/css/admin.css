@@ -437,3 +437,7 @@ div.single-media-preview-block img {
 .box-body.table-responsive {
     max-height: calc(100vh - 280px);
 }
+
+.dropdown-menu>li>a {
+    padding: 1px 20px !important;
+}

@@ -79,12 +79,4 @@ class UserProfileType extends AbstractType
             'data_class' => 'Oxa\Sonata\UserBundle\Entity\User',
         ));
     }
-
-    /**
-     * @return string
-     */
-    public function getName() : string
-    {
-        return 'domain_site_user_profile';
-    }
 }

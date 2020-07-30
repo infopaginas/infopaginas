@@ -205,7 +205,7 @@ class ImagesController extends Controller
      */
     private function getImagesForm(BusinessProfile $businessProfile)
     {
-        $form = $this->createForm(new BusinessProfileFormType(), $businessProfile);
+        $form = $this->createForm(BusinessProfileFormType::class, $businessProfile);
 
         $result = [
             'images'     => $form->get('images'),

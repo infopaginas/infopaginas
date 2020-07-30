@@ -3,22 +3,17 @@
 namespace Domain\BusinessBundle\Form\Type;
 
 use Domain\BusinessBundle\Entity\BusinessProfile;
-use Domain\BusinessBundle\Entity\SubscriptionPlan;
-use Domain\BusinessBundle\Model\SubscriptionPlanInterface;
-use Domain\BusinessBundle\Repository\AreaRepository;
 use Domain\BusinessBundle\Repository\LocalityRepository;
-use Domain\BusinessBundle\Repository\NeighborhoodRepository;
 use Domain\BusinessBundle\Repository\PaymentMethodRepository;
 use Domain\BusinessBundle\Validator\Constraints\BusinessProfilePhoneTypeValidator;
 use Domain\BusinessBundle\Validator\Constraints\BusinessProfileWorkingHourTypeValidator;
 use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
-use Ivory\CKEditorBundle\Form\Type\CKEditorType;
-use Oxa\VideoBundle\Form\Type\VideoMediaType;
+use FOS\CKEditorBundle\Form\Type\CKEditorType;
+use Oxa\Sonata\AdminBundle\Form\Type\ModelAutocompleteType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -313,7 +308,6 @@ class BusinessProfileFormType extends AbstractType
                     'class' => 'text-editor',
                 ],
             ]);
-        ;
     }
 
     /**
@@ -325,13 +319,5 @@ class BusinessProfileFormType extends AbstractType
             'allow_extra_fields' => true,
             'data_class'         => 'Domain\BusinessBundle\Entity\BusinessProfile',
         ]);
-    }
-
-    /**
-     * @return string
-     */
-    public function getName()
-    {
-        return 'domain_business_bundle_business_profile_form_type';
     }
 }

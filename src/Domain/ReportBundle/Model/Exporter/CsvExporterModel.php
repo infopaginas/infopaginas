@@ -2,6 +2,7 @@
 
 namespace Domain\ReportBundle\Model\Exporter;
 
+use Doctrine\ORM\EntityManager;
 use Domain\ReportBundle\Model\ExporterInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
@@ -13,7 +14,7 @@ use Symfony\Component\Translation\Translator;
  */
 abstract class CsvExporterModel implements ExporterInterface
 {
-    const FORMAT = 'csv';
+    protected const FORMAT = 'csv';
 
     protected $files = [];
 
@@ -28,11 +29,21 @@ abstract class CsvExporterModel implements ExporterInterface
     protected $csvResource;
 
     /**
+     * @var EntityManager $em
+     */
+    protected $em;
+
+    /**
      * @param Translator $service
      */
     public function setTranslator(Translator $service)
     {
         $this->translator = $service;
+    }
+
+    public function setEntityManager(EntityManager $em)
+    {
+        $this->em = $em;
     }
 
     /**

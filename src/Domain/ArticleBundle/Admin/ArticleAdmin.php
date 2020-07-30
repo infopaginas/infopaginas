@@ -3,15 +3,21 @@
 namespace Domain\ArticleBundle\Admin;
 
 use Domain\ArticleBundle\Entity\Article;
+use Domain\BusinessBundle\Entity\Category;
+use FOS\CKEditorBundle\Form\Type\CKEditorType;
 use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
+use Oxa\Sonata\AdminBundle\Filter\DateTimeRangeFilter;
+use Oxa\Sonata\MediaBundle\Entity\Media;
 use Oxa\Sonata\MediaBundle\Model\OxaMediaInterface;
-use Sonata\AdminBundle\Admin\Admin;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
+use Sonata\AdminBundle\Form\Type\ModelListType;
 use Sonata\AdminBundle\Route\RouteCollection;
 use Sonata\AdminBundle\Show\ShowMapper;
-use Sonata\CoreBundle\Validator\ErrorElement;
+use Sonata\Form\Type\CollectionType;
+use Sonata\Form\Type\DateTimePickerType;
+use Sonata\Form\Validator\ErrorElement;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Validator\Constraints\NotBlank;
@@ -36,9 +42,9 @@ class ArticleAdmin extends OxaAdmin
             ->add('category')
             ->add('isPublished')
             ->add('isOnHomepage')
-            ->add('activationDate', 'doctrine_orm_datetime_range', $this->defaultDatagridDateTypeOptions)
-            ->add('expirationDate', 'doctrine_orm_datetime_range', $this->defaultDatagridDateTypeOptions)
-            ->add('updatedAt', 'doctrine_orm_datetime_range', $this->defaultDatagridDateTypeOptions)
+            ->add('activationDate', DateTimeRangeFilter::class, $this->defaultDatagridDateTypeOptions)
+            ->add('expirationDate', DateTimeRangeFilter::class, $this->defaultDatagridDateTypeOptions)
+            ->add('updatedAt', DateTimeRangeFilter::class, $this->defaultDatagridDateTypeOptions)
             ->add('updatedUser')
             ->add('authorName')
             ->add('isExternal')
@@ -116,36 +122,48 @@ class ArticleAdmin extends OxaAdmin
                 ->add('title', null, [
                     'disabled' => $isExternal,
                 ])
-                ->add('category', 'sonata_type_model_list', [
+                ->add('category', ModelListType::class, [
                     'required'      => true,
                     'btn_delete'    => false,
                     'btn_add'       => false,
+                    'model_manager' => $this->modelManager,
+                    'class'         => Category::class,
                 ])
                 ->add(
                     'image',
-                    'sonata_type_model_list',
+                    ModelListType::class,
                     array_merge(
                         $imageProperties,
                         [
-                            'sonata_help' => 'article.help.image',
+                            'sonata_help'   => 'article.help.image',
+                            'model_manager' => $this->modelManager,
+                            'class'         => Media::class,
                         ]
                     ),
                     [
                         'link_parameters' => [
-                            'context' => OxaMediaInterface::CONTEXT_ARTICLE,
+                            'context'  => OxaMediaInterface::CONTEXT_ARTICLE,
                             'provider' => OxaMediaInterface::PROVIDER_IMAGE,
-                        ]
+                        ],
                     ]
                 )
                 ->add('isPublished')
                 ->add('isOnHomepage')
-                ->add('slug', null, ['read_only' => true])
-                ->add('activationDate', 'sonata_type_datetime_picker', ['format' => self::FORM_DATETIME_FORMAT])
-                ->add('expirationDate', 'sonata_type_datetime_picker', [
+                ->add(
+                    'slug',
+                    null,
+                    [
+                        'attr' => [
+                            'read_only'     => true,
+                        ],
+                    ]
+                )
+                ->add('activationDate', DateTimePickerType::class, ['format' => self::FORM_DATETIME_FORMAT])
+                ->add('expirationDate', DateTimePickerType::class, [
                     'format'   => self::FORM_DATETIME_FORMAT,
                     'required' => false,
                 ])
-                ->add('updatedAt', 'sonata_type_datetime_picker', [
+                ->add('updatedAt', DateTimePickerType::class, [
                     'required' => false,
                     'disabled' => true
                 ])
@@ -159,7 +177,7 @@ class ArticleAdmin extends OxaAdmin
                 ])
             ->end()
             ->with('Content')
-                ->add('body', 'ckeditor', [
+                ->add('body', CKEditorType::class, [
                     'required' => true,
                     'disabled' => $isExternal,
                 ])
@@ -170,10 +188,12 @@ class ArticleAdmin extends OxaAdmin
             $property = [
                 'by_reference'  => false,
                 'required'      => false,
-                'read_only'     => true,
                 'btn_add'       => false,
                 'type_options' => [
                     'delete'    => false,
+                ],
+                'attr' => [
+                    'read_only'     => true,
                 ],
             ];
         } else {
@@ -185,7 +205,7 @@ class ArticleAdmin extends OxaAdmin
         }
         $formMapper
             ->with('Gallery')
-                ->add('images', 'sonata_type_collection', $property, [
+                ->add('images', CollectionType::class, $property, [
                     'edit' => 'inline',
                     'inline' => 'table',
                     'link_parameters' => [
@@ -229,7 +249,6 @@ class ArticleAdmin extends OxaAdmin
     /**
      * @param ErrorElement $errorElement
      * @param Article $article
-     * @return null
      */
     public function validate(ErrorElement $errorElement, $article)
     {

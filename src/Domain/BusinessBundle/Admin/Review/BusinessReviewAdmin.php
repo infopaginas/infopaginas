@@ -5,13 +5,14 @@ namespace Domain\BusinessBundle\Admin\Review;
 use Doctrine\ORM\QueryBuilder;
 use Domain\BusinessBundle\Entity\Review\BusinessReview;
 use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
-use Sonata\AdminBundle\Admin\Admin;
+use Oxa\Sonata\AdminBundle\Filter\DateTimeRangeFilter;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Show\ShowMapper;
-use Sonata\CoreBundle\Validator\ErrorElement;
-use Symfony\Component\Form\Extension\Core\ChoiceList\ChoiceList;
+use Sonata\Form\Validator\ErrorElement;
+use Sonata\DoctrineORMAdminBundle\Filter\ChoiceFilter;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 class BusinessReviewAdmin extends OxaAdmin
 {
@@ -25,12 +26,12 @@ class BusinessReviewAdmin extends OxaAdmin
             ->add('user')
             ->add('businessProfile')
             ->add('username')
-            ->add('rating', 'doctrine_orm_choice', [
+            ->add('rating', ChoiceFilter::class, [
                 'field_options' => [
                     'required' => false,
                     'choices' => BusinessReview::getRatingChoices(),
                 ],
-                'field_type' => 'choice'
+                'field_type' => ChoiceType::class
             ])
             ->add('isActive', null, [], null, [
                 'choices' => [
@@ -39,7 +40,7 @@ class BusinessReviewAdmin extends OxaAdmin
                 ],
                 'translation_domain' => 'AdminDomainBusinessBundle'
             ])
-            ->add('createdAt', 'doctrine_orm_datetime_range', $this->defaultDatagridDatetimeTypeOptions)
+            ->add('createdAt', DateTimeRangeFilter::class, $this->defaultDatagridDatetimeTypeOptions)
         ;
     }
 
@@ -79,7 +80,7 @@ class BusinessReviewAdmin extends OxaAdmin
             ->end()
             ->with('Review')
                 ->add('username')
-                ->add('rating', 'choice', [
+                ->add('rating', ChoiceType::class, [
                     'choices' => BusinessReview::getRatingChoices(),
                 ])
                 ->add('content', null, [

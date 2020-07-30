@@ -16,7 +16,7 @@ use Symfony\Component\Validator\Constraints\Regex;
  */
 class BusinessUpgradeRequestType extends AbstractType
 {
-    const TIME_CHOICES = [
+    public const TIME_CHOICES = [
         '9-1' => '9 a.m. - 1 p.m.',
         '1-6' => '1 p.m. - 6 p.m.',
     ];
@@ -46,16 +46,8 @@ class BusinessUpgradeRequestType extends AbstractType
                 'attr'    => [
                     'class' => 'form-control review',
                 ],
-                'choices' => self::TIME_CHOICES,
+                'choices' => array_flip(self::TIME_CHOICES),
             ])
         ;
-    }
-
-    /**
-     * @return string
-     */
-    public function getName()
-    {
-        return 'domain_business_bundle_business_upgrade_request_type';
     }
 }

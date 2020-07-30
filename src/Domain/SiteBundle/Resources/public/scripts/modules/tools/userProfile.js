@@ -29,7 +29,7 @@ define(['jquery', 'bootstrap', 'tools/spin', 'tools/geolocation', 'business/tool
             },
             fields: {
                 locationFieldId: '#domain_site_user_profile_location',
-                updateBusinessRequestPhone: '#domain_business_bundle_business_upgrade_request_type_phone'
+                updateBusinessRequestPhone: '#business_upgrade_request_phone'
             },
             successBlock: '#success-block',
             loadingSpinnerContainerClass: '.spinner-container'
