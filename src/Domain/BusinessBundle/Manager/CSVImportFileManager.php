@@ -5,6 +5,7 @@ namespace Domain\BusinessBundle\Manager;
 use Doctrine\ORM\EntityManager;
 use Domain\BusinessBundle\Entity\BusinessProfilePhone;
 use Domain\BusinessBundle\Entity\CSVImportFile;
+use Domain\BusinessBundle\Util\CategoryUtil;
 use Domain\BusinessBundle\VO\Url;
 use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
 use Oxa\ManagerArchitectureBundle\Model\Manager\FileUploadManager;
@@ -16,6 +17,8 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class CSVImportFileManager extends FileUploadManager
 {
+    private const FIRST_DATA_ROW_NUMBER = 2;
+    
     /** @var  ContainerInterface $container */
     protected $container;
 
@@ -49,7 +52,7 @@ class CSVImportFileManager extends FileUploadManager
             $fieldsMapping = array_filter(json_decode($csvImportFile->getFieldsMappingJSON(), true));
             $validEntriesCount = 0;
             $invalidEntriesCount = 0;
-            $notSavedIndexes = [];
+            $notSavedEntries = [];
             $batchSize = 50;
             $i = 0;
 
@@ -112,18 +115,19 @@ class CSVImportFileManager extends FileUploadManager
                     if (($i % $batchSize) === 0) {
                         $this->em->flush();
                         $this->em->clear(BusinessProfile::class);
+                        $this->em->clear(BusinessProfilePhone::class);
                     }
 
                     $i++;
                 } else {
                     $invalidEntriesCount++;
-                    $notSavedIndexes[] = $index;
+                    $notSavedEntries[] = $index + self::FIRST_DATA_ROW_NUMBER;
                 }
             }
             $csvImportFile->setIsProcessed(true);
             $csvImportFile->setValidEntriesCount($validEntriesCount);
             $csvImportFile->setInvalidEntriesCount($invalidEntriesCount);
-            $csvImportFile->setInvalidEntriesNumbers(implode(', ', $notSavedIndexes));
+            $csvImportFile->setInvalidEntriesNumbers(implode(', ', $notSavedEntries));
 
             $this->em->flush();
         }
@@ -154,7 +158,12 @@ class CSVImportFileManager extends FileUploadManager
         $enclosure = $csvImportFile->getEnclosure();
         $lines = file($csvImportFile->getFile(), FILE_SKIP_EMPTY_LINES);
         $headers = str_getcsv(array_shift($lines), $delimiter, $enclosure);
+
         foreach ($lines as $line) {
+            if (mb_detect_encoding($line, CategoryUtil::ENCODING_ISO_8859_1)) {
+                $line = mb_convert_encoding($line, CategoryUtil::ENCODING_UTF8, CategoryUtil::ENCODING_ISO_8859_1);
+            }
+
             $row = [];
             $entry = str_getcsv($line, $delimiter, $enclosure);
 
