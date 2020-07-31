@@ -5,11 +5,10 @@ namespace Domain\ReportBundle\Command;
 use Domain\ReportBundle\Manager\CategoryOverviewReportManager;
 use Domain\SiteBundle\Logger\CronLogger;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Lock\Factory;
+use Symfony\Component\Lock\Store\SemaphoreStore;
 
 /**
  * Class PreparePopularCategoriesCommand
@@ -20,7 +19,7 @@ class PreparePopularCategoriesCommand extends ContainerAwareCommand
     protected function configure()
     {
         $this
-            ->setName('domain:popular-category:update')
+            ->setName(CronLogger::MONGO_POPULAR_CATEGORIES)
             ->setDescription('Update popular category list')
         ;
     }
@@ -31,23 +30,35 @@ class PreparePopularCategoriesCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $logger = $this->getContainer()->get('domain_site.cron.logger');
-        $logger->addInfo(CronLogger::MONGO_POPULAR_CATEGORIES, CronLogger::STATUS_START, CronLogger::MESSAGE_START);
+        $store   = new SemaphoreStore();
+        $factory = new Factory($store);
+        $lock    = $factory->createLock(CronLogger::MONGO_POPULAR_CATEGORIES);
 
-        $output->writeln('Start aggregation...');
+        if ($lock->acquire()) {
+            $logger = $this->getContainer()->get('domain_site.cron.logger');
+            $logger->addInfo(CronLogger::MONGO_POPULAR_CATEGORIES, CronLogger::STATUS_START, CronLogger::MESSAGE_START);
 
-        $output->writeln('Process popular categories');
+            $output->writeln('Start aggregation...');
 
-        $this->getCategoryOverviewReportManager()->updatePopularCategories();
+            $output->writeln('Process popular categories');
 
-        $logger->addInfo(
-            CronLogger::MONGO_POPULAR_CATEGORIES,
-            CronLogger::STATUS_IN_PROGRESS,
-            'execute:Process popular category'
-        );
+            $this->getCategoryOverviewReportManager()->updatePopularCategories();
 
-        $output->writeln('done');
-        $logger->addInfo(CronLogger::MONGO_POPULAR_CATEGORIES, CronLogger::STATUS_END, CronLogger::MESSAGE_STOP);
+            $logger->addInfo(
+                CronLogger::MONGO_POPULAR_CATEGORIES,
+                CronLogger::STATUS_IN_PROGRESS,
+                'execute:Process popular category'
+            );
+
+            $output->writeln('done');
+            $logger->addInfo(CronLogger::MONGO_POPULAR_CATEGORIES, CronLogger::STATUS_END, CronLogger::MESSAGE_STOP);
+
+            $lock->release();
+        } else {
+            return $output->writeln('Command is locked by another process');
+        }
+
+        return 0;
     }
 
     /**
