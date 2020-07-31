@@ -9,11 +9,12 @@ use Domain\ReportBundle\Model\DataType\ReportDatesRangeVO;
 use Domain\ReportBundle\Util\DatesUtil;
 use Domain\SiteBundle\Logger\CronLogger;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Lock\Factory;
+use Symfony\Component\Lock\Store\SemaphoreStore;
 
 /**
  * Class SubscriptionsTrackerCommand
@@ -21,13 +22,13 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class ReportAggregationCommand extends ContainerAwareCommand
 {
-    const REPORT_AGGREGATION_RANGE_HOURLY = 'hourly';
-    const REPORT_AGGREGATION_RANGE_DAILY  = 'daily';
+    private const REPORT_AGGREGATION_RANGE_HOURLY = 'hourly';
+    private const REPORT_AGGREGATION_RANGE_DAILY  = 'daily';
 
     protected function configure()
     {
         $this
-            ->setName('domain:report-mongo-db:aggregate')
+            ->setName(CronLogger::MONGO_AGGREGATE)
             ->setDescription('Aggregate mongoDB reports')
             ->setDefinition(
                 new InputDefinition(
@@ -52,31 +53,43 @@ class ReportAggregationCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $logger = $this->getContainer()->get('domain_site.cron.logger');
-        $logger->addInfo(CronLogger::MONGO_AGGREGATE, CronLogger::STATUS_START, CronLogger::MESSAGE_START);
+        $store   = new SemaphoreStore();
+        $factory = new Factory($store);
+        $lock    = $factory->createLock(CronLogger::MONGO_AGGREGATE);
 
-        $period = $this->getAggregationPeriod($input);
+        if ($lock->acquire()) {
+            $logger = $this->getContainer()->get('domain_site.cron.logger');
+            $logger->addInfo(CronLogger::MONGO_AGGREGATE, CronLogger::STATUS_START, CronLogger::MESSAGE_START);
 
-        $output->writeln('Start aggregation...');
+            $period = $this->getAggregationPeriod($input);
 
-        $output->writeln('Process overview report');
-        $this->getBusinessOverviewReportManager()->aggregateBusinessInteractions($period);
-        $logger->addInfo(CronLogger::MONGO_AGGREGATE, CronLogger::STATUS_IN_PROGRESS, 'execute:Process overview report');
+            $output->writeln('Start aggregation...');
 
-        $output->writeln('Process keyword report');
-        $this->getKeywordsReportManager()->aggregateBusinessKeywords($period);
-        $logger->addInfo(CronLogger::MONGO_AGGREGATE, CronLogger::STATUS_IN_PROGRESS, 'execute:Process keyword report');
+            $output->writeln('Process overview report');
+            $this->getBusinessOverviewReportManager()->aggregateBusinessInteractions($period);
+            $logger->addInfo(CronLogger::MONGO_AGGREGATE, CronLogger::STATUS_IN_PROGRESS, 'execute:Process overview report');
 
-        $output->writeln('Process category overview report');
-        $this->getCategoryOverviewReportReportManager()->aggregateCategoriesInteractions($period);
-        $logger->addInfo(
-            CronLogger::MONGO_AGGREGATE,
-            CronLogger::STATUS_IN_PROGRESS,
-            'execute:Process category overview report'
-        );
+            $output->writeln('Process keyword report');
+            $this->getKeywordsReportManager()->aggregateBusinessKeywords($period);
+            $logger->addInfo(CronLogger::MONGO_AGGREGATE, CronLogger::STATUS_IN_PROGRESS, 'execute:Process keyword report');
 
-        $output->writeln('done');
-        $logger->addInfo(CronLogger::MONGO_AGGREGATE, CronLogger::STATUS_END, CronLogger::MESSAGE_STOP);
+            $output->writeln('Process category overview report');
+            $this->getCategoryOverviewReportReportManager()->aggregateCategoriesInteractions($period);
+            $logger->addInfo(
+                CronLogger::MONGO_AGGREGATE,
+                CronLogger::STATUS_IN_PROGRESS,
+                'execute:Process category overview report'
+            );
+
+            $output->writeln('done');
+            $logger->addInfo(CronLogger::MONGO_AGGREGATE, CronLogger::STATUS_END, CronLogger::MESSAGE_STOP);
+
+            $lock->release();
+        } else {
+            return $output->writeln('Command is locked by another process');
+        }
+
+        return 0;
     }
 
     /**
