@@ -81,6 +81,7 @@ business_profile:
     dcOrderId: DC Order Id for Ad Usage Report
     notUniquePhone: Enable not Unique Phones
     category: Category
+    catalogLocality: Catalog Locality
 
 filter:
   label_is_draft: Draft
