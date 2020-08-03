@@ -299,5 +299,6 @@ services:
             - '@doctrine.orm.entity_manager'
             - '@validator'
             - '@service_container'
+            - '@domain_business.manager.business_profile'
         calls:
             - ['setFileSystem', ['@mass_import_storage_filesystem']]

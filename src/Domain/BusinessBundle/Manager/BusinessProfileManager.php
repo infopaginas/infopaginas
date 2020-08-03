@@ -84,14 +84,14 @@ use Symfony\Component\Translation\TranslatorInterface;
  */
 class BusinessProfileManager extends Manager
 {
-    const DEFAULT_LOCALE_NAME = 'San Juan';
-    const AUTO_COMPLETE_TYPE  = 'business';
-    const AUTO_SUGGEST_MAX_BUSINESSES_COUNT = 5;
-    const INTERNATIONAL_CALL_PREFIX = '+1';
+    private const DEFAULT_LOCALE_NAME = 'San Juan';
+    private const AUTO_COMPLETE_TYPE  = 'business';
+    private const AUTO_SUGGEST_MAX_BUSINESSES_COUNT = 5;
+    private const INTERNATIONAL_CALL_PREFIX = '+1';
 
-    const GOOGLE_PLACE_API_STATUS_OK = 'OK';
-    const GOOGLE_PLACE_API_STATUS_NOT_FOUND = 'NOT_FOUND';
-    const TRIPADVISOR_LANG_ES = 'es_MX';
+    private const GOOGLE_PLACE_API_STATUS_OK = 'OK';
+    private const GOOGLE_PLACE_API_STATUS_NOT_FOUND = 'NOT_FOUND';
+    private const TRIPADVISOR_LANG_ES = 'es_MX';
 
     /**
      * @var CategoryManager
@@ -1916,16 +1916,11 @@ class BusinessProfileManager extends Manager
         return $search['data'];
     }
 
-    /**
-     * @param SearchDTO $params
-     *
-     * @return int
-     */
-    public function searchClosestLocalityInElastic(SearchDTO $params)
+    public function searchClosestLocalityInElastic(SearchDTO $params): ?Locality
     {
-        $closestLocality = '';
+        $closestLocality = null;
 
-        if ($params->locationValue->searchCenterLat and $params->locationValue->searchCenterLng) {
+        if ($params->locationValue->searchCenterLat && $params->locationValue->searchCenterLng) {
             $searchQuery = $this->localityManager->getElasticClosestSearchQuery($params);
             $response = $this->searchElastic(Locality::ELASTIC_INDEX, $searchQuery);
 
