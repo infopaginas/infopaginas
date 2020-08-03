@@ -21,6 +21,7 @@ define(['jquery', 'slick'], function( $, Slick ) {
             prevArrow: '<span class="arrow prev"><i class="fa fa-chevron-circle-left" aria-hidden="true"></i></span>',
             nextArrow: '<span class="arrow next"><i class="fa fa-chevron-circle-right" aria-hidden="true"></i></span>'
         };
+        $( '.slider.gallery' ).slick( sliderParams );
 
         var testimonialsSliderParams = sliderParams;
         testimonialsSliderParams.prevArrow = '<span class="arrow prev"><i class="fa fa-chevron-left" aria-hidden="true"></i></span>';
