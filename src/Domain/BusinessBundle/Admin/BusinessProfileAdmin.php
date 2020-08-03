@@ -1929,6 +1929,8 @@ class BusinessProfileAdmin extends OxaAdmin
         $exportFields['socialFeedUrls']    = 'exportSocialFeedUrls';
         $exportFields['socialNetworkUrls'] = 'exportSocialNetworkUrls';
 
+        $exportFields['catalogLocality'] = 'catalogLocality.name';
+
         return $exportFields;
     }
 
