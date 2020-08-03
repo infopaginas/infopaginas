@@ -69,7 +69,7 @@ class CSVImportFileManager extends FileUploadManager
                     $this->addTranslations($businessProfile, $denormalizable);
 
                     if (array_key_exists(CSVImportFile::BUSINESS_PROFILE_PHONE_MAIN, $entry)) {
-                        $this->setPhone(
+                        $this->handlePhone(
                             $businessProfile,
                             $entry[CSVImportFile::BUSINESS_PROFILE_PHONE_MAIN],
                             BusinessProfilePhone::PHONE_TYPE_MAIN
@@ -77,7 +77,7 @@ class CSVImportFileManager extends FileUploadManager
                     }
 
                     if (array_key_exists(CSVImportFile::BUSINESS_PROFILE_PHONE_SECONDARY, $entry)) {
-                        $this->setPhone(
+                        $this->handlePhone(
                             $businessProfile,
                             $entry[CSVImportFile::BUSINESS_PROFILE_PHONE_SECONDARY],
                             BusinessProfilePhone::PHONE_TYPE_SECONDARY
@@ -85,7 +85,7 @@ class CSVImportFileManager extends FileUploadManager
                     }
 
                     if (array_key_exists(CSVImportFile::BUSINESS_PROFILE_PHONE_FAX, $entry)) {
-                        $this->setPhone(
+                        $this->handlePhone(
                             $businessProfile,
                             $entry[CSVImportFile::BUSINESS_PROFILE_PHONE_FAX],
                             BusinessProfilePhone::PHONE_TYPE_FAX
@@ -198,7 +198,20 @@ class CSVImportFileManager extends FileUploadManager
         return true;
     }
 
-    protected function setPhone(BusinessProfile $businessProfile, $phone, $type)
+    protected function handlePhone(BusinessProfile $businessProfile, $phones, $type): void
+    {
+        $splitPhones = array_map('trim', preg_split('/[,\/]/', $phones));
+
+        foreach ($splitPhones as $i => $phone) {
+            if ($i > 0 && $type === BusinessProfilePhone::PHONE_TYPE_MAIN) {
+                $type = BusinessProfilePhone::PHONE_TYPE_SECONDARY;
+            }
+
+            $this->setPhone($businessProfile, $phone, $type);
+        }
+    }
+
+    protected function setPhone(BusinessProfile $businessProfile, $phone, $type): void
     {
         $metadata = $this->validator->getMetadataFor(BusinessProfilePhone::class);
         if ($metadata->getPropertyMetadata('phone')) {
