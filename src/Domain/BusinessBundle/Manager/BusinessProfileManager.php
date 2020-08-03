@@ -3063,17 +3063,12 @@ class BusinessProfileManager extends Manager
         return $searchQuery;
     }
 
-    /**
-     * @param BusinessProfile $businessProfile
-     *
-     * @return array
-     */
     public function buildBusinessProfileElasticData(BusinessProfile $businessProfile)
     {
         $businessSubscription     = $businessProfile->getSubscription();
 
         if (!$businessSubscription || $businessSubscription->getStatus() != StatusInterface::STATUS_ACTIVE ||
-            !$businessProfile->getIsActive()
+            !$businessProfile->getIsActive() || $businessProfile->isDraft()
         ) {
             return false;
         }
