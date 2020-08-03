@@ -7,7 +7,9 @@ use Domain\BusinessBundle\Entity\BusinessProfilePhone;
 use Domain\BusinessBundle\Entity\CSVImportFile;
 use Domain\BusinessBundle\Util\CategoryUtil;
 use Domain\BusinessBundle\VO\Url;
+use Domain\SearchBundle\Util\SearchDataUtil;
 use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
+use Oxa\GeolocationBundle\Model\Geolocation\LocationValueObject;
 use Oxa\ManagerArchitectureBundle\Model\Manager\FileUploadManager;
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -21,21 +23,18 @@ class CSVImportFileManager extends FileUploadManager
     
     /** @var  ContainerInterface $container */
     protected $container;
-
     protected $validator;
+    protected $bpManager;
 
-    /**
-     * @param EntityManager $entityManager
-     * @param ValidatorInterface $validator
-     * @param ContainerInterface $container
-     */
     public function __construct(
         EntityManager $entityManager,
         ValidatorInterface $validator,
-        ContainerInterface $container
+        ContainerInterface $container,
+        BusinessProfileManager $bpManager
     ) {
         $this->validator = $validator;
         $this->container = $container;
+        $this->bpManager = $bpManager;
         parent::__construct($entityManager);
     }
 
@@ -69,7 +68,7 @@ class CSVImportFileManager extends FileUploadManager
                     $this->addTranslations($businessProfile, $denormalizable);
 
                     if (array_key_exists(CSVImportFile::BUSINESS_PROFILE_PHONE_MAIN, $entry)) {
-                        $this->setPhone(
+                        $this->handlePhone(
                             $businessProfile,
                             $entry[CSVImportFile::BUSINESS_PROFILE_PHONE_MAIN],
                             BusinessProfilePhone::PHONE_TYPE_MAIN
@@ -77,7 +76,7 @@ class CSVImportFileManager extends FileUploadManager
                     }
 
                     if (array_key_exists(CSVImportFile::BUSINESS_PROFILE_PHONE_SECONDARY, $entry)) {
-                        $this->setPhone(
+                        $this->handlePhone(
                             $businessProfile,
                             $entry[CSVImportFile::BUSINESS_PROFILE_PHONE_SECONDARY],
                             BusinessProfilePhone::PHONE_TYPE_SECONDARY
@@ -85,7 +84,7 @@ class CSVImportFileManager extends FileUploadManager
                     }
 
                     if (array_key_exists(CSVImportFile::BUSINESS_PROFILE_PHONE_FAX, $entry)) {
-                        $this->setPhone(
+                        $this->handlePhone(
                             $businessProfile,
                             $entry[CSVImportFile::BUSINESS_PROFILE_PHONE_FAX],
                             BusinessProfilePhone::PHONE_TYPE_FAX
@@ -109,6 +108,12 @@ class CSVImportFileManager extends FileUploadManager
                         );
                     }
 
+                    $this->setClosestLocality(
+                        $businessProfile,
+                        $entry[BusinessProfile::BUSINESS_PROFILE_FIELD_LATITUDE],
+                        $entry[BusinessProfile::BUSINESS_PROFILE_FIELD_LONGITUDE]
+                    );
+
                     $this->em->persist($businessProfile);
                     $validEntriesCount++;
 
@@ -130,6 +135,18 @@ class CSVImportFileManager extends FileUploadManager
             $csvImportFile->setInvalidEntriesNumbers(implode(', ', $notSavedEntries));
 
             $this->em->flush();
+        }
+    }
+
+    protected function setClosestLocality(BusinessProfile $bp, $lat, $lng)
+    {
+        $locationObject = new LocationValueObject(['searchCenterLat' => $lat, 'searchCenterLng' => $lng]);
+        $searchDTO = SearchDataUtil::buildRequestDTO('', $locationObject, 1, 1);
+
+        $locality = $this->bpManager->searchClosestLocalityInElastic($searchDTO);
+
+        if ($locality) {
+            $bp->setCatalogLocality($locality);
         }
     }
 
@@ -198,7 +215,20 @@ class CSVImportFileManager extends FileUploadManager
         return true;
     }
 
-    protected function setPhone(BusinessProfile $businessProfile, $phone, $type)
+    protected function handlePhone(BusinessProfile $businessProfile, $phones, $type): void
+    {
+        $splitPhones = array_map('trim', preg_split('/[,\/]/', $phones));
+
+        foreach ($splitPhones as $i => $phone) {
+            if ($i > 0 && $type === BusinessProfilePhone::PHONE_TYPE_MAIN) {
+                $type = BusinessProfilePhone::PHONE_TYPE_SECONDARY;
+            }
+
+            $this->setPhone($businessProfile, $phone, $type);
+        }
+    }
+
+    protected function setPhone(BusinessProfile $businessProfile, $phone, $type): void
     {
         $metadata = $this->validator->getMetadataFor(BusinessProfilePhone::class);
         if ($metadata->getPropertyMetadata('phone')) {
