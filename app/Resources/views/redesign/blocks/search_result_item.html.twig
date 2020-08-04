@@ -1,5 +1,6 @@
 {% from 'widgets/picture_macros.html.twig' import picture %}
 {% from 'widgets/phone_number_macros.html.twig' import phoneNumber %}
+{% from 'widgets/business_address_macros.html.twig' import businessAddress %}
 
 {% set hasVideo = video_section_allowed_for_business(item) and item.getVideo() is not null %}
 {% set hasImages = item.logo or item.background or item.images|length > 0 and hasSubscription(item, "CODE_PREMIUM_PLUS") %}
@@ -28,11 +29,7 @@
                     {% endif %}
                     {% if not item.getHideAddress() %}
                         <address>
-                            {% if item.getCustomAddress() %}
-                                {{ item.getCustomAddress() }}
-                            {% else %}
-                                {{ item.getCity() }}, {{ item.getStreetAddress() }}
-                            {% endif %}
+                            {{ businessAddress(item) }}
                             <span class="how-far">
                                 {{ item.getDistanceUX() }}
                                 {% if search.locationValue.userGeo %}

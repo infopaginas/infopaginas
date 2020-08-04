@@ -1,0 +1,15 @@
+{% macro businessAddress(object, fullAddress = false) %}
+    {% if object.getCustomAddress() %}
+        {{ object.getCustomAddress() }}
+    {% else %}
+        {% if fullAddress %}
+            {% if object.getStreetAddress() %}
+                <strong>{{ object.getStreetAddress() }}</strong>,
+            {% endif %}
+            {{ [object.getCity(), object.getCountry() ] | filter(v => v) | join(', ') }}
+            {{ object.getZipCode() }}
+        {% else %}
+            {{ [object.getCity(), object.getStreetAddress() ] | filter(v => v) | join(', ') }}
+        {% endif %}
+    {% endif %}
+{% endmacro %}
