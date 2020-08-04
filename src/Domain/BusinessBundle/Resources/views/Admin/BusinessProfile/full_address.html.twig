@@ -1,10 +1,7 @@
 {% extends 'SonataAdminBundle:CRUD:base_list_field.html.twig' %}
 
+{% from 'widgets/business_address_macros.html.twig' import businessAddress %}
+
 {% block field%}
-    {% if object.getCustomAddress() %}
-        {{ object.getCustomAddress() }}
-    {% else %}
-        <strong>{{ object.getStreetAddress() }}</strong>,
-        {{ object.getCity() }}, {{ object.getCountry() }} {{ object.getZipCode() }}
-    {% endif %}
+    {{ businessAddress(object, true) }}
 {% endblock %}
