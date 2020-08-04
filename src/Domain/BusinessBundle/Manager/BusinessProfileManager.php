@@ -2992,6 +2992,17 @@ class BusinessProfileManager extends Manager
         ];
     }
 
+    protected function getElasticAutosuggestSortQuery(): array
+    {
+        $sort = [
+            'views' => [
+                'order' => 'desc',
+            ]
+        ];
+
+        return array_merge($sort, $this->getElasticScoreSortQuery());
+    }
+
     /**
      * @return array
      */
@@ -3048,7 +3059,7 @@ class BusinessProfileManager extends Manager
             $limit = self::AUTO_SUGGEST_MAX_BUSINESSES_COUNT;
         }
 
-        $sort = $this->getElasticScoreSortQuery();
+        $sort = $this->getElasticAutosuggestSortQuery();
         $autoSuggestQuery = $this->getElasticAutoSuggestBusinessSearchQuery($query, $locale);
 
         $searchQuery = $this->getElasticBaseQuery($offset, $limit);
@@ -3150,6 +3161,7 @@ class BusinessProfileManager extends Manager
             'neighborhood_ids'     => $neighborhoodIds,
             'categories_ids'       => $categoryIds,
             'phone'                => json_encode($phones),
+            'view'                 => $businessProfile->getViews(),
         ];
 
         return $data;
@@ -3398,6 +3410,9 @@ class BusinessProfileManager extends Manager
                 'type' => 'integer',
             ],
             'subscr_rank' => [
+                'type' => 'integer',
+            ],
+            'views' => [
                 'type' => 'integer',
             ],
             'service_areas_type' => [

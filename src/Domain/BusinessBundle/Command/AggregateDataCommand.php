@@ -16,7 +16,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class AggregateDataCommand extends ContainerAwareCommand
 {
-    CONST AGGREGATE_DATA_MONTH_COUNT   = '12';
+    private const AGGREGATE_DATA_MONTH_COUNT = '12';
 
     protected function configure()
     {
