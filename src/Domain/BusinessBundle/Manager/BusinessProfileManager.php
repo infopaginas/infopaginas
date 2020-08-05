@@ -3161,7 +3161,7 @@ class BusinessProfileManager extends Manager
             'neighborhood_ids'     => $neighborhoodIds,
             'categories_ids'       => $categoryIds,
             'phone'                => json_encode($phones),
-            'view'                 => $businessProfile->getViews(),
+            'views'                 => $businessProfile->getViews(),
         ];
 
         return $data;
