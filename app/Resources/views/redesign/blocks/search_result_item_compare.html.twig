@@ -1,5 +1,6 @@
 {% from 'widgets/phone_number_macros.html.twig' import phoneNumber %}
 {% from ':widgets:url_item_rel_attributes_macros.html.twig' import relAttributes %}
+{% from 'widgets/business_address_macros.html.twig' import businessAddress %}
 
 <div class="comparison__item" id="business-{{ item.id }}" data-bw-gtm-component="search-results-item-compare">
     <div class="comparison__row comparison__where">
@@ -39,12 +40,7 @@
                     <h3>{% trans %}Address{% endtrans %}</h3>
                     <ul>
                         <li>
-                            {% if item.getCustomAddress() %}
-                                {{ item.getCustomAddress() }}
-                            {% else %}
-                                <strong>{{ item.getStreetAddress() }}</strong>,
-                                {{ item.getCity() }}, {{ item.getCountry() }} {{ item.getZipCode() }}
-                            {% endif %}
+                            {{ businessAddress(item, true) }}
                         </li>
                     </ul>
                 </div><!-- highlights__item -->

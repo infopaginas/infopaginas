@@ -1,3 +1,5 @@
+{% from 'widgets/business_address_macros.html.twig' import businessAddress %}
+
 <div class="results__item results__item--{% if (hasSubscription(item, 'CODE_PREMIUM_PLUS')) %}ad{% else %}normal{% endif %}" data-bw-gtm-component="search-results-item-short">
     <div class="item__content clearfix">
         <div class="item__summary">
@@ -13,11 +15,7 @@
                     {% endif %}
                     {% if not item.getHideAddress() %}
                         <address>
-                            {% if item.getCustomAddress() %}
-                                {{ item.getCustomAddress() }}
-                            {% else %}
-                                {{ item.getCity() }}, {{ item.getStreetAddress() }}
-                            {% endif %}
+                            {{ businessAddress(item) }}
                             <span class="how-far">{{ item.getDistanceUX() }} {% trans %}miles away{% endtrans %}</span>
                         </address>
                     {% endif %}

@@ -2,6 +2,7 @@
 {% from 'widgets/picture_macros.html.twig' import picture %}
 {% from 'widgets/phone_number_macros.html.twig' import phoneNumber %}
 {% from ':widgets:url_item_rel_attributes_macros.html.twig' import relAttributes %}
+{% from 'widgets/business_address_macros.html.twig' import businessAddress %}
 
 {% block breadcrumbs %}
     {% include ':redesign/blocks:breadcrumbs.html.twig' with {'catalogLocality': businessProfile.catalogLocality, 'category': businessProfile.categories|first} %}
@@ -79,12 +80,7 @@
                                         <h3>{% trans %}Address{% endtrans %}</h3>
                                         <ul>
                                             <li>
-                                                {% if businessProfile.getCustomAddress() %}
-                                                    {{ businessProfile.getCustomAddress() }}
-                                                {% else %}
-                                                    <strong>{{ businessProfile.getStreetAddress() }}</strong>,
-                                                    {{ businessProfile.getCity() }}, {{ businessProfile.getCountry() }} {{ businessProfile.getZipCode() }}
-                                                {% endif %}
+                                                {{ businessAddress(businessProfile, true) }}
                                             </li>
                                         </ul>
                                     </div><!-- highlights__item -->
