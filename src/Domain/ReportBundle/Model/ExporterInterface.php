@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\Response;
  */
 interface ExporterInterface
 {
-    const MAX_ROW_PER_FILE = 50000;
+    public const MAX_ROW_PER_FILE = 50000;
 
     /**
      * @param array

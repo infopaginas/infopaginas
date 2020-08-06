@@ -24,9 +24,9 @@ abstract class CsvExporterModel implements ExporterInterface
     protected $translator;
 
     /**
-     * @var resource $csvResource
+     * @var resource $streamResource
      */
-    protected $csvResource;
+    protected $streamResource;
 
     /**
      * @var EntityManager $em
@@ -49,9 +49,9 @@ abstract class CsvExporterModel implements ExporterInterface
     /**
      * @param string $path
      */
-    protected function createCsvResource($path)
+    protected function createStreamResource(string $path): void
     {
-        $this->csvResource = fopen($path, 'w+');
+        $this->streamResource = fopen($path, 'w+');
 
         $this->files[] = $path;
     }
@@ -63,12 +63,12 @@ abstract class CsvExporterModel implements ExporterInterface
      */
     protected function writeToFile($row)
     {
-        fputcsv($this->csvResource, $row);
+        fputcsv($this->streamResource, $row);
     }
 
     protected function closeConnection()
     {
-        fclose($this->csvResource);
+        fclose($this->streamResource);
     }
 
     /**
@@ -89,8 +89,8 @@ abstract class CsvExporterModel implements ExporterInterface
      */
     protected function sendDataResponse($filename)
     {
-        rewind($this->csvResource);
-        $response = new Response(stream_get_contents($this->csvResource));
+        rewind($this->streamResource);
+        $response = new Response(stream_get_contents($this->streamResource));
 
         $dispositionHeader = $response->headers->makeDisposition(
             ResponseHeaderBag::DISPOSITION_ATTACHMENT,

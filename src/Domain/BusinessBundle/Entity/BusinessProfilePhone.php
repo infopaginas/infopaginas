@@ -21,24 +21,25 @@ class BusinessProfilePhone implements ChangeStateInterface
 {
     use ChangeStateTrait;
 
-    const REGEX_PHONE_PATTERN = '/^\d{3}-\d{3}-\d{4}$|' .
+    public const REGEX_PHONE_PATTERN = '/^\d{3}-\d{3}-\d{4}$|' .
                                 '^\(\d{3}\)\s\d{3}\s\d{4}$|' .
                                 '^\(\d{3}\)-\d{3}-\d{4}$|' .
                                 '^\(\d{3}\)\d{3}-\d{4}$|' .
                                 '^\(\d{3}\)\s\d{3}-\d{4}$|' .
                                 '^\d{10}$|' .
                                 '^\d{3}\s\d{3}\s\d{4}$/';
-    const MAX_PHONE_LENGTH = 15;
-    const MAX_EXTENSION_LENGTH = 6;
-    const MIN_EXTENSION_LENGTH = 1;
 
-    const PHONE_TYPE_MAIN       = 'main';
-    const PHONE_TYPE_SECONDARY  = 'secondary';
-    const PHONE_TYPE_FAX        = 'fax';
+    public const MAX_PHONE_LENGTH     = 15;
+    public const MAX_EXTENSION_LENGTH = 6;
+    public const MIN_EXTENSION_LENGTH = 1;
 
-    const PHONE_PRIORITY_MAIN       = 10;
-    const PHONE_PRIORITY_SECONDARY  = 30;
-    const PHONE_PRIORITY_FAX        = 20;
+    public const PHONE_TYPE_MAIN      = 'main';
+    public const PHONE_TYPE_SECONDARY = 'secondary';
+    public const PHONE_TYPE_FAX       = 'fax';
+
+    public const PHONE_PRIORITY_MAIN      = 10;
+    public const PHONE_PRIORITY_SECONDARY = 30;
+    public const PHONE_PRIORITY_FAX       = 20;
 
     /**
      * @var int
