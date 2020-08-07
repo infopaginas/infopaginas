@@ -39,7 +39,7 @@ class UserActionCsvExporter extends CsvPostponedExporterModel
             if ($this->isNewPage) {
                 $path = $this->generateTempFilePath($parameters['exportPath'], $this->page);
 
-                $this->createCsvResource($path);
+                $this->createStreamResource($path);
                 $this->generateHeaderTable($headers);
 
                 $this->isNewPage = false;

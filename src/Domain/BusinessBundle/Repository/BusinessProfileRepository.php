@@ -624,4 +624,14 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
 
         $bp->getQuery()->execute();
     }
+
+    public function getBusinessProfilePrintingListingIterator()
+    {
+        $qb = $this->getQueryBuilder();
+        $qb->andWhere('bp.isDraft = FALSE');
+
+        $query = $qb->getQuery();
+
+        return $query->iterate();
+    }
 }
