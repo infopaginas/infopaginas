@@ -703,24 +703,15 @@ class Category implements
         $this->amazonAffiliateItems->removeElement($amazonAffiliateItem);
     }
 
-    /**
-     * @return Url|null
-     */
     public function getAmazonAffiliateUrl()
     {
         return $this->amazonAffiliateUrl;
     }
 
-    /**
-     * @param Url $amazonAffiliateUrl
-     *
-     * @return Category
-     */
-    public function setAmazonAffiliateUrl(Url $amazonAffiliateUrl)
+    public function setAmazonAffiliateUrl($amazonAffiliateUrl)
     {
         $this->amazonAffiliateUrl = $amazonAffiliateUrl;
 
         return $this;
     }
-
 }

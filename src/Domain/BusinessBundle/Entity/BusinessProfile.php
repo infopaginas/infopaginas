@@ -624,6 +624,13 @@ class BusinessProfile implements
     protected $hideMap = false;
 
     /**
+     * @var bool - If checkbox is checked, get directions button is hidden.
+     *
+     * @ORM\Column(name="hide_get_directions", type="boolean", options={"default" : 0})
+     */
+    protected $hideGetDirectionsButton = false;
+
+    /**
      * @var Url|null
      *
      * @ORM\Column(name="linkedin_url_item", type="urlType", length=1000, nullable=true)
@@ -2299,6 +2306,17 @@ class BusinessProfile implements
     {
         $this->hideMap = $hideMap;
 
+        return $this;
+    }
+
+    public function getHideGetDirectionsButton()
+    {
+        return $this->hideGetDirectionsButton;
+    }
+
+    public function setHideGetDirectionsButton($hideGetDirectionsButton)
+    {
+        $this->hideGetDirectionsButton = $hideGetDirectionsButton;
         return $this;
     }
 
