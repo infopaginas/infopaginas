@@ -788,6 +788,7 @@ class BusinessProfileAdmin extends OxaAdmin
                     ])
                     ->add('hideAddress')
                     ->add('hideMap')
+                    ->add('hideGetDirectionsButton')
                 ->end()
             ->end()
         ;
@@ -1408,6 +1409,7 @@ class BusinessProfileAdmin extends OxaAdmin
                     ->add('customAddress')
                     ->add('hideAddress')
                     ->add('hideMap')
+                    ->add('hideGetDirectionsButton')
                     ->add('latitude')
                     ->add('longitude')
                 ->end()
