@@ -32,6 +32,7 @@ class ExportReportAdmin extends OxaAdmin
         $datagridMapper
             ->add('id')
             ->add('type')
+            ->add('format')
             ->add(
                 'user',
                 null,
@@ -52,6 +53,7 @@ class ExportReportAdmin extends OxaAdmin
         $listMapper
             ->add('id')
             ->add('type')
+            ->add('format')
             ->add(
                 'user',
                 null,
@@ -94,6 +96,7 @@ class ExportReportAdmin extends OxaAdmin
         $showMapper
             ->add('id')
             ->add('type')
+            ->add('format')
             ->add(
                 'user',
                 null,

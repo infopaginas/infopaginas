@@ -15,7 +15,6 @@ use Domain\BusinessBundle\Entity\CustomFields\BusinessCustomFieldRadioButtonColl
 use Domain\BusinessBundle\Entity\CustomFields\BusinessCustomFieldTextAreaCollection;
 use Domain\BusinessBundle\Entity\Media\BusinessGallery;
 use Domain\BusinessBundle\Entity\Review\BusinessReview;
-use Domain\BusinessBundle\Entity\Task;
 use Domain\BusinessBundle\Entity\Translation\BusinessProfileTranslation;
 use Domain\BusinessBundle\Model\StatusInterface;
 use Domain\BusinessBundle\Model\SubscriptionPlanInterface;
@@ -36,7 +35,6 @@ use Oxa\Sonata\UserBundle\Entity\User;
 use Domain\SiteBundle\Utils\Traits\SeoTrait;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Oxa\GeolocationBundle\Model\Geolocation\GeolocationInterface;
-use Symfony\Component\HttpFoundation\File\File;
 use Oxa\Sonata\AdminBundle\Util\Traits\OxaPersonalTranslatable as PersonalTranslatable;
 use Oxa\GeolocationBundle\Utils\Traits\LocationTrait;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -349,6 +347,7 @@ class BusinessProfile implements
      *     cascade={"persist"}
      *     )
      * @ORM\JoinTable(name="business_profile_areas")
+     * @ORM\OrderBy({"name" = "ASC"})
      */
     protected $areas;
 
@@ -623,6 +622,13 @@ class BusinessProfile implements
      * @ORM\Column(name="hide_map", type="boolean", options={"default" : 0})
      */
     protected $hideMap = false;
+
+    /**
+     * @var bool - If checkbox is checked, get directions button is hidden.
+     *
+     * @ORM\Column(name="hide_get_directions", type="boolean", options={"default" : 0})
+     */
+    protected $hideGetDirectionsButton = false;
 
     /**
      * @var Url|null
@@ -2300,6 +2306,17 @@ class BusinessProfile implements
     {
         $this->hideMap = $hideMap;
 
+        return $this;
+    }
+
+    public function getHideGetDirectionsButton()
+    {
+        return $this->hideGetDirectionsButton;
+    }
+
+    public function setHideGetDirectionsButton($hideGetDirectionsButton)
+    {
+        $this->hideGetDirectionsButton = $hideGetDirectionsButton;
         return $this;
     }
 
@@ -4006,7 +4023,8 @@ class BusinessProfile implements
     public static function getExportFormats(): array
     {
         return [
-            self::FORMAT_CSV => self::FORMAT_CSV,
+            self::FORMAT_CSV       => self::FORMAT_CSV,
+            self::PRINTING_LISTING => self::PRINTING_LISTING,
         ];
     }
 

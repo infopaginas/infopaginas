@@ -37,7 +37,7 @@ class BusinessProfileCsvExporter extends CsvPostponedExporterModel
             if ($this->isNewPage) {
                 $path = $this->generateTempFilePath($parameters['exportPath'], $this->page);
 
-                $this->createCsvResource($path);
+                $this->createStreamResource($path);
                 $this->generateHeaderTable(array_keys($item));
 
                 $this->isNewPage = false;

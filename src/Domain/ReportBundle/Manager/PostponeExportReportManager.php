@@ -12,7 +12,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class PostponeExportReportManager
 {
-    const EXPORT_REPORT_LIMIT = 5;
+    private const EXPORT_REPORT_LIMIT = 5;
 
     /** @var  ContainerInterface $container */
     protected $container;
@@ -113,6 +113,8 @@ class PostponeExportReportManager
      */
     protected function getFileData($format, $filePath)
     {
+        $extension = $format;
+
         switch ($format) {
             case ReportInterface::FORMAT_EXCEL:
                 $type = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
@@ -123,6 +125,10 @@ class PostponeExportReportManager
             case ReportInterface::FORMAT_CSV:
                 $type = 'text/csv';
                 break;
+            case ReportInterface::PRINTING_LISTING:
+                $type = 'text/tab-separated-values';
+                $extension = 'tsv';
+                break;
             default:
                 $type = '';
                 break;
@@ -131,7 +137,7 @@ class PostponeExportReportManager
         if ($type) {
             $fileData = [
                 'type' => $type,
-                'ext'  => $format,
+                'ext'  => $extension,
                 'path' => $filePath,
             ];
         } else {

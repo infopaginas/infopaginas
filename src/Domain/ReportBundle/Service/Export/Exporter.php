@@ -91,6 +91,9 @@ class Exporter
                     case ReportInterface::FORMAT_CSV:
                         $response = $this->getBusinessProfileCsvExporter()->getResponse($parameters);
                         break;
+                    case ReportInterface::PRINTING_LISTING:
+                        $response = $this->getBusinessProfilePrintingListingExporter()->getResponse($parameters);
+                        break;
                 }
 
                 break;
@@ -219,5 +222,10 @@ class Exporter
     protected function getFeedbackReportCsvExporter()
     {
         return $this->container->get('domain_report.exporter.feedback_report_csv_exporter');
+    }
+
+    protected function getBusinessProfilePrintingListingExporter()
+    {
+        return $this->container->get('domain_report.exporter.business_profile_printing_listing_exporter');
     }
 }
