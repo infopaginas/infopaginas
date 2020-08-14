@@ -46,10 +46,12 @@
                         {% else %}
                             {% set hasPhone = false %}
                         {% endif %}
-                        <a class="slide-button get-dir homepage-carousel-action redirect-event button button--small button--featured link-pointer {% if carouselBusiness.businessProfile.isAd %}svm-getdir{% endif %}" data-href="{{ path('domain_search_show_directions', {'slug': carouselBusiness.businessProfile.slug }) }}" data-id="{{ carouselBusiness.businessProfile.id }}" data-latlng="{{ carouselBusiness.businessProfile.latLng }}" data-type="directionButton" data-bw-gtm-event-click data-bw-gtm-label="{% trans %}Directions{% endtrans %}" data-bname="{{ carouselBusiness.businessProfile.name }}">
-                            <i class="fa fa-location-arrow"></i>
-                            <span class="hide-mobile">{% trans %}Directions{% endtrans %}</span>
-                        </a>
+                        {% if not carouselBusiness.businessProfile.hideGetDirectionsButton %}
+                            <a class="slide-button get-dir homepage-carousel-action redirect-event button button--small button--featured link-pointer {% if carouselBusiness.businessProfile.isAd %}svm-getdir{% endif %}" data-href="{{ path('domain_search_show_directions', {'slug': carouselBusiness.businessProfile.slug }) }}" data-id="{{ carouselBusiness.businessProfile.id }}" data-latlng="{{ carouselBusiness.businessProfile.latLng }}" data-type="directionButton" data-bw-gtm-event-click data-bw-gtm-label="{% trans %}Directions{% endtrans %}" data-bname="{{ carouselBusiness.businessProfile.name }}">
+                                <i class="fa fa-location-arrow"></i>
+                                <span class="hide-mobile">{% trans %}Directions{% endtrans %}</span>
+                            </a>
+                        {% endif %}
                         {% if carouselBusiness.businessProfile.actionUrlItem and carouselBusiness.businessProfile.actionUrlItem.url %}
                             <a
                                     class="homepage-opentable-button slide-button button button--small button--featured redirect-event link-pointer homepage-carousel-action"

@@ -35,7 +35,7 @@ class FeedbackReportCsvExporter extends CsvExporterModel
     {
         $filename = $this->feedbackReportManager->generateReportName(self::FORMAT);
 
-        $this->createCsvResource(self::FILE_PATH);
+        $this->createStreamResource(self::FILE_PATH);
         $this->setData($params);
 
         return $this->sendDataResponse($filename);

@@ -181,6 +181,13 @@ services:
             - [ setTranslator, [ '@translator.default' ]]
             - [ setEntityManager, [ '@doctrine.orm.default_entity_manager']]
 
+    domain_report.exporter.business_profile_printing_listing_exporter:
+        class: Domain\ReportBundle\Service\Export\BusinessProfilePrintingListingExporter
+        calls:
+            - [ setEntityManager, [ '@doctrine.orm.entity_manager' ]]
+            - [ setTranslator, [ '@translator.default' ]]
+            - [ setEntityManager, [ '@doctrine.orm.default_entity_manager']]
+
     domain_report.exporter.feedback_report_csv_exporter:
         class: Domain\ReportBundle\Service\Export\FeedbackReportCsvExporter
         calls:
