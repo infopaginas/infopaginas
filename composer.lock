@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d524e8ff93d55d37136c2cbc39b241b3",
+    "content-hash": "bde502ff185dc101abcfe42f41bc77e6",
     "packages": [
         {
             "name": "alchemy/binary-driver",
@@ -7712,30 +7712,32 @@
         },
         {
             "name": "presta/sitemap-bundle",
-            "version": "v2.2.0",
+            "version": "v1.5.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/prestaconcept/PrestaSitemapBundle.git",
-                "reference": "c20626a95e38684e320c9dc07a23671d8417be12"
+                "reference": "b3329832d3df1954affe75b336f490e577d01035"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/prestaconcept/PrestaSitemapBundle/zipball/c20626a95e38684e320c9dc07a23671d8417be12",
-                "reference": "c20626a95e38684e320c9dc07a23671d8417be12",
+                "url": "https://api.github.com/repos/prestaconcept/PrestaSitemapBundle/zipball/b3329832d3df1954affe75b336f490e577d01035",
+                "reference": "b3329832d3df1954affe75b336f490e577d01035",
                 "shasum": ""
             },
             "require": {
-                "php": ">=7.1.0",
-                "symfony/console": "^3.4|~4.0|~5.0",
-                "symfony/framework-bundle": "^3.4|~4.0|~5.0"
+                "php": ">=5.3.0",
+                "symfony/console": "~2.2|~3.0|~4.0",
+                "symfony/framework-bundle": "~2.2|~3.0|~4.0"
             },
             "require-dev": {
-                "doctrine/annotations": ">=1.0",
-                "ext-simplexml": "*",
-                "phpunit/phpunit": "^7.5",
-                "symfony/browser-kit": ">=3.4",
-                "symfony/phpunit-bridge": ">=3.4",
-                "symfony/yaml": ">=3.4"
+                "doctrine/annotations": "~1.0",
+                "phpunit/phpunit": "5.*",
+                "symfony/browser-kit": "~2.2|~3.0|~4.0",
+                "symfony/form": "~2.2|~3.0|~4.0",
+                "symfony/phpunit-bridge": "~2.7|~3.0|~4.0",
+                "symfony/security-bundle": "~2.2|~3.0|~4.0",
+                "symfony/translation": "~2.2|~3.0|~4.0",
+                "symfony/validator": "~2.2|~3.0|~4.0"
             },
             "suggest": {
                 "doctrine/doctrine-cache-bundle": "Allows to store sitemaps in cache"
@@ -7743,17 +7745,13 @@
             "type": "symfony-bundle",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.x-dev",
-                    "1.x": "1.x-dev"
+                    "dev-master": "1.5.x-dev"
                 }
             },
             "autoload": {
                 "psr-4": {
                     "Presta\\SitemapBundle\\": ""
-                },
-                "exclude-from-classmap": [
-                    "/Tests/"
-                ]
+                }
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
@@ -7773,7 +7771,7 @@
                 "symfony",
                 "xml"
             ],
-            "time": "2020-08-03T08:49:41+00:00"
+            "time": "2019-01-02T14:57:49+00:00"
         },
         {
             "name": "psr/cache",
