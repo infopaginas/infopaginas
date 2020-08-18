@@ -173,7 +173,7 @@ class SitemapSubscriber implements EventSubscriberInterface
             $this->siteMapEvent->getUrlContainer()->addUrl($baseUrl, self::SECTION_BUSINESS_PROFILES);
             $this->siteMapEvent->getUrlContainer()->addUrl($baseDirectionsUrl, self::SECTION_BUSINESS_PROFILE_DIRECTIONS);
 
-            $this->manager->detach($row[0]);
+            $this->manager->clear(BusinessProfile::class);
         }
     }
 
@@ -189,7 +189,7 @@ class SitemapSubscriber implements EventSubscriberInterface
 
             $this->addCatalogUrlByCatalogItem($catalogItem);
 
-            $this->manager->detach($row[0]);
+            $this->manager->clear(CatalogItem::class);
             unset($catalogItem);
         }
     }
@@ -205,7 +205,7 @@ class SitemapSubscriber implements EventSubscriberInterface
 
                 $this->addEmergencyCatalogUrlByCatalogItem($catalogItem);
 
-                $this->manager->detach($row[0]);
+                $this->manager->clear(EmergencyCatalogItem::class);
                 unset($catalogItem);
             }
         }
@@ -257,7 +257,7 @@ class SitemapSubscriber implements EventSubscriberInterface
 
             $this->siteMapEvent->getUrlContainer()->addUrl($baseUrl, self::SECTION_ARTICLE);
 
-            $this->manager->detach($row[0]);
+            $this->manager->clear(Article::class);
         }
     }
 
@@ -304,7 +304,7 @@ class SitemapSubscriber implements EventSubscriberInterface
 
             $this->siteMapEvent->getUrlContainer()->addUrl($baseUrl, self::SECTION_ARTICLE);
 
-            $this->manager->detach($row[0]);
+            $this->manager->clear(Category::class);
         }
     }
 
