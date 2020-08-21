@@ -177,7 +177,10 @@ class CSVImportFileManager extends FileUploadManager
         $headers = str_getcsv(array_shift($lines), $delimiter, $enclosure);
 
         foreach ($lines as $line) {
-            if (mb_detect_encoding($line, CategoryUtil::ENCODING_ISO_8859_1)) {
+            if (
+                mb_detect_encoding($line, CategoryUtil::ENCODING_UTF8, true) === false &&
+                mb_detect_encoding($line, CategoryUtil::ENCODING_ISO_8859_1, true)
+            ) {
                 $line = mb_convert_encoding($line, CategoryUtil::ENCODING_UTF8, CategoryUtil::ENCODING_ISO_8859_1);
             }
 
