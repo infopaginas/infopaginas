@@ -25,6 +25,7 @@ class CSVImportFileManager extends FileUploadManager
     protected $container;
     protected $validator;
     protected $bpManager;
+    protected $phoneNumbersOfPaidProfiles = [];
 
     public function __construct(
         EntityManager $entityManager,
@@ -42,6 +43,9 @@ class CSVImportFileManager extends FileUploadManager
     {
         $unprocessedFilesIterator = $this->getRepository()->getUnprocessedCSVImportFileIterator();
         $normalizer = new GetSetMethodNormalizer();
+        $this->phoneNumbersOfPaidProfiles = $this->getEntityManager()
+            ->getRepository(BusinessProfilePhone::class)
+            ->getPhoneNumbersOfPaidProfiles();
 
         /** @var CSVImportFile $csvImportFile */
         foreach ($unprocessedFilesIterator as $row) {
@@ -199,6 +203,12 @@ class CSVImportFileManager extends FileUploadManager
 
     protected function validateData($data)
     {
+        foreach (CSVImportFile::getBusinessProfileRequiredFields() as $field => $label) {
+            if (empty($data[$field])) {
+                return false;
+            }
+        }
+
         $metadata = $this->validator->getMetadataFor(BusinessProfile::class);
         foreach ($data as $field => $value) {
             if ($metadata->getPropertyMetadata($field)) {
@@ -209,8 +219,8 @@ class CSVImportFileManager extends FileUploadManager
             }
         }
 
-        foreach (CSVImportFile::getBusinessProfileRequiredFields() as $field => $label) {
-            if (empty($data[$field])) {
+        foreach (CSVImportFile::getBusinessProfilePhoneFields() as $field => $label) {
+            if (!empty($data[$field]) && in_array($data[$field], $this->phoneNumbersOfPaidProfiles)) {
                 return false;
             }
         }

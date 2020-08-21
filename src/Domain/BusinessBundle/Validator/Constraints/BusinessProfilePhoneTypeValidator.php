@@ -9,10 +9,11 @@ use Symfony\Component\Validator\ConstraintValidator;
 
 class BusinessProfilePhoneTypeValidator extends ConstraintValidator
 {
-    const ERROR_BLOCK_PATH = 'phoneCollection';
+    public const ERROR_BLOCK_PATH = 'phoneCollection';
 
     public $notUniqueMainPhoneMessage   = 'business_profile_phone.not_unique_main';
     public $noMainPhoneMessage          = 'business_profile_phone.no_main';
+
     /**
      * @param BusinessProfile   $business
      * @param Constraint        $constraint
