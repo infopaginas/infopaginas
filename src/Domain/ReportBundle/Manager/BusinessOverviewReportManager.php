@@ -6,24 +6,24 @@ use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Manager\BusinessProfileManager;
 use Domain\BusinessBundle\Util\BusinessProfileUtil;
 use Domain\ReportBundle\Model\BusinessOverviewModel;
-use Domain\ReportBundle\Model\CategoryOverviewModel;
 use Domain\ReportBundle\Model\DataType\ReportDatesRangeVO;
 use Domain\ReportBundle\Util\DatesUtil;
+use Domain\SearchBundle\Util\CacheUtil;
 use Oxa\MongoDbBundle\Manager\MongoDbManager;
 use Oxa\Sonata\AdminBundle\Util\Helpers\AdminHelper;
 
 class BusinessOverviewReportManager extends BaseReportManager
 {
-    const MONGO_DB_COLLECTION_NAME_RAW       = 'overview_raw';
-    const MONGO_DB_COLLECTION_NAME_AGGREGATE = 'overview_aggregate';
+    public const MONGO_DB_COLLECTION_NAME_AGGREGATE = 'overview_aggregate';
 
-    const MONGO_DB_COLLECTION_NAME_ARCHIVE_RAW       = 'overview_archive_raw';
-    const MONGO_DB_COLLECTION_NAME_ARCHIVE_AGGREGATE = 'overview_archive_aggregate';
+    public const MONGO_DB_FIELD_ACTION      = 'action';
+    public const MONGO_DB_FIELD_BUSINESS_ID = 'business_id';
+    public const MONGO_DB_FIELD_COUNT       = 'count';
+    public const MONGO_DB_FIELD_DATE_TIME   = 'datetime';
 
-    const MONGO_DB_FIELD_ACTION      = 'action';
-    const MONGO_DB_FIELD_BUSINESS_ID = 'business_id';
-    const MONGO_DB_FIELD_COUNT       = 'count';
-    const MONGO_DB_FIELD_DATE_TIME   = 'datetime';
+    private const MONGO_DB_COLLECTION_NAME_RAW               = 'overview_raw';
+    private const MONGO_DB_COLLECTION_NAME_ARCHIVE_RAW       = 'overview_archive_raw';
+    private const MONGO_DB_COLLECTION_NAME_ARCHIVE_AGGREGATE = 'overview_archive_aggregate';
 
     protected $reportName = 'business_overview_report';
 
@@ -52,12 +52,7 @@ class BusinessOverviewReportManager extends BaseReportManager
         $this->mongoDbManager = $mongoDbManager;
     }
 
-    /**
-     * @param array $params
-     *
-     * @return array
-     */
-    public function getBusinessOverviewReportData(array $params = [])
+    public function getBusinessOverviewReportData(array $params = []): array
     {
         $businessProfile = $this->getBusinessProfileManager()->find((int)$params['businessProfileId']);
 
@@ -87,13 +82,19 @@ class BusinessOverviewReportManager extends BaseReportManager
 
         $periodOption = !empty($params['periodOption']) ? $params['periodOption'] : '';
 
-        list($dateFormat, $step) = $this->handlePeriodOption($periodOption);
+        [$dateFormat, $step] = $this->handlePeriodOption($periodOption);
 
         $result['dates'] = DatesUtil::dateRange($dates, $step, $dateFormat);
 
         $params['dateObject'] = $dates;
 
-        $overviewResult = $this->getBusinessInteractionData($params);
+        $memcached = $this->businessProfileManager->getMemcached();
+        $key = $params['businessProfileId'] . md5(serialize($params['dateObject']));
+
+        if (!$overviewResult = $memcached->get($key)) {
+            $overviewResult = $this->getBusinessInteractionData($params)->toArray();
+            $memcached->set($key, $overviewResult, CacheUtil::BUSINESS_REPORT_CACHE_LIFETIME);
+        }
 
         $businessProfileResult = $this->prepareBusinessOverviewReportStats(
             $result['dates'],
@@ -123,7 +124,7 @@ class BusinessOverviewReportManager extends BaseReportManager
      *
      * @return array
      */
-    protected function prepareBusinessOverviewReportStats($dates, $rawResult, $dateFormat, $chartType = '') : array
+    protected function prepareBusinessOverviewReportStats($dates, $rawResult, $dateFormat, $chartType = ''): array
     {
         $stats = [];
         $dates = array_flip($dates);
