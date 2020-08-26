@@ -92,8 +92,12 @@ class BusinessOverviewReportManager extends BaseReportManager
         $key = $params['businessProfileId'] . md5(serialize($params['dateObject']));
 
         if (!$overviewResult = $memcached->get($key)) {
-            $overviewResult = $this->getBusinessInteractionData($params)->toArray();
-            $memcached->set($key, $overviewResult, CacheUtil::BUSINESS_REPORT_CACHE_LIFETIME);
+            if ($cursor = $this->getBusinessInteractionData($params)) {
+                $overviewResult = $this->getBusinessInteractionData($params)->toArray();
+                $memcached->set($key, $overviewResult, CacheUtil::BUSINESS_REPORT_CACHE_LIFETIME);
+            } else {
+                $overviewResult = [];
+            }
         }
 
         $businessProfileResult = $this->prepareBusinessOverviewReportStats(
