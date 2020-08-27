@@ -4014,4 +4014,9 @@ class BusinessProfileManager extends Manager
 
         return $phone;
     }
+
+    public function getMemcached()
+    {
+        return $this->memcached;
+    }
 }
