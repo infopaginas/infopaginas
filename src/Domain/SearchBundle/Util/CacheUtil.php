@@ -14,6 +14,7 @@ class CacheUtil
     public const SECONDS_IN_MONTH                 = 2592000;
     public const SECONDS_IN_DAY                   = 86400;
     public const AUTOCOMPLETE_CACHE_LIFETIME      = 300;
+    public const BUSINESS_REPORT_CACHE_LIFETIME   = 600;
     public const HOMEPAGE_SHORTCUT_CACHE_LIFETIME = self::SECONDS_IN_MONTH;
 
     public const DEFAULT_WORD_SEPARATOR = '_';
