@@ -2433,20 +2433,17 @@ class BusinessProfileManager extends Manager
 
     protected function getElasticBusinessSearchQuery(SearchDTO $params, $fields): array
     {
-        return [
+        $query = [
             'bool' => [
                 'must' => [
                     [
                         'bool' => [
-                            'minimum_should_match' => 1,
-                            'should' => [
-                                [
-                                    'query_string' => [
-                                        'default_operator' => 'AND',
-                                        'fields' => $fields,
-                                        'query'  => $params->query,
-                                        'fuzziness' => 'auto',
-                                    ],
+                            'must' => [
+                                'query_string' => [
+                                    'default_operator' => 'AND',
+                                    'fields' => $fields,
+                                    'query'  => $params->query,
+                                    'fuzziness' => 'auto',
                                 ],
                             ],
                         ],
@@ -2454,6 +2451,23 @@ class BusinessProfileManager extends Manager
                 ],
             ],
         ];
+
+        if ($params->locationValue->locality) {
+            $query['bool']['must'][0]['bool'] += [
+                'should' => [
+                    [
+                        'match' => [
+                            'catalog_locality_id' => [
+                                'query' => $params->locationValue->locality->getId(),
+                                'boost' => 10,
+                            ]
+                        ],
+                    ],
+                ],
+            ];
+        }
+
+        return $query;
     }
 
     protected function getElasticSimilarBusinessSearchQuery(string $name, int $id, string $city = ''): array
