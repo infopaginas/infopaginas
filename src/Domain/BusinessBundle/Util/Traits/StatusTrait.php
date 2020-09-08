@@ -5,6 +5,7 @@ namespace Domain\BusinessBundle\Util\Traits;
 use Domain\BusinessBundle\Model\StatusInterface;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Exception\InvalidArgumentException;
+use Oxa\VideoBundle\Entity\VideoMedia;
 
 /**
  * Class StatusTrait
@@ -63,6 +64,15 @@ trait StatusTrait
         return [
             StatusInterface::STATUS_ACTIVE,
             StatusInterface::STATUS_PENDING,
+        ];
+    }
+
+    public static function getVideoStatuses(): array
+    {
+        return [
+            VideoMedia::VIDEO_STATUS_ACTIVE  => 'Active',
+            VideoMedia::VIDEO_STATUS_PENDING => 'Pending',
+            VideoMedia::VIDEO_STATUS_ERROR   => 'Error',
         ];
     }
 
