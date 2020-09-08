@@ -53,7 +53,18 @@ class AdminHelper
             'field_type' => ChoiceType::class,
             'field_options' => [
                 'required'  => false,
-                'choices'   => StatusTrait::getStatuses()
+                'choices'   => array_flip(StatusTrait::getStatuses()),
+            ]
+        ];
+    }
+
+    public static function getVideoDatagridStatusOptions()
+    {
+        return [
+            'field_type' => ChoiceType::class,
+            'field_options' => [
+                'required'  => false,
+                'choices'   => array_flip(StatusTrait::getVideoStatuses()),
             ]
         ];
     }
