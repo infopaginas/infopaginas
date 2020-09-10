@@ -74,6 +74,8 @@ class BusinessProfileAdmin extends OxaAdmin
     private const FILTER_DIRECTIONS  = 'directions';
     private const FILTER_CALL_MOBILE = 'callsMobile';
 
+    private const MILES_OF_MY_BUSINESS_PLACEHOLDER = 20;
+
     /**
      * @var bool
      */
@@ -825,6 +827,9 @@ class BusinessProfileAdmin extends OxaAdmin
         // Category Block
         $milesOfMyBusinessFieldOptions = [
             'required' => true,
+            'attr' => [
+                'placeholder' => self::MILES_OF_MY_BUSINESS_PLACEHOLDER,
+            ],
         ];
 
         $areasFieldOptions = [

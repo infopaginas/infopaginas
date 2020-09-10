@@ -188,6 +188,11 @@ $( document ).ready( function() {
         var serviceAreaType = $( elem ).val();
 
         setServiceAreaTypeValidation( elem, serviceAreaType, isMainBlock );
+
+        let input = $( 'input[ id *= "_milesOfMyBusiness" ]' );
+        if ( serviceAreaType === 'area' && !input.val() ) {
+            input.val(input.attr('placeholder'));
+        }
     }
 
     function checkServiceAreaTypeBlockMain( elem ) {
@@ -534,6 +539,10 @@ $( document ).ready( function() {
     }
 
     $( document ).on( 'change', 'select[ id *= "_areas" ]', function() {
+        updatedLocalitiesBlock( this );
+    });
+
+    $( document ).on( 'change', 'select[ id *= "_distance" ]', function() {
         updatedLocalitiesBlock( this );
     });
 
