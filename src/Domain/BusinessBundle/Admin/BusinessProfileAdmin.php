@@ -874,8 +874,12 @@ class BusinessProfileAdmin extends OxaAdmin
 
         if ($businessProfile->getId() && $subscriptionPlanCode > SubscriptionPlanInterface::CODE_FREE) {
             $maximumSelectionSize = 0;
+            $serviceAreasType = BusinessProfile::getServiceAreasTypes();
         } else {
             $maximumSelectionSize = BusinessProfile::BUSINESS_PROFILE_FREE_MAX_CATEGORIES_COUNT;
+            $serviceAreasType = [
+                'Locality' => BusinessProfile::SERVICE_AREAS_LOCALITY_CHOICE_VALUE,
+            ];
         }
 
         $formMapper
@@ -893,13 +897,18 @@ class BusinessProfileAdmin extends OxaAdmin
                         'required' => true,
                     ])
                     ->add('serviceAreasType', ChoiceType::class, [
-                        'choices' => BusinessProfile::getServiceAreasTypes(),
+                        'choices'  => $serviceAreasType,
                         'multiple' => false,
                         'expanded' => true,
                         'required' => true,
                     ])
-                    ->add('milesOfMyBusiness', null, $milesOfMyBusinessFieldOptions)
-                    ->add('areas', null, $areasFieldOptions)
+        ;
+
+        if ($subscriptionPlanCode > SubscriptionPlanInterface::CODE_FREE && $businessProfile->getId()) {
+            $formMapper->add('milesOfMyBusiness', null, $milesOfMyBusinessFieldOptions);
+        }
+
+        $formMapper->add('areas', null, $areasFieldOptions)
                     ->add('localities', null, $localitiesFieldOptions)
                     ->add('neighborhoods', null, $neighborhoodsFieldOptions)
                 ->end()

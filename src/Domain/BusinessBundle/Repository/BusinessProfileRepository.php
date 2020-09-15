@@ -184,17 +184,35 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
 
     public function getBusinessProfilesWithSubscriptionIterator(int $subscriptionCode, string $operator = '='): Iterator
     {
-        $qb = $this->getEntityManager()->createQueryBuilder()
+        $qb = $this->getBusinessProfileWithSubscriptionQueryBuilder($subscriptionCode, $operator);
+
+        return $qb->getQuery()->iterate();
+    }
+
+    public function getBusinessProfilesWithSubscriptionAndServiceAreaTypeIterator(
+        int $subscriptionCode,
+        string $operator = '=',
+        string $serviceAreaType = BusinessProfile::SERVICE_AREAS_LOCALITY_CHOICE_VALUE
+    ): IterableResult {
+        $qb = $this->getBusinessProfileWithSubscriptionQueryBuilder($subscriptionCode, $operator);
+        $qb->andWhere('bp.serviceAreasType = :serviceAreaType')
+            ->setParameter('serviceAreaType', $serviceAreaType);
+
+        return $qb->getQuery()->iterate();
+    }
+
+    private function getBusinessProfileWithSubscriptionQueryBuilder(
+        int $subscriptionCode,
+        string $operator = '='
+    ): QueryBuilder {
+        return $this->getEntityManager()->createQueryBuilder()
             ->select('bp')
             ->distinct()
             ->from(BusinessProfile::class, 'bp')
             ->innerJoin('bp.subscriptions', 'bp_s', Join::WITH, 'bp_s.status = ' . StatusInterface::STATUS_ACTIVE)
             ->innerJoin('bp_s.subscriptionPlan', 'bps_p')
             ->where('bps_p.code ' . $operator . ' :subscriptionCode')
-            ->setParameter('subscriptionCode', $subscriptionCode)
-        ;
-
-        return $qb->getQuery()->iterate();
+            ->setParameter('subscriptionCode', $subscriptionCode);
     }
 
     private function getVideosQuery()
