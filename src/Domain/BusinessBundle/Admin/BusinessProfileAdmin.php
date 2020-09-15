@@ -482,6 +482,10 @@ class BusinessProfileAdmin extends OxaAdmin
         /** @var BusinessProfile $businessProfile */
         $businessProfile = $this->getSubject();
 
+        if (!$businessProfile) {
+            return;
+        }
+
         $businessProfile->setLocale(LocaleHelper::DEFAULT_LOCALE);
 
         $subscriptionPlanCode = $businessProfile->getSubscriptionPlanCode();
