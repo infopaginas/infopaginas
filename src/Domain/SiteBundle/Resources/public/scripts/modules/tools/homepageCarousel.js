@@ -2,6 +2,8 @@ define(['jquery', 'slick'], function( $, Slick ) {
     'use strict';
 
     $( document ).ready(function () {
+        let dots = screen.width >= 768;
+
         var sliderParams = {
             autoplay: true,
             focusOnSelect: false,
@@ -11,7 +13,7 @@ define(['jquery', 'slick'], function( $, Slick ) {
             swipeToSlide: true,
             pauseOnDotsHover: true,
             arrows: true,
-            dots: true,
+            dots: dots,
             mobileFirst: true,
             adaptiveHeight: false,
             variableWidth: false,
@@ -57,7 +59,7 @@ define(['jquery', 'slick'], function( $, Slick ) {
             swipeToSlide: true,
             pauseOnDotsHover: true,
             arrows: true,
-            dots: true,
+            dots: dots,
             mobileFirst: true,
             adaptiveHeight: false,
             variableWidth: false,

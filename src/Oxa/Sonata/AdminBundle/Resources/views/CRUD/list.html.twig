@@ -124,7 +124,7 @@
                                                             .closest('table')
                                                             .find('td.sonata-ba-list-field-batch input[type="checkbox"], div.sonata-ba-list-field-batch input[type="checkbox"]')
                                                     ;
-                                            if (window.SONATA_CONFIG.USE_ICHECK) {
+                                            if (window.Admin.config.USE_ICHECK) {
                                                 checkboxes.iCheck($(this).is(':checked') ? 'check' : 'uncheck');
                                             } else {
                                                 checkboxes.prop('checked', this.checked);
