@@ -6,7 +6,7 @@ $(document).ready(function () {
     FilterSwitcher.$listContainer = $('.sonata-ba-list');
     FilterSwitcher.$switcher = $('#filter-switch');
 
-    if ( window.SONATA_CONFIG && window.SONATA_CONFIG.CONFIRM_EXIT && typeof CKEDITOR != 'undefined' ) {
+    if ( window.Admin.config && window.Admin.config.CONFIRM_EXIT && typeof CKEDITOR != 'undefined' ) {
         var ckEditorChanged = false;
 
         for ( var i in CKEDITOR.instances ) {

@@ -2,6 +2,7 @@ define(['jquery', 'slick'], function( $, Slick ) {
     'use strict';
 
     $( document ).ready(function () {
+        let dots = screen.width >= 768;
         var suggestedSlider = $( '.slider.suggested-slider' ),
             amazonAffiliateSlider = $( '.slider.amazon-affiliate' ),
             testimonialSlider = $( '.slider.testimonials' );
@@ -12,7 +13,7 @@ define(['jquery', 'slick'], function( $, Slick ) {
             touchThreshold: 10,
             swipeToSlide: true,
             arrows: true,
-            dots: true,
+            dots: dots,
             mobileFirst: true,
             adaptiveHeight: false,
             variableWidth: false,

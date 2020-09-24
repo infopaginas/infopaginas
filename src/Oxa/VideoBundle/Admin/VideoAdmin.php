@@ -3,6 +3,7 @@
 namespace Oxa\VideoBundle\Admin;
 
 use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
+use Oxa\Sonata\AdminBundle\Filter\DateTimeRangeFilter;
 use Oxa\Sonata\AdminBundle\Util\Helpers\AdminHelper;
 use Oxa\VideoBundle\Entity\VideoMedia;
 use Sonata\AdminBundle\Route\RouteCollection;
@@ -10,6 +11,7 @@ use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Show\ShowMapper;
+use Sonata\DoctrineORMAdminBundle\Filter\ChoiceFilter;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -18,13 +20,10 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\Constraints\File;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
-use Symfony\Component\Validator\Constraints\Url;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class VideoAdmin extends OxaAdmin
 {
-    public $showFilters = false;
-
     /**
      * @var bool
      */
@@ -118,7 +117,11 @@ class VideoAdmin extends OxaAdmin
     {
         $datagridMapper
             ->add('id')
-            ->add('status')
+            ->add('status', ChoiceFilter::class, AdminHelper::getVideoDatagridStatusOptions())
+            ->add('youtubeSupport')
+            ->add('youtubeId')
+            ->add('createdAt', DateTimeRangeFilter::class, $this->defaultDatagridDatetimeTypeOptions)
+            ->add('isDeleted')
         ;
     }
 
@@ -135,6 +138,9 @@ class VideoAdmin extends OxaAdmin
             ->add('name')
             ->add('title')
             ->add('status')
+            ->add('youtubeSupport')
+            ->add('youtubeId')
+            ->add('createdAt')
             ->add('isDeleted')
         ;
 
@@ -154,6 +160,9 @@ class VideoAdmin extends OxaAdmin
             ->add('isDeleted', null, [
                 'label' => 'Scheduled for deletion',
             ])
+            ->add('youtubeSupport')
+            ->add('youtubeId')
+            ->add('createdAt')
             ->add('posterImage', null, [
                 'template' => 'OxaVideoBundle:Admin:show_image.html.twig'
             ])

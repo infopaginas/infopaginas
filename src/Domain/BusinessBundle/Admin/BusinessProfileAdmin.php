@@ -74,6 +74,8 @@ class BusinessProfileAdmin extends OxaAdmin
     private const FILTER_DIRECTIONS  = 'directions';
     private const FILTER_CALL_MOBILE = 'callsMobile';
 
+    private const MILES_OF_MY_BUSINESS_PLACEHOLDER = 20;
+
     /**
      * @var bool
      */
@@ -480,6 +482,10 @@ class BusinessProfileAdmin extends OxaAdmin
         /** @var BusinessProfile $businessProfile */
         $businessProfile = $this->getSubject();
 
+        if (!$businessProfile) {
+            return;
+        }
+
         $businessProfile->setLocale(LocaleHelper::DEFAULT_LOCALE);
 
         $subscriptionPlanCode = $businessProfile->getSubscriptionPlanCode();
@@ -825,6 +831,9 @@ class BusinessProfileAdmin extends OxaAdmin
         // Category Block
         $milesOfMyBusinessFieldOptions = [
             'required' => true,
+            'attr' => [
+                'placeholder' => self::MILES_OF_MY_BUSINESS_PLACEHOLDER,
+            ],
         ];
 
         $areasFieldOptions = [
@@ -874,8 +883,12 @@ class BusinessProfileAdmin extends OxaAdmin
 
         if ($businessProfile->getId() && $subscriptionPlanCode > SubscriptionPlanInterface::CODE_FREE) {
             $maximumSelectionSize = 0;
+            $serviceAreasType = BusinessProfile::getServiceAreasTypes();
         } else {
             $maximumSelectionSize = BusinessProfile::BUSINESS_PROFILE_FREE_MAX_CATEGORIES_COUNT;
+            $serviceAreasType = [
+                'Locality' => BusinessProfile::SERVICE_AREAS_LOCALITY_CHOICE_VALUE,
+            ];
         }
 
         $formMapper
@@ -893,13 +906,18 @@ class BusinessProfileAdmin extends OxaAdmin
                         'required' => true,
                     ])
                     ->add('serviceAreasType', ChoiceType::class, [
-                        'choices' => BusinessProfile::getServiceAreasTypes(),
+                        'choices'  => $serviceAreasType,
                         'multiple' => false,
                         'expanded' => true,
                         'required' => true,
                     ])
-                    ->add('milesOfMyBusiness', null, $milesOfMyBusinessFieldOptions)
-                    ->add('areas', null, $areasFieldOptions)
+        ;
+
+        if ($subscriptionPlanCode > SubscriptionPlanInterface::CODE_FREE && $businessProfile->getId()) {
+            $formMapper->add('milesOfMyBusiness', null, $milesOfMyBusinessFieldOptions);
+        }
+
+        $formMapper->add('areas', null, $areasFieldOptions)
                     ->add('localities', null, $localitiesFieldOptions)
                     ->add('neighborhoods', null, $neighborhoodsFieldOptions)
                 ->end()
