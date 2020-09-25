@@ -964,11 +964,13 @@ class CategoryOverviewReportManager extends BaseReportManager
 
         $result = [];
 
-        $data = current($cursor->toArray());
+        if ($cursor) {
+            $data = current($cursor->toArray());
 
-        if ($data) {
-            foreach ($data->results as $document) {
-                $result[$document['_id']] = $document[self::MONGO_DB_FIELD_COUNT];
+            if ($data) {
+                foreach ($data->results as $document) {
+                    $result[$document['_id']] = $document[self::MONGO_DB_FIELD_COUNT];
+                }
             }
         }
 
