@@ -41,6 +41,8 @@
 
         {% block videoJs %}{% endblock %}
 
+        <link rel="preload" href="{{ absolute_url('assets/fonts/font-awesome/fontawesome-webfont.woff2') }}?v=4.7.0" as="font" type="font/woff2">
+
         {% block styles %}
             <link rel="preload" href="{{ absolute_url(asset('assetic/app_common_css.css')) }}" as="style" onload="this.rel='stylesheet'">
             <link rel="stylesheet" href="{{ absolute_url(asset('assetic/app_common_css.css')) }}" />
