@@ -93,6 +93,7 @@ filter:
   label_has_supervm: Has SuperVM
   label_has_redirect_to: Has redirect to
   label_has_redirect_from: Has redirect from
+  label_has_action_url: Has action URL
 
 # interaction report
 interaction_report:
