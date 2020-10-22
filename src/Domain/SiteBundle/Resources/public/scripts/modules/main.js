@@ -206,9 +206,8 @@ define(['jquery', 'tools/reportTracker', 'tools/googleMapLink', 'selectize', 've
 
     function getMapTranslateY() {
         var toolBar    = $( '.toolbar' );
-        var carousel   = $('homepage-carousel-block');
-        var translateY = toolBar.position().top + toolBar.height() - resultsMap.position().top + carousel.height();
-        var mapHeight  = $( window ).height() - (toolBar.position().top + toolBar.height() + carousel.height());
+        var translateY = toolBar.position().top + toolBar.height() - resultsMap.position().top;
+        var mapHeight  = $( window ).height() - (toolBar.position().top + toolBar.height());
 
         resultsMap.css( 'height', mapHeight );
         resultsMap.css( 'bottom', translateY );
@@ -219,7 +218,7 @@ define(['jquery', 'tools/reportTracker', 'tools/googleMapLink', 'selectize', 've
     var openMapSequence = [
         { e: showMap, p: { translateX: 0, translateY: 120 }, o: { duration: 400, easing: "easeOutCubic", complete: triggerMapResize } },
         { e: resultsMap, p: { translateY: function() {return getMapTranslateY()} }, o: { duration: 600, delay: 200, easing: "easeOutCubic", sequenceQueue: false } },
-        { e: hideMap, p: { translateX: 0, translateY: -370 }, o: { duration: 200, easing: "easeOutCubic", complete: openMapSequenceHideBlock } }
+        { e: hideMap, p: { translateX: 0, translateY: -120 }, o: { duration: 200, easing: "easeOutCubic", complete: openMapSequenceHideBlock } }
     ];
 
     var closeMapSequence = [
@@ -230,7 +229,7 @@ define(['jquery', 'tools/reportTracker', 'tools/googleMapLink', 'selectize', 've
 
     var openMapDeskSequence = [
         { e: showMap, p: { translateX: 500, translateY: 0 }, o: { duration: 200, easing: "easeOuCubic", sequenceQueue: false } },
-        { e: hideMap, p: { translateX: -550, translateY: 0 }, o: { duration: 200, easing: "easeOutCubic", complete: triggerMapResize } }
+        { e: hideMap, p: { translateX: -520, translateY: 0 }, o: { duration: 200, easing: "easeOutCubic", complete: triggerMapResize } }
     ];
 
     var closeMapDeskSequence = [
@@ -816,7 +815,6 @@ define(['jquery', 'tools/reportTracker', 'tools/googleMapLink', 'selectize', 've
         if ( mapScriptInit ) {
             map.resize();
         }
-        $( '.slider.suggested-slider' ).slick( 'slickNext' );
     }
 
     function triggerMapRequested() {
