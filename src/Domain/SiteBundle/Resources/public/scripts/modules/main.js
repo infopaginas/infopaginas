@@ -219,11 +219,11 @@ define(['jquery', 'tools/reportTracker', 'tools/googleMapLink', 'selectize', 've
     var openMapSequence = [
         { e: showMap, p: { translateX: 0, translateY: 120 }, o: { duration: 400, easing: "easeOutCubic", complete: triggerMapResize } },
         { e: resultsMap, p: { translateY: function() {return getMapTranslateY()} }, o: { duration: 600, delay: 200, easing: "easeOutCubic", sequenceQueue: false } },
-        { e: hideMap, p: { translateX: 0, translateY: 0 }, o: { duration: 200, easing: "easeOutCubic", complete: openMapSequenceHideBlock } }
+        { e: hideMap, p: { translateX: 0, translateY: -370 }, o: { duration: 200, easing: "easeOutCubic", complete: openMapSequenceHideBlock } }
     ];
 
     var closeMapSequence = [
-        { e: hideMap, p: { translateX: 0, translateY: 0 }, o: { duration: 300, easing: "easeOutCubic", sequenceQueue: false, complete: closeMapSequenceHideBlock } },
+        { e: hideMap, p: { translateX: 0, translateY: 120 }, o: { duration: 300, easing: "easeOutCubic", sequenceQueue: false, complete: closeMapSequenceHideBlock } },
         { e: resultsMap, p: { translateX: 0, translateY: 0 }, o: { duration: 600, delay: 200, easing: "easeOutCubic", sequenceQueue: false } },
         { e: showMap, p: { translateX: 0, translateY: 0 }, o: { duration: 300, easing: "easeOutCubic", complete: triggerMapResize } },
     ];
