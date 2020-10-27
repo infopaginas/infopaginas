@@ -47,7 +47,7 @@
                             {% set hasPhone = false %}
                         {% endif %}
                         {% if not carouselBusiness.businessProfile.hideGetDirectionsButton %}
-                            <a class="slide-button get-dir homepage-carousel-action redirect-event button button--small button--featured link-pointer {% if carouselBusiness.businessProfile.isAd %}svm-getdir{% endif %}" data-href="{{ path('domain_search_show_directions', {'slug': carouselBusiness.businessProfile.slug }) }}" data-id="{{ carouselBusiness.businessProfile.id }}" data-latlng="{{ carouselBusiness.businessProfile.latLng }}" data-type="directionButton" data-bw-gtm-event-click data-bw-gtm-label="{% trans %}Directions{% endtrans %}" data-bname="{{ carouselBusiness.businessProfile.name }}">
+                            <a class="slide-button get-dir homepage-carousel-action redirect-event redirect-map button button--small button--featured link-pointer {% if carouselBusiness.businessProfile.isAd %}svm-getdir{% endif %}" data-href="{{ path('domain_search_show_directions', {'slug': carouselBusiness.businessProfile.slug }) }}" data-id="{{ carouselBusiness.businessProfile.id }}" data-latlng="{{ carouselBusiness.businessProfile.latLng }}" data-type="directionButton" data-bw-gtm-event-click data-bw-gtm-label="{% trans %}Directions{% endtrans %}" data-bname="{{ carouselBusiness.businessProfile.name }}">
                                 <i class="fa fa-location-arrow"></i>
                                 <span class="hide-mobile">{% trans %}Directions{% endtrans %}</span>
                             </a>

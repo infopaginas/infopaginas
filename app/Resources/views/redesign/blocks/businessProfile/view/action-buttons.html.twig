@@ -13,7 +13,7 @@
 {% endif %}
 {% if not item.hideGetDirectionsButton() %}
     <a data-bname="{{ item.name }}"
-       class="get-dir redirect-event redirect-google-map button button--small button--featured link-pointer direction-button vertical-left-separator buttons-width"
+       class="get-dir redirect-event redirect-map button button--small button--featured link-pointer direction-button vertical-left-separator buttons-width"
        data-href="{{ path('domain_search_show_directions', { 'slug': item.getSlug() }) }}"
        data-id="{{ item.getId() }}" data-latlng="{{ item.getLatLng() }}" data-type="directionButton"
        data-bw-gtm-event-click data-bw-gtm-label="{% trans %}Directions{% endtrans %}" rel="nofollow">
