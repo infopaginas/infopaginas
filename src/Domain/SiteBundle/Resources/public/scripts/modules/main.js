@@ -481,7 +481,7 @@ define(['jquery', 'tools/reportTracker', 'tools/googleMapLink', 'selectize', 've
             var latitude = coordinatesArray[ 0 ];
             var longitude = coordinatesArray[ 1 ];
 
-            a.attr( 'href', googleMap.getGoogleMapUrl( latitude, longitude ) );
+            a.attr( 'href', googleMap.getGoogleMapUrlIfMobile( latitude, longitude ) );
         }
     }
 
