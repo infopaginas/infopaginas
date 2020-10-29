@@ -15,7 +15,12 @@
     "repositories": {
         "google-bundle": {
             "type": "git",
-            "url": "https://git.oxagile.com/infopaginas/infopaginas_google_bundle.git"
+            "url": "https://git.oxagile.com/infopaginas/infopaginas_google_bundle.git",
+            "options":  {
+                "gitlab-token":{
+                    "gitlab+deploy-token-7": "fNhrRzzQZfYiBF9ghDxH"
+                }
+            }
         },
         "common-product": {
             "type": "git",
