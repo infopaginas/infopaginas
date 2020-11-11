@@ -10,11 +10,16 @@
         {% if has_tab %}
             {% set tab_prefix = 'tab_' ~ admin.uniqid ~ '_' ~ random() %}
             {% set tab_query_index = app.request.query.get('_tab', 0)|split("_")|last %}
+            {% set active_tab_name =  app.request.query.get('_tab', 0) %}
             <div class="nav-tabs-custom">
                 <ul class="nav nav-tabs" role="tablist">
                     {% for name, show_tab in admin.showtabs %}
-                        {% set _tab_name = tab_prefix ~ '_' ~ loop.index %}
-                        <li{% if (not app.request.query.has('_tab') and loop.index == 1) or (tab_query_index == loop.index) %} class="active"{% endif %}>
+                        {% if show_tab.attr.custom_tab_name is defined %}
+                            {% set _tab_name = show_tab.attr.custom_tab_name %}
+                        {% else %}
+                            {% set _tab_name = tab_prefix ~ '_' ~ loop.index %}
+                        {% endif %}
+                        <li{% if (not app.request.query.has('_tab') and loop.index == 1) or (tab_query_index == loop.index) or (active_tab_name is same as (_tab_name)) %} class="active"{% endif %}>
                             <a href="#{{ _tab_name }}" class="changer-tab" aria-controls="{{ _tab_name }}" data-toggle="tab">
                                 {{ show_tab.label|trans({}, show_tab.translation_domain ?: admin.translationDomain) }}
                             </a>
@@ -24,9 +29,13 @@
 
                 <div class="tab-content">
                     {% for code, show_tab in admin.showtabs %}
-                        {% set _tab_name = tab_prefix ~ '_' ~ loop.index %}
+                        {% if show_tab.attr.custom_tab_name is defined %}
+                            {% set _tab_name = show_tab.attr.custom_tab_name %}
+                        {% else %}
+                            {% set _tab_name = tab_prefix ~ '_' ~ loop.index %}
+                        {% endif %}
                         <div
-                                class="tab-pane fade{% if (not app.request.query.has('_tab') and loop.first) or (tab_query_index == loop.index) %} in active{% endif %}"
+                                class="tab-pane fade{% if (not app.request.query.has('_tab') and loop.first) or (tab_query_index == loop.index) or (active_tab_name is same as (_tab_name)) %} in active{% endif %}"
                                 id="{{ _tab_name }}"
                         >
                             <div class="box-body  container-fluid">

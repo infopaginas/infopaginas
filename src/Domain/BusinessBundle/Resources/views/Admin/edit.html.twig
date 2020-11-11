@@ -35,7 +35,10 @@
                     {% for name, form_tab in admin.formtabs %}
                         {% set _tab_name = tab_prefix ~ '_' ~ loop.index %}
                         <li{% if (not app.request.query.has('_tab') and loop.index == 1) or (tab_query_index == loop.index) %} class="active"{% endif %}>
-                            <a href="#{{ _tab_name }}" class="changer-tab" aria-controls="{{ _tab_name }}" data-toggle="tab">
+                            <a
+                                    href="#{{ _tab_name }}" class="changer-tab" aria-controls="{{ _tab_name }}" data-toggle="tab"
+                                    {% if form_tab.attr.custom_tab_name is defined %}data-custom-tab-name="{{ form_tab.attr.custom_tab_name }}"{% endif %}
+                            >
                                 <i class="fa fa-exclamation-circle has-errors hide" aria-hidden="true"></i> {{ form_tab.label|trans({}, form_tab.translation_domain ?: admin.translationDomain) }}
                             </a>
                         </li>
@@ -81,6 +84,7 @@
         var parentId = '{{ app.request.get('id', null) }}';
         var businessProfileId = '{{ form.vars.value.id }}';
         var currentLocale = '{{ form.vars.value.locale }}';
+        var profileShowURL = '{{ admin.generateUrl('show', {'id' : form.vars.value.id, '_tab' : 'tab-reports'}) | e('js') }}';
     </script>
     {% include '@DomainBusiness/Admin/js_errors_list.html.twig' %}
     <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
