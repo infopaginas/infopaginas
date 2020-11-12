@@ -132,6 +132,7 @@ twig:
         breadcrumb_max_length: '%breadcrumb_max_length%'
         suggested_title_max_length: '%suggested_title_max_length%'
         keyword_max_length: 50
+        suggested_call_button_max_length: 18
 
 #       todo confirm date formats
         review_date_format:        'd M Y H:i'
