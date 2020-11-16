@@ -352,8 +352,7 @@
                                                                 data-id="{{ suggestedBusiness.id }}" data-type="callMobButton" data-bw-gtm-event-click data-bw-gtm-label="{{ phoneToCall }}"
                                                                 data-bname="{{ suggestedBusiness.name }}" title="{% trans %}ActionButtonCall{% endtrans %} {{  suggestedBusiness.name }}"
                                                         >
-                                                            <i class="fa fa-phone"></i>
-                                                            {% trans %}ActionButtonCall{% endtrans %} {{ suggestedBusiness.name|truncate(suggested_call_button_max_length) }}
+                                                            <i class="fa fa-phone"></i>{{ suggestedBusiness.name|truncate(suggested_call_button_max_length) }}
                                                         </a>
                                                     </div>
                                                 {% else %}
