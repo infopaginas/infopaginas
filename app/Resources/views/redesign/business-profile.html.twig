@@ -89,7 +89,7 @@
                                 {% if not businessProfile.phones.empty %}
                                     <div class="highlights__item">
                                         <h3>{% trans %}Phone{% endtrans %}</h3>
-                                        <ul>
+                                        <ul class="phones">
                                             {% for phone in businessProfile.phones %}
                                                 <li {% if phone.type == BUSINESS_PROFILE_PHONE.TYPE.MAIN %}class="main-phone"{% endif %} title="{{ ('business_profile.phone.tooltip.' ~ phone.type)|trans }}">
                                                     <i class="fa {{ get_business_profile_phone_icon(phone) }}"></i>
@@ -226,7 +226,7 @@
                         {% if businessProfile.getDescription() %}
                             <section class="page-section description-section">
                                 <div class="container">
-                                    <div class="business-view-description">{{ businessProfile.getDescription()|purify }}</div>
+                                    <div class="business-view-description">{{ businessProfile.getDescription()|replace({'&nbsp;' : ' '})|purify }}</div>
                                 </div>
                             </section>
                         {% endif %}

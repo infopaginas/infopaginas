@@ -407,6 +407,10 @@ $side-padding-mb: 16px;
 
     img {
       max-height: 100%;
+
+      @media only screen and (max-width: 425px) {
+        max-height: 65%;
+      }
     }
   }
 }
@@ -768,7 +772,7 @@ $side-padding-mb: 16px;
     overflow: hidden;
     @media only screen and (max-width: 420px) {
       letter-spacing: 0;
-      font-size: 8px;
+      font-size: 10px;
       padding: 0 5px;
     }
   }
@@ -822,7 +826,7 @@ $side-padding-mb: 16px;
       right: 0;
     }
     @media (max-width:420px) {
-        font-size: 10px;
+        font-size: 14px;
     }
     &.sort--active {
       color: $blue--dark;
@@ -1692,7 +1696,7 @@ $thumb-width-mb: 60px;
   margin-bottom: 5px;
 
   span {
-    font-size: 12px;
+    font-size: 16px;
     padding-left: 0;
   }
 
@@ -2544,6 +2548,14 @@ $thumb-width-mb: 60px;
 .highlights__item {
   .fa-envelope, .fa-phone, .fa-fax {
     padding-right: 3px;
+  }
+
+  ul.phones {
+    li {
+      @media only screen and (max-width: 768px) {
+        margin-bottom: 10px;
+      }
+    }
   }
 
   li {
@@ -4386,7 +4398,7 @@ input[type='checkbox'] {
 
 @media only screen and (max-width:420px) {
   .form__field.field-filter-category, .form__field.field-filter-neighborhoods {
-    font-size: 10px;
+    font-size: 14px;
   }
 }
 .button--field {
