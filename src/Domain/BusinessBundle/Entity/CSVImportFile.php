@@ -318,16 +318,22 @@ class CSVImportFile implements DefaultEntityInterface, FileUploadEntityInterface
             BusinessProfile::BUSINESS_PROFILE_FIELD_YOUTUBE_URL_TYPE       => 'business_profile.fields.youtubeURL',
             BusinessProfile::BUSINESS_PROFILE_FIELD_INSTAGRAM_URL_TYPE     => 'business_profile.fields.instagramURL',
             BusinessProfile::BUSINESS_PROFILE_FIELD_TRIP_ADVISOR_URL_TYPE  => 'business_profile.fields.tripAdvisorURL',
-
-            self::BUSINESS_PROFILE_PHONE_MAIN      => 'business_profile.fields.phone_main',
-            self::BUSINESS_PROFILE_PHONE_SECONDARY => 'business_profile.fields.phone_secondary',
-            self::BUSINESS_PROFILE_PHONE_FAX       => 'business_profile.fields.phone_fax',
         ];
 
         $requiredFields = self::getBusinessProfileRequiredFields();
         $translatableFields = self::getBusinessProfileTranslatableFields();
+        $phoneFields = self::getBusinessProfilePhoneFields();
 
-        return array_merge($requiredFields, $importFields, $translatableFields);
+        return array_merge($requiredFields, $importFields, $translatableFields, $phoneFields);
+    }
+
+    public static function getBusinessProfilePhoneFields(): array
+    {
+        return [
+            self::BUSINESS_PROFILE_PHONE_MAIN      => 'business_profile.fields.phone_main',
+            self::BUSINESS_PROFILE_PHONE_SECONDARY => 'business_profile.fields.phone_secondary',
+            self::BUSINESS_PROFILE_PHONE_FAX       => 'business_profile.fields.phone_fax',
+        ];
     }
 
     public static function getBusinessProfileTranslatableFields()

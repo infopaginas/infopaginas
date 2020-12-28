@@ -20,14 +20,16 @@ define(['jquery', 'tools/googleMapLink'],
 
         var current = $( e.currentTarget );
         var useCurrentTab = current.data( 'current-tab' );
+        var redirectionLink = null;
 
-        if ( $(current[0]).hasClass( 'redirect-google-map' ) ) {
+        if ( $(current[0]).hasClass( 'redirect-map' ) ) {
             var coordinatesArray = current.data( 'latlng' ).split( ',' );
             var latitude = coordinatesArray[ 0 ];
             var longitude = coordinatesArray[ 1 ];
-            var redirectionLink = this.googleMap.getGoogleMapUrl( latitude, longitude );
-        } else {
-            var redirectionLink = current.data( 'href' );
+            redirectionLink = this.googleMap.getGoogleMapUrlIfMobile( latitude, longitude );
+        }
+        if ( ! redirectionLink ) {
+            redirectionLink = current.data( 'href' );
         }
 
         var id = current.data( 'id' );

@@ -427,6 +427,7 @@
       .phone-call {
         margin-top: 5px;
         width: 100%;
+        padding: 0 5px;
       }
     }
 
@@ -450,7 +451,7 @@
 
 .homepage-slider-main {
   &.slider {
-    height: $homepage-carousel-height;
+    height: 298px;
   }
 }
 

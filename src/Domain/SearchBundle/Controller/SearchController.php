@@ -118,31 +118,25 @@ class SearchController extends Controller
         // hardcode for catalog
         $pageRouter = 'domain_search_index';
 
-        $homepageCarouselManager = $this->container->get('domain_business.manager.homepage_carousel_manager');
-        $carouselBusinesses = $homepageCarouselManager->getCarouselBusinessesSortedByRandom();
-        $showCarousel = $homepageCarouselManager->isShowCarousel($carouselBusinesses);
-
         return $this->render(
             ':redesign:search-results.html.twig',
             [
-                'search'              => $searchDTO,
-                'results'             => $searchResultsDTO,
-                'seoData'             => $seoData,
-                'seoTags'             => BusinessProfileUtil::getSeoTags($seoType),
-                'banners'             => $banners,
-                'dcDataDTO'           => $dcDataDTO,
-                'searchData'          => $searchData,
-                'pageRouter'          => $pageRouter,
-                'schemaJsonLD'        => $schema,
-                'markers'             => $locationMarkers,
-                'noFollowRelevance'   => SearchDataUtil::ORDER_BY_RELEVANCE != SearchDataUtil::DEFAULT_ORDER_BY_VALUE,
-                'noFollowDistance'    => SearchDataUtil::ORDER_BY_DISTANCE  != SearchDataUtil::DEFAULT_ORDER_BY_VALUE,
-                'searchRelevance'     => SearchDataUtil::ORDER_BY_RELEVANCE,
-                'searchDistance'      => SearchDataUtil::ORDER_BY_DISTANCE,
-                'disableFilters'      => $disableFilters,
-                'trackingParams'      => $trackingParams,
-                'carouselBusinesses'  => $carouselBusinesses,
-                'showCarousel'        => $showCarousel,
+                'search'            => $searchDTO,
+                'results'           => $searchResultsDTO,
+                'seoData'           => $seoData,
+                'seoTags'           => BusinessProfileUtil::getSeoTags($seoType),
+                'banners'           => $banners,
+                'dcDataDTO'         => $dcDataDTO,
+                'searchData'        => $searchData,
+                'pageRouter'        => $pageRouter,
+                'schemaJsonLD'      => $schema,
+                'markers'           => $locationMarkers,
+                'noFollowRelevance' => SearchDataUtil::ORDER_BY_RELEVANCE != SearchDataUtil::DEFAULT_ORDER_BY_VALUE,
+                'noFollowDistance'  => SearchDataUtil::ORDER_BY_DISTANCE  != SearchDataUtil::DEFAULT_ORDER_BY_VALUE,
+                'searchRelevance'   => SearchDataUtil::ORDER_BY_RELEVANCE,
+                'searchDistance'    => SearchDataUtil::ORDER_BY_DISTANCE,
+                'disableFilters'    => $disableFilters,
+                'trackingParams'    => $trackingParams,
             ]
         );
     }
@@ -697,10 +691,6 @@ class SearchController extends Controller
         $searchData['localitySlug'] = $localitySlug;
         $searchData['categorySlug'] = $categorySlug;
 
-        $homepageCarouselManager = $this->container->get('domain_business.manager.homepage_carousel_manager');
-        $carouselBusinesses = $homepageCarouselManager->getCarouselBusinessesSortedByRandom();
-        $showCarousel = $homepageCarouselManager->isShowCarousel($carouselBusinesses);
-
         return $this->render(
             ':redesign:catalog.html.twig',
             [
@@ -725,8 +715,6 @@ class SearchController extends Controller
                 'searchDistance'    => SearchDataUtil::ORDER_BY_DISTANCE,
                 'trackingParams'    => $trackingParams,
                 'clickbaitTitle'    => $this->getClickbaitTitleManager()->getClickbaitTitleByLocality($locality),
-                'carouselBusinesses' => $carouselBusinesses,
-                'showCarousel' => $showCarousel,
             ]
         );
     }

@@ -3,8 +3,9 @@
 namespace Domain\BusinessBundle\Repository;
 
 use Doctrine\ORM\EntityRepository;
-use Doctrine\ORM\NonUniqueResultException;
-use Doctrine\ORM\NoResultException;
+use Doctrine\ORM\Query\Expr\Join;
+use Domain\BusinessBundle\Entity\SubscriptionPlan;
+use Domain\BusinessBundle\Model\StatusInterface;
 
 /**
  * BusinessProfilePhoneRepository
@@ -14,14 +15,6 @@ use Doctrine\ORM\NoResultException;
  */
 class BusinessProfilePhoneRepository extends EntityRepository
 {
-    /**
-     * @param $phone
-     * @param array $excludedIds
-     *
-     * @return int
-     * @throws NoResultException
-     * @throws NonUniqueResultException
-     */
     public function getSamePhonesCount($phone, array $excludedIds)
     {
         $qb = $this->createQueryBuilder('bpp');
@@ -37,5 +30,21 @@ class BusinessProfilePhoneRepository extends EntityRepository
         $result = $qb->getQuery()->getSingleResult();
 
         return array_shift($result);
+    }
+
+    public function getPhoneNumbersOfPaidProfiles()
+    {
+        $qb = $this->createQueryBuilder('bpp');
+
+        $qb
+            ->select('bpp.phone as phone')
+            ->join('bpp.businessProfile', 'bp')
+            ->join('bp.subscriptions', 's', Join::WITH, 's.status = ' . StatusInterface::STATUS_ACTIVE)
+            ->where('bp.isActive = TRUE')
+            ->andWhere('s.subscriptionPlan > :subscription')
+            ->setParameter('subscription', SubscriptionPlan::CODE_FREE)
+        ;
+
+        return array_column($qb->getQuery()->getScalarResult(), 'phone');
     }
 }

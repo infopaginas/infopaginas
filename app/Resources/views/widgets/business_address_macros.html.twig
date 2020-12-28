@@ -4,9 +4,12 @@
     {% else %}
         {% if fullAddress %}
             {% if object.getStreetAddress() %}
-                <strong>{{ object.getStreetAddress() }}</strong>,
+                <strong>{{ object.getStreetAddress()}}</strong>
             {% endif %}
-            {{ [object.getCity(), object.getCountry() ] | filter(v => v) | join(', ') }}
+            {% if object.getCity() or object.getCountry() %}
+                <span>,</span>
+            {% endif %}
+            {{ [ object.getCity(), object.getCountry() ] | filter(v => v) | join(', ') }}
             {{ object.getZipCode() }}
         {% else %}
             {{ [object.getCity(), object.getStreetAddress() ] | filter(v => v) | join(', ') }}

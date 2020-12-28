@@ -428,6 +428,20 @@ class BusinessProfileAdmin extends OxaAdmin
                     return true;
                 },
             ])
+            ->add('hasActionURL', CallbackFilter::class, [
+                'label'      => $this->trans('filter.label_has_action_url', [], $this->getTranslationDomain()),
+                'field_type' => CheckboxType::class,
+                'callback'   => static function ($queryBuilder, $alias, $field, $value) {
+                    if (!$value['value']) {
+                        return false;
+                    }
+                    $queryBuilder->andWhere(sprintf('%s.actionUrlItem IS NOT NULL', $alias));
+                    $queryBuilder->andWhere(sprintf('%s.actionUrlItem NOT LIKE %s', $alias, '\'%s:8:"URL_NAME";s:0%\''));
+                    $queryBuilder->andWhere(sprintf('%s.actionUrlItem LIKE %s', $alias, '\'%s:8:"URL_NAME";s:%\''));
+
+                    return true;
+                },
+            ])
         ;
     }
 
@@ -1331,6 +1345,8 @@ class BusinessProfileAdmin extends OxaAdmin
                 ->end()
             ;
         }
+
+        $formMapper->tab('Reports', ['attr' => ['custom_tab_name' => 'tab-reports']])->end();
     }
 
     /**
@@ -1612,7 +1628,7 @@ class BusinessProfileAdmin extends OxaAdmin
             $dateRange = DatesUtil::getDateRangeValueObjectFromRangeType(DatesUtil::RANGE_LAST_MONTH);
 
             $showMapper
-                ->tab('Reports')
+                ->tab('Reports', ['attr' => ['custom_tab_name' => 'tab-reports']])
                     ->with('Report Filters')
                         ->add('mainReportFilters', null, [
                             'label'     => 'Filters',

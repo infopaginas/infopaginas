@@ -8,14 +8,14 @@ define(['jquery'], function( $ ) {
         };
     };
 
-    googleMapLink.prototype.getGoogleMapUrl = function( lat, lng ) {
+    googleMapLink.prototype.getGoogleMapUrlIfMobile = function( lat, lng ) {
         var url = '';
 
         if ( ( navigator.platform.indexOf( 'iPhone' ) !== -1 ) ||
             ( navigator.platform.indexOf( 'iPad' ) !== -1 ) ||
             ( navigator.platform.indexOf( 'iPod' ) !== -1 ) ) {
             url = this.urls.IOS + '?daddr=' + lat + ',' + lng + '&amp;ll=';
-        } else {
+        } else if ( ( navigator.platform.indexOf( 'android' ) !== -1 ) ) {
             url = this.urls.default + '?daddr=' + lat + ',' + lng + '&amp;ll=';
         }
 

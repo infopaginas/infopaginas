@@ -77,6 +77,12 @@ $( document ).ready( function() {
         }
     });
 
+    $( document ).on( 'click', 'a[data-custom-tab-name=\'tab-reports\']', function ( e ) {
+        e.preventDefault();
+        e.stopPropagation();
+        location.href = profileShowURL;
+    });
+
     validateBusinessName();
 
     nameField.on( 'input', function() {
