@@ -1345,6 +1345,8 @@ class BusinessProfileAdmin extends OxaAdmin
                 ->end()
             ;
         }
+
+        $formMapper->tab('Reports', ['attr' => ['custom_tab_name' => 'tab-reports']])->end();
     }
 
     /**
@@ -1626,7 +1628,7 @@ class BusinessProfileAdmin extends OxaAdmin
             $dateRange = DatesUtil::getDateRangeValueObjectFromRangeType(DatesUtil::RANGE_LAST_MONTH);
 
             $showMapper
-                ->tab('Reports')
+                ->tab('Reports', ['attr' => ['custom_tab_name' => 'tab-reports']])
                     ->with('Report Filters')
                         ->add('mainReportFilters', null, [
                             'label'     => 'Filters',

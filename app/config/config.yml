@@ -23,7 +23,7 @@ imports:
 # Put parameters here that don't need to change on each machine where the app is deployed
 # http://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
-    app_version: '1.24.1'
+    app_version: '1.25'
     locale: en
     locales: [en, es]
     locale_data:
@@ -132,6 +132,7 @@ twig:
         breadcrumb_max_length: '%breadcrumb_max_length%'
         suggested_title_max_length: '%suggested_title_max_length%'
         keyword_max_length: 50
+        suggested_call_button_max_length: 18
 
 #       todo confirm date formats
         review_date_format:        'd M Y H:i'
